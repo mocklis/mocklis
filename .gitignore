@@ -1,0 +1,22 @@
+# This file is part of Mocklis
+# Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
+
+# Git
+*.orig
+*.rej
+
+# User files
+*.user
+
+# Visual Studio
+.vs/
+bin/
+obj/
+publish/
+
+# Resharper
+_ReSharper*/
+
+# NCrunch
+_NCrunch*/
+nCrunchTemp_*

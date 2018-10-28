@@ -1,0 +1,3 @@
+Mocklis contains code contributed by:
+
+Esbjörn Redmo <esbjorn.redmo@gmail.com>

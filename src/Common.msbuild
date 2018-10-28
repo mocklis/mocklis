@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <Product>Mocklis</Product>
+    <Copyright>Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
+    <CodeAnalysisRuleSet>..\MocklisDefault.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="**\*.ncrunchproject" />
+    <None Remove="**\*.DotSettings" />
+    <Compile Remove="publish\**" />
+    <Content Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+  </ItemGroup>
+</Project>
