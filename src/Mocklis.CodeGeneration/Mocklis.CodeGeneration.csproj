@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Common.msbuild" />
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <Authors>Esbjörn Redmo</Authors>
+    <Company />
+    <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.CodeGeneration provides the ability to generate test doubles from interface definitions.</Description>
+    <Version>0.1.0-alpha</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" />
+  </ItemGroup>
+
+</Project>
