@@ -16,10 +16,10 @@ namespace Mocklis
 
     public sealed class LoggingMethodStep<TParam, TResult> : MethodStepCaller<TParam, TResult>, IMethodStep<TParam, TResult>
     {
-        public TResult Call(MemberMock memberMock, TParam param)
+        public TResult Call(object instance, MemberMock memberMock, TParam param)
         {
             Console.WriteLine(FormattableString.Invariant($"Calling '{memberMock.InterfaceName}.{memberMock.MemberName}' with parameter: {param}"));
-            var returnValue = NextStep.Call(memberMock, param);
+            var returnValue = NextStep.Call(instance, memberMock, param);
             Console.WriteLine(
                 FormattableString.Invariant($"Returned from '{memberMock.InterfaceName}.{memberMock.MemberName}' with result: {returnValue}"));
             return returnValue;

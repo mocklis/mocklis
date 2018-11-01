@@ -25,17 +25,17 @@ namespace Mocklis.ChangeNotification
             Comparer = EqualityComparer<TValue>.Default;
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(object instance, MemberMock memberMock)
         {
-            return NextStep.Get(memberMock);
+            return NextStep.Get(instance, memberMock);
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(object instance, MemberMock memberMock, TValue value)
         {
-            if (!Comparer.Equals(NextStep.Get(memberMock), value))
+            if (!Comparer.Equals(NextStep.Get(instance, memberMock), value))
             {
-                NextStep.Set(memberMock, value);
-                _propertyChangedEvent.Raise(null, memberMock.MemberName);
+                NextStep.Set(instance, memberMock, value);
+                _propertyChangedEvent.Raise(instance, memberMock.MemberName);
             }
         }
     }

@@ -14,12 +14,12 @@ namespace Mocklis.Core
         {
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(object instance, MemberMock memberMock)
         {
             throw new MockMissingException(MockType.PropertyGet, memberMock.InterfaceName, memberMock.MemberName, memberMock.MemberMockName);
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(object instance, MemberMock memberMock, TValue value)
         {
             throw new MockMissingException(MockType.PropertySet, memberMock.InterfaceName, memberMock.MemberName, memberMock.MemberMockName);
         }

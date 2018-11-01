@@ -26,14 +26,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public void Add(THandler value)
+        public void Add(object instance, THandler value)
         {
-            NextStep.Add(this, value);
+            NextStep.Add(instance, this, value);
         }
 
-        public void Remove(THandler value)
+        public void Remove(object instance, THandler value)
         {
-            NextStep.Remove(this, value);
+            NextStep.Remove(instance, this, value);
         }
     }
 }

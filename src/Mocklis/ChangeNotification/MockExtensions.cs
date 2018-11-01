@@ -15,18 +15,19 @@ namespace Mocklis.ChangeNotification
 
     public static class MockExtensions
     {
-        public static PropertyChangedEventStep PropertyChangedEvent(this IEventStepCaller<PropertyChangedEventHandler> caller,
+        public static PropertyChangedEventStep PropertyChangedEvent(
+            this IEventStepCaller<PropertyChangedEventHandler> caller,
             out PropertyChangedEventStep step)
         {
             step = new PropertyChangedEventStep();
             return caller.SetNextStep(step);
         }
 
-        public static ChangeNotificationPropertyStep<TValue> WithChangeNotification<TValue>(this IPropertyStepCaller<TValue> caller,
+        public static ChangeNotificationPropertyStep<TValue> WithChangeNotification<TValue>(
+            this IPropertyStepCaller<TValue> caller,
             PropertyChangedEventStep propertyChangedEvent)
         {
-            return caller.SetNextStep(
-                new ChangeNotificationPropertyStep<TValue>(propertyChangedEvent));
+            return caller.SetNextStep(new ChangeNotificationPropertyStep<TValue>(propertyChangedEvent));
         }
     }
 }

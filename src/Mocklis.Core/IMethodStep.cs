@@ -8,6 +8,6 @@ namespace Mocklis.Core
 {
     public interface IMethodStep<in TParam, out TResult>
     {
-        TResult Call(MemberMock memberMock, TParam param);
+        TResult Call(object instance, MemberMock memberMock, TParam param);
     }
 }

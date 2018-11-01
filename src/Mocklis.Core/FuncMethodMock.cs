@@ -18,9 +18,9 @@ namespace Mocklis.Core
         {
         }
 
-        public TResult Call(TParam param)
+        public TResult Call(object instance, TParam param)
         {
-            return Call(this, param);
+            return Call(instance, this, param);
         }
     }
 
@@ -30,9 +30,9 @@ namespace Mocklis.Core
         {
         }
 
-        public TResult Call()
+        public TResult Call(object instance)
         {
-            return Call(this, ValueTuple.Create());
+            return Call(instance, this, ValueTuple.Create());
         }
     }
 }

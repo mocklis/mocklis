@@ -31,16 +31,16 @@ namespace Mocklis.Verification
             _expectedNumberOfSets = expectedNumberOfSets;
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(object instance, MemberMock memberMock)
         {
             Interlocked.Increment(ref _currentNumberOfGets);
-            return NextStep.Get(memberMock);
+            return NextStep.Get(instance, memberMock);
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(object instance, MemberMock memberMock, TValue value)
         {
             Interlocked.Increment(ref _currentNumberOfSets);
-            NextStep.Set(memberMock, value);
+            NextStep.Set(instance, memberMock, value);
         }
 
         public IEnumerable<VerificationResult> Verify()

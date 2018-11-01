@@ -19,9 +19,9 @@ namespace Mocklis.Core
         {
         }
 
-        public void Call(TParam param)
+        public void Call(object instance, TParam param)
         {
-            Call(this, param);
+            Call(instance, this, param);
         }
     }
 
@@ -32,9 +32,9 @@ namespace Mocklis.Core
         {
         }
 
-        public void Call()
+        public void Call(object instance)
         {
-            Call(this, ValueTuple.Create());
+            Call(instance, this, ValueTuple.Create());
         }
     }
 }

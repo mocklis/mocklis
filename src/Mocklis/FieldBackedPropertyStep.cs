@@ -21,12 +21,12 @@ namespace Mocklis
             Value = initialValue;
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(object instance, MemberMock memberMock)
         {
             return Value;
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(object instance, MemberMock memberMock, TValue value)
         {
             Value = value;
         }

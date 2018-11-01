@@ -22,7 +22,7 @@ namespace Mocklis
             _func = func;
         }
 
-        public TResult Call(MemberMock memberMock, TParam param)
+        public TResult Call(object instance, MemberMock memberMock, TParam param)
         {
             return _func(param);
         }
@@ -37,7 +37,7 @@ namespace Mocklis
             _func = func;
         }
 
-        public TResult Call(MemberMock memberMock, ValueTuple param)
+        public TResult Call(object instance, MemberMock memberMock, ValueTuple param)
         {
             return _func();
         }

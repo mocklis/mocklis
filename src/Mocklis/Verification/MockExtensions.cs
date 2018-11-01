@@ -26,7 +26,7 @@ namespace Mocklis.Verification
         }
 
         public static UsageCountingPropertyStep<TValue> WithUsageCounting<TValue>(
-            this IPropertyStepCaller<TValue> propertyMock,
+            this IPropertyStepCaller<TValue> caller,
             VerificationGroup collector,
             string name,
             int? expectedNumberOfGets = null,
@@ -34,7 +34,7 @@ namespace Mocklis.Verification
         {
             var step = new UsageCountingPropertyStep<TValue>(name, expectedNumberOfGets, expectedNumberOfSets);
             collector.Add(step);
-            return propertyMock.SetNextStep(step);
+            return caller.SetNextStep(step);
         }
     }
 }

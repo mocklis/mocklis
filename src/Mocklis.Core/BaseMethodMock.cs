@@ -21,9 +21,9 @@ namespace Mocklis.Core
             return step;
         }
 
-        protected TResult Call(MemberMock d, TParam param)
+        protected TResult Call(object instance, MemberMock memberMock, TParam param)
         {
-            return NextStep.Call(d, param);
+            return NextStep.Call(instance, memberMock, param);
         }
     }
 }

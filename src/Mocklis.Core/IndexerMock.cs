@@ -20,14 +20,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public TValue Get(TKey key)
+        public TValue Get(object instance, TKey key)
         {
-            return NextStep.Get(this, key);
+            return NextStep.Get(instance, this, key);
         }
 
-        public void Set(TKey key, TValue value)
+        public void Set(object instance, TKey key, TValue value)
         {
-            NextStep.Set(this, key, value);
+            NextStep.Set(instance, this, key, value);
         }
     }
 }

@@ -27,10 +27,10 @@ namespace Mocklis.Verification
             _expectedNumberOfCalls = expectedNumberOfCalls;
         }
 
-        public TResult Call(MemberMock memberMock, TParam param)
+        public TResult Call(object instance, MemberMock memberMock, TParam param)
         {
             Interlocked.Increment(ref _currentNumberOfCalls);
-            return NextStep.Call(memberMock, param);
+            return NextStep.Call(instance, memberMock, param);
         }
 
         public IEnumerable<VerificationResult> Verify()
