@@ -1,16 +1,16 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingPropertyImplementation.cs">
+// <copyright file="MissingPropertyStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public sealed class MissingPropertyImplementation<TValue> : IPropertyImplementation<TValue>
+    public sealed class MissingPropertyStep<TValue> : IPropertyStep<TValue>
     {
-        public static readonly MissingPropertyImplementation<TValue> Instance = new MissingPropertyImplementation<TValue>();
+        public static readonly MissingPropertyStep<TValue> Instance = new MissingPropertyStep<TValue>();
 
-        private MissingPropertyImplementation()
+        private MissingPropertyStep()
         {
         }
 

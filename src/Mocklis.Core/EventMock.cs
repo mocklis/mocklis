@@ -12,28 +12,28 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class EventMock<THandler> : MemberMock, IEventMock<THandler> where THandler : Delegate
+    public sealed class EventMock<THandler> : MemberMock, IEventStepCaller<THandler> where THandler : Delegate
     {
-        public IEventImplementation<THandler> Implementation { get; private set; } = MissingEventImplementation<THandler>.Instance;
+        public IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
 
         public EventMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
         {
         }
 
-        public IEventMock<THandler> Use(IEventImplementation<THandler> implementation)
+        public TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>
         {
-            Implementation = implementation ?? throw new ArgumentNullException(nameof(implementation));
-            return this;
+            NextStep = step;
+            return step;
         }
 
         public void Add(THandler value)
         {
-            Implementation.Add(this, value);
+            NextStep.Add(this, value);
         }
 
         public void Remove(THandler value)
         {
-            Implementation.Remove(this, value);
+            NextStep.Remove(this, value);
         }
     }
 }

@@ -51,7 +51,6 @@ namespace Mocklis.CodeGeneration
                     }
                     else if (memberSymbol is IMethodSymbol methodSymbol && methodSymbol.CanBeReferencedByName)
                     {
-
                     }
                 }
             }
@@ -70,21 +69,24 @@ namespace Mocklis.CodeGeneration
                 members.Add(interfaceMember.ExplicitInterfaceMember());
             }
 
-            return source.WithMembers(F.List<MemberDeclarationSyntax>(members));
+            return source.WithMembers(F.List(members));
         }
 
         private MemberDeclarationSyntax GenerateConstructor()
         {
-            var parameterType = F.TupleType(F.SeparatedList(_interfaceMembers.Select(i => F.TupleElement(i.MockPropertyType).WithIdentifier(F.Identifier(i.MockPropertyName)))));
+            var parameterType =
+                F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
+                    F.TupleElement(i.MockPropertyType).WithIdentifier(F.Identifier(i.MockPropertyName)))));
 
             var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(Action(parameterType))
                 .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
 
-            var argument = F.Argument(F.TupleExpression(F.SeparatedList(_interfaceMembers.Select(i => F.Argument(F.IdentifierName(i.MockPropertyName))))));
+            var argument = F.Argument(
+                F.TupleExpression(F.SeparatedList(_interfaceMembers.Select(i => F.Argument(F.IdentifierName(i.MockPropertyName))))));
 
             var body = F.Block(F.SingletonList<StatementSyntax>(F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
                 F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))
-                    .WithArgumentList(F.ArgumentList(F.SingletonSeparatedList<ArgumentSyntax>(argument)))))));
+                    .WithArgumentList(F.ArgumentList(F.SingletonSeparatedList(argument)))))));
 
             return F.ConstructorDeclaration(_classDeclaration.Identifier)
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.PublicKeyword)))
@@ -143,30 +145,9 @@ namespace Mocklis.CodeGeneration
             return ParseGenericName(_mocklisSymbols.PropertyMock1, tvalue);
         }
 
-        public TypeSyntax ReadOnlyIndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.ReadOnlyIndexerMock2, tkey, tvalue);
-        }
-
-        public TypeSyntax ReadOnlyPropertyMock(TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.ReadOnlyPropertyMock1, tvalue);
-        }
-
-        public TypeSyntax WriteOnlyIndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.WriteOnlyIndexerMock2, tkey, tvalue);
-        }
-
-        public TypeSyntax WriteOnlyPropertyMock(TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.WriteOnlyPropertyMock1, tvalue);
-        }
-
         public TypeSyntax Action(TypeSyntax t)
         {
             return ParseGenericName(_mocklisSymbols.Action1, t);
         }
     }
 }
-

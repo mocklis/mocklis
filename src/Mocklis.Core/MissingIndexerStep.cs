@@ -1,16 +1,16 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingIndexerImplementation.cs">
+// <copyright file="MissingIndexerStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public sealed class MissingIndexerImplementation<TKey, TValue> : IIndexerImplementation<TKey, TValue>
+    public sealed class MissingIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
-        public static readonly MissingIndexerImplementation<TKey, TValue> Instance = new MissingIndexerImplementation<TKey, TValue>();
+        public static readonly MissingIndexerStep<TKey, TValue> Instance = new MissingIndexerStep<TKey, TValue>();
 
-        private MissingIndexerImplementation()
+        private MissingIndexerStep()
         {
         }
 

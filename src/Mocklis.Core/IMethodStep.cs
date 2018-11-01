@@ -1,14 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IWriteOnlyIndexerMock.cs">
+// <copyright file="IMethodStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public interface IWriteOnlyIndexerMock<TKey, TValue>
+    public interface IMethodStep<in TParam, out TResult>
     {
-        IIndexerImplementation<TKey, TValue> Implementation { get; }
-        IWriteOnlyIndexerMock<TKey, TValue> Use(IIndexerImplementation<TKey, TValue> implementation);
+        TResult Call(MemberMock memberMock, TParam param);
     }
 }

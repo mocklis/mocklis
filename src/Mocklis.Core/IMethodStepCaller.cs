@@ -1,14 +1,14 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IWriteOnlyPropertyMock.cs">
+// <copyright file="IMethodStepCaller.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public interface IWriteOnlyPropertyMock<TValue>
+    public interface IMethodStepCaller<TParam, TResult>
     {
-        IPropertyImplementation<TValue> Implementation { get; }
-        IWriteOnlyPropertyMock<TValue> Use(IPropertyImplementation<TValue> implementation);
+        IMethodStep<TParam, TResult> NextStep { get; }
+        TStep SetNextStep<TStep>(TStep step) where TStep : IMethodStep<TParam, TResult>;
     }
 }

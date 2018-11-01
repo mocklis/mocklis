@@ -22,10 +22,6 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol FuncMethodMock2 { get; }
         public INamedTypeSymbol IndexerMock2 { get; }
         public INamedTypeSymbol PropertyMock1 { get; }
-        public INamedTypeSymbol ReadOnlyIndexerMock2 { get; }
-        public INamedTypeSymbol ReadOnlyPropertyMock1 { get; }
-        public INamedTypeSymbol WriteOnlyIndexerMock2 { get; }
-        public INamedTypeSymbol WriteOnlyPropertyMock1 { get; }
         public INamedTypeSymbol Action1 { get; }
 
         public MocklisSymbols(Compilation compilation)
@@ -38,10 +34,6 @@ namespace Mocklis.CodeGeneration
             FuncMethodMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.FuncMethodMock`2");
             IndexerMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.IndexerMock`2");
             PropertyMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.PropertyMock`1");
-            ReadOnlyIndexerMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.ReadOnlyIndexerMock`2");
-            ReadOnlyPropertyMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.ReadOnlyPropertyMock`1");
-            WriteOnlyIndexerMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.WriteOnlyIndexerMock`2");
-            WriteOnlyPropertyMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.WriteOnlyPropertyMock`1");
             Action1 = compilation.GetTypeByMetadataName("System.Action`1");
         }
     }

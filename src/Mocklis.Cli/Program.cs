@@ -6,11 +6,15 @@
 
 namespace Mocklis.Cli
 {
+    #region Using Directives
+
     using System;
     using System.Threading.Tasks;
     using Microsoft.Build.Locator;
     using Microsoft.CodeAnalysis.MSBuild;
     using Mocklis.CodeGeneration;
+
+    #endregion
 
     internal class Program
     {
@@ -27,9 +31,8 @@ namespace Mocklis.Cli
                     var project = solution.GetProject(projectId);
 
                     project = await ProjectInspector.GenerateMocklisClassContents(project);
-                  
-                    solution = project.Solution;
 
+                    solution = project.Solution;
                 }
 
                 if (!workspace.TryApplyChanges(solution))

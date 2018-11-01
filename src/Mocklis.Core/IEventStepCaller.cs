@@ -1,14 +1,20 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IIndexerMock.cs">
+// <copyright file="IEventStepCaller.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public interface IIndexerMock<TKey, TValue>
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
+    public interface IEventStepCaller<THandler> where THandler : Delegate
     {
-        IIndexerImplementation<TKey, TValue> Implementation { get; }
-        IIndexerMock<TKey, TValue> Use(IIndexerImplementation<TKey, TValue> implementation);
+        IEventStep<THandler> NextStep { get; }
+        TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>;
     }
 }

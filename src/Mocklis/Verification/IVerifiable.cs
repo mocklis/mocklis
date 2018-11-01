@@ -1,20 +1,19 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IEventMock.cs">
+// <copyright file="IVerifiable.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core
+namespace Mocklis.Verification
 {
     #region Using Directives
 
-    using System;
+    using System.Collections.Generic;
 
     #endregion
 
-    public interface IEventMock<THandler> where THandler : Delegate
+    public interface IVerifiable
     {
-        IEventImplementation<THandler> Implementation { get; }
-        IEventMock<THandler> Use(IEventImplementation<THandler> implementation);
+        IEnumerable<VerificationResult> Verify();
     }
 }

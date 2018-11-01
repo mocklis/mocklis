@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingEventImplementation.cs">
+// <copyright file="MissingEventStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,11 +12,11 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class MissingEventImplementation<THandler> : IEventImplementation<THandler> where THandler : Delegate
+    public sealed class MissingEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
-        public static readonly MissingEventImplementation<THandler> Instance = new MissingEventImplementation<THandler>();
+        public static readonly MissingEventStep<THandler> Instance = new MissingEventStep<THandler>();
 
-        private MissingEventImplementation()
+        private MissingEventStep()
         {
         }
 

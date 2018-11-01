@@ -6,34 +6,28 @@
 
 namespace Mocklis.Core
 {
-    #region Using Directives
-
-    using System;
-
-    #endregion
-
-    public sealed class PropertyMock<TValue> : MemberMock, IPropertyMock<TValue>
+    public sealed class PropertyMock<TValue> : MemberMock, IPropertyStepCaller<TValue>
     {
-        public IPropertyImplementation<TValue> Implementation { get; private set; } = MissingPropertyImplementation<TValue>.Instance;
+        public IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
 
         public PropertyMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
         {
         }
 
-        public IPropertyMock<TValue> Use(IPropertyImplementation<TValue> implementation)
+        public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
         {
-            Implementation = implementation ?? throw new ArgumentNullException(nameof(implementation));
-            return this;
+            NextStep = step;
+            return step;
         }
 
         public TValue Get()
         {
-            return Implementation.Get(this);
+            return NextStep.Get(this);
         }
 
         public void Set(TValue value)
         {
-            Implementation.Set(this, value);
+            NextStep.Set(this, value);
         }
     }
 }

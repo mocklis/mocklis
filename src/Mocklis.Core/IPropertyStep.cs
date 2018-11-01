@@ -1,13 +1,14 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMethodImplementation.cs">
+// <copyright file="IPropertyStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public interface IMethodImplementation<in TParam, out TResult>
+    public interface IPropertyStep<TValue>
     {
-        TResult Call(MemberMock memberMock, TParam param);
+        TValue Get(MemberMock memberMock);
+        void Set(MemberMock memberMock, TValue value);
     }
 }

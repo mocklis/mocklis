@@ -1,14 +1,14 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMethodMock.cs">
+// <copyright file="IPropertyStepCaller.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public interface IMethodMock<TParam, TResult>
+    public interface IPropertyStepCaller<TValue>
     {
-        IMethodImplementation<TParam, TResult> Implementation { get; }
-        IMethodMock<TParam, TResult> Use(IMethodImplementation<TParam, TResult> implementation);
+        IPropertyStep<TValue> NextStep { get; }
+        TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>;
     }
 }

@@ -1,14 +1,22 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IReadOnlyIndexerMock.cs">
+// <copyright file="FieldBackedGenericEventStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core
+namespace Mocklis
 {
-    public interface IReadOnlyIndexerMock<TKey, TValue>
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
+    public class FieldBackedGenericEventStep<TArgs> : FieldBackedEventStep<EventHandler<TArgs>>
     {
-        IIndexerImplementation<TKey, TValue> Implementation { get; }
-        IReadOnlyIndexerMock<TKey, TValue> Use(IIndexerImplementation<TKey, TValue> implementation);
+        public void Raise(object sender, TArgs e)
+        {
+            EventHandler?.Invoke(sender, e);
+        }
     }
 }

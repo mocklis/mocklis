@@ -25,9 +25,7 @@ namespace Mocklis.CodeGeneration
         {
             ValueTypeSyntax = mocklisClass.ParseTypeName(symbol.Type);
 
-            MockPropertyType = symbol.IsReadOnly ? mocklisClass.ReadOnlyPropertyMock(ValueTypeSyntax) :
-                symbol.IsWriteOnly ? mocklisClass.WriteOnlyPropertyMock(ValueTypeSyntax) :
-                mocklisClass.PropertyMock(ValueTypeSyntax);
+            MockPropertyType = mocklisClass.PropertyMock(ValueTypeSyntax);
         }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember()

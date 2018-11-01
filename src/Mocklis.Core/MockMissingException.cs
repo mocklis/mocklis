@@ -9,7 +9,7 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Properties;
+    using Mocklis.Core.Properties;
 
     #endregion
 

@@ -1,16 +1,16 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingMethodImplementation.cs">
+// <copyright file="MissingMethodStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Core
 {
-    public sealed class MissingMethodImplementation<TParam, TResult> : IMethodImplementation<TParam, TResult>
+    public sealed class MissingMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
-        public static readonly MissingMethodImplementation<TParam, TResult> Instance = new MissingMethodImplementation<TParam, TResult>();
+        public static readonly MissingMethodStep<TParam, TResult> Instance = new MissingMethodStep<TParam, TResult>();
 
-        private MissingMethodImplementation()
+        private MissingMethodStep()
         {
         }
 

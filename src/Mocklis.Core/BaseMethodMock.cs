@@ -6,30 +6,24 @@
 
 namespace Mocklis.Core
 {
-    #region Using Directives
-
-    using System;
-
-    #endregion
-
-    public abstract class BaseMethodMock<TParam, TResult> : MemberMock, IMethodMock<TParam, TResult>
+    public abstract class BaseMethodMock<TParam, TResult> : MemberMock, IMethodStepCaller<TParam, TResult>
     {
-        public IMethodImplementation<TParam, TResult> Implementation { get; private set; } = MissingMethodImplementation<TParam, TResult>.Instance;
+        public IMethodStep<TParam, TResult> NextStep { get; private set; } = MissingMethodStep<TParam, TResult>.Instance;
 
         protected internal BaseMethodMock(string interfaceName, string memberName, string memberMockName)
             : base(interfaceName, memberName, memberMockName)
         {
         }
 
-        public IMethodMock<TParam, TResult> Use(IMethodImplementation<TParam, TResult> implementation)
+        public TStep SetNextStep<TStep>(TStep step) where TStep : IMethodStep<TParam, TResult>
         {
-            Implementation = implementation ?? throw new ArgumentNullException(nameof(implementation));
-            return this;
+            NextStep = step;
+            return step;
         }
 
         protected TResult Call(MemberMock d, TParam param)
         {
-            return Implementation.Call(d, param);
+            return NextStep.Call(d, param);
         }
     }
 }

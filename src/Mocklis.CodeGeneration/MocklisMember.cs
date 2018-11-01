@@ -57,7 +57,5 @@ namespace Mocklis.CodeGeneration
                                 F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MockPropertyName))
                             ))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
         }
-
-
     }
 }
