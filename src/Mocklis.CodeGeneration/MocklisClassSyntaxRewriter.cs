@@ -36,10 +36,7 @@ namespace Mocklis.CodeGeneration
             if (isMocklisClass)
             {
                 var mocklisClass = new MocklisClass(_model, node, _mocklisSymbols);
-
-                mocklisClass.EnsureMockPropertyNamesAreUnique();
-
-                return mocklisClass.RewriteClassDeclaration(node).WithAdditionalAnnotations(Formatter.Annotation);
+                return node.WithMembers(SyntaxFactory.List(mocklisClass.GenerateMembers())).WithAdditionalAnnotations(Formatter.Annotation);
             }
 
             return base.VisitClassDeclaration(node);

@@ -39,7 +39,7 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = mocklisClass.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
         }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember()
+        public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
         {
             var mockedIndexer = F.IndexerDeclaration(ValueTypeSyntax)
                 .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
@@ -56,7 +56,7 @@ namespace Mocklis.CodeGeneration
                 mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                F.IdentifierName(MockPropertyName), F.IdentifierName("Get")))
+                                F.IdentifierName(mockPropertyName), F.IdentifierName("Get")))
                         .WithExpressionsAsArgumentList(F.ThisExpression(), keyParameter)))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                 );
@@ -67,7 +67,7 @@ namespace Mocklis.CodeGeneration
                 mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                F.IdentifierName(MockPropertyName), F.IdentifierName("Set")))
+                                F.IdentifierName(mockPropertyName), F.IdentifierName("Set")))
                         .WithExpressionsAsArgumentList(F.ThisExpression(), keyParameter, F.IdentifierName("value"))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
             }

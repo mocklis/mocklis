@@ -22,7 +22,7 @@ namespace Mocklis.CodeGeneration
         private readonly SemanticModel _semanticModel;
         private readonly ClassDeclarationSyntax _classDeclaration;
         private readonly MocklisSymbols _mocklisSymbols;
-        private readonly List<MocklisMember> _interfaceMembers = new List<MocklisMember>();
+        private readonly (string uniqueName, MocklisMember item)[] _interfaceMembers;
 
         public MocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
         {
@@ -30,6 +30,11 @@ namespace Mocklis.CodeGeneration
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
             INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
+            _interfaceMembers = Uniquifier.GetUniqueNames(FindAllMembersInClass(classSymbol)).ToArray();
+        }
+
+        private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol)
+        {
             foreach (var interfaceSymbol in classSymbol.Interfaces)
             {
                 foreach (var memberSymbol in interfaceSymbol.GetMembers())
@@ -38,51 +43,51 @@ namespace Mocklis.CodeGeneration
                     {
                         if (memberPropertySymbol.IsIndexer)
                         {
-                            _interfaceMembers.Add(new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol));
+                            yield return new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol);
                         }
                         else
                         {
-                            _interfaceMembers.Add(new MocklisProperty(this, interfaceSymbol, memberPropertySymbol));
+                            yield return new MocklisProperty(this, interfaceSymbol, memberPropertySymbol);
                         }
                     }
                     else if (memberSymbol is IEventSymbol memberEventSymbol)
                     {
-                        _interfaceMembers.Add(new MocklisEvent(this, interfaceSymbol, memberEventSymbol));
+                        yield return new MocklisEvent(this, interfaceSymbol, memberEventSymbol);
                     }
-                    else if (memberSymbol is IMethodSymbol methodSymbol && methodSymbol.CanBeReferencedByName)
+                    else if (memberSymbol is IMethodSymbol memberMethodSymbol && memberMethodSymbol.CanBeReferencedByName)
                     {
+                        yield return new MocklisMethod(this, interfaceSymbol, memberMethodSymbol);
                     }
                 }
             }
         }
 
-        public void EnsureMockPropertyNamesAreUnique()
+        public IEnumerable<MemberDeclarationSyntax> GenerateMembers()
         {
-        }
-
-        public ClassDeclarationSyntax RewriteClassDeclaration(ClassDeclarationSyntax source)
-        {
-            var members = new List<MemberDeclarationSyntax> { GenerateConstructor() };
+            yield return GenerateConstructor();
             foreach (var interfaceMember in _interfaceMembers)
             {
-                members.Add(interfaceMember.MockProperty());
-                members.Add(interfaceMember.ExplicitInterfaceMember());
-            }
+                yield return interfaceMember.item.MockProperty(interfaceMember.uniqueName);
 
-            return source.WithMembers(F.List(members));
+                var x = interfaceMember.item.ExplicitInterfaceMember(interfaceMember.uniqueName);
+                if (x != null)
+                {
+                    yield return x;
+                }
+            }
         }
 
         private MemberDeclarationSyntax GenerateConstructor()
         {
             var parameterType =
                 F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
-                    F.TupleElement(i.MockPropertyType).WithIdentifier(F.Identifier(i.MockPropertyName)))));
+                    F.TupleElement(i.item.MockPropertyType).WithIdentifier(F.Identifier(i.uniqueName)))));
 
             var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(Action(parameterType))
                 .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
 
             var argument = F.Argument(
-                F.TupleExpression(F.SeparatedList(_interfaceMembers.Select(i => F.Argument(F.IdentifierName(i.MockPropertyName))))));
+                F.TupleExpression(F.SeparatedList(_interfaceMembers.Select(i => F.Argument(F.IdentifierName(i.uniqueName))))));
 
             var body = F.Block(F.SingletonList<StatementSyntax>(F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
                 F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))

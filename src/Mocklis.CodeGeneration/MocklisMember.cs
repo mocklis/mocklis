@@ -15,17 +15,18 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public abstract class MocklisMember
+    public abstract class MocklisMember : IHasPreferredName
     {
-        public string MockPropertyName { get; set; }
-        public abstract MemberDeclarationSyntax MockProperty();
-        public abstract MemberDeclarationSyntax ExplicitInterfaceMember();
+        public abstract MemberDeclarationSyntax MockProperty(string mockPropertyName);
+        public abstract MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName);
         public abstract TypeSyntax MockPropertyType { get; }
 
         protected MocklisMember(string mockPropertyName)
         {
-            MockPropertyName = mockPropertyName;
+            PreferredName = mockPropertyName;
         }
+
+        public string PreferredName { get;}
     }
 
     public abstract class MocklisMember<TSymbol> : MocklisMember where TSymbol : ISymbol
@@ -43,9 +44,9 @@ namespace Mocklis.CodeGeneration
             InterfaceName = MocklisClass.ParseName(InterfaceSymbol);
         }
 
-        public override MemberDeclarationSyntax MockProperty()
+        public override MemberDeclarationSyntax MockProperty(string mockPropertyName)
         {
-            return F.PropertyDeclaration(MockPropertyType, MockPropertyName).AddModifiers(F.Token(SyntaxKind.PublicKeyword))
+            return F.PropertyDeclaration(MockPropertyType, mockPropertyName).AddModifiers(F.Token(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)))
                 .WithInitializer(
@@ -54,7 +55,7 @@ namespace Mocklis.CodeGeneration
                             .WithExpressionsAsArgumentList(
                                 F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                                 F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
-                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MockPropertyName))
+                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(mockPropertyName))
                             ))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
         }
     }
