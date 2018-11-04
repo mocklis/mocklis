@@ -29,7 +29,7 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax[] expressions)
         {
             return invocationExpression.WithArgumentList(
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Select(SyntaxFactory.Argument))));
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
         }
     }
 }

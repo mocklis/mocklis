@@ -36,12 +36,25 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-
         private readonly HashSet<string> _reservedNames = new HashSet<string>();
         private readonly HashSet<string> _usedNames = new HashSet<string>();
 
-        private Uniquifier()
+        public Uniquifier()
         {
+        }
+
+        public Uniquifier(IEnumerable<string> usedNames)
+        {
+            var usedNamesArray = usedNames.ToArray();
+            foreach (var usedName in usedNamesArray)
+            {
+                ReserveName(usedName);
+            }
+
+            foreach (var usedName in usedNamesArray)
+            {
+                GetUniqueName(usedName);
+            }
         }
 
         public void ReserveName(string name)

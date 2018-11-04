@@ -26,7 +26,7 @@ namespace Mocklis.CodeGeneration
             PreferredName = mockPropertyName;
         }
 
-        public string PreferredName { get;}
+        public string PreferredName { get; }
     }
 
     public abstract class MocklisMember<TSymbol> : MocklisMember where TSymbol : ISymbol
