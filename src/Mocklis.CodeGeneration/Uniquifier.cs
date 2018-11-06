@@ -78,6 +78,8 @@ namespace Mocklis.CodeGeneration
                     continue;
                 }
 
+                _usedNames.Add(candidateName);
+
                 return candidateName;
             }
         }

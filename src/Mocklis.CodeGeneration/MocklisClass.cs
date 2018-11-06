@@ -35,7 +35,7 @@ namespace Mocklis.CodeGeneration
 
         private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol)
         {
-            foreach (var interfaceSymbol in classSymbol.Interfaces)
+            foreach (var interfaceSymbol in classSymbol.AllInterfaces)
             {
                 foreach (var memberSymbol in interfaceSymbol.GetMembers())
                 {
