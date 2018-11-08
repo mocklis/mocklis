@@ -20,6 +20,7 @@ namespace Mocklis.CodeGeneration
         public abstract MemberDeclarationSyntax MockProperty(string mockPropertyName);
         public abstract MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName);
         public abstract TypeSyntax MockPropertyType { get; }
+        public abstract TypeSyntax MockPropertyInterfaceType { get; }
 
         protected MocklisMember(string mockPropertyName)
         {

@@ -1,22 +1,28 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingMethodStep.cs">
+// <copyright file="DummyMethodStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core
+namespace Mocklis.Dummy
 {
-    public sealed class MissingMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
-    {
-        public static readonly MissingMethodStep<TParam, TResult> Instance = new MissingMethodStep<TParam, TResult>();
+    #region Using Directives
 
-        private MissingMethodStep()
+    using Mocklis.Core;
+
+    #endregion
+
+    public class DummyMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
+    {
+        public static readonly DummyMethodStep<TParam, TResult> Instance = new DummyMethodStep<TParam, TResult>();
+
+        private DummyMethodStep()
         {
         }
 
         public TResult Call(object instance, MemberMock memberMock, TParam param)
         {
-            throw new MockMissingException(MockType.Method, memberMock.InterfaceName, memberMock.MemberName, memberMock.MemberMockName);
+            return default;
         }
     }
 }

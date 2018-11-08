@@ -1,36 +1,35 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UsageCountingMethodStep.cs">
+// <copyright file="ExpectedUsageMethodStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Verification
+namespace Mocklis.Verification.Steps
 {
     #region Using Directives
 
     using System.Collections.Generic;
     using System.Threading;
     using Mocklis.Core;
-    using Mocklis.StepCallerBaseClasses;
 
     #endregion
 
-    public sealed class UsageCountingMethodStep<TParam, TResult> : MethodStepCaller<TParam, TResult>, IMethodStep<TParam, TResult>, IVerifiable
+    public sealed class ExpectedUsageMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>, IVerifiable
     {
         public string Name { get; }
         private readonly int _expectedNumberOfCalls;
         private int _currentNumberOfCalls;
 
-        public UsageCountingMethodStep(string name, int expectedNumberOfCalls)
+        public ExpectedUsageMethodStep(string name, int expectedNumberOfCalls)
         {
             Name = name;
             _expectedNumberOfCalls = expectedNumberOfCalls;
         }
 
-        public TResult Call(object instance, MemberMock memberMock, TParam param)
+        public override TResult Call(object instance, MemberMock memberMock, TParam param)
         {
             Interlocked.Increment(ref _currentNumberOfCalls);
-            return NextStep.Call(instance, memberMock, param);
+            return base.Call(instance, memberMock, param);
         }
 
         public IEnumerable<VerificationResult> Verify()

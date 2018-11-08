@@ -19,6 +19,7 @@ namespace Mocklis.CodeGeneration
     {
         private TypeSyntax EventHandlerTypeSyntax { get; }
         public override TypeSyntax MockPropertyType { get; }
+        public override TypeSyntax MockPropertyInterfaceType { get; }
 
         public MocklisEvent(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IEventSymbol symbol) : base(mocklisClass,
             interfaceSymbol, symbol)
@@ -26,6 +27,8 @@ namespace Mocklis.CodeGeneration
             EventHandlerTypeSyntax = mocklisClass.ParseTypeName(symbol.Type);
 
             MockPropertyType = mocklisClass.EventMock(EventHandlerTypeSyntax);
+
+            MockPropertyInterfaceType = mocklisClass.EventStepCallerMock(EventHandlerTypeSyntax);
         }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)

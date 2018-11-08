@@ -1,10 +1,10 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FieldBackedEventStep.cs">
+// <copyright file="StoredEventStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis
+namespace Mocklis.Stored
 {
     #region Using Directives
 
@@ -14,7 +14,7 @@ namespace Mocklis
 
     #endregion
 
-    public class FieldBackedEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
+    public class StoredEventStep<THandler> : IEventStep<THandler>, IStoredEvent<THandler>, IFinalStep where THandler : Delegate
     {
         private THandler _eventHandler;
 

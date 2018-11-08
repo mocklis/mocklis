@@ -6,9 +6,15 @@
 
 namespace Mocklis.Core
 {
-    public interface IIndexerStepCaller<TKey, TValue>
+    #region Using Directives
+
+    using System.ComponentModel;
+
+    #endregion
+
+    public interface IIndexerStepCaller<out TKey, TValue>
     {
-        IIndexerStep<TKey, TValue> NextStep { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>;
     }
 }

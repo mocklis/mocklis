@@ -1,20 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyStepCaller.cs">
+// <copyright file="IStoredProperty.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core
+namespace Mocklis
 {
-    #region Using Directives
-
-    using System.ComponentModel;
-
-    #endregion
-
-    public interface IPropertyStepCaller<TValue>
+    public interface IStoredProperty<TValue>
     {
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>;
+        TValue Value { get; set; }
     }
 }

@@ -1,10 +1,10 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FieldBackedPropertyStep.cs">
+// <copyright file="ReturnPropertyStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis
+namespace Mocklis.Return
 {
     #region Using Directives
 
@@ -12,23 +12,22 @@ namespace Mocklis
 
     #endregion
 
-    public class FieldBackedPropertyStep<TValue> : IPropertyStep<TValue>
+    public class ReturnPropertyStep<TValue> : IPropertyStep<TValue>, IFinalStep
     {
-        public TValue Value { get; set; }
+        private readonly TValue _value;
 
-        public FieldBackedPropertyStep(TValue initialValue = default)
+        public ReturnPropertyStep(TValue value)
         {
-            Value = initialValue;
+            _value = value;
         }
 
         public TValue Get(object instance, MemberMock memberMock)
         {
-            return Value;
+            return _value;
         }
 
         public void Set(object instance, MemberMock memberMock, TValue value)
         {
-            Value = value;
         }
     }
 }

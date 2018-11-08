@@ -1,21 +1,20 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UsageCountingPropertyStep.cs">
+// <copyright file="ExpectedUsageIndexerStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Verification
+namespace Mocklis.Verification.Steps
 {
     #region Using Directives
 
     using System.Collections.Generic;
     using System.Threading;
     using Mocklis.Core;
-    using Mocklis.StepCallerBaseClasses;
 
     #endregion
 
-    public sealed class UsageCountingPropertyStep<TValue> : PropertyStepCaller<TValue>, IPropertyStep<TValue>, IVerifiable
+    public sealed class ExpectedUsageIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>, IVerifiable
     {
         public string Name { get; }
         private readonly int? _expectedNumberOfGets;
@@ -23,7 +22,7 @@ namespace Mocklis.Verification
         private readonly int? _expectedNumberOfSets;
         private int _currentNumberOfSets;
 
-        public UsageCountingPropertyStep(string name, int? expectedNumberOfGets,
+        public ExpectedUsageIndexerStep(string name, int? expectedNumberOfGets,
             int? expectedNumberOfSets)
         {
             Name = name;
@@ -31,16 +30,16 @@ namespace Mocklis.Verification
             _expectedNumberOfSets = expectedNumberOfSets;
         }
 
-        public TValue Get(object instance, MemberMock memberMock)
+        public override TValue Get(object instance, MemberMock memberMock, TKey key)
         {
             Interlocked.Increment(ref _currentNumberOfGets);
-            return NextStep.Get(instance, memberMock);
+            return base.Get(instance, memberMock, key);
         }
 
-        public void Set(object instance, MemberMock memberMock, TValue value)
+        public override void Set(object instance, MemberMock memberMock, TKey key, TValue value)
         {
             Interlocked.Increment(ref _currentNumberOfSets);
-            NextStep.Set(instance, memberMock, value);
+            base.Set(instance, memberMock, key, value);
         }
 
         public IEnumerable<VerificationResult> Verify()

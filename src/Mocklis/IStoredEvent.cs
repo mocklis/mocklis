@@ -1,22 +1,19 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyChangedEventStep.cs">
+// <copyright file="IStoredEvent.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.ChangeNotification
+namespace Mocklis
 {
     #region Using Directives
 
-    using System.ComponentModel;
+    using System;
 
     #endregion
 
-    public class PropertyChangedEventStep : FieldBackedEventStep<PropertyChangedEventHandler>
+    public interface IStoredEvent<out THandler> where THandler : Delegate
     {
-        public void Raise(object sender, string propertyName)
-        {
-            EventHandler?.Invoke(sender, new PropertyChangedEventArgs(propertyName));
-        }
+        THandler EventHandler { get; }
     }
 }

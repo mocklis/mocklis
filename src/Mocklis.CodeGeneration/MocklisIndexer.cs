@@ -23,6 +23,7 @@ namespace Mocklis.CodeGeneration
         private TypeSyntax ValueTypeSyntax { get; }
 
         public override TypeSyntax MockPropertyType { get; }
+        public override TypeSyntax MockPropertyInterfaceType { get; }
 
         public MocklisIndexer(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol) : base(mocklisClass,
             interfaceSymbol, symbol)
@@ -37,6 +38,8 @@ namespace Mocklis.CodeGeneration
             ValueTypeSyntax = mocklisClass.ParseTypeName(symbol.Type);
 
             MockPropertyType = mocklisClass.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
+
+            MockPropertyInterfaceType = mocklisClass.IndexerStepCallerMock(KeyTypeSyntax, ValueTypeSyntax);
         }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)

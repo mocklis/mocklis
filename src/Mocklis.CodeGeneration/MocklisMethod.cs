@@ -85,28 +85,31 @@ namespace Mocklis.CodeGeneration
                 i.item.Kind == ParameterOrReturnValueKind.Out).ToArray();
 
             MethodParameters = parameters.Where(i => i.item.Kind != ParameterOrReturnValueKind.ReturnValue).ToArray();
-        }
 
-        public override TypeSyntax MockPropertyType
-        {
-            get
+            var parameterTypeSyntax = ParameterOrReturnValue.BuildType(MockParameters);
+
+            var returnValueTypeSyntax = ParameterOrReturnValue.BuildType(MockReturnValues);
+
+            if (returnValueTypeSyntax == null)
             {
-                var parameterTypeSyntax = ParameterOrReturnValue.BuildType(MockParameters);
-
-                var returnValueTypeSyntax = ParameterOrReturnValue.BuildType(MockReturnValues);
-
-                if (returnValueTypeSyntax == null)
-                {
-                    return parameterTypeSyntax == null
-                        ? MocklisClass.ActionMethodMock()
-                        : MocklisClass.ActionMethodMock(parameterTypeSyntax);
-                }
-
-                return parameterTypeSyntax == null
+                MockPropertyType = parameterTypeSyntax == null
+                    ? MocklisClass.ActionMethodMock()
+                    : MocklisClass.ActionMethodMock(parameterTypeSyntax);
+            }
+            else
+            {
+                MockPropertyType = parameterTypeSyntax == null
                     ? MocklisClass.FuncMethodMock(returnValueTypeSyntax)
                     : MocklisClass.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
             }
+
+            MockPropertyInterfaceType = MocklisClass.MethodStepCallerMock(parameterTypeSyntax ?? MocklisClass.ValueTuple,
+                returnValueTypeSyntax ?? MocklisClass.ValueTuple);
         }
+
+        public override TypeSyntax MockPropertyType { get; }
+
+        public override TypeSyntax MockPropertyInterfaceType { get; }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
         {

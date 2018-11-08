@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     public sealed class EventMock<THandler> : MemberMock, IEventStepCaller<THandler> where THandler : Delegate
     {
-        public IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
+        private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
         public EventMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
         {
@@ -22,18 +22,18 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>
         {
-            NextStep = step;
+            _nextStep = step;
             return step;
         }
 
         public void Add(object instance, THandler value)
         {
-            NextStep.Add(instance, this, value);
+            _nextStep.Add(instance, this, value);
         }
 
         public void Remove(object instance, THandler value)
         {
-            NextStep.Remove(instance, this, value);
+            _nextStep.Remove(instance, this, value);
         }
     }
 }

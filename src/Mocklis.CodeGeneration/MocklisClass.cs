@@ -29,6 +29,7 @@ namespace Mocklis.CodeGeneration
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
+            ValueTuple = ParseName(mocklisSymbols.ValueTuple);
             INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
             _interfaceMembers = Uniquifier.GetUniqueNames(FindAllMembersInClass(classSymbol)).ToArray();
         }
@@ -81,7 +82,7 @@ namespace Mocklis.CodeGeneration
         {
             var parameterType =
                 F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
-                    F.TupleElement(i.item.MockPropertyType).WithIdentifier(F.Identifier(i.uniqueName)))));
+                    F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName)))));
 
             var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(Action(parameterType))
                 .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
@@ -153,6 +154,28 @@ namespace Mocklis.CodeGeneration
         public TypeSyntax Action(TypeSyntax t)
         {
             return ParseGenericName(_mocklisSymbols.Action1, t);
+        }
+
+        public TypeSyntax ValueTuple { get; }
+
+        public TypeSyntax EventStepCallerMock(TypeSyntax thandler)
+        {
+            return ParseGenericName(_mocklisSymbols.EventStepCaller1, thandler);
+        }
+
+        public TypeSyntax IndexerStepCallerMock(TypeSyntax tkey, TypeSyntax tvalue)
+        {
+            return ParseGenericName(_mocklisSymbols.IndexerStepCaller2, tkey, tvalue);
+        }
+
+        public TypeSyntax MethodStepCallerMock(TypeSyntax tparam, TypeSyntax tresult)
+        {
+            return ParseGenericName(_mocklisSymbols.MethodStepCaller2, tparam, tresult);
+        }
+
+        public TypeSyntax PropertyStepCallerMock(TypeSyntax tvalue)
+        {
+            return ParseGenericName(_mocklisSymbols.PropertyStepCaller1, tvalue);
         }
     }
 }

@@ -8,31 +8,57 @@ namespace Mocklis.Verification
 {
     #region Using Directives
 
+    using System;
     using Mocklis.Core;
+    using Mocklis.Verification.Steps;
 
     #endregion
 
     public static class MockExtensions
     {
-        public static UsageCountingMethodStep<TParam, TResult> WithUsageCounting<TParam, TResult>(
+        public static IEventStepCaller<THandler> ExpectedUsage<THandler>(
+            this IEventStepCaller<THandler> caller,
+            VerificationGroup collector,
+            string name,
+            int? expectedNumberOfAdds = null,
+            int? expectedNumberOfRemoves = null) where THandler : Delegate
+        {
+            var step = new ExpectedUsageEventStep<THandler>(name, expectedNumberOfAdds, expectedNumberOfRemoves);
+            collector.Add(step);
+            return caller.SetNextStep(step);
+        }
+
+        public static IIndexerStepCaller<TKey, TValue> ExpectedUsage<TKey, TValue>(
+            this IIndexerStepCaller<TKey, TValue> caller,
+            VerificationGroup collector,
+            string name,
+            int? expectedNumberOfGets = null,
+            int? expectedNumberOfSets = null)
+        {
+            var step = new ExpectedUsageIndexerStep<TKey, TValue>(name, expectedNumberOfGets, expectedNumberOfSets);
+            collector.Add(step);
+            return caller.SetNextStep(step);
+        }
+
+        public static IMethodStepCaller<TParam, TResult> ExpectedUsage<TParam, TResult>(
             this IMethodStepCaller<TParam, TResult> caller,
             VerificationGroup collector,
             string name,
             int expectedNumberOfCalls)
         {
-            var step = new UsageCountingMethodStep<TParam, TResult>(name, expectedNumberOfCalls);
+            var step = new ExpectedUsageMethodStep<TParam, TResult>(name, expectedNumberOfCalls);
             collector.Add(step);
             return caller.SetNextStep(step);
         }
 
-        public static UsageCountingPropertyStep<TValue> WithUsageCounting<TValue>(
+        public static IPropertyStepCaller<TValue> ExpectedUsage<TValue>(
             this IPropertyStepCaller<TValue> caller,
             VerificationGroup collector,
             string name,
             int? expectedNumberOfGets = null,
             int? expectedNumberOfSets = null)
         {
-            var step = new UsageCountingPropertyStep<TValue>(name, expectedNumberOfGets, expectedNumberOfSets);
+            var step = new ExpectedUsagePropertyStep<TValue>(name, expectedNumberOfGets, expectedNumberOfSets);
             collector.Add(step);
             return caller.SetNextStep(step);
         }

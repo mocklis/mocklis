@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Core", "Mocklis.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.Cli", "Mocklis.Cli\Mocklis.Cli.csproj", "{05839517-8929-47E0-A8E5-3C015DCC3FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.CodeGeneration", "Mocklis.CodeGeneration\Mocklis.CodeGeneration.csproj", "{6221354C-C08D-4557-8536-6EEE6B1013B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.CodeGeneration", "Mocklis.CodeGeneration\Mocklis.CodeGeneration.csproj", "{6221354C-C08D-4557-8536-6EEE6B1013B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis", "Mocklis\Mocklis.csproj", "{FE0597DC-C4E4-4E8D-9935-F616090B9672}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis", "Mocklis\Mocklis.csproj", "{FE0597DC-C4E4-4E8D-9935-F616090B9672}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

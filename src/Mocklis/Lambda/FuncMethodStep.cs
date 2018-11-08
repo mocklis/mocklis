@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis
+namespace Mocklis.Lambda
 {
     #region Using Directives
 
@@ -13,7 +13,7 @@ namespace Mocklis
 
     #endregion
 
-    public class FuncMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
+    public class FuncMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
     {
         private readonly Func<TParam, TResult> _func;
 
@@ -28,7 +28,7 @@ namespace Mocklis
         }
     }
 
-    public class FuncMethodStep<TResult> : IMethodStep<ValueTuple, TResult>
+    public class FuncMethodStep<TResult> : IMethodStep<ValueTuple, TResult>, IFinalStep
     {
         private readonly Func<TResult> _func;
 

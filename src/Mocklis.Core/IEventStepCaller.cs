@@ -9,12 +9,13 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
+    using System.ComponentModel;
 
     #endregion
 
-    public interface IEventStepCaller<THandler> where THandler : Delegate
+    public interface IEventStepCaller<out THandler> where THandler : Delegate
     {
-        IEventStep<THandler> NextStep { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>;
     }
 }
