@@ -9,7 +9,9 @@ namespace Mocklis.Verification
     #region Using Directives
 
     using System;
+    using System.Collections.Generic;
     using Mocklis.Core;
+    using Mocklis.Verification.Checks;
     using Mocklis.Verification.Steps;
 
     #endregion
@@ -61,6 +63,13 @@ namespace Mocklis.Verification
             var step = new ExpectedUsagePropertyStep<TValue>(name, expectedNumberOfGets, expectedNumberOfSets);
             collector.Add(step);
             return caller.SetNextStep(step);
+        }
+
+        public static IStoredProperty<TValue> CurrentValueCheck<TValue>(this IStoredProperty<TValue> property, VerificationGroup collector,
+            string name, TValue expectedValue, IEqualityComparer<TValue> comparer = null)
+        {
+            collector.Add(new CurrentValuePropertyCheck<TValue>(property, name, expectedValue, comparer));
+            return property;
         }
     }
 }

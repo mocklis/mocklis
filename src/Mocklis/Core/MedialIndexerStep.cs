@@ -8,6 +8,8 @@ namespace Mocklis.Core
 {
     #region Using Directives
 
+    using System;
+
     #endregion
 
     public class MedialIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IIndexerStepCaller<TKey, TValue>
@@ -16,6 +18,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             NextStep = step;
             return step;
         }

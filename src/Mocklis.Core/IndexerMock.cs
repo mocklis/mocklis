@@ -6,6 +6,12 @@
 
 namespace Mocklis.Core
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public sealed class IndexerMock<TKey, TValue> : MemberMock, IIndexerStepCaller<TKey, TValue>
     {
         public IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
@@ -16,6 +22,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             NextStep = step;
             return step;
         }

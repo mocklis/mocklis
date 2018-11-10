@@ -22,6 +22,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             _nextStep = step;
             return step;
         }

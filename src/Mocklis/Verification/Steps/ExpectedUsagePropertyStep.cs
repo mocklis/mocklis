@@ -16,7 +16,7 @@ namespace Mocklis.Verification.Steps
 
     public sealed class ExpectedUsagePropertyStep<TValue> : MedialPropertyStep<TValue>, IVerifiable
     {
-        public string Name { get; }
+        private readonly string _name;
         private readonly int? _expectedNumberOfGets;
         private int _currentNumberOfGets;
         private readonly int? _expectedNumberOfSets;
@@ -25,7 +25,7 @@ namespace Mocklis.Verification.Steps
         public ExpectedUsagePropertyStep(string name, int? expectedNumberOfGets,
             int? expectedNumberOfSets)
         {
-            Name = name;
+            _name = name;
             _expectedNumberOfGets = expectedNumberOfGets;
             _expectedNumberOfSets = expectedNumberOfSets;
         }
@@ -44,7 +44,7 @@ namespace Mocklis.Verification.Steps
 
         public IEnumerable<VerificationResult> Verify()
         {
-            string prefix = string.IsNullOrEmpty(Name) ? "Usage Count" : $"Usage Count '{Name}'";
+            string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 
             if (_expectedNumberOfGets is int expectedGets)
             {

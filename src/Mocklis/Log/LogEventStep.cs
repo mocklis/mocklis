@@ -19,7 +19,7 @@ namespace Mocklis.Log
 
         public LogEventStep(ILogContext logContext)
         {
-            _logContext = logContext;
+            _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         }
 
         public override void Add(object instance, MemberMock memberMock, THandler value)

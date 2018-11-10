@@ -12,7 +12,7 @@ namespace Mocklis.Stored
 
     #endregion
 
-    public class StoredPropertyStep<TValue> : IPropertyStep<TValue>, IStoredProperty<TValue>, IFinalStep
+    public class StoredPropertyStep<TValue> : IPropertyStep<TValue>, IStoredProperty<TValue>
     {
         public TValue Value { get; set; }
 

@@ -6,6 +6,12 @@
 
 namespace Mocklis.Core
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public sealed class PropertyMock<TValue> : MemberMock, IPropertyStepCaller<TValue>
     {
         public IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
@@ -16,6 +22,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             NextStep = step;
             return step;
         }

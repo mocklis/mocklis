@@ -8,6 +8,7 @@ namespace Mocklis.Miscellaneous
 {
     #region Using Directives
 
+    using System;
     using System.ComponentModel;
     using Mocklis.Core;
 
@@ -19,7 +20,7 @@ namespace Mocklis.Miscellaneous
 
         public RaisePropertyChangedEventPropertyStep(IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent)
         {
-            _propertyChangedEvent = propertyChangedEvent;
+            _propertyChangedEvent = propertyChangedEvent ?? throw new ArgumentNullException(nameof(propertyChangedEvent));
         }
 
         public override void Set(object instance, MemberMock memberMock, TValue value)

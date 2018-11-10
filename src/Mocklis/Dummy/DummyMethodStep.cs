@@ -12,7 +12,7 @@ namespace Mocklis.Dummy
 
     #endregion
 
-    public class DummyMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
+    public class DummyMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
         public static readonly DummyMethodStep<TParam, TResult> Instance = new DummyMethodStep<TParam, TResult>();
 

@@ -6,7 +6,7 @@
 
 namespace Mocklis.Core
 {
-    public sealed class MissingPropertyStep<TValue> : IPropertyStep<TValue>, IFinalStep
+    public sealed class MissingPropertyStep<TValue> : IPropertyStep<TValue>
     {
         public static readonly MissingPropertyStep<TValue> Instance = new MissingPropertyStep<TValue>();
 

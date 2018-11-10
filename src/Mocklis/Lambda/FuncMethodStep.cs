@@ -13,7 +13,7 @@ namespace Mocklis.Lambda
 
     #endregion
 
-    public class FuncMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
+    public class FuncMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
         private readonly Func<TParam, TResult> _func;
 
@@ -28,7 +28,7 @@ namespace Mocklis.Lambda
         }
     }
 
-    public class FuncMethodStep<TResult> : IMethodStep<ValueTuple, TResult>, IFinalStep
+    public class FuncMethodStep<TResult> : IMethodStep<ValueTuple, TResult>
     {
         private readonly Func<TResult> _func;
 

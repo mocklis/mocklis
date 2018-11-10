@@ -33,74 +33,129 @@ namespace Mocklis
         }
 
         public static IMethodStepCaller<TParam, TResult> If<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller,
-            Func<TParam, bool> condition, Action<IMethodStepCaller<TParam, TResult>> branch)
+            Func<TParam, bool> condition, Action<IMethodStepCaller<TParam, TResult>, IMethodStep<TParam, TResult>> ifBranch)
         {
-            return caller.SetNextStep(new IfMethodStep<TParam, TResult>(condition, branch));
+            return caller.SetNextStep(new IfMethodStep<TParam, TResult>(condition, ifBranch));
         }
 
         #endregion
 
         #region 'Dummy' steps
 
-        public static IFinalStep Dummy<THandler>(
+        public static void Dummy<THandler>(
             this IEventStepCaller<THandler> caller) where THandler : Delegate
         {
-            return caller.SetNextStep(DummyEventStep<THandler>.Instance);
+            caller.SetNextStep(DummyEventStep<THandler>.Instance);
         }
 
-        public static IFinalStep Dummy<TKey, TValue>(
+        public static void Dummy<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller)
         {
-            return caller.SetNextStep(DummyIndexerStep<TKey, TValue>.Instance);
+            caller.SetNextStep(DummyIndexerStep<TKey, TValue>.Instance);
         }
 
-        public static IFinalStep Dummy<TParam, TResult>(
+        public static void Dummy<TParam, TResult>(
             this IMethodStepCaller<TParam, TResult> caller)
         {
-            return caller.SetNextStep(DummyMethodStep<TParam, TResult>.Instance);
+            caller.SetNextStep(DummyMethodStep<TParam, TResult>.Instance);
         }
 
-        public static IFinalStep Dummy<TValue>(
+        public static void Dummy<TValue>(
             this IPropertyStepCaller<TValue> caller)
         {
-            return caller.SetNextStep(DummyPropertyStep<TValue>.Instance);
+            caller.SetNextStep(DummyPropertyStep<TValue>.Instance);
+        }
+
+        #endregion
+
+        #region 'Join' steps
+
+        public static void Join<THandler>(this IEventStepCaller<THandler> caller, IEventStep<THandler> joinPoint) where THandler : Delegate
+        {
+            caller.SetNextStep(joinPoint);
+        }
+
+        public static void Join<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, IIndexerStep<TKey, TValue> joinPoint)
+        {
+            caller.SetNextStep(joinPoint);
+        }
+
+        public static void Join<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller, IMethodStep<TParam, TResult> joinPoint)
+        {
+            caller.SetNextStep(joinPoint);
+        }
+
+        public static void Join<TValue>(this IPropertyStepCaller<TValue> caller, IPropertyStep<TValue> joinPoint)
+        {
+            caller.SetNextStep(joinPoint);
+        }
+
+        public static IEventStepCaller<THandler> JoinPoint<THandler>(this IEventStepCaller<THandler> caller, out IEventStep<THandler> joinPoint)
+            where THandler : Delegate
+        {
+            var joinStep = new MedialEventStep<THandler>();
+            joinPoint = joinStep;
+            return caller.SetNextStep(joinStep);
+        }
+
+        public static IIndexerStepCaller<TKey, TValue> JoinPoint<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller,
+            out IIndexerStep<TKey, TValue> joinPoint)
+        {
+            var joinStep = new MedialIndexerStep<TKey, TValue>();
+            joinPoint = joinStep;
+            return caller.SetNextStep(joinStep);
+        }
+
+        public static IMethodStepCaller<TParam, TResult> JoinPoint<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller,
+            out IMethodStep<TParam, TResult> joinPoint)
+        {
+            var joinStep = new MedialMethodStep<TParam, TResult>();
+            joinPoint = joinStep;
+            return caller.SetNextStep(joinStep);
+        }
+
+        public static IPropertyStepCaller<TValue> JoinPoint<TValue>(this IPropertyStepCaller<TValue> caller, out IPropertyStep<TValue> joinPoint)
+        {
+            var joinStep = new MedialPropertyStep<TValue>();
+            joinPoint = joinStep;
+            return caller.SetNextStep(joinStep);
         }
 
         #endregion
 
         #region 'Lambda' steps
 
-        public static IFinalStep Func<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, Func<TKey, TValue> func)
+        public static void Func<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, Func<TKey, TValue> func)
         {
-            return caller.SetNextStep(new FuncIndexerStep<TKey, TValue>(func));
+            caller.SetNextStep(new FuncIndexerStep<TKey, TValue>(func));
         }
 
-        public static IFinalStep Action<TParam>(
+        public static void Action<TParam>(
             this IMethodStepCaller<TParam, ValueTuple> caller,
             Action<TParam> action)
         {
-            return caller.SetNextStep(new ActionMethodStep<TParam>(action));
+            caller.SetNextStep(new ActionMethodStep<TParam>(action));
         }
 
-        public static IFinalStep Action(
+        public static void Action(
             this IMethodStepCaller<ValueTuple, ValueTuple> caller,
             Action action)
         {
-            return caller.SetNextStep(new ActionMethodStep(action));
+            caller.SetNextStep(new ActionMethodStep(action));
         }
 
-        public static IFinalStep Func<TParam, TResult>(
+        public static void Func<TParam, TResult>(
             this IMethodStepCaller<TParam, TResult> caller,
             Func<TParam, TResult> func)
         {
-            return caller.SetNextStep(new FuncMethodStep<TParam, TResult>(func));
+            caller.SetNextStep(new FuncMethodStep<TParam, TResult>(func));
         }
 
-        public static IFinalStep Func<TResult>(
+        public static void Func<TResult>(
             this IMethodStepCaller<ValueTuple, TResult> caller,
             Func<TResult> func)
         {
-            return caller.SetNextStep(new FuncMethodStep<TResult>(func));
+            caller.SetNextStep(new FuncMethodStep<TResult>(func));
         }
 
         #endregion
@@ -152,26 +207,26 @@ namespace Mocklis
             return caller.SetNextStep(new RaisePropertyChangedEventPropertyStep<TValue>(propertyChangedEvent));
         }
 
-        public static IFinalStep StoredWithChangeNotification<TValue>(
+        public static void StoredWithChangeNotification<TValue>(
             this IPropertyStepCaller<TValue> caller,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,
             IEqualityComparer<TValue> comparer = null)
         {
-            return caller
+            caller
                 .OnlySetIfChanged(comparer)
                 .RaisePropertyChangedEvent(propertyChangedEvent)
                 .Stored(initialValue);
         }
 
-        public static IFinalStep StoredWithChangeNotification<TValue>(
+        public static void StoredWithChangeNotification<TValue>(
             this IPropertyStepCaller<TValue> caller,
             out StoredPropertyStep<TValue> storedPropertyStep,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,
             IEqualityComparer<TValue> comparer = null)
         {
-            return caller
+            caller
                 .OnlySetIfChanged(comparer)
                 .RaisePropertyChangedEvent(propertyChangedEvent)
                 .Stored(out storedPropertyStep, initialValue);
@@ -181,37 +236,37 @@ namespace Mocklis
 
         #region 'Missing' steps
 
-        public static IFinalStep Missing<THandler>(
+        public static void Missing<THandler>(
             this IEventStepCaller<THandler> caller) where THandler : Delegate
         {
-            return caller.SetNextStep(MissingEventStep<THandler>.Instance);
+            caller.SetNextStep(MissingEventStep<THandler>.Instance);
         }
 
-        public static IFinalStep Missing<TKey, TValue>(
+        public static void Missing<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller)
         {
-            return caller.SetNextStep(MissingIndexerStep<TKey, TValue>.Instance);
+            caller.SetNextStep(MissingIndexerStep<TKey, TValue>.Instance);
         }
 
-        public static IFinalStep Missing<TParam, TResult>(
+        public static void Missing<TParam, TResult>(
             this IMethodStepCaller<TParam, TResult> caller)
         {
-            return caller.SetNextStep(MissingMethodStep<TParam, TResult>.Instance);
+            caller.SetNextStep(MissingMethodStep<TParam, TResult>.Instance);
         }
 
-        public static IFinalStep Missing<TValue>(
+        public static void Missing<TValue>(
             this IPropertyStepCaller<TValue> caller)
         {
-            return caller.SetNextStep(MissingPropertyStep<TValue>.Instance);
+            caller.SetNextStep(MissingPropertyStep<TValue>.Instance);
         }
 
         #endregion
 
         #region 'Return' steps
 
-        public static IFinalStep Return<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, TValue value)
+        public static void Return<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, TValue value)
         {
-            return caller.SetNextStep(new ReturnIndexerStep<TKey, TValue>(value));
+            caller.SetNextStep(new ReturnIndexerStep<TKey, TValue>(value));
         }
 
         public static IIndexerStepCaller<TKey, TValue> ReturnOnce<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, TValue value)
@@ -219,9 +274,15 @@ namespace Mocklis
             return caller.SetNextStep(new ReturnOnceIndexerStep<TKey, TValue>(value));
         }
 
-        public static IFinalStep Return<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller, TResult result)
+        public static IIndexerStepCaller<TKey, TValue> ReturnEach<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller,
+            IEnumerable<TValue> values)
         {
-            return caller.SetNextStep(new ReturnMethodStep<TParam, TResult>(result));
+            return caller.SetNextStep(new ReturnEachIndexerStep<TKey, TValue>(values));
+        }
+
+        public static void Return<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller, TResult result)
+        {
+            caller.SetNextStep(new ReturnMethodStep<TParam, TResult>(result));
         }
 
         public static IMethodStepCaller<TParam, TResult> ReturnOnce<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller, TResult result)
@@ -229,9 +290,15 @@ namespace Mocklis
             return caller.SetNextStep(new ReturnOnceMethodStep<TParam, TResult>(result));
         }
 
-        public static IFinalStep Return<TValue>(this IPropertyStepCaller<TValue> caller, TValue value)
+        public static IMethodStepCaller<TParam, TResult> ReturnEach<TParam, TResult>(this IMethodStepCaller<TParam, TResult> caller,
+            IEnumerable<TResult> results)
         {
-            return caller.SetNextStep(new ReturnPropertyStep<TValue>(value));
+            return caller.SetNextStep(new ReturnEachMethodStep<TParam, TResult>(results));
+        }
+
+        public static void Return<TValue>(this IPropertyStepCaller<TValue> caller, TValue value)
+        {
+            caller.SetNextStep(new ReturnPropertyStep<TValue>(value));
         }
 
         public static IPropertyStepCaller<TValue> ReturnOnce<TValue>(this IPropertyStepCaller<TValue> caller, TValue value)
@@ -239,53 +306,64 @@ namespace Mocklis
             return caller.SetNextStep(new ReturnOncePropertyStep<TValue>(value));
         }
 
+        public static IPropertyStepCaller<TValue> ReturnEach<TValue>(this IPropertyStepCaller<TValue> caller, IEnumerable<TValue> values)
+        {
+            return caller.SetNextStep(new ReturnEachPropertyStep<TValue>(values));
+        }
+
         #endregion
 
         #region 'Stored' steps
 
-        public static IFinalStep Stored<THandler>(
+        public static void Stored<THandler>(
             this IEventStepCaller<THandler> caller) where THandler : Delegate
         {
-            return caller.SetNextStep(new StoredEventStep<THandler>());
+            caller.SetNextStep(new StoredEventStep<THandler>());
         }
 
-        public static IFinalStep Stored<THandler>(
+        public static void Stored<THandler>(
             this IEventStepCaller<THandler> caller,
             out StoredEventStep<THandler> step) where THandler : Delegate
         {
             step = new StoredEventStep<THandler>();
-            return caller.SetNextStep(step);
+            caller.SetNextStep(step);
         }
 
-        public static IFinalStep Stored<TValue>(
+        public static void Stored<TArgs>(this IEventStepCaller<EventHandler<TArgs>> caller, out StoredGenericEventStep<TArgs> step)
+        {
+            step = new StoredGenericEventStep<TArgs>();
+            caller.SetNextStep(step);
+        }
+
+        public static void Stored<TValue>(
             this IPropertyStepCaller<TValue> caller,
             TValue initialValue = default)
         {
-            return caller.SetNextStep(
+            caller.SetNextStep(
                 new StoredPropertyStep<TValue>(initialValue));
         }
 
-        public static IFinalStep Stored<TValue>(
+        public static void Stored<TValue>(
             this IPropertyStepCaller<TValue> caller,
             out StoredPropertyStep<TValue> step,
             TValue initialValue = default)
         {
             step = new StoredPropertyStep<TValue>(initialValue);
-            return caller.SetNextStep(step);
+            caller.SetNextStep(step);
         }
 
-        public static IFinalStep StoredAsDictionary<TKey, TValue>(
+        public static void StoredAsDictionary<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller)
         {
-            return caller.SetNextStep(new StoredAsDictionaryIndexerStep<TKey, TValue>());
+            caller.SetNextStep(new StoredAsDictionaryIndexerStep<TKey, TValue>());
         }
 
-        public static IFinalStep StoredAsDictionary<TKey, TValue>(
+        public static void StoredAsDictionary<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller,
             out StoredAsDictionaryIndexerStep<TKey, TValue> step)
         {
             step = new StoredAsDictionaryIndexerStep<TKey, TValue>();
-            return caller.SetNextStep(step);
+            caller.SetNextStep(step);
         }
 
         #endregion

@@ -21,7 +21,7 @@ namespace Mocklis.Log
 
         public LogMethodStep(ILogContext logContext)
         {
-            _logContext = logContext;
+            _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
             _hasParameters = typeof(TParam) != typeof(ValueTuple);
             _hasResult = typeof(TResult) != typeof(ValueTuple);
         }

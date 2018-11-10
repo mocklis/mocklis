@@ -19,7 +19,7 @@ namespace Mocklis.Log
 
         public LogPropertyStep(ILogContext logContext)
         {
-            _logContext = logContext;
+            _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         }
 
         public override TValue Get(object instance, MemberMock memberMock)

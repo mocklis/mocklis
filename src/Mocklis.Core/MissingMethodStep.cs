@@ -6,7 +6,7 @@
 
 namespace Mocklis.Core
 {
-    public sealed class MissingMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
+    public sealed class MissingMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
         public static readonly MissingMethodStep<TParam, TResult> Instance = new MissingMethodStep<TParam, TResult>();
 

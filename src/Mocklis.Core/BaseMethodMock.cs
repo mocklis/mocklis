@@ -6,6 +6,12 @@
 
 namespace Mocklis.Core
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public abstract class BaseMethodMock<TParam, TResult> : MemberMock, IMethodStepCaller<TParam, TResult>
     {
         private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
@@ -17,6 +23,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IMethodStep<TParam, TResult>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             _nextStep = step;
             return step;
         }

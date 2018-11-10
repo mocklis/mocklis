@@ -12,7 +12,7 @@ namespace Mocklis.Dummy
 
     #endregion
 
-    public class DummyIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IFinalStep
+    public class DummyIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
         public static readonly DummyIndexerStep<TKey, TValue> Instance = new DummyIndexerStep<TKey, TValue>();
 

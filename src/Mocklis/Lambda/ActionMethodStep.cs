@@ -13,7 +13,7 @@ namespace Mocklis.Lambda
 
     #endregion
 
-    public class ActionMethodStep<TParam> : IMethodStep<TParam, ValueTuple>, IFinalStep
+    public class ActionMethodStep<TParam> : IMethodStep<TParam, ValueTuple>
     {
         private readonly Action<TParam> _action;
 
@@ -29,7 +29,7 @@ namespace Mocklis.Lambda
         }
     }
 
-    public class ActionMethodStep : IMethodStep<ValueTuple, ValueTuple>, IFinalStep
+    public class ActionMethodStep : IMethodStep<ValueTuple, ValueTuple>
     {
         private readonly Action _action;
 

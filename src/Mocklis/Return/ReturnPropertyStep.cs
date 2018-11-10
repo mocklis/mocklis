@@ -12,7 +12,7 @@ namespace Mocklis.Return
 
     #endregion
 
-    public class ReturnPropertyStep<TValue> : IPropertyStep<TValue>, IFinalStep
+    public class ReturnPropertyStep<TValue> : IPropertyStep<TValue>
     {
         private readonly TValue _value;
 

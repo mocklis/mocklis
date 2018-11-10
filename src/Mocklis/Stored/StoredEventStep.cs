@@ -14,7 +14,7 @@ namespace Mocklis.Stored
 
     #endregion
 
-    public class StoredEventStep<THandler> : IEventStep<THandler>, IStoredEvent<THandler>, IFinalStep where THandler : Delegate
+    public class StoredEventStep<THandler> : IEventStep<THandler>, IStoredEvent<THandler> where THandler : Delegate
     {
         private THandler _eventHandler;
 

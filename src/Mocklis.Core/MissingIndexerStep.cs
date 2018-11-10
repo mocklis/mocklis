@@ -6,7 +6,7 @@
 
 namespace Mocklis.Core
 {
-    public sealed class MissingIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IFinalStep
+    public sealed class MissingIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
         public static readonly MissingIndexerStep<TKey, TValue> Instance = new MissingIndexerStep<TKey, TValue>();
 

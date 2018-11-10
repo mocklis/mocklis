@@ -13,7 +13,7 @@ namespace Mocklis.Dummy
 
     #endregion
 
-    public class DummyEventStep<THandler> : IEventStep<THandler>, IFinalStep where THandler : Delegate
+    public class DummyEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
         public static readonly DummyEventStep<THandler> Instance = new DummyEventStep<THandler>();
 

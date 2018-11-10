@@ -12,7 +12,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class MissingEventStep<THandler> : IEventStep<THandler>, IFinalStep where THandler : Delegate
+    public sealed class MissingEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
         public static readonly MissingEventStep<THandler> Instance = new MissingEventStep<THandler>();
 

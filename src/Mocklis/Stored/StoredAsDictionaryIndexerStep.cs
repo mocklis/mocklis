@@ -13,7 +13,7 @@ namespace Mocklis.Stored
 
     #endregion
 
-    public class StoredAsDictionaryIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IStoredIndexer<TKey, TValue>, IFinalStep
+    public class StoredAsDictionaryIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IStoredIndexer<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
 

@@ -12,7 +12,7 @@ namespace Mocklis.Return
 
     #endregion
 
-    public class ReturnMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IFinalStep
+    public class ReturnMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
         private readonly TResult _result;
 

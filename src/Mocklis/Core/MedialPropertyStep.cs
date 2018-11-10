@@ -8,6 +8,8 @@ namespace Mocklis.Core
 {
     #region Using Directives
 
+    using System;
+
     #endregion
 
     public class MedialPropertyStep<TValue> : IPropertyStep<TValue>, IPropertyStepCaller<TValue>
@@ -16,6 +18,11 @@ namespace Mocklis.Core
 
         public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
         {
+            if (step == null)
+            {
+                throw new ArgumentNullException(nameof(step));
+            }
+
             NextStep = step;
             return step;
         }

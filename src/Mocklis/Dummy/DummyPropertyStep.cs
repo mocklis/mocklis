@@ -12,7 +12,7 @@ namespace Mocklis.Dummy
 
     #endregion
 
-    public class DummyPropertyStep<TValue> : IPropertyStep<TValue>, IFinalStep
+    public class DummyPropertyStep<TValue> : IPropertyStep<TValue>
     {
         public static readonly DummyPropertyStep<TValue> Instance = new DummyPropertyStep<TValue>();
 
