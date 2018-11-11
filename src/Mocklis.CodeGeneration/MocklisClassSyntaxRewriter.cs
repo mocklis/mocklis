@@ -12,7 +12,6 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Formatting;
 
     #endregion
 
@@ -35,11 +34,7 @@ namespace Mocklis.CodeGeneration
 
             if (isMocklisClass)
             {
-                var mocklisClass = new MocklisClass(_model, node, _mocklisSymbols);
-                return node.WithMembers(SyntaxFactory.List(mocklisClass.GenerateMembers()))
-                    .WithOpenBraceToken(SyntaxFactory.Token(SyntaxKind.OpenBraceToken))
-                    .WithCloseBraceToken(SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
-                    .WithAdditionalAnnotations(Formatter.Annotation);
+                return MocklisClass.UpdateMocklisClass(_model, node, _mocklisSymbols);
             }
 
             return base.VisitClassDeclaration(node);

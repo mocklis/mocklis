@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.Formatting;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -28,6 +29,16 @@ namespace Mocklis.CodeGeneration
         private readonly NameSyntax _action;
         private readonly string[] _problematicMembers;
         private readonly bool _isAbstract;
+
+        public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
+            MocklisSymbols mocklisSymbols)
+        {
+            var mocklisClass = new MocklisClass(semanticModel, classDecl, mocklisSymbols);
+            return classDecl.WithMembers(F.List(mocklisClass.GenerateMembers()))
+                .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken))
+                .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
 
         public MocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
         {
