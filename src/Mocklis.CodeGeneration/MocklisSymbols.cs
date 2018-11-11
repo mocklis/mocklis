@@ -22,6 +22,7 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol FuncMethodMock2 { get; }
         public INamedTypeSymbol IndexerMock2 { get; }
         public INamedTypeSymbol PropertyMock1 { get; }
+        public INamedTypeSymbol Action { get; }
         public INamedTypeSymbol Action1 { get; }
         public INamedTypeSymbol ValueTuple { get; }
         public INamedTypeSymbol EventStepCaller1 { get; }
@@ -39,6 +40,7 @@ namespace Mocklis.CodeGeneration
             FuncMethodMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.FuncMethodMock`2");
             IndexerMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.IndexerMock`2");
             PropertyMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.PropertyMock`1");
+            Action = compilation.GetTypeByMetadataName("System.Action");
             Action1 = compilation.GetTypeByMetadataName("System.Action`1");
             ValueTuple = compilation.GetTypeByMetadataName("System.ValueTuple");
             EventStepCaller1 = compilation.GetTypeByMetadataName("Mocklis.Core.IEventStepCaller`1");

@@ -36,7 +36,10 @@ namespace Mocklis.CodeGeneration
             if (isMocklisClass)
             {
                 var mocklisClass = new MocklisClass(_model, node, _mocklisSymbols);
-                return node.WithMembers(SyntaxFactory.List(mocklisClass.GenerateMembers())).WithAdditionalAnnotations(Formatter.Annotation);
+                return node.WithMembers(SyntaxFactory.List(mocklisClass.GenerateMembers()))
+                    .WithOpenBraceToken(SyntaxFactory.Token(SyntaxKind.OpenBraceToken))
+                    .WithCloseBraceToken(SyntaxFactory.Token(SyntaxKind.CloseBraceToken))
+                    .WithAdditionalAnnotations(Formatter.Annotation);
             }
 
             return base.VisitClassDeclaration(node);

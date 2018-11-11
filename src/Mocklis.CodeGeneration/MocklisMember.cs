@@ -28,6 +28,11 @@ namespace Mocklis.CodeGeneration
         }
 
         public string PreferredName { get; }
+
+        public virtual ExpressionSyntax ConstructorArgument(string uniqueName)
+        {
+            return F.IdentifierName(uniqueName);
+        }
     }
 
     public abstract class MocklisMember<TSymbol> : MocklisMember where TSymbol : ISymbol

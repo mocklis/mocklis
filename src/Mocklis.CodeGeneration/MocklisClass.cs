@@ -8,6 +8,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -23,18 +24,38 @@ namespace Mocklis.CodeGeneration
         private readonly ClassDeclarationSyntax _classDeclaration;
         private readonly MocklisSymbols _mocklisSymbols;
         private readonly (string uniqueName, MocklisMember item)[] _interfaceMembers;
+        private readonly NameSyntax _valueTuple;
+        private readonly NameSyntax _action;
+        private readonly string[] _problematicMembers;
+        private readonly bool _isAbstract;
 
         public MocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
         {
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
-            ValueTuple = ParseName(mocklisSymbols.ValueTuple);
+            _valueTuple = ParseName(mocklisSymbols.ValueTuple);
+            _action = ParseName(mocklisSymbols.Action);
             INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-            _interfaceMembers = Uniquifier.GetUniqueNames(FindAllMembersInClass(classSymbol)).ToArray();
+            _isAbstract = classSymbol.IsAbstract;
+
+            List<string> problematicMembers = new List<string>();
+
+            var interfaceMembers = FindAllMembersInClass(classSymbol, problematicMembers).ToArray();
+
+            _problematicMembers = problematicMembers.ToArray();
+
+            // If there is just one mocked member, we add a 'dummy' unused member so that the constructor can still
+            // use valuetuple syntax in its argument.
+            if (interfaceMembers.Length == 1)
+            {
+                interfaceMembers = new[] { interfaceMembers[0], new MocklisUnused(this) };
+            }
+
+            _interfaceMembers = Uniquifier.GetUniqueNames(interfaceMembers).ToArray();
         }
 
-        private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol)
+        private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol, List<string> problematicMembers)
         {
             foreach (var interfaceSymbol in classSymbol.AllInterfaces)
             {
@@ -57,7 +78,22 @@ namespace Mocklis.CodeGeneration
                     }
                     else if (memberSymbol is IMethodSymbol memberMethodSymbol && memberMethodSymbol.CanBeReferencedByName)
                     {
-                        yield return new MocklisMethod(this, interfaceSymbol, memberMethodSymbol);
+                        if (memberMethodSymbol.Arity > 0)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (introduces new type parameter)");
+                        }
+                        else if (memberMethodSymbol.ReturnsByRef)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (returns by reference)");
+                        }
+                        else if (memberMethodSymbol.ReturnsByRefReadonly)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (returns by readonly reference)");
+                        }
+                        else
+                        {
+                            yield return new MocklisMethod(this, interfaceSymbol, memberMethodSymbol);
+                        }
                     }
                 }
             }
@@ -65,9 +101,33 @@ namespace Mocklis.CodeGeneration
 
         public IEnumerable<MemberDeclarationSyntax> GenerateMembers()
         {
-            yield return GenerateConstructor();
+            var constructor = GenerateConstructor();
+            if (_problematicMembers.Any())
+            {
+                var triviaList = F.TriviaList().Add(F.Comment("// Could not create mocks for the following members:" + Environment.NewLine));
+                foreach (var problematicMember in _problematicMembers)
+                {
+                    triviaList = triviaList.Add(F.Comment("// * " + problematicMember + Environment.NewLine));
+                }
+
+                triviaList = triviaList.Add(F.Comment("//" + Environment.NewLine));
+                triviaList = triviaList.Add(F.Comment("// Future version of Mocklis will handle these by introducing abstract members" +
+                                                      Environment.NewLine));
+                triviaList = triviaList.Add(F.Comment("// that can be given a 'mock' implementation in a derived class." + Environment.NewLine +
+                                                      Environment.NewLine));
+
+                constructor = constructor.WithLeadingTrivia(triviaList);
+            }
+
+            yield return constructor;
+
             foreach (var interfaceMember in _interfaceMembers)
             {
+                if (interfaceMember.item is MocklisUnused)
+                {
+                    continue;
+                }
+
                 yield return interfaceMember.item.MockProperty(interfaceMember.uniqueName);
 
                 var x = interfaceMember.item.ExplicitInterfaceMember(interfaceMember.uniqueName);
@@ -80,22 +140,36 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax GenerateConstructor()
         {
-            var parameterType =
-                F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
-                    F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName)))));
+            TypeSyntax parameterType;
+            ArgumentListSyntax argumentList;
 
-            var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(Action(parameterType))
+            if (_interfaceMembers.Length == 0)
+            {
+                parameterType = Action();
+                argumentList = F.ArgumentList();
+            }
+            else
+            {
+                parameterType = Action(
+                    F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
+                        F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName))))));
+
+                argumentList =
+                    F.ArgumentList(F.SingletonSeparatedList(
+                        F.Argument(
+                            F.TupleExpression(
+                                F.SeparatedList(_interfaceMembers.Select(i => F.Argument(i.item.ConstructorArgument(i.uniqueName))))))));
+            }
+
+            var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(parameterType)
                 .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
-
-            var argument = F.Argument(
-                F.TupleExpression(F.SeparatedList(_interfaceMembers.Select(i => F.Argument(F.IdentifierName(i.uniqueName))))));
 
             var body = F.Block(F.SingletonList<StatementSyntax>(F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
                 F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))
-                    .WithArgumentList(F.ArgumentList(F.SingletonSeparatedList(argument)))))));
+                    .WithArgumentList(argumentList)))));
 
             return F.ConstructorDeclaration(_classDeclaration.Identifier)
-                .WithModifiers(F.TokenList(F.Token(SyntaxKind.PublicKeyword)))
+                .WithModifiers(F.TokenList(F.Token(_isAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                 .WithParameterList(F.ParameterList(F.SingletonSeparatedList(parameter)))
                 .WithBody(body);
         }
@@ -156,7 +230,9 @@ namespace Mocklis.CodeGeneration
             return ParseGenericName(_mocklisSymbols.Action1, t);
         }
 
-        public TypeSyntax ValueTuple { get; }
+        public TypeSyntax Action() => _action;
+
+        public TypeSyntax ValueTuple => _valueTuple;
 
         public TypeSyntax EventStepCallerMock(TypeSyntax thandler)
         {
