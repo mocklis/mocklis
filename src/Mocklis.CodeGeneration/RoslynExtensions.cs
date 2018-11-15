@@ -21,7 +21,7 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax[] expressions)
         {
             return objectCreationExpression.WithArgumentList(
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Select(SyntaxFactory.Argument))));
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
         }
 
         public static InvocationExpressionSyntax WithExpressionsAsArgumentList(
@@ -30,6 +30,15 @@ namespace Mocklis.CodeGeneration
         {
             return invocationExpression.WithArgumentList(
                 SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
+        }
+
+        public static ElementAccessExpressionSyntax WithExpressionsAsArgumentList(
+            this ElementAccessExpressionSyntax elementAccessExpression,
+            params ExpressionSyntax[] expressions)
+        {
+            return elementAccessExpression.WithArgumentList(
+                SyntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
         }
     }
 }

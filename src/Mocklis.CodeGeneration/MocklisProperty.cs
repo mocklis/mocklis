@@ -36,24 +36,36 @@ namespace Mocklis.CodeGeneration
             var mockedProperty = F.PropertyDeclaration(ValueTypeSyntax, Symbol.Name)
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
 
-            if (!Symbol.IsWriteOnly)
+            if (Symbol.IsReadOnly)
             {
-                mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
-                            F.IdentifierName("Get")))))
-                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                );
+                mockedProperty = mockedProperty
+                    .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        F.IdentifierName(mockPropertyName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
-
-            if (!Symbol.IsReadOnly)
+            else
             {
-                mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                            F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                F.IdentifierName(mockPropertyName), F.IdentifierName("Set")))
-                        .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
-                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
+                if (!Symbol.IsWriteOnly)
+                {
+                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                            F.IdentifierName(mockPropertyName),
+                            F.IdentifierName("Value"))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
+                }
+
+                if (!Symbol.IsReadOnly)
+                {
+                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithExpressionBody(
+                            F.ArrowExpressionClause(
+                                F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
+                                        F.IdentifierName("Value")),
+                                    F.IdentifierName("value"))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
+                }
             }
 
             return mockedProperty;

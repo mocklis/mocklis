@@ -32,14 +32,10 @@ namespace Mocklis.Core
             return step;
         }
 
-        public TValue Get()
+        public TValue Value
         {
-            return NextStep.Get(MockInstance, this);
-        }
-
-        public void Set(TValue value)
-        {
-            NextStep.Set(MockInstance, this, value);
+            get => NextStep.Get(MockInstance, this);
+            set => NextStep.Set(MockInstance, this, value);
         }
     }
 }
