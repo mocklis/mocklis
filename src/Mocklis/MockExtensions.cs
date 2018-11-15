@@ -162,24 +162,24 @@ namespace Mocklis
 
         #region 'Log' Steps
 
-        public static IEventStepCaller<THandler> Log<THandler>(this IEventStepCaller<THandler> caller, ILogContext logContext)
+        public static IEventStepCaller<THandler> Log<THandler>(this IEventStepCaller<THandler> caller, ILogContext logContext = null)
             where THandler : Delegate
         {
             return caller.SetNextStep(new LogEventStep<THandler>(logContext ?? TextWriterLogContext.Console));
         }
 
-        public static IIndexerStepCaller<TKey, TValue> Log<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, ILogContext logContext)
+        public static IIndexerStepCaller<TKey, TValue> Log<TKey, TValue>(this IIndexerStepCaller<TKey, TValue> caller, ILogContext logContext = null)
         {
             return caller.SetNextStep(new LogIndexerStep<TKey, TValue>(logContext ?? TextWriterLogContext.Console));
         }
 
         public static IMethodStepCaller<TParam, TResult> Log<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller, ILogContext logContext)
+            this IMethodStepCaller<TParam, TResult> caller, ILogContext logContext = null)
         {
             return caller.SetNextStep(new LogMethodStep<TParam, TResult>(logContext ?? TextWriterLogContext.Console));
         }
 
-        public static IPropertyStepCaller<TValue> Log<TValue>(this IPropertyStepCaller<TValue> caller, ILogContext logContext)
+        public static IPropertyStepCaller<TValue> Log<TValue>(this IPropertyStepCaller<TValue> caller, ILogContext logContext = null)
         {
             return caller.SetNextStep(new LogPropertyStep<TValue>(logContext ?? TextWriterLogContext.Console));
         }
