@@ -16,7 +16,8 @@ namespace Mocklis.Core
     {
         public IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
 
-        public PropertyMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
+        public PropertyMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
+            memberName, memberMockName)
         {
         }
 
@@ -31,14 +32,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public TValue Get(object instance)
+        public TValue Get()
         {
-            return NextStep.Get(instance, this);
+            return NextStep.Get(MockInstance, this);
         }
 
-        public void Set(object instance, TValue value)
+        public void Set(TValue value)
         {
-            NextStep.Set(instance, this, value);
+            NextStep.Set(MockInstance, this, value);
         }
     }
 }

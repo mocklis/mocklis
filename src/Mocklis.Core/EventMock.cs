@@ -16,7 +16,8 @@ namespace Mocklis.Core
     {
         private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
-        public EventMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
+        public EventMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
+            memberName, memberMockName)
         {
         }
 
@@ -31,14 +32,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public void Add(object instance, THandler value)
+        public void Add(THandler value)
         {
-            _nextStep.Add(instance, this, value);
+            _nextStep.Add(MockInstance, this, value);
         }
 
-        public void Remove(object instance, THandler value)
+        public void Remove(THandler value)
         {
-            _nextStep.Remove(instance, this, value);
+            _nextStep.Remove(MockInstance, this, value);
         }
     }
 }

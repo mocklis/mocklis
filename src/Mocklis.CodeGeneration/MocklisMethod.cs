@@ -121,7 +121,7 @@ namespace Mocklis.CodeGeneration
             var invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         F.IdentifierName(mockPropertyName), F.IdentifierName("Call")))
-                .WithExpressionsAsArgumentList(F.ThisExpression(), ParameterOrReturnValue.BuildArgument(MockParameters.Select(a => a.item)));
+                .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters.Select(a => a.item)));
 
             // look at the return parameters. If we don't have any we can just make the call.
             // if we only have one and that's the return value, we can just return it.

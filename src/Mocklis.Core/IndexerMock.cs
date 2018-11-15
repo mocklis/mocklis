@@ -16,7 +16,8 @@ namespace Mocklis.Core
     {
         public IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
 
-        public IndexerMock(string interfaceName, string memberName, string memberMockName) : base(interfaceName, memberName, memberMockName)
+        public IndexerMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
+            memberName, memberMockName)
         {
         }
 
@@ -31,14 +32,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public TValue Get(object instance, TKey key)
+        public TValue Get(TKey key)
         {
-            return NextStep.Get(instance, this, key);
+            return NextStep.Get(MockInstance, this, key);
         }
 
-        public void Set(object instance, TKey key, TValue value)
+        public void Set(TKey key, TValue value)
         {
-            NextStep.Set(instance, this, key, value);
+            NextStep.Set(MockInstance, this, key, value);
         }
     }
 }

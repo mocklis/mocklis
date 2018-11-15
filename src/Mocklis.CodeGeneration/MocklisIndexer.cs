@@ -60,7 +60,7 @@ namespace Mocklis.CodeGeneration
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                                 F.IdentifierName(mockPropertyName), F.IdentifierName("Get")))
-                        .WithExpressionsAsArgumentList(F.ThisExpression(), keyParameter)))
+                        .WithExpressionsAsArgumentList(keyParameter)))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                 );
             }
@@ -71,7 +71,7 @@ namespace Mocklis.CodeGeneration
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                                 F.IdentifierName(mockPropertyName), F.IdentifierName("Set")))
-                        .WithExpressionsAsArgumentList(F.ThisExpression(), keyParameter, F.IdentifierName("value"))))
+                        .WithExpressionsAsArgumentList(keyParameter, F.IdentifierName("value"))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
             }
 

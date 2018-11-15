@@ -17,6 +17,7 @@ namespace Mocklis.CodeGeneration
     public sealed class MocklisUnused : MocklisMember
     {
         public override MemberDeclarationSyntax MockProperty(string mockPropertyName) => null;
+        public override StatementSyntax InitialiseMockProperty(string mockPropertyName) => null;
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName) => null;
         public override TypeSyntax MockPropertyType { get; }
         public override TypeSyntax MockPropertyInterfaceType { get; }

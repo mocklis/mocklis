@@ -40,9 +40,8 @@ namespace Mocklis.CodeGeneration
             {
                 mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                            F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
-                                F.IdentifierName("Get")))
-                        .WithExpressionsAsArgumentList(F.ThisExpression())))
+                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
+                            F.IdentifierName("Get")))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                 );
             }
@@ -53,7 +52,7 @@ namespace Mocklis.CodeGeneration
                     .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                                 F.IdentifierName(mockPropertyName), F.IdentifierName("Set")))
-                        .WithExpressionsAsArgumentList(F.ThisExpression(), F.IdentifierName("value"))))
+                        .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
             }
 

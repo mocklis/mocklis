@@ -14,12 +14,14 @@ namespace Mocklis.Core
 
     public abstract class MemberMock
     {
+        public object MockInstance { get; }
         public string InterfaceName { get; }
         public string MemberName { get; }
         public string MemberMockName { get; }
 
-        protected internal MemberMock(string interfaceName, string memberName, string memberMockName)
+        protected internal MemberMock(object mockInstance, string interfaceName, string memberName, string memberMockName)
         {
+            MockInstance = mockInstance;
             InterfaceName = interfaceName ?? throw new ArgumentNullException(nameof(interfaceName));
             MemberName = memberName ?? throw new ArgumentNullException(nameof(memberName));
             MemberMockName = memberMockName ?? throw new ArgumentNullException(nameof(memberMockName));

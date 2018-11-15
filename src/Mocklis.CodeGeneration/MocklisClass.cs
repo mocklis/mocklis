@@ -176,14 +176,26 @@ namespace Mocklis.CodeGeneration
             var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(parameterType)
                 .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
 
-            var body = F.Block(F.SingletonList<StatementSyntax>(F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
-                F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))
-                    .WithArgumentList(argumentList)))));
+            List<StatementSyntax> constructorStatements = new List<StatementSyntax>();
+
+            foreach (var interfaceMember in _interfaceMembers)
+            {
+                var initialisation = interfaceMember.item.InitialiseMockProperty(interfaceMember.uniqueName);
+                if (initialisation != null)
+                {
+                    constructorStatements.Add(initialisation);
+                }
+            }
+
+            constructorStatements.Add(
+                F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
+                    F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))
+                        .WithArgumentList(argumentList))));
 
             return F.ConstructorDeclaration(_classDeclaration.Identifier)
                 .WithModifiers(F.TokenList(F.Token(_isAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                 .WithParameterList(F.ParameterList(F.SingletonSeparatedList(parameter)))
-                .WithBody(body);
+                .WithBody(F.Block(constructorStatements));
         }
 
         public TypeSyntax ParseTypeName(ITypeSymbol propertyType)

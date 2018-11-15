@@ -14,27 +14,27 @@ namespace Mocklis.Core
 
     public sealed class ActionMethodMock<TParam> : BaseMethodMock<TParam, ValueTuple>
     {
-        public ActionMethodMock(string interfaceName, string memberName, string memberMockName)
-            : base(interfaceName, memberName, memberMockName)
+        public ActionMethodMock(object mockInstance, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, interfaceName, memberName, memberMockName)
         {
         }
 
-        public void Call(object instance, TParam param)
+        public new void Call(TParam param)
         {
-            Call(instance, this, param);
+            base.Call(param);
         }
     }
 
     public sealed class ActionMethodMock : BaseMethodMock<ValueTuple, ValueTuple>
     {
-        public ActionMethodMock(string interfaceName, string memberName, string memberMockName)
-            : base(interfaceName, memberName, memberMockName)
+        public ActionMethodMock(object mockInstance, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, interfaceName, memberName, memberMockName)
         {
         }
 
-        public void Call(object instance)
+        public void Call()
         {
-            Call(instance, this, ValueTuple.Create());
+            base.Call(ValueTuple.Create());
         }
     }
 }
