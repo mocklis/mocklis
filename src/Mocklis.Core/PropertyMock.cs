@@ -16,8 +16,8 @@ namespace Mocklis.Core
     {
         public IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
 
-        public PropertyMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
-            memberName, memberMockName)
+        public PropertyMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 

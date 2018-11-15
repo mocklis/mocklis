@@ -66,6 +66,7 @@ namespace Mocklis.CodeGeneration
                 F.ObjectCreationExpression(MockPropertyType)
                     .WithExpressionsAsArgumentList(
                         F.ThisExpression(),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MocklisClass.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(mockPropertyName))

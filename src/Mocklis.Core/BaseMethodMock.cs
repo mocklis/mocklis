@@ -16,8 +16,9 @@ namespace Mocklis.Core
     {
         private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
 
-        protected internal BaseMethodMock(object mockInstance, string interfaceName, string memberName, string memberMockName)
-            : base(mockInstance, interfaceName, memberName, memberMockName)
+        protected internal BaseMethodMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName,
+            string memberMockName)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 

@@ -14,8 +14,8 @@ namespace Mocklis.Core
 
     public sealed class FuncMethodMock<TParam, TResult> : BaseMethodMock<TParam, TResult>
     {
-        public FuncMethodMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
-            memberName, memberMockName)
+        public FuncMethodMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 
@@ -27,8 +27,8 @@ namespace Mocklis.Core
 
     public sealed class FuncMethodMock<TResult> : BaseMethodMock<ValueTuple, TResult>
     {
-        public FuncMethodMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
-            memberName, memberMockName)
+        public FuncMethodMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 

@@ -66,6 +66,8 @@ namespace Mocklis.CodeGeneration
             _interfaceMembers = Uniquifier.GetUniqueNames(interfaceMembers).ToArray();
         }
 
+        public string Name => _classDeclaration.Identifier.Text;
+
         private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol, List<string> problematicMembers)
         {
             foreach (var interfaceSymbol in classSymbol.AllInterfaces)

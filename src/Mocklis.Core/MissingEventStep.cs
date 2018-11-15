@@ -22,12 +22,12 @@ namespace Mocklis.Core
 
         public void Add(object instance, MemberMock memberMock, THandler value)
         {
-            throw new MockMissingException(MockType.EventAdd, memberMock.InterfaceName, memberMock.MemberName, memberMock.MemberMockName);
+            throw new MockMissingException(MockType.EventAdd, memberMock);
         }
 
         public void Remove(object instance, MemberMock memberMock, THandler value)
         {
-            throw new MockMissingException(MockType.EventRemove, memberMock.InterfaceName, memberMock.MemberName, memberMock.MemberMockName);
+            throw new MockMissingException(MockType.EventRemove, memberMock);
         }
     }
 }

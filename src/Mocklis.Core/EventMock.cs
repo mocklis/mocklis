@@ -16,8 +16,8 @@ namespace Mocklis.Core
     {
         private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
-        public EventMock(object mockInstance, string interfaceName, string memberName, string memberMockName) : base(mockInstance, interfaceName,
-            memberName, memberMockName)
+        public EventMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 

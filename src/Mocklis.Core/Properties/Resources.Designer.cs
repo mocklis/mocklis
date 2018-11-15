@@ -60,7 +60,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for adding handler to Event &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for adding handler to Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForEventAdd {
             get {
@@ -69,7 +69,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for removing handler from Event &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for removing handler from Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForEventRemove {
             get {
@@ -78,7 +78,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value via the Indexer on &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for getting value via the Indexer on &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForIndexerGet {
             get {
@@ -87,7 +87,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for setting value via the Indexer on &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for setting value via the Indexer on &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForIndexerSet {
             get {
@@ -96,7 +96,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for Method &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for Method &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForMethod {
             get {
@@ -105,7 +105,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForPropertyGet {
             get {
@@ -114,7 +114,7 @@ namespace Mocklis.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for setting value of Property &apos;{0}&apos;. Add one using &apos;{1}&apos; on the Mock instance..
+        ///   Looks up a localized string similar to No mock implementation found for setting value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
         /// </summary>
         internal static string MockMissingExceptionMessageForPropertySet {
             get {

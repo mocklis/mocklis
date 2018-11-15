@@ -21,67 +21,83 @@ namespace Mocklis.Core
     public class MockMissingException : Exception
     {
         public MockType MemberType { get; }
+        public string MocklisClassName { get; }
         public string InterfaceName { get; }
         public string MemberName { get; }
-        public string MockMemberName { get; }
+        public string MemberMockName { get; }
 
-        private static string CreateMessage(MockType memberType, string interfaceName, string memberName, string mockMemberName)
+        private static string CreateMessage(MockType memberType, MemberMock memberMock)
         {
+            string rawMessage;
             switch (memberType)
             {
                 case MockType.Method:
-                    return string.Format(Resources.MockMissingExceptionMessageForMethod, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForMethod;
+                    break;
                 case MockType.PropertyGet:
-                    return string.Format(Resources.MockMissingExceptionMessageForPropertyGet, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForPropertyGet;
+                    break;
                 case MockType.PropertySet:
-                    return string.Format(Resources.MockMissingExceptionMessageForPropertySet, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForPropertySet;
+                    break;
                 case MockType.EventAdd:
-                    return string.Format(Resources.MockMissingExceptionMessageForEventAdd, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForEventAdd;
+                    break;
                 case MockType.EventRemove:
-                    return string.Format(Resources.MockMissingExceptionMessageForEventRemove, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForEventRemove;
+                    break;
                 case MockType.IndexerGet:
-                    return string.Format(Resources.MockMissingExceptionMessageForIndexerGet, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
+                    break;
                 case MockType.IndexerSet:
-                    return string.Format(Resources.MockMissingExceptionMessageForIndexerGet, interfaceName, memberName, mockMemberName);
+                    rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(memberType));
             }
+
+            return string.Format(rawMessage, memberMock.MocklisClassName, memberMock.InterfaceName,
+                memberMock.MemberName, memberMock.MemberMockName);
         }
 
-        public MockMissingException(MockType memberType, string interfaceName, string memberName, string mockMemberName) : base(
-            CreateMessage(memberType, interfaceName, memberName, mockMemberName))
+        public MockMissingException(MockType memberType, MemberMock memberMock)
+            : base(CreateMessage(memberType, memberMock))
         {
             MemberType = memberType;
-            InterfaceName = interfaceName;
-            MemberName = memberName;
-            MockMemberName = mockMemberName;
+            MocklisClassName = memberMock.MocklisClassName;
+            InterfaceName = memberMock.InterfaceName;
+            MemberName = memberMock.MemberName;
+            MemberMockName = memberMock.MemberMockName;
         }
 
-        public MockMissingException(MockType memberType, string interfaceName, string memberName, string mockMemberName,
-            Exception innerException) : base(CreateMessage(memberType, interfaceName, memberName, mockMemberName), innerException)
+        public MockMissingException(MockType memberType, MemberMock memberMock, Exception innerException)
+            : base(CreateMessage(memberType, memberMock), innerException)
         {
             MemberType = memberType;
-            InterfaceName = interfaceName;
-            MemberName = memberName;
-            MockMemberName = mockMemberName;
+            MocklisClassName = memberMock.MocklisClassName;
+            InterfaceName = memberMock.InterfaceName;
+            MemberName = memberMock.MemberName;
+            MemberMockName = memberMock.MemberMockName;
         }
 
 #if NETSTANDARD2_0
         protected MockMissingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             MemberType = (MockType)info.GetInt32(nameof(MemberType));
+            MocklisClassName = info.GetString(nameof(MemberMockName));
             InterfaceName = info.GetString(nameof(InterfaceName));
             MemberName = info.GetString(nameof(MemberName));
-            MockMemberName = info.GetString(nameof(MockMemberName));
+            MemberMockName = info.GetString(nameof(MemberMockName));
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue(nameof(MemberType), (int)MemberType);
+            info.AddValue(nameof(MocklisClassName), MocklisClassName);
             info.AddValue(nameof(InterfaceName), InterfaceName);
             info.AddValue(nameof(MemberName), MemberName);
-            info.AddValue(nameof(MockMemberName), MockMemberName);
+            info.AddValue(nameof(MemberMockName), MemberMockName);
         }
 #endif
     }
