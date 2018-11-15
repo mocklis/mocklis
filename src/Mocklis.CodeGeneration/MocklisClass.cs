@@ -161,9 +161,10 @@ namespace Mocklis.CodeGeneration
             }
             else
             {
-                parameterType = Action(
-                    F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
-                        F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName))))));
+                parameterType = F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
+                    F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName)))));
+
+                parameterType = Action(parameterType);
 
                 argumentList =
                     F.ArgumentList(F.SingletonSeparatedList(
@@ -195,10 +196,26 @@ namespace Mocklis.CodeGeneration
             return F.ParseName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
         }
 
-        public GenericNameSyntax ParseGenericName(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
+        public NameSyntax ParseGenericName(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
         {
-            var result = F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart)) as GenericNameSyntax;
-            return result?.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
+            NameSyntax ApplyTypeParameters(NameSyntax nameSyntax)
+            {
+                if (nameSyntax is GenericNameSyntax genericNameSyntax)
+                {
+                    return genericNameSyntax.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
+                }
+
+                if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
+                {
+                    return qualifiedNameSyntax.WithRight((SimpleNameSyntax)ApplyTypeParameters(qualifiedNameSyntax.Right));
+                }
+
+                return nameSyntax;
+            }
+
+            NameSyntax result = F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
+
+            return ApplyTypeParameters(result);
         }
 
         public TypeSyntax ActionMethodMock()
