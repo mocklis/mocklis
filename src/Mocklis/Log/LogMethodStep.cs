@@ -37,25 +37,28 @@ namespace Mocklis.Log
                 _logContext.LogBeforeMethodCallWithoutParameters(memberMock);
             }
 
+            TResult result;
+
             try
             {
-                var result = base.Call(instance, memberMock, param);
-                if (_hasResult)
-                {
-                    _logContext.LogAfterMethodCallWithResult(memberMock, result);
-                }
-                else
-                {
-                    _logContext.LogAfterMethodCallWithoutResult(memberMock);
-                }
-
-                return result;
+                result = base.Call(instance, memberMock, param);
             }
             catch (Exception exception)
             {
                 _logContext.LogMethodCallException(memberMock, exception);
                 throw;
             }
+
+            if (_hasResult)
+            {
+                _logContext.LogAfterMethodCallWithResult(memberMock, result);
+            }
+            else
+            {
+                _logContext.LogAfterMethodCallWithoutResult(memberMock);
+            }
+
+            return result;
         }
     }
 }

@@ -25,17 +25,19 @@ namespace Mocklis.Log
         public override TValue Get(object instance, MemberMock memberMock)
         {
             _logContext.LogBeforePropertyGet(memberMock);
+            TValue result;
             try
             {
-                var result = base.Get(instance, memberMock);
-                _logContext.LogAfterPropertyGet(memberMock, result);
-                return result;
+                result = base.Get(instance, memberMock);
             }
             catch (Exception exception)
             {
                 _logContext.LogPropertyGetException(memberMock, exception);
                 throw;
             }
+
+            _logContext.LogAfterPropertyGet(memberMock, result);
+            return result;
         }
 
         public override void Set(object instance, MemberMock memberMock, TValue value)
@@ -44,13 +46,14 @@ namespace Mocklis.Log
             try
             {
                 base.Set(instance, memberMock, value);
-                _logContext.LogAfterPropertySet(memberMock);
             }
             catch (Exception exception)
             {
                 _logContext.LogPropertySetException(memberMock, exception);
                 throw;
             }
+
+            _logContext.LogAfterPropertySet(memberMock);
         }
     }
 }

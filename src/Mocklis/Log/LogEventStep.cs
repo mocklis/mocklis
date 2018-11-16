@@ -28,13 +28,14 @@ namespace Mocklis.Log
             try
             {
                 base.Add(instance, memberMock, value);
-                _logContext.LogAfterEventAdd(memberMock);
             }
             catch (Exception exception)
             {
                 _logContext.LogEventAddException(memberMock, exception);
                 throw;
             }
+
+            _logContext.LogAfterEventAdd(memberMock);
         }
 
         public override void Remove(object instance, MemberMock memberMock, THandler value)
@@ -43,13 +44,14 @@ namespace Mocklis.Log
             try
             {
                 base.Remove(instance, memberMock, value);
-                _logContext.LogAfterEventRemove(memberMock);
             }
             catch (Exception exception)
             {
                 _logContext.LogEventRemoveException(memberMock, exception);
                 throw;
             }
+
+            _logContext.LogAfterEventRemove(memberMock);
         }
     }
 }
