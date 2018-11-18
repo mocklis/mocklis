@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Mocklis</Product>
     <Copyright>Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
@@ -14,6 +14,8 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
     <Version>0.1.0-alpha</Version>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
    <ItemGroup>
     <None Remove="**\*.ncrunchproject" />
@@ -25,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' == 'netstandard1.3'" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mocklis.Core\Mocklis.Core.csproj" />
