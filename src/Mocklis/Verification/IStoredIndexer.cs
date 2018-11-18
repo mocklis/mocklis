@@ -1,13 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IStoredProperty.cs">
+// <copyright file="IStoredIndexer.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis
+namespace Mocklis.Verification
 {
-    public interface IStoredProperty<TValue>
+    public interface IStoredIndexer<in TKey, TValue>
     {
-        TValue Value { get; set; }
+        TValue this[TKey key] { get; set; }
     }
 }

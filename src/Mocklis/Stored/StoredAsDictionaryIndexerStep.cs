@@ -10,6 +10,7 @@ namespace Mocklis.Stored
 
     using System.Collections.Generic;
     using Mocklis.Core;
+    using Mocklis.Verification;
 
     #endregion
 

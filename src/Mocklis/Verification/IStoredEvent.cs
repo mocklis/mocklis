@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis
+namespace Mocklis.Verification
 {
     #region Using Directives
 

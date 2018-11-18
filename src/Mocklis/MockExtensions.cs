@@ -11,6 +11,7 @@ namespace Mocklis
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Threading;
     using Mocklis.Conditional;
     using Mocklis.Core;
     using Mocklis.Dummy;
@@ -20,6 +21,7 @@ namespace Mocklis
     using Mocklis.Record;
     using Mocklis.Return;
     using Mocklis.Stored;
+    using Mocklis.Verification;
 
     #endregion
 
@@ -487,55 +489,55 @@ namespace Mocklis
 
         #region 'Stored' steps
 
-        public static void Stored<THandler>(
+        public static IStoredEvent<THandler> Stored<THandler>(
             this IEventStepCaller<THandler> caller) where THandler : Delegate
         {
-            caller.SetNextStep(new StoredEventStep<THandler>());
+            return caller.SetNextStep(new StoredEventStep<THandler>());
         }
 
-        public static void Stored<THandler>(
+        public static IStoredEvent<THandler> Stored<THandler>(
             this IEventStepCaller<THandler> caller,
             out StoredEventStep<THandler> step) where THandler : Delegate
         {
             step = new StoredEventStep<THandler>();
-            caller.SetNextStep(step);
+            return caller.SetNextStep(step);
         }
 
-        public static void Stored<TArgs>(this IEventStepCaller<EventHandler<TArgs>> caller, out StoredGenericEventStep<TArgs> step)
+        public static IStoredEvent<EventHandler<TArgs>> Stored<TArgs>(this IEventStepCaller<EventHandler<TArgs>> caller,
+            out StoredGenericEventStep<TArgs> step)
         {
             step = new StoredGenericEventStep<TArgs>();
-            caller.SetNextStep(step);
+            return caller.SetNextStep(step);
         }
 
-        public static void Stored<TValue>(
+        public static IStoredProperty<TValue> Stored<TValue>(
             this IPropertyStepCaller<TValue> caller,
             TValue initialValue = default)
         {
-            caller.SetNextStep(
-                new StoredPropertyStep<TValue>(initialValue));
+            return caller.SetNextStep(new StoredPropertyStep<TValue>(initialValue));
         }
 
-        public static void Stored<TValue>(
+        public static IStoredProperty<TValue> Stored<TValue>(
             this IPropertyStepCaller<TValue> caller,
             out StoredPropertyStep<TValue> step,
             TValue initialValue = default)
         {
             step = new StoredPropertyStep<TValue>(initialValue);
-            caller.SetNextStep(step);
+            return caller.SetNextStep(step);
         }
 
-        public static void StoredAsDictionary<TKey, TValue>(
+        public static IStoredIndexer<TKey, TValue> StoredAsDictionary<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller)
         {
-            caller.SetNextStep(new StoredAsDictionaryIndexerStep<TKey, TValue>());
+            return caller.SetNextStep(new StoredAsDictionaryIndexerStep<TKey, TValue>());
         }
 
-        public static void StoredAsDictionary<TKey, TValue>(
+        public static IStoredIndexer<TKey, TValue> StoredAsDictionary<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller,
             out StoredAsDictionaryIndexerStep<TKey, TValue> step)
         {
             step = new StoredAsDictionaryIndexerStep<TKey, TValue>();
-            caller.SetNextStep(step);
+            return caller.SetNextStep(step);
         }
 
         #endregion

@@ -11,6 +11,7 @@ namespace Mocklis.Stored
     using System;
     using System.Threading;
     using Mocklis.Core;
+    using Mocklis.Verification;
 
     #endregion
 

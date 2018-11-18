@@ -71,5 +71,13 @@ namespace Mocklis.Verification
             collector.Add(new CurrentValuePropertyCheck<TValue>(property, name, expectedValue, comparer));
             return property;
         }
+
+        public static IStoredIndexer<TKey, TValue> CurrentValuesCheck<TKey, TValue>(this IStoredIndexer<TKey, TValue> indexer,
+            VerificationGroup collector,
+            string name, IEnumerable<KeyValuePair<TKey, TValue>> expectedValues, IEqualityComparer<TValue> comparer = null)
+        {
+            collector.Add(new CurrentValuesIndexerCheck<TKey, TValue>(indexer, name, expectedValues, comparer));
+            return indexer;
+        }
     }
 }

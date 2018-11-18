@@ -9,6 +9,7 @@ namespace Mocklis.Stored
     #region Using Directives
 
     using Mocklis.Core;
+    using Mocklis.Verification;
 
     #endregion
 
