@@ -15,6 +15,7 @@ namespace Mocklis
     using Mocklis.Conditional;
     using Mocklis.Core;
     using Mocklis.Dummy;
+    using Mocklis.Gate;
     using Mocklis.Lambda;
     using Mocklis.Log;
     using Mocklis.Miscellaneous;
@@ -67,6 +68,18 @@ namespace Mocklis
             this IPropertyStepCaller<TValue> caller)
         {
             caller.SetNextStep(DummyPropertyStep<TValue>.Instance);
+        }
+
+        #endregion
+
+        #region 'Gate' steps
+
+        public static IMethodStepCaller<TParam, TResult> Gate<TParam, TResult>(
+            this IMethodStepCaller<TParam, TResult> caller, out IGate gate, CancellationToken cancellationToken = default)
+        {
+            var newStep = new GateMethodStep<TParam, TResult>(cancellationToken);
+            gate = newStep;
+            return caller.SetNextStep(newStep);
         }
 
         #endregion
