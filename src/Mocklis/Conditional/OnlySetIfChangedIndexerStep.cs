@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Miscellaneous
+namespace Mocklis.Conditional
 {
     #region Using Directives
 

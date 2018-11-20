@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IfMethodStep.cs">
+// <copyright file="InstanceIfMethodStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,19 +13,19 @@ namespace Mocklis.Conditional
 
     #endregion
 
-    public class IfMethodStep<TParam, TResult> : IfMethodStepBase<TParam, TResult>
+    public class InstanceIfMethodStep<TParam, TResult> : IfMethodStepBase<TParam, TResult>
     {
-        private readonly Func<TParam, bool> _condition;
+        private readonly Func<object, TParam, bool> _condition;
 
-        public IfMethodStep(Func<TParam, bool> condition, Action<IMethodStepCaller<TParam, TResult>, IMethodStep<TParam, TResult>> ifBranch) :
-            base(ifBranch)
+        public InstanceIfMethodStep(Func<object, TParam, bool> condition,
+            Action<IMethodStepCaller<TParam, TResult>, IMethodStep<TParam, TResult>> ifBranch) : base(ifBranch)
         {
             _condition = condition;
         }
 
         public override TResult Call(object instance, MemberMock memberMock, TParam param)
         {
-            return _condition(param) ? IfBranch.Call(instance, memberMock, param) : base.Call(instance, memberMock, param);
+            return _condition(instance, param) ? IfBranch.Call(instance, memberMock, param) : base.Call(instance, memberMock, param);
         }
     }
 }
