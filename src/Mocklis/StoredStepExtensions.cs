@@ -12,7 +12,7 @@ namespace Mocklis
     using System.Collections.Generic;
     using System.ComponentModel;
     using Mocklis.Core;
-    using Mocklis.Stored;
+    using Mocklis.Steps.Stored;
     using Mocklis.Verification;
 
     #endregion

@@ -11,7 +11,7 @@ namespace Mocklis
     using System;
     using System.Collections.Generic;
     using Mocklis.Core;
-    using Mocklis.Record;
+    using Mocklis.Steps.Record;
 
     #endregion
 

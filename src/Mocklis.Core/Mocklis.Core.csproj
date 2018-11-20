@@ -16,6 +16,7 @@
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RootNamespace>Mocklis</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.ncrunchproject" />

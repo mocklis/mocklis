@@ -10,7 +10,7 @@ namespace Mocklis
 
     using System.Threading;
     using Mocklis.Core;
-    using Mocklis.Gate;
+    using Mocklis.Steps.Gate;
 
     #endregion
 

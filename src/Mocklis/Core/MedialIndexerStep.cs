@@ -9,6 +9,7 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
+    using Mocklis.Steps.Missing;
 
     #endregion
 

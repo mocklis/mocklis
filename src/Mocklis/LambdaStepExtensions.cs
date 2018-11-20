@@ -10,7 +10,7 @@ namespace Mocklis
 
     using System;
     using Mocklis.Core;
-    using Mocklis.Lambda;
+    using Mocklis.Steps.Lambda;
 
     #endregion
 

@@ -10,8 +10,8 @@ namespace Mocklis
 
     using System;
     using System.Collections.Generic;
-    using Mocklis.Conditional;
     using Mocklis.Core;
+    using Mocklis.Steps.Conditional;
 
     #endregion
 
