@@ -6,43 +6,82 @@
 
 namespace Mocklis.Steps.Conditional
 {
+    /*
+     * See comment on IfEventStepBase class.
+     */
+
     #region Using Directives
 
     using System;
     using Mocklis.Core;
+    using Mocklis.Steps.Missing;
 
     #endregion
 
     public abstract class IfIndexerStepBase<TKey, TValue> : MedialIndexerStep<TKey, TValue>
     {
-        private class Rejoiner : IIndexerStep<TKey, TValue>
+        public sealed class IfBranchCaller : IIndexerStep<TKey, TValue>, IIndexerStepCaller<TKey, TValue>
         {
-            private readonly IfIndexerStepBase<TKey, TValue> _step;
+            private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
 
-            public Rejoiner(IfIndexerStepBase<TKey, TValue> step)
+            public TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>
             {
-                _step = step;
+                if (step == null)
+                {
+                    throw new ArgumentNullException(nameof(step));
+                }
+
+                _nextStep = step;
+                return step;
+            }
+
+            TValue IIndexerStep<TKey, TValue>.Get(object instance, MemberMock memberMock, TKey key)
+            {
+                return _nextStep.Get(instance, memberMock, key);
+            }
+
+            void IIndexerStep<TKey, TValue>.Set(object instance, MemberMock memberMock, TKey key, TValue value)
+            {
+                _nextStep.Set(instance, memberMock, key, value);
+            }
+
+            public IIndexerStep<TKey, TValue> ElseBranch { get; }
+
+            public IfBranchCaller(IfIndexerStepBase<TKey, TValue> ifIndexerStep)
+            {
+                ElseBranch = new ElseBranchRejoiner(ifIndexerStep);
+            }
+        }
+
+        private sealed class ElseBranchRejoiner : IIndexerStep<TKey, TValue>
+        {
+            private readonly IfIndexerStepBase<TKey, TValue> _ifIndexerStep;
+
+            public ElseBranchRejoiner(IfIndexerStepBase<TKey, TValue> ifIndexerStep)
+            {
+                _ifIndexerStep = ifIndexerStep;
             }
 
             public TValue Get(object instance, MemberMock memberMock, TKey key)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _step.NextStep.Get(instance, memberMock, key);
+                return _ifIndexerStep.NextStep.Get(instance, memberMock, key);
             }
 
             public void Set(object instance, MemberMock memberMock, TKey key, TValue value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _step.NextStep.Set(instance, memberMock, key, value);
+                _ifIndexerStep.NextStep.Set(instance, memberMock, key, value);
             }
         }
 
-        protected MedialIndexerStep<TKey, TValue> IfBranch { get; }
+        protected IIndexerStep<TKey, TValue> IfBranch { get; }
 
-        protected IfIndexerStepBase(Action<IIndexerStepCaller<TKey, TValue>, IIndexerStep<TKey, TValue>> ifBranchSetup)
+        protected IfIndexerStepBase(Action<IfBranchCaller> branch)
         {
-            IfBranch = new MedialIndexerStep<TKey, TValue>();
-            ifBranchSetup(IfBranch, new Rejoiner(this));
+            var ifBranch = new IfBranchCaller(this);
+            IfBranch = ifBranch;
+            branch?.Invoke(ifBranch);
         }
     }
 }

@@ -19,10 +19,10 @@ namespace Mocklis.Steps.Conditional
         private readonly Func<TKey, TValue, bool> _setCondition;
 
         public IfIndexerStep(Func<TKey, bool> getCondition, Func<TKey, TValue, bool> setCondition,
-            Action<IIndexerStepCaller<TKey, TValue>, IIndexerStep<TKey, TValue>> ifBranchSetup) : base(ifBranchSetup)
+            Action<IfBranchCaller> branch) : base(branch)
         {
-            _getCondition = getCondition;
-            _setCondition = setCondition;
+            _getCondition = getCondition ?? throw new ArgumentNullException(nameof(getCondition));
+            _setCondition = setCondition ?? throw new ArgumentNullException(nameof(setCondition));
         }
 
         public override TValue Get(object instance, MemberMock memberMock, TKey key)

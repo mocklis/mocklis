@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public class InstanceRecordAfterCallMethodStep<TParam, TResult, TRecord> : RecordMethodStep<TParam, TResult, TRecord>
+    public class InstanceRecordAfterCallMethodStep<TParam, TResult, TRecord> : RecordMethodStepBase<TParam, TResult, TRecord>
     {
         private readonly Func<object, TParam, TResult, TRecord> _selection;
         private readonly Func<object, Exception, TRecord> _onError;

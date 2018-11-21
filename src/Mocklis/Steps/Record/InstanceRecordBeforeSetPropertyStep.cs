@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public class InstanceRecordBeforeSetPropertyStep<TValue, TRecord> : RecordPropertyStep<TValue, TRecord>
+    public class InstanceRecordBeforeSetPropertyStep<TValue, TRecord> : RecordPropertyStepBase<TValue, TRecord>
     {
         private readonly Func<object, TValue, TRecord> _selection;
 

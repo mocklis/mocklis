@@ -15,8 +15,7 @@ namespace Mocklis.Steps.Conditional
 
     public class IfSetPropertyStep<TValue> : IfPropertyStepBase<TValue>
     {
-        public IfSetPropertyStep(Action<IPropertyStepCaller<TValue>, IPropertyStep<TValue>> ifBranchSetup) :
-            base(ifBranchSetup)
+        public IfSetPropertyStep(Action<IfBranchCaller> branch) : base(branch)
         {
         }
 

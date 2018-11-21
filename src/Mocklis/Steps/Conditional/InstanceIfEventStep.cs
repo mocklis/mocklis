@@ -19,8 +19,8 @@ namespace Mocklis.Steps.Conditional
         private readonly Func<object, THandler, bool> _removeCondition;
 
         public InstanceIfEventStep(Func<object, THandler, bool> addCondition, Func<object, THandler, bool> removeCondition,
-            Action<IEventStepCaller<THandler>, IEventStep<THandler>> ifBranchRemoveup) :
-            base(ifBranchRemoveup)
+            Action<IfBranchCaller> branch) :
+            base(branch)
         {
             _addCondition = addCondition ?? throw new ArgumentNullException(nameof(addCondition));
             _removeCondition = removeCondition ?? throw new ArgumentNullException(nameof(removeCondition));

@@ -15,8 +15,8 @@ namespace Mocklis.Steps.Conditional
 
     public class IfRemoveEventStep<THandler> : IfEventStepBase<THandler> where THandler : Delegate
     {
-        public IfRemoveEventStep(Action<IEventStepCaller<THandler>, IEventStep<THandler>> ifBranchRemoveup) :
-            base(ifBranchRemoveup)
+        public IfRemoveEventStep(Action<IfBranchCaller> branch) :
+            base(branch)
         {
         }
 

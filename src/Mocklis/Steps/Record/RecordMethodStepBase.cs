@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RecordMethodStep.cs">
+// <copyright file="RecordMethodStepBase.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public abstract class RecordMethodStep<TParam, TResult, TRecord> : MedialMethodStep<TParam, TResult>, IReadOnlyList<TRecord>
+    public abstract class RecordMethodStepBase<TParam, TResult, TRecord> : MedialMethodStep<TParam, TResult>, IReadOnlyList<TRecord>
     {
         private readonly object _lockObject = new object();
         private readonly List<TRecord> _ledger = new List<TRecord>();

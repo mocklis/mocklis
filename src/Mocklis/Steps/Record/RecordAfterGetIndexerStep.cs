@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public class RecordAfterGetIndexerStep<TKey, TValue, TRecord> : RecordIndexerStep<TKey, TValue, TRecord>
+    public class RecordAfterGetIndexerStep<TKey, TValue, TRecord> : RecordIndexerStepBase<TKey, TValue, TRecord>
     {
         private readonly Func<TKey, TValue, TRecord> _selection;
         private readonly Func<Exception, TRecord> _onError;

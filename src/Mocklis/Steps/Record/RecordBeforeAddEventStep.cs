@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public class RecordBeforeAddEventStep<THandler, TRecord> : RecordEventStep<THandler, TRecord> where THandler : Delegate
+    public class RecordBeforeAddEventStep<THandler, TRecord> : RecordEventStepBase<THandler, TRecord> where THandler : Delegate
     {
         private readonly Func<THandler, TRecord> _selection;
 

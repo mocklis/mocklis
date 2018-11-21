@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RecordIndexerStep.cs">
+// <copyright file="RecordEventStepBase.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,13 +8,14 @@ namespace Mocklis.Steps.Record
 {
     #region Using Directives
 
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using Mocklis.Core;
 
     #endregion
 
-    public abstract class RecordIndexerStep<TKey, TValue, TRecord> : MedialIndexerStep<TKey, TValue>, IReadOnlyList<TRecord>
+    public abstract class RecordEventStepBase<THandler, TRecord> : MedialEventStep<THandler>, IReadOnlyList<TRecord> where THandler : Delegate
     {
         private readonly object _lockObject = new object();
         private readonly List<TRecord> _ledger = new List<TRecord>();

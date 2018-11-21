@@ -15,7 +15,7 @@ namespace Mocklis.Steps.Conditional
 
     public class IfSetIndexerStep<TKey, TValue> : IfIndexerStepBase<TKey, TValue>
     {
-        public IfSetIndexerStep(Action<IIndexerStepCaller<TKey, TValue>, IIndexerStep<TKey, TValue>> ifBranchSetup) : base(ifBranchSetup)
+        public IfSetIndexerStep(Action<IfBranchCaller> branch) : base(branch)
         {
         }
 
