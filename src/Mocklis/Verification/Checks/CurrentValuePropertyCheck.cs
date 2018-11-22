@@ -34,7 +34,7 @@ namespace Mocklis.Verification.Checks
         {
             string prefix = string.IsNullOrEmpty(_name) ? "Value check" : Invariant($"Value check '{_name}'");
             TValue currentValue = _property.Value;
-            yield return new VerificationResult(Invariant($"{prefix}: Expected '{_expectedValue}'; Current Value is '{currentValue}"),
+            yield return new VerificationResult(Invariant($"{prefix}: Expected '{_expectedValue}'; Current Value is '{currentValue}'"),
                 _comparer.Equals(_expectedValue, currentValue));
         }
     }

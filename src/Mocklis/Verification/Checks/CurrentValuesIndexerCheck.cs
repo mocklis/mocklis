@@ -38,7 +38,7 @@ namespace Mocklis.Verification.Checks
                 TKey key = expectation.Key;
                 TValue expectedValue = expectation.Value;
                 TValue currentValue = _indexer[key];
-                string description = Invariant($"Key '{key}'; Expected '{expectedValue}'; Current Value is '{currentValue}");
+                string description = Invariant($"Key '{key}'; Expected '{expectedValue}'; Current Value is '{currentValue}'");
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);
             }
