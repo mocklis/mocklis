@@ -30,6 +30,13 @@ namespace Mocklis
             caller.SetNextStep(new ThrowIndexerStep<TKey, TValue>(exceptionFactory));
         }
 
+        public static void Throw<TResult>(
+            this IMethodStepCaller<ValueTuple, TResult> caller,
+            Func<Exception> exceptionFactory)
+        {
+            caller.SetNextStep(new ThrowMethodStep<TResult>(exceptionFactory));
+        }
+
         public static void Throw<TParam, TResult>(
             this IMethodStepCaller<TParam, TResult> caller,
             Func<TParam, Exception> exceptionFactory)

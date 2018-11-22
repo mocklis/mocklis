@@ -13,6 +13,21 @@ namespace Mocklis.Steps.Throw
 
     #endregion
 
+    public class ThrowMethodStep<TResult> : IMethodStep<ValueTuple, TResult>
+    {
+        private readonly Func<Exception> _exceptionFactory;
+
+        public ThrowMethodStep(Func<Exception> exceptionFactory)
+        {
+            _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
+        }
+
+        public TResult Call(object instance, MemberMock memberMock, ValueTuple param)
+        {
+            throw _exceptionFactory();
+        }
+    }
+
     public class ThrowMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
         private readonly Func<TParam, Exception> _exceptionFactory;
