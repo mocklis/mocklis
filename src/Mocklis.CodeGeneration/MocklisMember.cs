@@ -23,7 +23,6 @@ namespace Mocklis.CodeGeneration
         public abstract MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName);
 
         public abstract TypeSyntax MockPropertyType { get; }
-        public abstract TypeSyntax MockPropertyInterfaceType { get; }
 
         protected MocklisMember(string mockPropertyName)
         {
@@ -31,11 +30,6 @@ namespace Mocklis.CodeGeneration
         }
 
         public string PreferredName { get; }
-
-        public virtual ExpressionSyntax ConstructorArgument(string uniqueName)
-        {
-            return F.IdentifierName(uniqueName);
-        }
     }
 
     public abstract class MocklisMember<TSymbol> : MocklisMember where TSymbol : ISymbol

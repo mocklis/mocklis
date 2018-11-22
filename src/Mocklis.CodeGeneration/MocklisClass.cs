@@ -56,13 +56,6 @@ namespace Mocklis.CodeGeneration
 
             _problematicMembers = problematicMembers.ToArray();
 
-            // If there is just one mocked member, we add a 'dummy' unused member so that the constructor can still
-            // use valuetuple syntax in its argument.
-            if (interfaceMembers.Length == 1)
-            {
-                interfaceMembers = new[] { interfaceMembers[0], new MocklisUnused(this) };
-            }
-
             _interfaceMembers = Uniquifier.GetUniqueNames(interfaceMembers).ToArray();
         }
 
@@ -136,11 +129,6 @@ namespace Mocklis.CodeGeneration
 
             foreach (var interfaceMember in _interfaceMembers)
             {
-                if (interfaceMember.item is MocklisUnused)
-                {
-                    continue;
-                }
-
                 yield return interfaceMember.item.MockProperty(interfaceMember.uniqueName);
 
                 var x = interfaceMember.item.ExplicitInterfaceMember(interfaceMember.uniqueName);
@@ -153,31 +141,6 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax GenerateConstructor()
         {
-            TypeSyntax parameterType;
-            ArgumentListSyntax argumentList;
-
-            if (_interfaceMembers.Length == 0)
-            {
-                parameterType = Action();
-                argumentList = F.ArgumentList();
-            }
-            else
-            {
-                parameterType = F.TupleType(F.SeparatedList(_interfaceMembers.Select(i =>
-                    F.TupleElement(i.item.MockPropertyInterfaceType).WithIdentifier(F.Identifier(i.uniqueName)))));
-
-                parameterType = Action(parameterType);
-
-                argumentList =
-                    F.ArgumentList(F.SingletonSeparatedList(
-                        F.Argument(
-                            F.TupleExpression(
-                                F.SeparatedList(_interfaceMembers.Select(i => F.Argument(i.item.ConstructorArgument(i.uniqueName))))))));
-            }
-
-            var parameter = F.Parameter(F.Identifier("mockSetup")).WithType(parameterType)
-                .WithDefault(F.EqualsValueClause(F.LiteralExpression(SyntaxKind.NullLiteralExpression)));
-
             List<StatementSyntax> constructorStatements = new List<StatementSyntax>();
 
             foreach (var interfaceMember in _interfaceMembers)
@@ -189,14 +152,8 @@ namespace Mocklis.CodeGeneration
                 }
             }
 
-            constructorStatements.Add(
-                F.ExpressionStatement(F.ConditionalAccessExpression(F.IdentifierName("mockSetup"),
-                    F.InvocationExpression(F.MemberBindingExpression(F.IdentifierName("Invoke")))
-                        .WithArgumentList(argumentList))));
-
             return F.ConstructorDeclaration(_classDeclaration.Identifier)
                 .WithModifiers(F.TokenList(F.Token(_isAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
-                .WithParameterList(F.ParameterList(F.SingletonSeparatedList(parameter)))
                 .WithBody(F.Block(constructorStatements));
         }
 

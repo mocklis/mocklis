@@ -19,7 +19,6 @@ namespace Mocklis.CodeGeneration
     {
         private TypeSyntax ValueTypeSyntax { get; }
         public override TypeSyntax MockPropertyType { get; }
-        public override TypeSyntax MockPropertyInterfaceType { get; }
 
         public MocklisProperty(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol) : base(mocklisClass,
             interfaceSymbol, symbol)
@@ -27,8 +26,6 @@ namespace Mocklis.CodeGeneration
             ValueTypeSyntax = mocklisClass.ParseTypeName(symbol.Type);
 
             MockPropertyType = mocklisClass.PropertyMock(ValueTypeSyntax);
-
-            MockPropertyInterfaceType = mocklisClass.PropertyStepCallerMock(ValueTypeSyntax);
         }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)

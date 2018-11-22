@@ -102,14 +102,9 @@ namespace Mocklis.CodeGeneration
                     ? MocklisClass.FuncMethodMock(returnValueTypeSyntax)
                     : MocklisClass.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
             }
-
-            MockPropertyInterfaceType = MocklisClass.MethodStepCallerMock(parameterTypeSyntax ?? MocklisClass.ValueTuple,
-                returnValueTypeSyntax ?? MocklisClass.ValueTuple);
         }
 
         public override TypeSyntax MockPropertyType { get; }
-
-        public override TypeSyntax MockPropertyInterfaceType { get; }
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
         {
