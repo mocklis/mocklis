@@ -25,6 +25,8 @@ namespace Mocklis.Refactorings
     [Shared]
     internal class UpdateCSharpMocklisClassRefactoringProvider : CodeRefactoringProvider
     {
+        private const string MocklisEmptiedClass = "mocklis_emptied_class";
+
         public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -45,8 +47,7 @@ namespace Mocklis.Refactorings
 
         private async Task<Document> UpdateMocklisClassAsync(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)
         {
-            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-
+            var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
             MocklisSymbols mocklisSymbols = new MocklisSymbols(semanticModel.Compilation);
 
             bool isMocklisClass = classDecl.AttributeLists.SelectMany(al => al.Attributes)
@@ -57,10 +58,28 @@ namespace Mocklis.Refactorings
                 return document;
             }
 
-            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, classDecl, mocklisSymbols);
             var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-            var newRoot = oldRoot.ReplaceNode(classDecl, newClassDecl);
-            return document.WithSyntaxRoot(newRoot);
+
+            var emptyClassDecl = MocklisClass.EmptyMocklisClass(classDecl).WithAdditionalAnnotations(new SyntaxAnnotation(MocklisEmptiedClass));
+            var emptyRoot = oldRoot.ReplaceNode(classDecl, emptyClassDecl);
+            var emptyDoc = document.WithSyntaxRoot(emptyRoot);
+            emptyRoot = await emptyDoc.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+
+            semanticModel = await emptyDoc.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+
+            // And find the class again
+            emptyClassDecl = emptyRoot.DescendantNodesAndSelf().OfType<ClassDeclarationSyntax>()
+                .FirstOrDefault(n => n.GetAnnotations("mocklis_emptied_class").Any());
+
+            if (emptyClassDecl == null)
+            {
+                return document;
+            }
+
+            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols);
+
+            var newRoot = emptyRoot.ReplaceNode(emptyClassDecl, newClassDecl);
+            return emptyDoc.WithSyntaxRoot(newRoot);
         }
     }
 }

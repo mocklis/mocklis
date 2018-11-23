@@ -30,6 +30,13 @@ namespace Mocklis.CodeGeneration
         private readonly string[] _problematicMembers;
         private readonly bool _isAbstract;
 
+        public static ClassDeclarationSyntax EmptyMocklisClass(ClassDeclarationSyntax classDecl)
+        {
+            return classDecl.WithMembers(F.List<MemberDeclarationSyntax>())
+                .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken))
+                .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken));
+        }
+
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
             MocklisSymbols mocklisSymbols)
         {
@@ -44,6 +51,7 @@ namespace Mocklis.CodeGeneration
         {
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
+
             _mocklisSymbols = mocklisSymbols;
             _valueTuple = ParseName(mocklisSymbols.ValueTuple);
             _action = ParseName(mocklisSymbols.Action);
@@ -58,6 +66,7 @@ namespace Mocklis.CodeGeneration
 
             _interfaceMembers = Uniquifier.GetUniqueNames(interfaceMembers).ToArray();
         }
+
 
         public string Name => _classDeclaration.Identifier.Text;
 
