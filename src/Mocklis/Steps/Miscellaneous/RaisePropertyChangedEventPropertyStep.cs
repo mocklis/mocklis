@@ -24,10 +24,10 @@ namespace Mocklis.Steps.Miscellaneous
             _propertyChangedEvent = propertyChangedEvent ?? throw new ArgumentNullException(nameof(propertyChangedEvent));
         }
 
-        public override void Set(object instance, MemberMock memberMock, TValue value)
+        public override void Set(MemberMock memberMock, TValue value)
         {
-            base.Set(instance, memberMock, value);
-            _propertyChangedEvent.EventHandler?.Invoke(instance, new PropertyChangedEventArgs(memberMock.MemberName));
+            base.Set(memberMock, value);
+            _propertyChangedEvent.EventHandler?.Invoke(memberMock.MockInstance, new PropertyChangedEventArgs(memberMock.MemberName));
         }
     }
 }

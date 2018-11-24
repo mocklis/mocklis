@@ -15,7 +15,7 @@ namespace Mocklis.Core
 
     public sealed class PropertyMock<TValue> : MemberMock, IPropertyStepCaller<TValue>
     {
-        public IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
+        private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
 
         public PropertyMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
             : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
@@ -29,14 +29,14 @@ namespace Mocklis.Core
                 throw new ArgumentNullException(nameof(step));
             }
 
-            NextStep = step;
+            _nextStep = step;
             return step;
         }
 
         public TValue Value
         {
-            get => NextStep.Get(MockInstance, this);
-            set => NextStep.Set(MockInstance, this, value);
+            get => _nextStep.Get(this);
+            set => _nextStep.Set(this, value);
         }
     }
 }

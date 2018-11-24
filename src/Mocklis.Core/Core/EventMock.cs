@@ -35,12 +35,12 @@ namespace Mocklis.Core
 
         public void Add(THandler value)
         {
-            _nextStep.Add(MockInstance, this, value);
+            _nextStep.Add(this, value);
         }
 
         public void Remove(THandler value)
         {
-            _nextStep.Remove(MockInstance, this, value);
+            _nextStep.Remove(this, value);
         }
     }
 }

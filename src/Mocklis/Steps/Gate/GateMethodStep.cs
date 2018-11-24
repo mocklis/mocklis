@@ -27,9 +27,9 @@ namespace Mocklis.Steps.Gate
             cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled(cancellationToken));
         }
 
-        public override TResult Call(object instance, MemberMock memberMock, TParam param)
+        public override TResult Call(MemberMock memberMock, TParam param)
         {
-            var result = base.Call(instance, memberMock, param);
+            var result = base.Call(memberMock, param);
             _taskCompletionSource.TrySetResult(default);
             return result;
         }

@@ -22,9 +22,9 @@ namespace Mocklis.Steps.Lambda
             _action = action;
         }
 
-        public ValueTuple Call(object instance, MemberMock memberMock, TParam param)
+        public ValueTuple Call(MemberMock memberMock, TParam param)
         {
-            _action(instance, param);
+            _action(memberMock.MockInstance, param);
             return ValueTuple.Create();
         }
     }
@@ -38,9 +38,9 @@ namespace Mocklis.Steps.Lambda
             _action = action;
         }
 
-        public ValueTuple Call(object instance, MemberMock memberMock, ValueTuple param)
+        public ValueTuple Call(MemberMock memberMock, ValueTuple param)
         {
-            _action(instance);
+            _action(memberMock.MockInstance);
             return ValueTuple.Create();
         }
     }

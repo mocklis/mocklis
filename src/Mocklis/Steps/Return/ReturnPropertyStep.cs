@@ -21,12 +21,12 @@ namespace Mocklis.Steps.Return
             _value = value;
         }
 
-        public TValue Get(object instance, MemberMock memberMock)
+        public TValue Get(MemberMock memberMock)
         {
             return _value;
         }
 
-        public void Set(object instance, MemberMock memberMock, TValue value)
+        public void Set(MemberMock memberMock, TValue value)
         {
         }
     }

@@ -26,7 +26,7 @@ namespace Mocklis.Steps.Stored
 
         public IDictionary<TKey, TValue> Dictionary => _dictionary;
 
-        public TValue Get(object instance, MemberMock memberMock, TKey key)
+        public TValue Get(MemberMock memberMock, TKey key)
         {
             if (_dictionary.ContainsKey(key))
             {
@@ -36,7 +36,7 @@ namespace Mocklis.Steps.Stored
             return default;
         }
 
-        public void Set(object instance, MemberMock memberMock, TKey key, TValue value)
+        public void Set(MemberMock memberMock, TKey key, TValue value)
         {
             _dictionary[key] = value;
         }

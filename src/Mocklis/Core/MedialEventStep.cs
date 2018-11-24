@@ -28,14 +28,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public virtual void Add(object instance, MemberMock memberMock, THandler value)
+        public virtual void Add(MemberMock memberMock, THandler value)
         {
-            NextStep.Add(instance, memberMock, value);
+            NextStep.Add(memberMock, value);
         }
 
-        public virtual void Remove(object instance, MemberMock memberMock, THandler value)
+        public virtual void Remove(MemberMock memberMock, THandler value)
         {
-            NextStep.Remove(instance, memberMock, value);
+            NextStep.Remove(memberMock, value);
         }
     }
 }

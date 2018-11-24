@@ -21,7 +21,7 @@ namespace Mocklis.Steps.Stored
 
         public THandler EventHandler => _eventHandler;
 
-        void IEventStep<THandler>.Add(object instance, MemberMock memberMock, THandler value)
+        void IEventStep<THandler>.Add(MemberMock memberMock, THandler value)
         {
             THandler previousHandler;
             THandler eventHandler = _eventHandler;
@@ -34,7 +34,7 @@ namespace Mocklis.Steps.Stored
             while (eventHandler != previousHandler);
         }
 
-        void IEventStep<THandler>.Remove(object instance, MemberMock memberMock, THandler value)
+        void IEventStep<THandler>.Remove(MemberMock memberMock, THandler value)
         {
             THandler previousHandler;
             THandler eventHandler = _eventHandler;

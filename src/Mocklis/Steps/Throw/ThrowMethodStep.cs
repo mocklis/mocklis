@@ -22,7 +22,7 @@ namespace Mocklis.Steps.Throw
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
 
-        public TResult Call(object instance, MemberMock memberMock, ValueTuple param)
+        public TResult Call(MemberMock memberMock, ValueTuple param)
         {
             throw _exceptionFactory();
         }
@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Throw
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
 
-        public TResult Call(object instance, MemberMock memberMock, TParam param)
+        public TResult Call(MemberMock memberMock, TParam param)
         {
             throw _exceptionFactory(param);
         }

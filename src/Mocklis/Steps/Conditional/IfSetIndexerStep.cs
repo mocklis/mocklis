@@ -19,9 +19,9 @@ namespace Mocklis.Steps.Conditional
         {
         }
 
-        public override void Set(object instance, MemberMock memberMock, TKey key, TValue value)
+        public override void Set(MemberMock memberMock, TKey key, TValue value)
         {
-            IfBranch.Set(instance, memberMock, key, value);
+            IfBranch.Set(memberMock, key, value);
         }
     }
 }

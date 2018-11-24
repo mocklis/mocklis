@@ -8,7 +8,7 @@ namespace Mocklis.Core
 {
     public interface IIndexerStep<in TKey, TValue>
     {
-        TValue Get(object instance, MemberMock memberMock, TKey key);
-        void Set(object instance, MemberMock memberMock, TKey key, TValue value);
+        TValue Get(MemberMock memberMock, TKey key);
+        void Set(MemberMock memberMock, TKey key, TValue value);
     }
 }

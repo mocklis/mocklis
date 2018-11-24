@@ -23,14 +23,14 @@ namespace Mocklis.Steps.Return
             _value = value;
         }
 
-        public override TValue Get(object instance, MemberMock memberMock)
+        public override TValue Get(MemberMock memberMock)
         {
             if (Interlocked.Exchange(ref _returnCount, 1) == 0)
             {
                 return _value;
             }
 
-            return base.Get(instance, memberMock);
+            return base.Get(memberMock);
         }
     }
 }

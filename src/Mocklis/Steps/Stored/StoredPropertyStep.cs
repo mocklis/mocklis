@@ -22,12 +22,12 @@ namespace Mocklis.Steps.Stored
             Value = initialValue;
         }
 
-        public TValue Get(object instance, MemberMock memberMock)
+        public TValue Get(MemberMock memberMock)
         {
             return Value;
         }
 
-        public void Set(object instance, MemberMock memberMock, TValue value)
+        public void Set(MemberMock memberMock, TValue value)
         {
             Value = value;
         }

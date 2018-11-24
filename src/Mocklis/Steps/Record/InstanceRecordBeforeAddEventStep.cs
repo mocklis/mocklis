@@ -22,10 +22,10 @@ namespace Mocklis.Steps.Record
             _selection = selection ?? throw new ArgumentNullException(nameof(selection));
         }
 
-        public override void Add(object instance, MemberMock memberMock, THandler value)
+        public override void Add(MemberMock memberMock, THandler value)
         {
-            Add(_selection(instance, value));
-            base.Add(instance, memberMock, value);
+            Add(_selection(memberMock.MockInstance, value));
+            base.Add(memberMock, value);
         }
     }
 }

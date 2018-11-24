@@ -22,12 +22,12 @@ namespace Mocklis.Steps.Log
             _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         }
 
-        public override void Add(object instance, MemberMock memberMock, THandler value)
+        public override void Add(MemberMock memberMock, THandler value)
         {
             _logContext.LogBeforeEventAdd(memberMock);
             try
             {
-                base.Add(instance, memberMock, value);
+                base.Add(memberMock, value);
             }
             catch (Exception exception)
             {
@@ -38,12 +38,12 @@ namespace Mocklis.Steps.Log
             _logContext.LogAfterEventAdd(memberMock);
         }
 
-        public override void Remove(object instance, MemberMock memberMock, THandler value)
+        public override void Remove(MemberMock memberMock, THandler value)
         {
             _logContext.LogBeforeEventRemove(memberMock);
             try
             {
-                base.Remove(instance, memberMock, value);
+                base.Remove(memberMock, value);
             }
             catch (Exception exception)
             {

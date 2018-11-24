@@ -21,7 +21,7 @@ namespace Mocklis.Steps.Return
             _result = result;
         }
 
-        public TResult Call(object instance, MemberMock memberMock, TParam param)
+        public TResult Call(MemberMock memberMock, TParam param)
         {
             return _result;
         }

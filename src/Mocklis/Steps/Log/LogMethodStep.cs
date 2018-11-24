@@ -26,7 +26,7 @@ namespace Mocklis.Steps.Log
             _hasResult = typeof(TResult) != typeof(ValueTuple);
         }
 
-        public override TResult Call(object instance, MemberMock memberMock, TParam param)
+        public override TResult Call(MemberMock memberMock, TParam param)
         {
             if (_hasParameters)
             {
@@ -41,7 +41,7 @@ namespace Mocklis.Steps.Log
 
             try
             {
-                result = base.Call(instance, memberMock, param);
+                result = base.Call(memberMock, param);
             }
             catch (Exception exception)
             {

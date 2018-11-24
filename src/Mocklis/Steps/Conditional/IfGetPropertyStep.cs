@@ -19,9 +19,9 @@ namespace Mocklis.Steps.Conditional
         {
         }
 
-        public override TValue Get(object instance, MemberMock memberMock)
+        public override TValue Get(MemberMock memberMock)
         {
-            return IfBranch.Get(instance, memberMock);
+            return IfBranch.Get(memberMock);
         }
     }
 }

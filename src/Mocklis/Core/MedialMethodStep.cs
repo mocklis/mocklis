@@ -28,9 +28,9 @@ namespace Mocklis.Core
             return step;
         }
 
-        public virtual TResult Call(object instance, MemberMock memberMock, TParam param)
+        public virtual TResult Call(MemberMock memberMock, TParam param)
         {
-            return NextStep.Call(instance, memberMock, param);
+            return NextStep.Call(memberMock, param);
         }
     }
 }

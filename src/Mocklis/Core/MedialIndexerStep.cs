@@ -28,14 +28,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public virtual TValue Get(object instance, MemberMock memberMock, TKey key)
+        public virtual TValue Get(MemberMock memberMock, TKey key)
         {
-            return NextStep.Get(instance, memberMock, key);
+            return NextStep.Get(memberMock, key);
         }
 
-        public virtual void Set(object instance, MemberMock memberMock, TKey key, TValue value)
+        public virtual void Set(MemberMock memberMock, TKey key, TValue value)
         {
-            NextStep.Set(instance, memberMock, key, value);
+            NextStep.Set(memberMock, key, value);
         }
     }
 }

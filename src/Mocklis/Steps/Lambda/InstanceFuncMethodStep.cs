@@ -22,9 +22,9 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TResult Call(object instance, MemberMock memberMock, TParam param)
+        public TResult Call(MemberMock memberMock, TParam param)
         {
-            return _func(instance, param);
+            return _func(memberMock.MockInstance, param);
         }
     }
 
@@ -37,9 +37,9 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TResult Call(object instance, MemberMock memberMock, ValueTuple param)
+        public TResult Call(MemberMock memberMock, ValueTuple param)
         {
-            return _func(instance);
+            return _func(memberMock.MockInstance);
         }
     }
 }

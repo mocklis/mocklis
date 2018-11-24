@@ -35,14 +35,14 @@ namespace Mocklis.Steps.Conditional
                 return step;
             }
 
-            TValue IPropertyStep<TValue>.Get(object instance, MemberMock memberMock)
+            TValue IPropertyStep<TValue>.Get(MemberMock memberMock)
             {
-                return _nextStep.Get(instance, memberMock);
+                return _nextStep.Get(memberMock);
             }
 
-            void IPropertyStep<TValue>.Set(object instance, MemberMock memberMock, TValue value)
+            void IPropertyStep<TValue>.Set(MemberMock memberMock, TValue value)
             {
-                _nextStep.Set(instance, memberMock, value);
+                _nextStep.Set(memberMock, value);
             }
 
             public IPropertyStep<TValue> ElseBranch { get; }
@@ -62,16 +62,16 @@ namespace Mocklis.Steps.Conditional
                 _ifPropertyStep = ifPropertyStep;
             }
 
-            public TValue Get(object instance, MemberMock memberMock)
+            public TValue Get(MemberMock memberMock)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifPropertyStep.NextStep.Get(instance, memberMock);
+                return _ifPropertyStep.NextStep.Get(memberMock);
             }
 
-            public void Set(object instance, MemberMock memberMock, TValue value)
+            public void Set(MemberMock memberMock, TValue value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifPropertyStep.NextStep.Set(instance, memberMock, value);
+                _ifPropertyStep.NextStep.Set(memberMock, value);
             }
         }
 

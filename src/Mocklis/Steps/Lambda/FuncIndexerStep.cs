@@ -22,12 +22,12 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TValue Get(object instance, MemberMock memberMock, TKey key)
+        public TValue Get(MemberMock memberMock, TKey key)
         {
             return _func(key);
         }
 
-        public void Set(object instance, MemberMock memberMock, TKey key, TValue value)
+        public void Set(MemberMock memberMock, TKey key, TValue value)
         {
         }
     }

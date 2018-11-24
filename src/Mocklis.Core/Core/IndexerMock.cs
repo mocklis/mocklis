@@ -15,7 +15,7 @@ namespace Mocklis.Core
 
     public sealed class IndexerMock<TKey, TValue> : MemberMock, IIndexerStepCaller<TKey, TValue>
     {
-        public IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
+        private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
 
         public IndexerMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
             : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
@@ -29,14 +29,14 @@ namespace Mocklis.Core
                 throw new ArgumentNullException(nameof(step));
             }
 
-            NextStep = step;
+            _nextStep = step;
             return step;
         }
 
         public TValue this[TKey key]
         {
-            get => NextStep.Get(MockInstance, this, key);
-            set => NextStep.Set(MockInstance, this, key, value);
+            get => _nextStep.Get(this, key);
+            set => _nextStep.Set(this, key, value);
         }
     }
 }

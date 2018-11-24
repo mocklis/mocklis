@@ -24,24 +24,24 @@ namespace Mocklis.Steps.Record
             _onError = onError;
         }
 
-        public override TValue Get(object instance, MemberMock memberMock)
+        public override TValue Get(MemberMock memberMock)
         {
             TValue value;
             try
             {
-                value = base.Get(instance, memberMock);
+                value = base.Get(memberMock);
             }
             catch (Exception exception)
             {
                 if (_onError != null)
                 {
-                    Add(_onError(instance, exception));
+                    Add(_onError(memberMock.MockInstance, exception));
                 }
 
                 throw;
             }
 
-            Add(_selection(instance, value));
+            Add(_selection(memberMock.MockInstance, value));
             return value;
         }
     }

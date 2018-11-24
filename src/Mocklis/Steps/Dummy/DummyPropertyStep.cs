@@ -20,12 +20,12 @@ namespace Mocklis.Steps.Dummy
         {
         }
 
-        public TValue Get(object instance, MemberMock memberMock)
+        public TValue Get(MemberMock memberMock)
         {
             return default;
         }
 
-        public void Set(object instance, MemberMock memberMock, TValue value)
+        public void Set(MemberMock memberMock, TValue value)
         {
         }
     }

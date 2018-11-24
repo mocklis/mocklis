@@ -22,13 +22,13 @@ namespace Mocklis.Steps.Log
             _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         }
 
-        public override TValue Get(object instance, MemberMock memberMock, TKey key)
+        public override TValue Get(MemberMock memberMock, TKey key)
         {
             _logContext.LogBeforeIndexerGet(memberMock, key);
             TValue result;
             try
             {
-                result = base.Get(instance, memberMock, key);
+                result = base.Get(memberMock, key);
             }
             catch (Exception exception)
             {
@@ -40,12 +40,12 @@ namespace Mocklis.Steps.Log
             return result;
         }
 
-        public override void Set(object instance, MemberMock memberMock, TKey key, TValue value)
+        public override void Set(MemberMock memberMock, TKey key, TValue value)
         {
             _logContext.LogBeforeIndexerSet(memberMock, key, value);
             try
             {
-                base.Set(instance, memberMock, key, value);
+                base.Set(memberMock, key, value);
             }
             catch (Exception exception)
             {

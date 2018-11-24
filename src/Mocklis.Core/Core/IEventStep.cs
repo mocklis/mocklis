@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     public interface IEventStep<in THandler> where THandler : Delegate
     {
-        void Add(object instance, MemberMock memberMock, THandler value);
-        void Remove(object instance, MemberMock memberMock, THandler value);
+        void Add(MemberMock memberMock, THandler value);
+        void Remove(MemberMock memberMock, THandler value);
     }
 }

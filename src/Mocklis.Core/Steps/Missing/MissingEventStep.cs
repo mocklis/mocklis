@@ -21,12 +21,12 @@ namespace Mocklis.Steps.Missing
         {
         }
 
-        public void Add(object instance, MemberMock memberMock, THandler value)
+        public void Add(MemberMock memberMock, THandler value)
         {
             throw new MockMissingException(MockType.EventAdd, memberMock);
         }
 
-        public void Remove(object instance, MemberMock memberMock, THandler value)
+        public void Remove(MemberMock memberMock, THandler value)
         {
             throw new MockMissingException(MockType.EventRemove, memberMock);
         }

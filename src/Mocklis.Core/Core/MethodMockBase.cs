@@ -36,7 +36,7 @@ namespace Mocklis.Core
 
         protected TResult Call(TParam param)
         {
-            return _nextStep.Call(MockInstance, this, param);
+            return _nextStep.Call(this, param);
         }
     }
 }
