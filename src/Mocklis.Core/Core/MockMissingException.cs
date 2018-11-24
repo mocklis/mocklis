@@ -56,6 +56,11 @@ namespace Mocklis.Core
                     throw new ArgumentOutOfRangeException(nameof(memberType));
             }
 
+            if (memberMock == null)
+            {
+                throw new ArgumentNullException(nameof(memberMock));
+            }
+
             return string.Format(rawMessage, memberMock.MocklisClassName, memberMock.InterfaceName,
                 memberMock.MemberName, memberMock.MemberMockName);
         }
@@ -84,7 +89,7 @@ namespace Mocklis.Core
         protected MockMissingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             MemberType = (MockType)info.GetInt32(nameof(MemberType));
-            MocklisClassName = info.GetString(nameof(MemberMockName));
+            MocklisClassName = info.GetString(nameof(MocklisClassName));
             InterfaceName = info.GetString(nameof(InterfaceName));
             MemberName = info.GetString(nameof(MemberName));
             MemberMockName = info.GetString(nameof(MemberMockName));

@@ -59,6 +59,11 @@
 --------------------------------------------------------------------------------------------------------------------&#xD;
 </s:String>
 	<s:Boolean x:Key="/Default/Environment/ContinuousTesting/ShowStatusBarIndicator/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=AB163B37D61390459679D454CEE24D8E/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=AB163B37D61390459679D454CEE24D8E/AbsolutePath/@EntryValue">D:\Work\Mocklis\src\Mocklis.Core.Tests\Mocklis.Core.Tests.csproj.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=AB163B37D61390459679D454CEE24D8E/RelativePath/@EntryValue">..\Mocklis.Core.Tests\Mocklis.Core.Tests.csproj.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileAB163B37D61390459679D454CEE24D8E/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileAB163B37D61390459679D454CEE24D8E/RelativePriority/@EntryValue">1</s:Double>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpAttributeForSingleLineMethodUpgrade/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpKeepExistingMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpPlaceEmbeddedOnSameLineMigration/@EntryIndexedValue">True</s:Boolean>
