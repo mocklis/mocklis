@@ -20,6 +20,7 @@ namespace Mocklis.Steps.Log
         void LogEventAddException(MemberMock memberMock, Exception exception);
         void LogBeforeEventRemove(MemberMock memberMock);
         void LogAfterEventRemove(MemberMock memberMock);
+        void LogEventRemoveException(MemberMock memberMock, Exception exception);
 
         void LogBeforeIndexerGet<TKey>(MemberMock memberMock, TKey key);
         void LogAfterIndexerGet<TValue>(MemberMock memberMock, TValue value);
@@ -34,7 +35,6 @@ namespace Mocklis.Steps.Log
         void LogAfterMethodCallWithResult<TResult>(MemberMock memberMock, TResult result);
         void LogMethodCallException(MemberMock memberMock, Exception exception);
 
-        void LogEventRemoveException(MemberMock memberMock, Exception exception);
         void LogBeforePropertyGet(MemberMock memberMock);
         void LogAfterPropertyGet<TValue>(MemberMock memberMock, TValue value);
         void LogPropertyGetException(MemberMock memberMock, Exception exception);

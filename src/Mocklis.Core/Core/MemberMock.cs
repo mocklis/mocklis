@@ -22,8 +22,8 @@ namespace Mocklis.Core
 
         protected internal MemberMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
         {
-            MockInstance = mockInstance;
-            MocklisClassName = mocklisClassName;
+            MockInstance = mockInstance ?? throw new ArgumentNullException(nameof(mockInstance));
+            MocklisClassName = mocklisClassName ?? throw new ArgumentNullException(nameof(mocklisClassName));
             InterfaceName = interfaceName ?? throw new ArgumentNullException(nameof(interfaceName));
             MemberName = memberName ?? throw new ArgumentNullException(nameof(memberName));
             MemberMockName = memberMockName ?? throw new ArgumentNullException(nameof(memberMockName));
