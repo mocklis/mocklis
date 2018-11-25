@@ -17,7 +17,7 @@ namespace Mocklis.Core
     {
         protected IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
 
-        public TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>
+        TStep IIndexerStepCaller<TKey, TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

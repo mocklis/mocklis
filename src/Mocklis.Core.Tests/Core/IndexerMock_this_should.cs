@@ -34,7 +34,7 @@ namespace Mocklis.Core.Tests.Core
                 sentKey = p.key;
                 return "5";
             });
-            _indexerMock.SetNextStep(newStep);
+            ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep(newStep);
 
             string value = _indexerMock[5];
 
@@ -57,7 +57,7 @@ namespace Mocklis.Core.Tests.Core
                 sentKey = p.key;
                 sentValue = p.value;
             });
-            _indexerMock.SetNextStep(newStep);
+            ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep(newStep);
 
             _indexerMock[5] = "5";
 

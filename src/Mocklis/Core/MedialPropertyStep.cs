@@ -17,7 +17,7 @@ namespace Mocklis.Core
     {
         protected IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
 
-        public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
+        TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

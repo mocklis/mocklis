@@ -24,7 +24,7 @@ namespace Mocklis.Steps.Conditional
         {
             private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
 
-            public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
+            TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

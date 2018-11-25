@@ -32,7 +32,7 @@ namespace Mocklis.Core.Tests.Core
 
             var newStep = new MockMethodStep<ValueTuple, ValueTuple>();
             newStep.Call.Action(p => { sentMockInfo = p.mockInfo; });
-            _parameterLessActionMock.SetNextStep(newStep);
+            ((IMethodStepCaller<ValueTuple, ValueTuple>)_parameterLessActionMock).SetNextStep(newStep);
 
             _parameterLessActionMock.Call();
 
@@ -51,7 +51,7 @@ namespace Mocklis.Core.Tests.Core
                 sentMockInfo = p.mockInfo;
                 sentParam = p.param;
             });
-            _actionMock.SetNextStep(newStep);
+            ((IMethodStepCaller<int, ValueTuple>)_actionMock).SetNextStep(newStep);
 
             _actionMock.Call(5);
 

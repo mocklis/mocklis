@@ -24,7 +24,7 @@ namespace Mocklis.Steps.Conditional
         {
             private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
 
-            public TStep SetNextStep<TStep>(TStep step) where TStep : IMethodStep<TParam, TResult>
+            TStep IMethodStepCaller<TParam, TResult>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

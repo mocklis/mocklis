@@ -30,7 +30,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                _funcMock.SetNextStep((IMethodStep<int, string>)null));
+                ((IMethodStepCaller<int, string>)_funcMock).SetNextStep((IMethodStep<int, string>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -38,7 +38,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockMethodStep<int, string>();
-            var returnedStep = _funcMock.SetNextStep(newStep);
+            var returnedStep = ((IMethodStepCaller<int, string>)_funcMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -53,7 +53,7 @@ namespace Mocklis.Core.Tests.Core
                 called = true;
                 return string.Empty;
             });
-            _parameterLessFuncMock.SetNextStep(newStep);
+            ((IMethodStepCaller<ValueTuple, string>)_parameterLessFuncMock).SetNextStep(newStep);
             _parameterLessFuncMock.Call();
             Assert.True(called);
         }
@@ -68,7 +68,7 @@ namespace Mocklis.Core.Tests.Core
                 called = true;
                 return string.Empty;
             });
-            _funcMock.SetNextStep(newStep);
+            ((IMethodStepCaller<int, string>)_funcMock).SetNextStep(newStep);
             _funcMock.Call(5);
             Assert.True(called);
         }

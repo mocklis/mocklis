@@ -24,7 +24,7 @@ namespace Mocklis.Steps.Conditional
         {
             private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
 
-            public TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>
+            TStep IIndexerStepCaller<TKey, TValue>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

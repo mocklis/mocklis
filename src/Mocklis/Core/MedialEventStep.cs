@@ -17,7 +17,7 @@ namespace Mocklis.Core
     {
         protected IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
 
-        public TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>
+        TStep IEventStepCaller<THandler>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

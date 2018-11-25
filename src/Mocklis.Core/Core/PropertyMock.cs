@@ -22,7 +22,7 @@ namespace Mocklis.Core
         {
         }
 
-        public TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>
+        TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

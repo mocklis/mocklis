@@ -16,18 +16,18 @@ namespace Mocklis.Core.Tests.Core
 
     public class EventMock_SetNextStep_should
     {
-        private readonly EventMock<EventHandler> _propertyMock;
+        private readonly EventMock<EventHandler> _eventMock;
 
         public EventMock_SetNextStep_should()
         {
-            _propertyMock = new EventMock<EventHandler>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
+            _eventMock = new EventMock<EventHandler>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
         }
 
         [Fact]
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                _propertyMock.SetNextStep((IEventStep<EventHandler>)null));
+                ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep((IEventStep<EventHandler>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -35,7 +35,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockEventStep<EventHandler>();
-            var returnedStep = _propertyMock.SetNextStep(newStep);
+            var returnedStep = ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -45,8 +45,8 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockEventStep<EventHandler>();
             newStep.Add.Action(_ => { called = true; });
-            _propertyMock.SetNextStep(newStep);
-            _propertyMock.Add((sender, e) => { });
+            ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            _eventMock.Add((sender, e) => { });
             Assert.True(called);
         }
 
@@ -56,8 +56,8 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockEventStep<EventHandler>();
             newStep.Remove.Action(_ => { called = true; });
-            _propertyMock.SetNextStep(newStep);
-            _propertyMock.Remove((sender, e) => { });
+            ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            _eventMock.Remove((sender, e) => { });
             Assert.True(called);
         }
     }

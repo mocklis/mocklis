@@ -27,7 +27,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                _propertyMock.SetNextStep((IPropertyStep<int>)null));
+                ((IPropertyStepCaller<int>)_propertyMock).SetNextStep((IPropertyStep<int>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -35,7 +35,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockPropertyStep<int>();
-            var returnedStep = _propertyMock.SetNextStep(newStep);
+            var returnedStep = ((IPropertyStepCaller<int>)_propertyMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -49,7 +49,7 @@ namespace Mocklis.Core.Tests.Core
                 called = true;
                 return 5;
             });
-            _propertyMock.SetNextStep(newStep);
+            ((IPropertyStepCaller<int>)_propertyMock).SetNextStep(newStep);
             // ReSharper disable once UnusedVariable
             var ignored = _propertyMock.Value;
             Assert.True(called);
@@ -61,7 +61,7 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockPropertyStep<int>();
             newStep.Set.Action(_ => called = true);
-            _propertyMock.SetNextStep(newStep);
+            ((IPropertyStepCaller<int>)_propertyMock).SetNextStep(newStep);
             _propertyMock.Value = 5;
             Assert.True(called);
         }

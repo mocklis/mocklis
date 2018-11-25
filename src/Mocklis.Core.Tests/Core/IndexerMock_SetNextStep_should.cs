@@ -27,7 +27,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                _indexerMock.SetNextStep((IIndexerStep<int, string>)null));
+                ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep((IIndexerStep<int, string>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -35,7 +35,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockIndexerStep<int, string>();
-            var returnedStep = _indexerMock.SetNextStep(newStep);
+            var returnedStep = ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -49,7 +49,7 @@ namespace Mocklis.Core.Tests.Core
                 called = true;
                 return "5";
             });
-            _indexerMock.SetNextStep(newStep);
+            ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep(newStep);
             // ReSharper disable once UnusedVariable
             var ignored = _indexerMock[5];
             Assert.True(called);
@@ -61,7 +61,7 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockIndexerStep<int, string>();
             newStep.Set.Action(_ => called = true);
-            _indexerMock.SetNextStep(newStep);
+            ((IIndexerStepCaller<int, string>)_indexerMock).SetNextStep(newStep);
             _indexerMock[5] = "5";
             Assert.True(called);
         }
