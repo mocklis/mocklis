@@ -22,11 +22,11 @@ namespace Mocklis.Steps.Conditional
             Comparer = comparer ?? EqualityComparer<TValue>.Default;
         }
 
-        public override void Set(MemberMock memberMock, TValue value)
+        public override void Set(IMockInfo mockInfo, TValue value)
         {
-            if (!Comparer.Equals(NextStep.Get(memberMock), value))
+            if (!Comparer.Equals(NextStep.Get(mockInfo), value))
             {
-                base.Set(memberMock, value);
+                base.Set(mockInfo, value);
             }
         }
     }

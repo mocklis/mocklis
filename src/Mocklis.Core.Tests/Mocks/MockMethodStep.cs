@@ -11,11 +11,11 @@ namespace Mocklis.Core.Tests.Mocks
     {
         public MockMethodStep()
         {
-            Call = new FuncMethodMock<(MemberMock memberMock, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call");
+            Call = new FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call");
         }
 
-        public FuncMethodMock<(MemberMock memberMock, TParam param), TResult> Call { get; }
+        public FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult> Call { get; }
 
-        TResult IMethodStep<TParam, TResult>.Call(MemberMock memberMock, TParam param) => Call.Call((memberMock, param));
+        TResult IMethodStep<TParam, TResult>.Call(IMockInfo mockInfo, TParam param) => Call.Call((mockInfo, param));
     }
 }

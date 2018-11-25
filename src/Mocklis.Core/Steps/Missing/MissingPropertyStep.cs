@@ -20,14 +20,14 @@ namespace Mocklis.Steps.Missing
         {
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(IMockInfo mockInfo)
         {
-            throw new MockMissingException(MockType.PropertyGet, memberMock);
+            throw new MockMissingException(MockType.PropertyGet, mockInfo);
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(IMockInfo mockInfo, TValue value)
         {
-            throw new MockMissingException(MockType.PropertySet, memberMock);
+            throw new MockMissingException(MockType.PropertySet, mockInfo);
         }
     }
 }

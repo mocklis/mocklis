@@ -20,9 +20,9 @@ namespace Mocklis.Steps.Conditional
         {
         }
 
-        public override void Add(MemberMock memberMock, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler value)
         {
-            IfBranch.Add(memberMock, value);
+            IfBranch.Add(mockInfo, value);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace Mocklis.Steps.Missing
         {
         }
 
-        public TResult Call(MemberMock memberMock, TParam param)
+        public TResult Call(IMockInfo mockInfo, TParam param)
         {
-            throw new MockMissingException(MockType.Method, memberMock);
+            throw new MockMissingException(MockType.Method, mockInfo);
         }
     }
 }

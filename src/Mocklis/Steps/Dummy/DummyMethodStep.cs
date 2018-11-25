@@ -20,7 +20,7 @@ namespace Mocklis.Steps.Dummy
         {
         }
 
-        public TResult Call(MemberMock memberMock, TParam param)
+        public TResult Call(IMockInfo mockInfo, TParam param)
         {
             return default;
         }

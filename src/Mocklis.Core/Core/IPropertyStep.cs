@@ -8,7 +8,7 @@ namespace Mocklis.Core
 {
     public interface IPropertyStep<TValue>
     {
-        TValue Get(MemberMock memberMock);
-        void Set(MemberMock memberMock, TValue value);
+        TValue Get(IMockInfo mockInfo);
+        void Set(IMockInfo mockInfo, TValue value);
     }
 }

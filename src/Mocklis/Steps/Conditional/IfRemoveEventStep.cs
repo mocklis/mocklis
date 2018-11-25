@@ -20,9 +20,9 @@ namespace Mocklis.Steps.Conditional
         {
         }
 
-        public override void Remove(MemberMock memberMock, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler value)
         {
-            IfBranch.Remove(memberMock, value);
+            IfBranch.Remove(mockInfo, value);
         }
     }
 }

@@ -25,20 +25,20 @@ namespace Mocklis.Steps.Conditional
             _setCondition = setCondition ?? throw new ArgumentNullException(nameof(setCondition));
         }
 
-        public override TValue Get(MemberMock memberMock)
+        public override TValue Get(IMockInfo mockInfo)
         {
-            return _getCondition(memberMock.MockInstance) ? IfBranch.Get(memberMock) : base.Get(memberMock);
+            return _getCondition(mockInfo.MockInstance) ? IfBranch.Get(mockInfo) : base.Get(mockInfo);
         }
 
-        public override void Set(MemberMock memberMock, TValue value)
+        public override void Set(IMockInfo mockInfo, TValue value)
         {
-            if (_setCondition(memberMock.MockInstance, value))
+            if (_setCondition(mockInfo.MockInstance, value))
             {
-                IfBranch.Set(memberMock, value);
+                IfBranch.Set(mockInfo, value);
             }
             else
             {
-                base.Set(memberMock, value);
+                base.Set(mockInfo, value);
             }
         }
     }

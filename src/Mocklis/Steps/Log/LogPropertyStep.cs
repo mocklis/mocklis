@@ -22,38 +22,38 @@ namespace Mocklis.Steps.Log
             _logContext = logContext ?? throw new ArgumentNullException(nameof(logContext));
         }
 
-        public override TValue Get(MemberMock memberMock)
+        public override TValue Get(IMockInfo mockInfo)
         {
-            _logContext.LogBeforePropertyGet(memberMock);
+            _logContext.LogBeforePropertyGet(mockInfo);
             TValue result;
             try
             {
-                result = base.Get(memberMock);
+                result = base.Get(mockInfo);
             }
             catch (Exception exception)
             {
-                _logContext.LogPropertyGetException(memberMock, exception);
+                _logContext.LogPropertyGetException(mockInfo, exception);
                 throw;
             }
 
-            _logContext.LogAfterPropertyGet(memberMock, result);
+            _logContext.LogAfterPropertyGet(mockInfo, result);
             return result;
         }
 
-        public override void Set(MemberMock memberMock, TValue value)
+        public override void Set(IMockInfo mockInfo, TValue value)
         {
-            _logContext.LogBeforePropertySet(memberMock, value);
+            _logContext.LogBeforePropertySet(mockInfo, value);
             try
             {
-                base.Set(memberMock, value);
+                base.Set(mockInfo, value);
             }
             catch (Exception exception)
             {
-                _logContext.LogPropertySetException(memberMock, exception);
+                _logContext.LogPropertySetException(mockInfo, exception);
                 throw;
             }
 
-            _logContext.LogAfterPropertySet(memberMock);
+            _logContext.LogAfterPropertySet(mockInfo);
         }
     }
 }

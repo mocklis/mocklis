@@ -30,16 +30,16 @@ namespace Mocklis.Verification.Steps
             _expectedNumberOfSets = expectedNumberOfSets;
         }
 
-        public override TValue Get(MemberMock memberMock, TKey key)
+        public override TValue Get(IMockInfo mockInfo, TKey key)
         {
             Interlocked.Increment(ref _currentNumberOfGets);
-            return base.Get(memberMock, key);
+            return base.Get(mockInfo, key);
         }
 
-        public override void Set(MemberMock memberMock, TKey key, TValue value)
+        public override void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
             Interlocked.Increment(ref _currentNumberOfSets);
-            base.Set(memberMock, key, value);
+            base.Set(mockInfo, key, value);
         }
 
         public IEnumerable<VerificationResult> Verify()

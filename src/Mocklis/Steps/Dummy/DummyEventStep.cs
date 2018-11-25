@@ -21,11 +21,11 @@ namespace Mocklis.Steps.Dummy
         {
         }
 
-        public void Add(MemberMock memberMock, THandler value)
+        public void Add(IMockInfo mockInfo, THandler value)
         {
         }
 
-        public void Remove(MemberMock memberMock, THandler value)
+        public void Remove(IMockInfo mockInfo, THandler value)
         {
         }
     }

@@ -26,36 +26,36 @@ namespace Mocklis.Steps.Log
             _hasResult = typeof(TResult) != typeof(ValueTuple);
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
             if (_hasParameters)
             {
-                _logContext.LogBeforeMethodCallWithParameters(memberMock, param);
+                _logContext.LogBeforeMethodCallWithParameters(mockInfo, param);
             }
             else
             {
-                _logContext.LogBeforeMethodCallWithoutParameters(memberMock);
+                _logContext.LogBeforeMethodCallWithoutParameters(mockInfo);
             }
 
             TResult result;
 
             try
             {
-                result = base.Call(memberMock, param);
+                result = base.Call(mockInfo, param);
             }
             catch (Exception exception)
             {
-                _logContext.LogMethodCallException(memberMock, exception);
+                _logContext.LogMethodCallException(mockInfo, exception);
                 throw;
             }
 
             if (_hasResult)
             {
-                _logContext.LogAfterMethodCallWithResult(memberMock, result);
+                _logContext.LogAfterMethodCallWithResult(mockInfo, result);
             }
             else
             {
-                _logContext.LogAfterMethodCallWithoutResult(memberMock);
+                _logContext.LogAfterMethodCallWithoutResult(mockInfo);
             }
 
             return result;

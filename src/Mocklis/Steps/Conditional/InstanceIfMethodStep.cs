@@ -23,9 +23,9 @@ namespace Mocklis.Steps.Conditional
             _condition = condition ?? throw new ArgumentNullException(nameof(condition));
         }
 
-        public override TResult Call(MemberMock memberMock, ValueTuple param)
+        public override TResult Call(IMockInfo mockInfo, ValueTuple param)
         {
-            return _condition(memberMock.MockInstance) ? IfBranch.Call(memberMock, param) : base.Call(memberMock, param);
+            return _condition(mockInfo.MockInstance) ? IfBranch.Call(mockInfo, param) : base.Call(mockInfo, param);
         }
     }
 
@@ -39,9 +39,9 @@ namespace Mocklis.Steps.Conditional
             _condition = condition ?? throw new ArgumentNullException(nameof(condition));
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
-            return _condition(memberMock.MockInstance, param) ? IfBranch.Call(memberMock, param) : base.Call(memberMock, param);
+            return _condition(mockInfo.MockInstance, param) ? IfBranch.Call(mockInfo, param) : base.Call(mockInfo, param);
         }
     }
 }

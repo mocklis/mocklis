@@ -23,14 +23,14 @@ namespace Mocklis.Steps.Return
             _result = result;
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
             if (Interlocked.Exchange(ref _returnCount, 1) == 0)
             {
                 return _result;
             }
 
-            return base.Call(memberMock, param);
+            return base.Call(mockInfo, param);
         }
     }
 }

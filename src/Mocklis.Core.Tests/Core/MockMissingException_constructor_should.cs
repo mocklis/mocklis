@@ -15,20 +15,20 @@ namespace Mocklis.Core.Tests.Core
 
     public class MockMissingException_constructor_should
     {
-        private readonly MemberMock _memberMock =
+        private readonly IMockInfo _mockInfo =
             new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
 
         [Fact(DisplayName = "require valid memberType (innerException)")]
         public void require_valid_memberType_X28innerExceptionX29()
         {
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new MockMissingException((MockType)17, _memberMock, new Exception()));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new MockMissingException((MockType)17, _mockInfo, new Exception()));
             Assert.Equal("memberType", exception.ParamName);
         }
 
         [Fact]
         public void require_valid_memberType()
         {
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new MockMissingException((MockType)17, _memberMock));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new MockMissingException((MockType)17, _mockInfo));
             Assert.Equal("memberType", exception.ParamName);
         }
 
@@ -50,7 +50,7 @@ namespace Mocklis.Core.Tests.Core
         public void set_properties_X28innerExceptionX29()
         {
             var innerException = new Exception();
-            var exception = new MockMissingException(MockType.PropertyGet, _memberMock, innerException);
+            var exception = new MockMissingException(MockType.PropertyGet, _mockInfo, innerException);
             Assert.Equal(MockType.PropertyGet, exception.MemberType);
             Assert.Equal("MocklisClassName", exception.MocklisClassName);
             Assert.Equal("InterfaceName", exception.InterfaceName);
@@ -62,7 +62,7 @@ namespace Mocklis.Core.Tests.Core
         [Fact]
         public void set_properties()
         {
-            var exception = new MockMissingException(MockType.PropertyGet, _memberMock);
+            var exception = new MockMissingException(MockType.PropertyGet, _mockInfo);
             Assert.Equal(MockType.PropertyGet, exception.MemberType);
             Assert.Equal("MocklisClassName", exception.MocklisClassName);
             Assert.Equal("InterfaceName", exception.InterfaceName);

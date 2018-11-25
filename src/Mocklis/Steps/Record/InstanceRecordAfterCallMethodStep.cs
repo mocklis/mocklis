@@ -24,24 +24,24 @@ namespace Mocklis.Steps.Record
             _onError = onError;
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
             TResult result;
             try
             {
-                result = base.Call(memberMock, param);
+                result = base.Call(mockInfo, param);
             }
             catch (Exception exception)
             {
                 if (_onError != null)
                 {
-                    Add(_onError(memberMock.MockInstance, exception));
+                    Add(_onError(mockInfo.MockInstance, exception));
                 }
 
                 throw;
             }
 
-            Add(_selection(memberMock.MockInstance, param, result));
+            Add(_selection(mockInfo.MockInstance, param, result));
 
             return result;
         }

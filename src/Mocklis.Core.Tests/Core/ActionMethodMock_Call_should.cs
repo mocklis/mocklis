@@ -26,36 +26,36 @@ namespace Mocklis.Core.Tests.Core
         }
 
         [Fact]
-        public void send_mock_instance_to_step()
+        public void send_mock_information_to_step()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
 
             var newStep = new MockMethodStep<ValueTuple, ValueTuple>();
-            newStep.Call.Action(p => { sentInstance = p.memberMock; });
+            newStep.Call.Action(p => { sentMockInfo = p.mockInfo; });
             _parameterLessActionMock.SetNextStep(newStep);
 
             _parameterLessActionMock.Call();
 
-            Assert.Same(_parameterLessActionMock, sentInstance);
+            Assert.Same(_parameterLessActionMock, sentMockInfo);
         }
 
         [Fact]
-        public void send_mock_instance_and_parameters_to_step()
+        public void send_mock_information_and_parameters_to_step()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
             int sentParam = 0;
 
             var newStep = new MockMethodStep<int, ValueTuple>();
             newStep.Call.Action(p =>
             {
-                sentInstance = p.memberMock;
+                sentMockInfo = p.mockInfo;
                 sentParam = p.param;
             });
             _actionMock.SetNextStep(newStep);
 
             _actionMock.Call(5);
 
-            Assert.Same(_actionMock, sentInstance);
+            Assert.Same(_actionMock, sentMockInfo);
             Assert.Equal(5, sentParam);
         }
     }

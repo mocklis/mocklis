@@ -26,33 +26,33 @@ namespace Mocklis.Core.Tests.Core
         }
 
         [Fact]
-        public void send_mock_instance_to_step_and_get_result_back()
+        public void send_mock_information_to_step_and_get_result_back()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
 
             var newStep = new MockMethodStep<ValueTuple, string>();
             newStep.Call.Func(p =>
             {
-                sentInstance = p.memberMock;
+                sentMockInfo = p.mockInfo;
                 return "5";
             });
             _parameterLessFuncMock.SetNextStep(newStep);
 
             _parameterLessFuncMock.Call();
 
-            Assert.Same(_parameterLessFuncMock, sentInstance);
+            Assert.Same(_parameterLessFuncMock, sentMockInfo);
         }
 
         [Fact]
-        public void send_mock_instance_and_parameters_to_step_and_get_result_back()
+        public void send_mock_information_and_parameters_to_step_and_get_result_back()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
             int sentParam = 0;
 
             var newStep = new MockMethodStep<int, string>();
             newStep.Call.Func(p =>
             {
-                sentInstance = p.memberMock;
+                sentMockInfo = p.mockInfo;
                 sentParam = p.param;
                 return "5";
             });
@@ -60,7 +60,7 @@ namespace Mocklis.Core.Tests.Core
 
             string result = _funcMock.Call(5);
 
-            Assert.Same(_funcMock, sentInstance);
+            Assert.Same(_funcMock, sentMockInfo);
             Assert.Equal(5, sentParam);
             Assert.Equal("5", result);
         }

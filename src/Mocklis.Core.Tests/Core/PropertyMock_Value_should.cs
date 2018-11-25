@@ -23,41 +23,41 @@ namespace Mocklis.Core.Tests.Core
         }
 
         [Fact]
-        public void send_mock_instance_to_step_and_get_value_on_getting()
+        public void send_mock_information_to_step_and_get_value_on_getting()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
 
             var newStep = new MockPropertyStep<int>();
-            newStep.Get.Func(i =>
+            newStep.Get.Func(p =>
             {
-                sentInstance = i;
+                sentMockInfo = p;
                 return 5;
             });
             _propertyMock.SetNextStep(newStep);
 
             int value = _propertyMock.Value;
             Assert.Equal(5, value);
-            Assert.Same(_propertyMock, sentInstance);
+            Assert.Same(_propertyMock, sentMockInfo);
         }
 
         [Fact]
-        public void send_mock_instance_and_value_to_step_on_setting()
+        public void send_mock_information_and_value_to_step_on_setting()
         {
-            MemberMock sentInstance = null;
-            int newValue = 0;
+            IMockInfo sentMockInfo = null;
+            int sentValue = 0;
 
             var newStep = new MockPropertyStep<int>();
             newStep.Set.Action(p =>
             {
-                sentInstance = p.memberMock;
-                newValue = p.value;
+                sentMockInfo = p.mockInfo;
+                sentValue = p.value;
             });
             _propertyMock.SetNextStep(newStep);
 
             _propertyMock.Value = 5;
 
-            Assert.Same(_propertyMock, sentInstance);
-            Assert.Equal(5, newValue);
+            Assert.Same(_propertyMock, sentMockInfo);
+            Assert.Equal(5, sentValue);
         }
     }
 }

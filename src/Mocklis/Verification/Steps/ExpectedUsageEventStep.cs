@@ -31,16 +31,16 @@ namespace Mocklis.Verification.Steps
             Name = name;
         }
 
-        public override void Add(MemberMock memberMock, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler value)
         {
             Interlocked.Increment(ref _currentNumberOfAdds);
-            base.Add(memberMock, value);
+            base.Add(mockInfo, value);
         }
 
-        public override void Remove(MemberMock memberMock, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler value)
         {
             Interlocked.Increment(ref _currentNumberOfRemoves);
-            base.Remove(memberMock, value);
+            base.Remove(mockInfo, value);
         }
 
         public IEnumerable<VerificationResult> Verify()

@@ -22,10 +22,10 @@ namespace Mocklis.Steps.Record
             _selection = selection ?? throw new ArgumentNullException(nameof(selection));
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
-            Add(_selection(memberMock.MockInstance, param));
-            return base.Call(memberMock, param);
+            Add(_selection(mockInfo.MockInstance, param));
+            return base.Call(mockInfo, param);
         }
     }
 }

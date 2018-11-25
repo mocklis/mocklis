@@ -17,16 +17,16 @@ namespace Mocklis.Core.Tests.Mocks
     {
         public MockEventStep()
         {
-            Add = new ActionMethodMock<(MemberMock memberMock, THandler value)>(this, "MockEventStep", "IEventStep", "Add", "Add");
-            Remove = new ActionMethodMock<(MemberMock memberMock, THandler value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove");
+            Add = new ActionMethodMock<(IMockInfo mockInfo, THandler value)>(this, "MockEventStep", "IEventStep", "Add", "Add");
+            Remove = new ActionMethodMock<(IMockInfo mockInfo, THandler value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove");
         }
 
-        public ActionMethodMock<(MemberMock memberMock, THandler value)> Add { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, THandler value)> Add { get; }
 
-        void IEventStep<THandler>.Add(MemberMock memberMock, THandler value) => Add.Call((memberMock, value));
+        void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value) => Add.Call((mockInfo, value));
 
-        public ActionMethodMock<(MemberMock memberMock, THandler value)> Remove { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, THandler value)> Remove { get; }
 
-        void IEventStep<THandler>.Remove(MemberMock memberMock, THandler value) => Remove.Call((memberMock, value));
+        void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value) => Remove.Call((mockInfo, value));
     }
 }

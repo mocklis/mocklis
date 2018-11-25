@@ -35,9 +35,9 @@ namespace Mocklis.Steps.Conditional
                 return step;
             }
 
-            TResult IMethodStep<TParam, TResult>.Call(MemberMock memberMock, TParam param)
+            TResult IMethodStep<TParam, TResult>.Call(IMockInfo mockInfo, TParam param)
             {
-                return _nextStep.Call(memberMock, param);
+                return _nextStep.Call(mockInfo, param);
             }
 
             public IMethodStep<TParam, TResult> ElseBranch { get; }
@@ -57,10 +57,10 @@ namespace Mocklis.Steps.Conditional
                 _ifMethodStep = ifMethodStep;
             }
 
-            public TResult Call(MemberMock memberMock, TParam param)
+            public TResult Call(IMockInfo mockInfo, TParam param)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifMethodStep.NextStep.Call(memberMock, param);
+                return _ifMethodStep.NextStep.Call(mockInfo, param);
             }
         }
 

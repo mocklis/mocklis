@@ -22,12 +22,12 @@ namespace Mocklis.Steps.Throw
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(IMockInfo mockInfo)
         {
             throw _exceptionFactory();
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(IMockInfo mockInfo, TValue value)
         {
             throw _exceptionFactory();
         }

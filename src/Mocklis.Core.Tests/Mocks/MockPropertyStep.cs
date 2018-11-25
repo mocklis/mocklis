@@ -11,16 +11,16 @@ namespace Mocklis.Core.Tests.Mocks
     {
         public MockPropertyStep()
         {
-            Get = new FuncMethodMock<MemberMock, TValue>(this, "PropertyStep", "IPropertyStep", "Get", "Get");
-            Set = new ActionMethodMock<(MemberMock memberMock, TValue value)>(this, "PropertyStep", "IPropertyStep", "Set", "Set");
+            Get = new FuncMethodMock<IMockInfo, TValue>(this, "MockPropertyStep", "IPropertyStep", "Get", "Get");
+            Set = new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockPropertyStep", "IPropertyStep", "Set", "Set");
         }
 
-        public FuncMethodMock<MemberMock, TValue> Get { get; }
+        public FuncMethodMock<IMockInfo, TValue> Get { get; }
 
-        TValue IPropertyStep<TValue>.Get(MemberMock memberMock) => Get.Call(memberMock);
+        TValue IPropertyStep<TValue>.Get(IMockInfo mockInfo) => Get.Call(mockInfo);
 
-        public ActionMethodMock<(MemberMock memberMock, TValue value)> Set { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, TValue value)> Set { get; }
 
-        void IPropertyStep<TValue>.Set(MemberMock memberMock, TValue value) => Set.Call((memberMock, value));
+        void IPropertyStep<TValue>.Set(IMockInfo mockInfo, TValue value) => Set.Call((mockInfo, value));
     }
 }

@@ -58,14 +58,14 @@ namespace Mocklis.Steps.Conditional
                 return step;
             }
 
-            void IEventStep<THandler>.Add(MemberMock memberMock, THandler value)
+            void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value)
             {
-                _nextStep.Add(memberMock, value);
+                _nextStep.Add(mockInfo, value);
             }
 
-            void IEventStep<THandler>.Remove(MemberMock memberMock, THandler value)
+            void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value)
             {
-                _nextStep.Remove(memberMock, value);
+                _nextStep.Remove(mockInfo, value);
             }
 
             public IEventStep<THandler> ElseBranch { get; }
@@ -85,16 +85,16 @@ namespace Mocklis.Steps.Conditional
                 _ifEventStep = ifEventStep;
             }
 
-            public void Add(MemberMock memberMock, THandler value)
+            public void Add(IMockInfo mockInfo, THandler value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifEventStep.NextStep.Add(memberMock, value);
+                _ifEventStep.NextStep.Add(mockInfo, value);
             }
 
-            public void Remove(MemberMock memberMock, THandler value)
+            public void Remove(IMockInfo mockInfo, THandler value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifEventStep.NextStep.Remove(memberMock, value);
+                _ifEventStep.NextStep.Remove(mockInfo, value);
             }
         }
 

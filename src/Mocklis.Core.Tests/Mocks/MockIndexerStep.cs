@@ -11,16 +11,16 @@ namespace Mocklis.Core.Tests.Mocks
     {
         public MockIndexerStep()
         {
-            Get = new FuncMethodMock<(MemberMock memberMock, TKey key), TValue>(this, "MockIndexerStep", "IIndexerStep", "Get", "Get");
-            Set = new ActionMethodMock<(MemberMock memberMock, TKey key, TValue value)>(this, "MockIndexerStep", "IIndexerStep", "Set", "Set");
+            Get = new FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue>(this, "MockIndexerStep", "IIndexerStep", "Get", "Get");
+            Set = new ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>(this, "MockIndexerStep", "IIndexerStep", "Set", "Set");
         }
 
-        public FuncMethodMock<(MemberMock memberMock, TKey key), TValue> Get { get; }
+        public FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue> Get { get; }
 
-        TValue IIndexerStep<TKey, TValue>.Get(MemberMock memberMock, TKey key) => Get.Call((memberMock, key));
+        TValue IIndexerStep<TKey, TValue>.Get(IMockInfo mockInfo, TKey key) => Get.Call((mockInfo, key));
 
-        public ActionMethodMock<(MemberMock memberMock, TKey key, TValue value)> Set { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)> Set { get; }
 
-        void IIndexerStep<TKey, TValue>.Set(MemberMock memberMock, TKey key, TValue value) => Set.Call((memberMock, key, value));
+        void IIndexerStep<TKey, TValue>.Set(IMockInfo mockInfo, TKey key, TValue value) => Set.Call((mockInfo, key, value));
     }
 }

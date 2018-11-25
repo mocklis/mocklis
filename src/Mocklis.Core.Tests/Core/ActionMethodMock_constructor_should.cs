@@ -95,28 +95,28 @@ namespace Mocklis.Core.Tests.Core
             Assert.Equal("memberMockName", exception.ParamName);
         }
 
-        [Fact(DisplayName = "set properties (parameterLess)")]
-        public void set_properties_X28parameterLessX29()
+        [Fact(DisplayName = "set IMockInfo properties (parameterLess)")]
+        public void set_IMockInfo_properties_X28parameterLessX29()
         {
             var mockInstance = new object();
-            var propertyMock = new ActionMethodMock(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
-            Assert.Equal(mockInstance, propertyMock.MockInstance);
-            Assert.Equal("MocklisClassName", propertyMock.MocklisClassName);
-            Assert.Equal("InterfaceName", propertyMock.InterfaceName);
-            Assert.Equal("MemberName", propertyMock.MemberName);
-            Assert.Equal("MemberMockName", propertyMock.MemberMockName);
+            var mockInfo = (IMockInfo)new ActionMethodMock(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
+            Assert.Equal(mockInstance, mockInfo.MockInstance);
+            Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
+            Assert.Equal("InterfaceName", mockInfo.InterfaceName);
+            Assert.Equal("MemberName", mockInfo.MemberName);
+            Assert.Equal("MemberMockName", mockInfo.MemberMockName);
         }
 
         [Fact]
-        public void set_properties()
+        public void set_IMockInfo_properties()
         {
             var mockInstance = new object();
-            var propertyMock = new ActionMethodMock<int>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
-            Assert.Equal(mockInstance, propertyMock.MockInstance);
-            Assert.Equal("MocklisClassName", propertyMock.MocklisClassName);
-            Assert.Equal("InterfaceName", propertyMock.InterfaceName);
-            Assert.Equal("MemberName", propertyMock.MemberName);
-            Assert.Equal("MemberMockName", propertyMock.MemberMockName);
+            var mockInfo = (IMockInfo)new ActionMethodMock<int>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
+            Assert.Equal(mockInstance, mockInfo.MockInstance);
+            Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
+            Assert.Equal("InterfaceName", mockInfo.InterfaceName);
+            Assert.Equal("MemberName", mockInfo.MemberName);
+            Assert.Equal("MemberMockName", mockInfo.MemberMockName);
         }
     }
 }

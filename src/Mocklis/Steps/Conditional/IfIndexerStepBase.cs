@@ -35,14 +35,14 @@ namespace Mocklis.Steps.Conditional
                 return step;
             }
 
-            TValue IIndexerStep<TKey, TValue>.Get(MemberMock memberMock, TKey key)
+            TValue IIndexerStep<TKey, TValue>.Get(IMockInfo mockInfo, TKey key)
             {
-                return _nextStep.Get(memberMock, key);
+                return _nextStep.Get(mockInfo, key);
             }
 
-            void IIndexerStep<TKey, TValue>.Set(MemberMock memberMock, TKey key, TValue value)
+            void IIndexerStep<TKey, TValue>.Set(IMockInfo mockInfo, TKey key, TValue value)
             {
-                _nextStep.Set(memberMock, key, value);
+                _nextStep.Set(mockInfo, key, value);
             }
 
             public IIndexerStep<TKey, TValue> ElseBranch { get; }
@@ -62,16 +62,16 @@ namespace Mocklis.Steps.Conditional
                 _ifIndexerStep = ifIndexerStep;
             }
 
-            public TValue Get(MemberMock memberMock, TKey key)
+            public TValue Get(IMockInfo mockInfo, TKey key)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifIndexerStep.NextStep.Get(memberMock, key);
+                return _ifIndexerStep.NextStep.Get(mockInfo, key);
             }
 
-            public void Set(MemberMock memberMock, TKey key, TValue value)
+            public void Set(IMockInfo mockInfo, TKey key, TValue value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifIndexerStep.NextStep.Set(memberMock, key, value);
+                _ifIndexerStep.NextStep.Set(mockInfo, key, value);
             }
         }
 

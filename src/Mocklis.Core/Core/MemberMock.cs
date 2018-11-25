@@ -12,21 +12,27 @@ namespace Mocklis.Core
 
     #endregion
 
-    public abstract class MemberMock
+    public abstract class MemberMock : IMockInfo
     {
-        public object MockInstance { get; }
-        public string MocklisClassName { get; }
-        public string InterfaceName { get; }
-        public string MemberName { get; }
-        public string MemberMockName { get; }
+        private readonly object _mockInstance;
+        private readonly string _mocklisClassName;
+        private readonly string _interfaceName;
+        private readonly string _memberName;
+        private readonly string _memberMockName;
+
+        object IMockInfo.MockInstance => _mockInstance;
+        string IMockInfo.MocklisClassName => _mocklisClassName;
+        string IMockInfo.InterfaceName => _interfaceName;
+        string IMockInfo.MemberName => _memberName;
+        string IMockInfo.MemberMockName => _memberMockName;
 
         protected internal MemberMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
         {
-            MockInstance = mockInstance ?? throw new ArgumentNullException(nameof(mockInstance));
-            MocklisClassName = mocklisClassName ?? throw new ArgumentNullException(nameof(mocklisClassName));
-            InterfaceName = interfaceName ?? throw new ArgumentNullException(nameof(interfaceName));
-            MemberName = memberName ?? throw new ArgumentNullException(nameof(memberName));
-            MemberMockName = memberMockName ?? throw new ArgumentNullException(nameof(memberMockName));
+            _mockInstance = mockInstance ?? throw new ArgumentNullException(nameof(mockInstance));
+            _mocklisClassName = mocklisClassName ?? throw new ArgumentNullException(nameof(mocklisClassName));
+            _interfaceName = interfaceName ?? throw new ArgumentNullException(nameof(interfaceName));
+            _memberName = memberName ?? throw new ArgumentNullException(nameof(memberName));
+            _memberMockName = memberMockName ?? throw new ArgumentNullException(nameof(memberMockName));
         }
     }
 }

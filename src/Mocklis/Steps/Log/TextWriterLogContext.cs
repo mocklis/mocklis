@@ -25,155 +25,155 @@ namespace Mocklis.Steps.Log
             _textWriter = textWriter;
         }
 
-        public void LogBeforeEventAdd(MemberMock memberMock)
+        public void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Adding event handler to '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                    $"Adding event handler to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogAfterEventAdd(MemberMock memberMock)
+        public void LogAfterEventAdd(IMockInfo mockInfo)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Done adding event handler to '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                $"Done adding event handler to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogEventAddException(MemberMock memberMock, Exception exception)
+        public void LogEventAddException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Adding event handler to '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Adding event handler to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogBeforeEventRemove(MemberMock memberMock)
+        public void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Removing event handler from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                $"Removing event handler from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogAfterEventRemove(MemberMock memberMock)
+        public void LogAfterEventRemove(IMockInfo mockInfo)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Done removing event handler from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                $"Done removing event handler from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogEventRemoveException(MemberMock memberMock, Exception exception)
+        public void LogEventRemoveException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Removing event handler from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Removing event handler from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogBeforeIndexerGet<TKey>(MemberMock memberMock, TKey key)
+        public void LogBeforeIndexerGet<TKey>(IMockInfo mockInfo, TKey key)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Getting value from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' using key {key}"));
+                $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' using key {key}"));
         }
 
-        public void LogAfterIndexerGet<TValue>(MemberMock memberMock, TValue value)
+        public void LogAfterIndexerGet<TValue>(IMockInfo mockInfo, TValue value)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Done getting value '{value}' from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                $"Done getting value '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogIndexerGetException(MemberMock memberMock, Exception exception)
+        public void LogIndexerGetException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Getting value from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogBeforeIndexerSet<TKey, TValue>(MemberMock memberMock, TKey key, TValue value)
+        public void LogBeforeIndexerSet<TKey, TValue>(IMockInfo mockInfo, TKey key, TValue value)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' to '{value}' using key '{key}'"));
+                $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' to '{value}' using key '{key}'"));
         }
 
-        public void LogAfterIndexerSet(MemberMock memberMock)
+        public void LogAfterIndexerSet(IMockInfo mockInfo)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Done setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                    $"Done setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogIndexerSetException(MemberMock memberMock, Exception exception)
+        public void LogIndexerSetException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogBeforeMethodCallWithoutParameters(MemberMock memberMock)
+        public void LogBeforeMethodCallWithoutParameters(IMockInfo mockInfo)
         {
             _textWriter.WriteLine(
-                FormattableString.Invariant($"Calling '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                FormattableString.Invariant($"Calling '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogBeforeMethodCallWithParameters<TParam>(MemberMock memberMock, TParam param)
-        {
-            _textWriter.WriteLine(
-                FormattableString.Invariant(
-                    $"Calling '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' with parameter: {param}"));
-        }
-
-        public void LogAfterMethodCallWithoutResult(MemberMock memberMock)
-        {
-            _textWriter.WriteLine(
-                FormattableString.Invariant($"Returned from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
-        }
-
-        public void LogAfterMethodCallWithResult<TResult>(MemberMock memberMock, TResult result)
+        public void LogBeforeMethodCallWithParameters<TParam>(IMockInfo mockInfo, TParam param)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Returned from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' with result: {result}"));
+                    $"Calling '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' with parameter: {param}"));
         }
 
-        public void LogMethodCallException(MemberMock memberMock, Exception exception)
+        public void LogAfterMethodCallWithoutResult(IMockInfo mockInfo)
+        {
+            _textWriter.WriteLine(
+                FormattableString.Invariant($"Returned from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
+        }
+
+        public void LogAfterMethodCallWithResult<TResult>(IMockInfo mockInfo, TResult result)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Call to '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Returned from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' with result: {result}"));
         }
 
-        public void LogBeforePropertyGet(MemberMock memberMock)
+        public void LogMethodCallException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Getting value from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                    $"Call to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogAfterPropertyGet<TValue>(MemberMock memberMock, TValue value)
+        public void LogBeforePropertyGet(IMockInfo mockInfo)
+        {
+            _textWriter.WriteLine(
+                FormattableString.Invariant(
+                    $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
+        }
+
+        public void LogAfterPropertyGet<TValue>(IMockInfo mockInfo, TValue value)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Done getting value '{value}' from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                $"Done getting value '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogPropertyGetException(MemberMock memberMock, Exception exception)
+        public void LogPropertyGetException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Getting value from '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
 
-        public void LogBeforePropertySet<TValue>(MemberMock memberMock, TValue value)
+        public void LogBeforePropertySet<TValue>(IMockInfo mockInfo, TValue value)
         {
             _textWriter.WriteLine(FormattableString.Invariant(
-                $"Setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' to '{value}'"));
+                $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' to '{value}'"));
         }
 
-        public void LogAfterPropertySet(MemberMock memberMock)
+        public void LogAfterPropertySet(IMockInfo mockInfo)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Done setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}'"));
+                    $"Done setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'"));
         }
 
-        public void LogPropertySetException(MemberMock memberMock, Exception exception)
+        public void LogPropertySetException(IMockInfo mockInfo, Exception exception)
         {
             _textWriter.WriteLine(
                 FormattableString.Invariant(
-                    $"Setting value on '[{memberMock.MocklisClassName}] {memberMock.InterfaceName}.{memberMock.MemberName}' threw exception '{exception.Message}'"));
+                    $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'"));
         }
     }
 }

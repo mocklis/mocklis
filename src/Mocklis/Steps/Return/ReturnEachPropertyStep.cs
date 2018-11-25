@@ -23,11 +23,11 @@ namespace Mocklis.Steps.Return
             _values = values?.GetEnumerator();
         }
 
-        public override TValue Get(MemberMock memberMock)
+        public override TValue Get(IMockInfo mockInfo)
         {
             if (_values == null)
             {
-                return base.Get(memberMock);
+                return base.Get(mockInfo);
             }
 
             lock (_lockObject)
@@ -44,7 +44,7 @@ namespace Mocklis.Steps.Return
                 }
             }
 
-            return base.Get(memberMock);
+            return base.Get(mockInfo);
         }
     }
 }

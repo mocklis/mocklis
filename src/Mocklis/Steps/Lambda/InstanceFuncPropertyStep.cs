@@ -22,12 +22,12 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TValue Get(MemberMock memberMock)
+        public TValue Get(IMockInfo mockInfo)
         {
-            return _func(memberMock.MockInstance);
+            return _func(mockInfo.MockInstance);
         }
 
-        public void Set(MemberMock memberMock, TValue value)
+        public void Set(IMockInfo mockInfo, TValue value)
         {
         }
     }

@@ -24,15 +24,15 @@ namespace Mocklis.Core.Tests.Core
         }
 
         [Fact]
-        public void send_mock_instance_and_handler_to_step()
+        public void send_mock_information_and_handler_to_step()
         {
-            MemberMock sentInstance = null;
+            IMockInfo sentMockInfo = null;
             EventHandler sentEventHandler = null;
 
             var newStep = new MockEventStep<EventHandler>();
             newStep.Remove.Action(p =>
             {
-                sentInstance = p.memberMock;
+                sentMockInfo = p.mockInfo;
                 sentEventHandler = p.value;
             });
             _eventMock.SetNextStep(newStep);
@@ -40,7 +40,7 @@ namespace Mocklis.Core.Tests.Core
 
             _eventMock.Remove(handler);
 
-            Assert.Same(_eventMock, sentInstance);
+            Assert.Same(_eventMock, sentMockInfo);
             Assert.Equal(handler, sentEventHandler);
         }
     }

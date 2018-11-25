@@ -26,7 +26,7 @@ namespace Mocklis.Core
         public string MemberName { get; }
         public string MemberMockName { get; }
 
-        private static string CreateMessage(MockType memberType, MemberMock memberMock)
+        private static string CreateMessage(MockType memberType, IMockInfo memberMock)
         {
             string rawMessage;
             switch (memberType)
@@ -65,7 +65,7 @@ namespace Mocklis.Core
                 memberMock.MemberName, memberMock.MemberMockName);
         }
 
-        public MockMissingException(MockType memberType, MemberMock memberMock)
+        public MockMissingException(MockType memberType, IMockInfo memberMock)
             : base(CreateMessage(memberType, memberMock))
         {
             MemberType = memberType;
@@ -75,7 +75,7 @@ namespace Mocklis.Core
             MemberMockName = memberMock.MemberMockName;
         }
 
-        public MockMissingException(MockType memberType, MemberMock memberMock, Exception innerException)
+        public MockMissingException(MockType memberType, IMockInfo memberMock, Exception innerException)
             : base(CreateMessage(memberType, memberMock), innerException)
         {
             MemberType = memberType;

@@ -16,7 +16,7 @@ namespace Mocklis.Core.Tests.Core
 
     public class MockMissingException_should
     {
-        private readonly MemberMock _memberMock =
+        private readonly IMockInfo _mockInfo =
             new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
 
         private static T RoundTrip<T>(T item)
@@ -34,7 +34,7 @@ namespace Mocklis.Core.Tests.Core
         [Fact]
         public void be_serializable()
         {
-            var exception = new MockMissingException(MockType.PropertyGet, _memberMock);
+            var exception = new MockMissingException(MockType.PropertyGet, _mockInfo);
             var roundtrippedException = RoundTrip(exception);
 
             Assert.NotSame(exception, roundtrippedException);

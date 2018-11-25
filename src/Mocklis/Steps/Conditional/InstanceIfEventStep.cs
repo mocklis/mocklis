@@ -26,27 +26,27 @@ namespace Mocklis.Steps.Conditional
             _removeCondition = removeCondition ?? throw new ArgumentNullException(nameof(removeCondition));
         }
 
-        public override void Add(MemberMock memberMock, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler value)
         {
-            if (_addCondition(memberMock.MockInstance, value))
+            if (_addCondition(mockInfo.MockInstance, value))
             {
-                IfBranch.Add(memberMock, value);
+                IfBranch.Add(mockInfo, value);
             }
             else
             {
-                base.Add(memberMock, value);
+                base.Add(mockInfo, value);
             }
         }
 
-        public override void Remove(MemberMock memberMock, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler value)
         {
-            if (_removeCondition(memberMock.MockInstance, value))
+            if (_removeCondition(mockInfo.MockInstance, value))
             {
-                IfBranch.Remove(memberMock, value);
+                IfBranch.Remove(mockInfo, value);
             }
             else
             {
-                base.Remove(memberMock, value);
+                base.Remove(mockInfo, value);
             }
         }
     }

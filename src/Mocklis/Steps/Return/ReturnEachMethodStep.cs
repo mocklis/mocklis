@@ -23,11 +23,11 @@ namespace Mocklis.Steps.Return
             _results = results?.GetEnumerator();
         }
 
-        public override TResult Call(MemberMock memberMock, TParam param)
+        public override TResult Call(IMockInfo mockInfo, TParam param)
         {
             if (_results == null)
             {
-                return base.Call(memberMock, param);
+                return base.Call(mockInfo, param);
             }
 
             lock (_lockobject)
@@ -44,7 +44,7 @@ namespace Mocklis.Steps.Return
                 }
             }
 
-            return base.Call(memberMock, param);
+            return base.Call(mockInfo, param);
         }
     }
 }

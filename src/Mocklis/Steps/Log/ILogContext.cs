@@ -15,31 +15,31 @@ namespace Mocklis.Steps.Log
 
     public interface ILogContext
     {
-        void LogBeforeEventAdd(MemberMock memberMock);
-        void LogAfterEventAdd(MemberMock memberMock);
-        void LogEventAddException(MemberMock memberMock, Exception exception);
-        void LogBeforeEventRemove(MemberMock memberMock);
-        void LogAfterEventRemove(MemberMock memberMock);
-        void LogEventRemoveException(MemberMock memberMock, Exception exception);
+        void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate;
+        void LogAfterEventAdd(IMockInfo mockInfo);
+        void LogEventAddException(IMockInfo mockInfo, Exception exception);
+        void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate;
+        void LogAfterEventRemove(IMockInfo mockInfo);
+        void LogEventRemoveException(IMockInfo mockInfo, Exception exception);
 
-        void LogBeforeIndexerGet<TKey>(MemberMock memberMock, TKey key);
-        void LogAfterIndexerGet<TValue>(MemberMock memberMock, TValue value);
-        void LogIndexerGetException(MemberMock memberMock, Exception exception);
-        void LogBeforeIndexerSet<TKey, TValue>(MemberMock memberMock, TKey key, TValue value);
-        void LogAfterIndexerSet(MemberMock memberMock);
-        void LogIndexerSetException(MemberMock memberMock, Exception exception);
+        void LogBeforeIndexerGet<TKey>(IMockInfo mockInfo, TKey key);
+        void LogAfterIndexerGet<TValue>(IMockInfo mockInfo, TValue value);
+        void LogIndexerGetException(IMockInfo mockInfo, Exception exception);
+        void LogBeforeIndexerSet<TKey, TValue>(IMockInfo mockInfo, TKey key, TValue value);
+        void LogAfterIndexerSet(IMockInfo mockInfo);
+        void LogIndexerSetException(IMockInfo mockInfo, Exception exception);
 
-        void LogBeforeMethodCallWithoutParameters(MemberMock memberMock);
-        void LogBeforeMethodCallWithParameters<TParam>(MemberMock memberMock, TParam param);
-        void LogAfterMethodCallWithoutResult(MemberMock memberMock);
-        void LogAfterMethodCallWithResult<TResult>(MemberMock memberMock, TResult result);
-        void LogMethodCallException(MemberMock memberMock, Exception exception);
+        void LogBeforeMethodCallWithoutParameters(IMockInfo mockInfo);
+        void LogBeforeMethodCallWithParameters<TParam>(IMockInfo mockInfo, TParam param);
+        void LogAfterMethodCallWithoutResult(IMockInfo mockInfo);
+        void LogAfterMethodCallWithResult<TResult>(IMockInfo mockInfo, TResult result);
+        void LogMethodCallException(IMockInfo mockInfo, Exception exception);
 
-        void LogBeforePropertyGet(MemberMock memberMock);
-        void LogAfterPropertyGet<TValue>(MemberMock memberMock, TValue value);
-        void LogPropertyGetException(MemberMock memberMock, Exception exception);
-        void LogBeforePropertySet<TValue>(MemberMock memberMock, TValue value);
-        void LogAfterPropertySet(MemberMock memberMock);
-        void LogPropertySetException(MemberMock memberMock, Exception exception);
+        void LogBeforePropertyGet(IMockInfo mockInfo);
+        void LogAfterPropertyGet<TValue>(IMockInfo mockInfo, TValue value);
+        void LogPropertyGetException(IMockInfo mockInfo, Exception exception);
+        void LogBeforePropertySet<TValue>(IMockInfo mockInfo, TValue value);
+        void LogAfterPropertySet(IMockInfo mockInfo);
+        void LogPropertySetException(IMockInfo mockInfo, Exception exception);
     }
 }
