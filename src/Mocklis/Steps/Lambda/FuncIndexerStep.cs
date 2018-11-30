@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Lambda
 
     #endregion
 
-    public class FuncIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
+    public class FuncIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
     {
         private readonly Func<TKey, TValue> _func;
 
@@ -22,13 +22,9 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TValue Get(IMockInfo mockInfo, TKey key)
+        public override TValue Get(IMockInfo mockInfo, TKey key)
         {
             return _func(key);
-        }
-
-        public void Set(IMockInfo mockInfo, TKey key, TValue value)
-        {
         }
     }
 }

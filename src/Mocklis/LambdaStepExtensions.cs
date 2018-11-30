@@ -16,18 +16,18 @@ namespace Mocklis
 
     public static class LambdaStepExtensions
     {
-        public static void Func<TKey, TValue>(
+        public static IIndexerStepCaller<TKey, TValue> Func<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller,
             Func<TKey, TValue> func)
         {
-            caller.SetNextStep(new FuncIndexerStep<TKey, TValue>(func));
+            return caller.SetNextStep(new FuncIndexerStep<TKey, TValue>(func));
         }
 
-        public static void InstanceFunc<TKey, TValue>(
+        public static IIndexerStepCaller<TKey, TValue> InstanceFunc<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller,
             Func<object, TKey, TValue> func)
         {
-            caller.SetNextStep(new InstanceFuncIndexerStep<TKey, TValue>(func));
+            return caller.SetNextStep(new InstanceFuncIndexerStep<TKey, TValue>(func));
         }
 
         public static void Action<TParam>(
@@ -86,11 +86,18 @@ namespace Mocklis
             caller.SetNextStep(new InstanceFuncMethodStep<TResult>(func));
         }
 
-        public static void InstanceFunc<TValue>(
+        public static IPropertyStepCaller<TValue> Func<TValue>(
+            this IPropertyStepCaller<TValue> caller,
+            Func<TValue> func)
+        {
+            return caller.SetNextStep(new FuncPropertyStep<TValue>(func));
+        }
+
+        public static IPropertyStepCaller<TValue> InstanceFunc<TValue>(
             this IPropertyStepCaller<TValue> caller,
             Func<object, TValue> func)
         {
-            caller.SetNextStep(new InstanceFuncPropertyStep<TValue>(func));
+            return caller.SetNextStep(new InstanceFuncPropertyStep<TValue>(func));
         }
     }
 }

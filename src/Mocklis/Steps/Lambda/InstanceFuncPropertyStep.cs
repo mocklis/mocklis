@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Lambda
 
     #endregion
 
-    public class InstanceFuncPropertyStep<TValue> : IPropertyStep<TValue>
+    public class InstanceFuncPropertyStep<TValue> : MedialPropertyStep<TValue>
     {
         private readonly Func<object, TValue> _func;
 
@@ -22,13 +22,9 @@ namespace Mocklis.Steps.Lambda
             _func = func;
         }
 
-        public TValue Get(IMockInfo mockInfo)
+        public override TValue Get(IMockInfo mockInfo)
         {
             return _func(mockInfo.MockInstance);
-        }
-
-        public void Set(IMockInfo mockInfo, TValue value)
-        {
         }
     }
 }

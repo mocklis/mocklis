@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InstanceFuncIndexerStep.cs">
+// <copyright file="FuncPropertyStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,18 +13,18 @@ namespace Mocklis.Steps.Lambda
 
     #endregion
 
-    public class InstanceFuncIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class FuncPropertyStep<TValue> : MedialPropertyStep<TValue>
     {
-        private readonly Func<object, TKey, TValue> _func;
+        private readonly Func<TValue> _func;
 
-        public InstanceFuncIndexerStep(Func<object, TKey, TValue> func)
+        public FuncPropertyStep(Func<TValue> func)
         {
             _func = func;
         }
 
-        public override TValue Get(IMockInfo mockInfo, TKey key)
+        public override TValue Get(IMockInfo mockInfo)
         {
-            return _func(mockInfo.MockInstance, key);
+            return _func();
         }
     }
 }
