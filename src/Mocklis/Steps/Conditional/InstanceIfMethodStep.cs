@@ -20,12 +20,17 @@ namespace Mocklis.Steps.Conditional
         public InstanceIfMethodStep(Func<object, bool> condition,
             Action<IfBranchCaller> branch) : base(branch)
         {
-            _condition = condition ?? throw new ArgumentNullException(nameof(condition));
+            _condition = condition;
         }
 
         public override TResult Call(IMockInfo mockInfo, ValueTuple param)
         {
-            return _condition(mockInfo.MockInstance) ? IfBranch.Call(mockInfo, param) : base.Call(mockInfo, param);
+            if (_condition?.Invoke(mockInfo.MockInstance) ?? false)
+            {
+                return IfBranch.Call(mockInfo, param);
+            }
+
+            return base.Call(mockInfo, param);
         }
     }
 
@@ -36,12 +41,17 @@ namespace Mocklis.Steps.Conditional
         public InstanceIfMethodStep(Func<object, TParam, bool> condition,
             Action<IfBranchCaller> branch) : base(branch)
         {
-            _condition = condition ?? throw new ArgumentNullException(nameof(condition));
+            _condition = condition;
         }
 
         public override TResult Call(IMockInfo mockInfo, TParam param)
         {
-            return _condition(mockInfo.MockInstance, param) ? IfBranch.Call(mockInfo, param) : base.Call(mockInfo, param);
+            if (_condition?.Invoke(mockInfo.MockInstance, param) ?? false)
+            {
+                return IfBranch.Call(mockInfo, param);
+            }
+
+            return base.Call(mockInfo, param);
         }
     }
 }

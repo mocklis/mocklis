@@ -22,13 +22,13 @@ namespace Mocklis.Steps.Conditional
             Action<IfBranchCaller> branch) :
             base(branch)
         {
-            _addCondition = addCondition ?? throw new ArgumentNullException(nameof(addCondition));
-            _removeCondition = removeCondition ?? throw new ArgumentNullException(nameof(removeCondition));
+            _addCondition = addCondition;
+            _removeCondition = removeCondition;
         }
 
         public override void Add(IMockInfo mockInfo, THandler value)
         {
-            if (_addCondition(value))
+            if (_addCondition?.Invoke(value) ?? false)
             {
                 IfBranch.Add(mockInfo, value);
             }
@@ -40,7 +40,7 @@ namespace Mocklis.Steps.Conditional
 
         public override void Remove(IMockInfo mockInfo, THandler value)
         {
-            if (_removeCondition(value))
+            if (_removeCondition?.Invoke(value) ?? false)
             {
                 IfBranch.Remove(mockInfo, value);
             }

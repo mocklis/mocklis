@@ -21,18 +21,23 @@ namespace Mocklis.Steps.Conditional
         public InstanceIfPropertyStep(Func<object, bool> getCondition, Func<object, TValue, bool> setCondition,
             Action<IfBranchCaller> branch) : base(branch)
         {
-            _getCondition = getCondition ?? throw new ArgumentNullException(nameof(getCondition));
-            _setCondition = setCondition ?? throw new ArgumentNullException(nameof(setCondition));
+            _getCondition = getCondition;
+            _setCondition = setCondition;
         }
 
         public override TValue Get(IMockInfo mockInfo)
         {
-            return _getCondition(mockInfo.MockInstance) ? IfBranch.Get(mockInfo) : base.Get(mockInfo);
+            if (_getCondition?.Invoke(mockInfo.MockInstance) ?? false)
+            {
+                return IfBranch.Get(mockInfo);
+            }
+
+            return base.Get(mockInfo);
         }
 
         public override void Set(IMockInfo mockInfo, TValue value)
         {
-            if (_setCondition(mockInfo.MockInstance, value))
+            if (_setCondition?.Invoke(mockInfo.MockInstance, value) ?? false)
             {
                 IfBranch.Set(mockInfo, value);
             }
