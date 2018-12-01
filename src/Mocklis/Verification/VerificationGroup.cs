@@ -8,6 +8,7 @@ namespace Mocklis.Verification
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -38,6 +39,16 @@ namespace Mocklis.Verification
         public void Add(IVerifiable verifiable)
         {
             _verifiables.Add(verifiable);
+        }
+
+        public void Assert(bool includeSuccessfulVerifications = false)
+        {
+            VerificationResult result = Verify();
+            if (!result.Success)
+            {
+                var message = "Verification failed." + Environment.NewLine + Environment.NewLine + result.ToString(includeSuccessfulVerifications);
+                throw new VerificationFailedException(result, message);
+            }
         }
     }
 }
