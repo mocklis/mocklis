@@ -89,7 +89,15 @@ namespace Mocklis.CodeGeneration
 
                     if (memberSymbol is IPropertySymbol memberPropertySymbol)
                     {
-                        if (memberPropertySymbol.IsIndexer)
+                        if (memberPropertySymbol.ReturnsByRef)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberPropertySymbol.Name} (returns by reference)");
+                        }
+                        else if (memberPropertySymbol.ReturnsByRefReadonly)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberPropertySymbol.Name} (returns by readonly reference)");
+                        }
+                        else if (memberPropertySymbol.IsIndexer)
                         {
                             yield return new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol);
                         }
@@ -116,6 +124,10 @@ namespace Mocklis.CodeGeneration
                         {
                             problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (returns by readonly reference)");
                         }
+                        else if (memberMethodSymbol.IsVararg)
+                        {
+                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (uses __arglist)");
+                        }
                         else
                         {
                             yield return new MocklisMethod(this, interfaceSymbol, memberMethodSymbol);
@@ -137,7 +149,7 @@ namespace Mocklis.CodeGeneration
                 }
 
                 triviaList = triviaList.Add(F.Comment("//" + Environment.NewLine));
-                triviaList = triviaList.Add(F.Comment("// Future version of Mocklis will handle these by introducing abstract members" +
+                triviaList = triviaList.Add(F.Comment("// Future version of Mocklis will handle these by introducing virtual members" +
                                                       Environment.NewLine));
                 triviaList = triviaList.Add(F.Comment("// that can be given a 'mock' implementation in a derived class." + Environment.NewLine +
                                                       Environment.NewLine));
