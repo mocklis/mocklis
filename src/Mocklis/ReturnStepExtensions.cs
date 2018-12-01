@@ -17,11 +17,11 @@ namespace Mocklis
 
     public static class ReturnStepExtensions
     {
-        public static void Return<TKey, TValue>(
+        public static IIndexerStepCaller<TKey, TValue> Return<TKey, TValue>(
             this IIndexerStepCaller<TKey, TValue> caller,
             TValue value)
         {
-            caller.SetNextStep(new ReturnIndexerStep<TKey, TValue>(value));
+            return caller.SetNextStep(new ReturnIndexerStep<TKey, TValue>(value));
         }
 
         public static IIndexerStepCaller<TKey, TValue> ReturnOnce<TKey, TValue>(
@@ -73,11 +73,11 @@ namespace Mocklis
             return caller.ReturnEach(results.AsEnumerable());
         }
 
-        public static void Return<TValue>(
+        public static IPropertyStepCaller<TValue> Return<TValue>(
             this IPropertyStepCaller<TValue> caller,
             TValue value)
         {
-            caller.SetNextStep(new ReturnPropertyStep<TValue>(value));
+            return caller.SetNextStep(new ReturnPropertyStep<TValue>(value));
         }
 
         public static IPropertyStepCaller<TValue> ReturnOnce<TValue>(

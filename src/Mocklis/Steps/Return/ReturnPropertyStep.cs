@@ -12,7 +12,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnPropertyStep<TValue> : IPropertyStep<TValue>
+    public class ReturnPropertyStep<TValue> : MedialPropertyStep<TValue>
     {
         private readonly TValue _value;
 
@@ -21,13 +21,9 @@ namespace Mocklis.Steps.Return
             _value = value;
         }
 
-        public TValue Get(IMockInfo mockInfo)
+        public override TValue Get(IMockInfo mockInfo)
         {
             return _value;
-        }
-
-        public void Set(IMockInfo mockInfo, TValue value)
-        {
         }
     }
 }

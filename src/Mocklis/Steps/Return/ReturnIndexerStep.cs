@@ -12,7 +12,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
+    public class ReturnIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
     {
         private readonly TValue _value;
 
@@ -21,13 +21,9 @@ namespace Mocklis.Steps.Return
             _value = value;
         }
 
-        public TValue Get(IMockInfo mockInfo, TKey key)
+        public override TValue Get(IMockInfo mockInfo, TKey key)
         {
             return _value;
-        }
-
-        public void Set(IMockInfo mockInfo, TKey key, TValue value)
-        {
         }
     }
 }
