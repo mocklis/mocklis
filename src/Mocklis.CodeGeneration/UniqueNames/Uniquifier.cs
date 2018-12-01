@@ -4,38 +4,18 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.CodeGeneration.UniqueNames
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using static System.FormattableString;
 
     #endregion
 
-    public interface IHasPreferredName
-    {
-        string PreferredName { get; }
-    }
-
     public sealed class Uniquifier
     {
-        public static IEnumerable<(string uniqueName, T item)> GetUniqueNames<T>(IEnumerable<T> items) where T : IHasPreferredName
-        {
-            T[] array = items.ToArray();
-            var uniquifier = new Uniquifier();
-            foreach (var item in array)
-            {
-                uniquifier.ReserveName(item.PreferredName);
-            }
-
-            foreach (var item in array)
-            {
-                yield return (uniquifier.GetUniqueName(item.PreferredName), item);
-            }
-        }
-
         private readonly HashSet<string> _reservedNames = new HashSet<string>();
         private readonly HashSet<string> _usedNames = new HashSet<string>();
 
@@ -72,7 +52,7 @@ namespace Mocklis.CodeGeneration
 
             for (int i = 0;; i++)
             {
-                string candidateName = Invariant($"{name}_{i}");
+                string candidateName = FormattableString.Invariant($"{name}_{i}");
                 if (_reservedNames.Contains(candidateName) || _usedNames.Contains(candidateName))
                 {
                     continue;

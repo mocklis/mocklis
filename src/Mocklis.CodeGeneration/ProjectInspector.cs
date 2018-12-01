@@ -20,25 +20,45 @@ namespace Mocklis.CodeGeneration
 
     public static class ProjectInspector
     {
-        private class MocklisClassEmptier : CSharpSyntaxRewriter
+        private abstract class MocklisRewriterBase : CSharpSyntaxRewriter
         {
-            private readonly SemanticModel _model;
-            private readonly MocklisSymbols _mocklisSymbols;
+            protected SemanticModel Model { get; }
+            protected MocklisSymbols MocklisSymbols { get; }
+
+            protected MocklisRewriterBase(SemanticModel model, MocklisSymbols mocklisSymbols)
+            {
+                Model = model;
+                MocklisSymbols = mocklisSymbols;
+            }
+
+            protected bool ShouldRewriteClass(ClassDeclarationSyntax node)
+            {
+                bool hasMocklisAttribute = node.AttributeLists.Any(
+                    al => al.Attributes.Any(
+                        a => ModelExtensions.GetSymbolInfo(Model, a).Symbol.ContainingType == MocklisSymbols.MocklisClassAttribute));
+
+                if (!hasMocklisAttribute)
+                {
+                    return false;
+                }
+
+                bool isPartial = node.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+
+                return !isPartial;
+            }
+        }
+
+        private class MocklisClassEmptier : MocklisRewriterBase
+        {
             public bool FoundMocklisClass { get; private set; }
 
-            public MocklisClassEmptier(SemanticModel model, MocklisSymbols mocklisSymbols)
+            public MocklisClassEmptier(SemanticModel model, MocklisSymbols mocklisSymbols) : base(model, mocklisSymbols)
             {
-                _model = model;
-                _mocklisSymbols = mocklisSymbols;
             }
 
             public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
             {
-                bool isMocklisClass = node.AttributeLists.Any(
-                    al => al.Attributes.Any(
-                        a => ModelExtensions.GetSymbolInfo(_model, a).Symbol.ContainingType == _mocklisSymbols.MocklisClassAttribute));
-
-                if (isMocklisClass)
+                if (ShouldRewriteClass(node))
                 {
                     FoundMocklisClass = true;
                     return MocklisClass.EmptyMocklisClass(node);
@@ -48,26 +68,17 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-        private class MocklisClassSyntaxRewriter : CSharpSyntaxRewriter
+        private class MocklisClassSyntaxRewriter : MocklisRewriterBase
         {
-            private readonly SemanticModel _model;
-            private readonly MocklisSymbols _mocklisSymbols;
-
-            public MocklisClassSyntaxRewriter(SemanticModel model, MocklisSymbols mocklisSymbols)
+            public MocklisClassSyntaxRewriter(SemanticModel model, MocklisSymbols mocklisSymbols) : base(model, mocklisSymbols)
             {
-                _model = model;
-                _mocklisSymbols = mocklisSymbols;
             }
 
             public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
             {
-                bool isMocklisClass = node.AttributeLists.Any(
-                    al => al.Attributes.Any(
-                        a => ModelExtensions.GetSymbolInfo(_model, a).Symbol.ContainingType == _mocklisSymbols.MocklisClassAttribute));
-
-                if (isMocklisClass)
+                if (ShouldRewriteClass(node))
                 {
-                    return MocklisClass.UpdateMocklisClass(_model, node, _mocklisSymbols);
+                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols);
                 }
 
                 return base.VisitClassDeclaration(node);

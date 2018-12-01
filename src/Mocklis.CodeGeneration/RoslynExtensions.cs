@@ -8,7 +8,9 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -39,6 +41,22 @@ namespace Mocklis.CodeGeneration
             return elementAccessExpression.WithArgumentList(
                 SyntaxFactory.BracketedArgumentList(
                     SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
+        }
+
+        public static IEnumerable<string> GetUsableNames(this ITypeSymbol typeSymbol)
+        {
+            while (typeSymbol != null)
+            {
+                foreach (var member in typeSymbol.GetMembers())
+                {
+                    if (member.CanBeReferencedByName)
+                    {
+                        yield return member.Name;
+                    }
+                }
+
+                typeSymbol = typeSymbol.BaseType;
+            }
         }
     }
 }

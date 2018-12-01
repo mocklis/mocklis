@@ -1,19 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MocklisClassAttribute.cs">
+// <copyright file="IHasPreferredName.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core
+namespace Mocklis.CodeGeneration.UniqueNames
 {
-    #region Using Directives
-
-    using System;
-
-    #endregion
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public sealed class MocklisClassAttribute : Attribute
+    public interface IHasPreferredName
     {
+        string PreferredName { get; }
     }
 }

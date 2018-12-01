@@ -41,8 +41,12 @@ namespace Mocklis.Refactorings
 
         private bool MightBeMocklisClass(ClassDeclarationSyntax classDecl)
         {
-            return classDecl.AttributeLists.SelectMany(al => al.Attributes).Any(a =>
+            var hasMocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).Any(a =>
                 a.Name.DescendantTokens().Any(t => t.Text == "MocklisClass" || t.Text == "MocklisClassAttribute"));
+
+            var isPartial = classDecl.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+
+            return hasMocklisAttribute && !isPartial;
         }
 
         private async Task<Document> UpdateMocklisClassAsync(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken)

@@ -15,6 +15,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
+    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -64,7 +65,10 @@ namespace Mocklis.CodeGeneration
 
             _problematicMembers = problematicMembers.ToArray();
 
-            _interfaceMembers = Uniquifier.GetUniqueNames(interfaceMembers).ToArray();
+            // make sure to reserve and use all names defined by the basetypes
+            var uniquifier = new Uniquifier(classSymbol.BaseType.GetUsableNames());
+
+            _interfaceMembers = uniquifier.GetUniqueNames(interfaceMembers).ToArray();
         }
 
 
@@ -72,10 +76,17 @@ namespace Mocklis.CodeGeneration
 
         private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol, List<string> problematicMembers)
         {
+            var baseTypeSymbol = classSymbol.BaseType;
+
             foreach (var interfaceSymbol in classSymbol.AllInterfaces)
             {
                 foreach (var memberSymbol in interfaceSymbol.GetMembers())
                 {
+                    if (baseTypeSymbol?.FindImplementationForInterfaceMember(memberSymbol) != null)
+                    {
+                        continue;
+                    }
+
                     if (memberSymbol is IPropertySymbol memberPropertySymbol)
                     {
                         if (memberPropertySymbol.IsIndexer)

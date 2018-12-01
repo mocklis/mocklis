@@ -13,6 +13,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -74,7 +75,7 @@ namespace Mocklis.CodeGeneration
                     mocklisClass.ParseTypeName(parameter.Type)));
             }
 
-            var parameters = Uniquifier.GetUniqueNames(parameterOrReturnValueList).ToArray();
+            var parameters = new Uniquifier().GetUniqueNames(parameterOrReturnValueList).ToArray();
 
             MockParameters = parameters.Where(i =>
                 i.item.Kind == ParameterOrReturnValueKind.Normal || i.item.Kind == ParameterOrReturnValueKind.In ||
