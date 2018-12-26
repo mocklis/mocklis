@@ -107,7 +107,7 @@ namespace Mocklis.CodeGeneration
 
         public override TypeSyntax MockPropertyType { get; }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
+        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
         {
             // we currently don't add ref, in or out as required.
             var mockedMethod = F.MethodDeclaration(MocklisClass.ParseTypeName(Symbol.ReturnType), Symbol.Name)
@@ -116,7 +116,7 @@ namespace Mocklis.CodeGeneration
 
             var invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(mockPropertyName), F.IdentifierName("Call")))
+                        F.IdentifierName(memberMockName), F.IdentifierName("Call")))
                 .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters.Select(a => a.item)));
 
             // look at the return parameters. If we don't have any we can just make the call.

@@ -26,7 +26,8 @@ namespace Mocklis.Core
         public string MemberName { get; }
         public string MemberMockName { get; }
 
-        private static string CreateMessage(MockType memberType, IMockInfo memberMock)
+        private static string CreateMessage(MockType memberType, string mocklisClassName, string interfaceName, string memberName,
+            string memberMockName)
         {
             string rawMessage;
             switch (memberType)
@@ -52,37 +53,65 @@ namespace Mocklis.Core
                 case MockType.IndexerSet:
                     rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
                     break;
+                case MockType.VirtualMethod:
+                    rawMessage = Resources.MockMissingExceptionMessageForVirtualMethod;
+                    break;
+                case MockType.VirtualPropertyGet:
+                    rawMessage = Resources.MockMissingExceptionMessageForVirtualPropertyGet;
+                    break;
+                case MockType.VirtualIndexerGet:
+                    rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerGet;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(memberType));
             }
 
-            if (memberMock == null)
-            {
-                throw new ArgumentNullException(nameof(memberMock));
-            }
-
-            return string.Format(rawMessage, memberMock.MocklisClassName, memberMock.InterfaceName,
-                memberMock.MemberName, memberMock.MemberMockName);
+            return string.Format(
+                rawMessage,
+                mocklisClassName ?? throw new ArgumentNullException(nameof(mocklisClassName)),
+                interfaceName ?? throw new ArgumentNullException(nameof(interfaceName)),
+                memberName ?? throw new ArgumentNullException(nameof(memberName)),
+                memberMockName ?? throw new ArgumentNullException(nameof(memberMockName)));
         }
 
-        public MockMissingException(MockType memberType, IMockInfo memberMock)
-            : base(CreateMessage(memberType, memberMock))
+        public MockMissingException(MockType memberType, IMockInfo memberMock) : this(
+            memberType,
+            (memberMock ?? throw new ArgumentNullException(nameof(memberMock))).MocklisClassName,
+            memberMock.InterfaceName,
+            memberMock.MemberName,
+            memberMock.MemberMockName)
         {
-            MemberType = memberType;
-            MocklisClassName = memberMock.MocklisClassName;
-            InterfaceName = memberMock.InterfaceName;
-            MemberName = memberMock.MemberName;
-            MemberMockName = memberMock.MemberMockName;
         }
 
-        public MockMissingException(MockType memberType, IMockInfo memberMock, Exception innerException)
-            : base(CreateMessage(memberType, memberMock), innerException)
+        public MockMissingException(MockType memberType, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+            : base(CreateMessage(memberType, mocklisClassName, interfaceName, memberName, memberMockName))
         {
             MemberType = memberType;
-            MocklisClassName = memberMock.MocklisClassName;
-            InterfaceName = memberMock.InterfaceName;
-            MemberName = memberMock.MemberName;
-            MemberMockName = memberMock.MemberMockName;
+            MocklisClassName = mocklisClassName;
+            InterfaceName = interfaceName;
+            MemberName = memberName;
+            MemberMockName = memberMockName;
+        }
+
+        public MockMissingException(MockType memberType, IMockInfo memberMock, Exception innerException) : this(
+            memberType,
+            (memberMock ?? throw new ArgumentNullException(nameof(memberMock))).MocklisClassName,
+            memberMock.InterfaceName,
+            memberMock.MemberName,
+            memberMock.MemberMockName,
+            innerException)
+        {
+        }
+
+        public MockMissingException(MockType memberType, string mocklisClassName, string interfaceName, string memberName, string memberMockName,
+            Exception innerException)
+            : base(CreateMessage(memberType, mocklisClassName, interfaceName, memberName, memberMockName), innerException)
+        {
+            MemberType = memberType;
+            MocklisClassName = mocklisClassName;
+            InterfaceName = interfaceName;
+            MemberName = memberName;
+            MemberMockName = memberMockName;
         }
 
 #if NETSTANDARD2_0

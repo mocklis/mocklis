@@ -14,6 +14,9 @@ namespace Mocklis.Core
         EventAdd = 4,
         EventRemove = 5,
         IndexerGet = 6,
-        IndexerSet = 7
+        IndexerSet = 7,
+        VirtualMethod = 8,
+        VirtualPropertyGet = 10,
+        VirtualIndexerGet = 14
     }
 }

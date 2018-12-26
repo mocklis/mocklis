@@ -39,7 +39,7 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = mocklisClass.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
         }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
+        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
         {
             var mockedIndexer = F.IndexerDeclaration(ValueTypeSyntax)
                 .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
@@ -54,7 +54,7 @@ namespace Mocklis.CodeGeneration
             if (Symbol.IsReadOnly)
             {
                 mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(
-                        F.ElementAccessExpression(F.IdentifierName(mockPropertyName))
+                        F.ElementAccessExpression(F.IdentifierName(memberMockName))
                             .WithExpressionsAsArgumentList(keyParameter)))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
@@ -63,7 +63,7 @@ namespace Mocklis.CodeGeneration
                 if (!Symbol.IsWriteOnly)
                 {
                     mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithExpressionBody(F.ArrowExpressionClause(F.ElementAccessExpression(F.IdentifierName(mockPropertyName))
+                        .WithExpressionBody(F.ArrowExpressionClause(F.ElementAccessExpression(F.IdentifierName(memberMockName))
                             .WithExpressionsAsArgumentList(keyParameter)))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                     );
@@ -74,7 +74,7 @@ namespace Mocklis.CodeGeneration
                     mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                         .WithExpressionBody(F.ArrowExpressionClause(
                             F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                F.ElementAccessExpression(F.IdentifierName(mockPropertyName)).WithExpressionsAsArgumentList(keyParameter),
+                                F.ElementAccessExpression(F.IdentifierName(memberMockName)).WithExpressionsAsArgumentList(keyParameter),
                                 F.IdentifierName("value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
                 }

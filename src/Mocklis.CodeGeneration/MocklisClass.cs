@@ -28,6 +28,8 @@ namespace Mocklis.CodeGeneration
         private readonly (string uniqueName, MocklisMember item)[] _interfaceMembers;
         private readonly NameSyntax _valueTuple;
         private readonly NameSyntax _action;
+        private readonly NameSyntax _mockMissingException;
+        private readonly NameSyntax _mockType;
         private readonly string[] _problematicMembers;
         private readonly bool _isAbstract;
 
@@ -56,6 +58,8 @@ namespace Mocklis.CodeGeneration
             _mocklisSymbols = mocklisSymbols;
             _valueTuple = ParseName(mocklisSymbols.ValueTuple);
             _action = ParseName(mocklisSymbols.Action);
+            _mockMissingException = ParseName(mocklisSymbols.MockMissingException);
+            _mockType = ParseName(mocklisSymbols.MockType);
             INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
             _isAbstract = classSymbol.IsAbstract;
 
@@ -89,21 +93,27 @@ namespace Mocklis.CodeGeneration
 
                     if (memberSymbol is IPropertySymbol memberPropertySymbol)
                     {
-                        if (memberPropertySymbol.ReturnsByRef)
+                        if (memberPropertySymbol.IsIndexer)
                         {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberPropertySymbol.Name} (returns by reference)");
-                        }
-                        else if (memberPropertySymbol.ReturnsByRefReadonly)
-                        {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberPropertySymbol.Name} (returns by readonly reference)");
-                        }
-                        else if (memberPropertySymbol.IsIndexer)
-                        {
-                            yield return new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol);
+                            if (memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly)
+                            {
+                                yield return new MocklisRefIndexer(this, interfaceSymbol, memberPropertySymbol);
+                            }
+                            else
+                            {
+                                yield return new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol);
+                            }
                         }
                         else
                         {
-                            yield return new MocklisProperty(this, interfaceSymbol, memberPropertySymbol);
+                            if (memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly)
+                            {
+                                yield return new MocklisRefProperty(this, interfaceSymbol, memberPropertySymbol);
+                            }
+                            else
+                            {
+                                yield return new MocklisProperty(this, interfaceSymbol, memberPropertySymbol);
+                            }
                         }
                     }
                     else if (memberSymbol is IEventSymbol memberEventSymbol)
@@ -161,7 +171,11 @@ namespace Mocklis.CodeGeneration
 
             foreach (var interfaceMember in _interfaceMembers)
             {
-                yield return interfaceMember.item.MockProperty(interfaceMember.uniqueName);
+                var p = interfaceMember.item.MockProperty(interfaceMember.uniqueName);
+                if (p != null)
+                {
+                    yield return p;
+                }
 
                 var x = interfaceMember.item.ExplicitInterfaceMember(interfaceMember.uniqueName);
                 if (x != null)
@@ -284,5 +298,9 @@ namespace Mocklis.CodeGeneration
         {
             return ParseGenericName(_mocklisSymbols.PropertyStepCaller1, tvalue);
         }
+
+        public TypeSyntax MockMissingException => _mockMissingException;
+
+        public TypeSyntax MockType => _mockType;
     }
 }

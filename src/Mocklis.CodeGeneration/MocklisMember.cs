@@ -18,16 +18,16 @@ namespace Mocklis.CodeGeneration
 
     public abstract class MocklisMember : IHasPreferredName
     {
-        public abstract MemberDeclarationSyntax MockProperty(string mockPropertyName);
-        public abstract StatementSyntax InitialiseMockProperty(string mockPropertyName);
+        public abstract MemberDeclarationSyntax MockProperty(string memberMockName);
+        public abstract StatementSyntax InitialiseMockProperty(string memberMockName);
 
-        public abstract MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName);
+        public abstract MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName);
 
         public abstract TypeSyntax MockPropertyType { get; }
 
-        protected MocklisMember(string mockPropertyName)
+        protected MocklisMember(string preferredMemberMockName)
         {
-            PreferredName = mockPropertyName;
+            PreferredName = preferredMemberMockName;
         }
 
         public string PreferredName { get; }
@@ -48,23 +48,23 @@ namespace Mocklis.CodeGeneration
             InterfaceName = MocklisClass.ParseName(InterfaceSymbol);
         }
 
-        public override MemberDeclarationSyntax MockProperty(string mockPropertyName)
+        public override MemberDeclarationSyntax MockProperty(string memberMockName)
         {
-            return F.PropertyDeclaration(MockPropertyType, mockPropertyName).AddModifiers(F.Token(SyntaxKind.PublicKeyword))
+            return F.PropertyDeclaration(MockPropertyType, memberMockName).AddModifiers(F.Token(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
         }
 
-        public override StatementSyntax InitialiseMockProperty(string mockPropertyName)
+        public override StatementSyntax InitialiseMockProperty(string memberMockName)
         {
-            return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, F.IdentifierName(mockPropertyName),
+            return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, F.IdentifierName(memberMockName),
                 F.ObjectCreationExpression(MockPropertyType)
                     .WithExpressionsAsArgumentList(
                         F.ThisExpression(),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MocklisClass.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(mockPropertyName))
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName))
                     )));
         }
     }

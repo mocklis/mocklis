@@ -28,14 +28,14 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = mocklisClass.EventMock(EventHandlerTypeSyntax);
         }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
+        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
         {
             var mockedProperty = F.EventDeclaration(EventHandlerTypeSyntax, Symbol.Name)
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
 
             mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
                 .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
+                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(memberMockName),
                             F.IdentifierName("Add")))
                     .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
                 .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
@@ -44,7 +44,7 @@ namespace Mocklis.CodeGeneration
             mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
                 .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
                         F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            F.IdentifierName(mockPropertyName), F.IdentifierName("Remove")))
+                            F.IdentifierName(memberMockName), F.IdentifierName("Remove")))
                     .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
                 .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
 

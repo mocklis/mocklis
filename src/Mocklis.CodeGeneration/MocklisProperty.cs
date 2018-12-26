@@ -28,7 +28,7 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = mocklisClass.PropertyMock(ValueTypeSyntax);
         }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string mockPropertyName)
+        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
         {
             var mockedProperty = F.PropertyDeclaration(ValueTypeSyntax, Symbol.Name)
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
@@ -37,7 +37,7 @@ namespace Mocklis.CodeGeneration
             {
                 mockedProperty = mockedProperty
                     .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(mockPropertyName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+                        F.IdentifierName(memberMockName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {
@@ -45,7 +45,7 @@ namespace Mocklis.CodeGeneration
                 {
                     mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            F.IdentifierName(mockPropertyName),
+                            F.IdentifierName(memberMockName),
                             F.IdentifierName("Value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                     );
@@ -57,7 +57,7 @@ namespace Mocklis.CodeGeneration
                         .WithExpressionBody(
                             F.ArrowExpressionClause(
                                 F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(mockPropertyName),
+                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(memberMockName),
                                         F.IdentifierName("Value")),
                                     F.IdentifierName("value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
