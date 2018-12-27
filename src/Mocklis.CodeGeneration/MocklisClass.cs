@@ -128,11 +128,11 @@ namespace Mocklis.CodeGeneration
                         }
                         else if (memberMethodSymbol.ReturnsByRef)
                         {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (returns by reference)");
+                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
                         }
                         else if (memberMethodSymbol.ReturnsByRefReadonly)
                         {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (returns by readonly reference)");
+                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
                         }
                         else if (memberMethodSymbol.IsVararg)
                         {
