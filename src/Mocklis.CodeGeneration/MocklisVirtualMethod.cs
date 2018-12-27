@@ -12,6 +12,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -20,6 +21,7 @@ namespace Mocklis.CodeGeneration
     {
         private TypeSyntax ReturnTypeWithoutReadonly { get; }
         private TypeSyntax ReturnType { get; }
+        private string ArglistParameterName { get; }
 
         public MocklisVirtualMethod(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol) : base(mocklisClass,
             interfaceSymbol, symbol)
@@ -46,6 +48,19 @@ namespace Mocklis.CodeGeneration
                 ReturnType = mocklisClass.ParseTypeName(symbol.ReturnType);
                 ReturnTypeWithoutReadonly = ReturnType;
             }
+
+            ArglistParameterName = FindArglistParameterName(symbol);
+        }
+
+        public static string FindArglistParameterName(IMethodSymbol symbol)
+        {
+            if (symbol.IsVararg)
+            {
+                var uniquifier = new Uniquifier(symbol.Parameters.Select(a => a.Name));
+                return uniquifier.GetUniqueName("arglist");
+            }
+
+            return null;
         }
 
         public override TypeSyntax MockPropertyType { get; }
@@ -57,9 +72,15 @@ namespace Mocklis.CodeGeneration
 
         public override MemberDeclarationSyntax MockProperty(string memberMockName)
         {
+            var parameters = F.SeparatedList(Symbol.Parameters.Select(ConvertParameter));
+            if (ArglistParameterName != null && MocklisClass.RuntimeArgumentHandle != null)
+            {
+                parameters = parameters.Add(F.Parameter(F.Identifier(ArglistParameterName)).WithType(MocklisClass.RuntimeArgumentHandle));
+            }
+
             return F.MethodDeclaration(ReturnTypeWithoutReadonly, F.Identifier(memberMockName))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                .WithParameterList(F.ParameterList(F.SeparatedList(Symbol.Parameters.Select(ConvertParameter))))
+                .WithParameterList(F.ParameterList(parameters))
                 .WithBody(
                     F.Block(F.ThrowStatement(F.ObjectCreationExpression(MocklisClass.MockMissingException)
                             .WithExpressionsAsArgumentList(
@@ -76,21 +97,35 @@ namespace Mocklis.CodeGeneration
 
         public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
         {
+            var parameters = F.SeparatedList(Symbol.Parameters.Select(ConvertParameter));
+            if (ArglistParameterName != null)
+            {
+                parameters = parameters.Add(F.Parameter(F.Token(SyntaxKind.ArgListKeyword)));
+            }
+
+            var arguments = F.SeparatedList(Symbol.Parameters.Select(ConvertArgument));
+
+            if (ArglistParameterName != null && MocklisClass.RuntimeArgumentHandle != null)
+            {
+                arguments = arguments.Add(F.Argument(F.LiteralExpression(SyntaxKind.ArgListExpression, F.Token(SyntaxKind.ArgListKeyword))));
+            }
+
             var mockedMethod = F.MethodDeclaration(ReturnType, Symbol.Name)
-                .WithParameterList(F.ParameterList(F.SeparatedList(Symbol.Parameters.Select(ConvertParameter))))
+                .WithParameterList(F.ParameterList(parameters))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
 
             if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
             {
                 mockedMethod = mockedMethod
                     .WithExpressionBody(F.ArrowExpressionClause(F.RefExpression(F.InvocationExpression(F.IdentifierName(memberMockName),
-                        F.ArgumentList(F.SeparatedList(Symbol.Parameters.Select(ConvertArgument)))))))
+                        F.ArgumentList(arguments)))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {
                 mockedMethod = mockedMethod
-                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(memberMockName))))
+                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(memberMockName),
+                        F.ArgumentList(arguments))))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
 

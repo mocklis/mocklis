@@ -30,6 +30,7 @@ namespace Mocklis.CodeGeneration
         private readonly NameSyntax _action;
         private readonly NameSyntax _mockMissingException;
         private readonly NameSyntax _mockType;
+        private readonly NameSyntax _runtimeArgumentHandle;
         private readonly string[] _problematicMembers;
         private readonly bool _isAbstract;
 
@@ -60,6 +61,7 @@ namespace Mocklis.CodeGeneration
             _action = ParseName(mocklisSymbols.Action);
             _mockMissingException = ParseName(mocklisSymbols.MockMissingException);
             _mockType = ParseName(mocklisSymbols.MockType);
+            _runtimeArgumentHandle = ParseName(mocklisSymbols.RuntimeArgumentHandle);
             INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
             _isAbstract = classSymbol.IsAbstract;
 
@@ -136,7 +138,7 @@ namespace Mocklis.CodeGeneration
                         }
                         else if (memberMethodSymbol.IsVararg)
                         {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (uses __arglist)");
+                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
                         }
                         else
                         {
@@ -210,6 +212,11 @@ namespace Mocklis.CodeGeneration
 
         public NameSyntax ParseName(ITypeSymbol propertyType)
         {
+            if (propertyType == null)
+            {
+                return null;
+            }
+
             return F.ParseName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
         }
 
@@ -302,5 +309,7 @@ namespace Mocklis.CodeGeneration
         public TypeSyntax MockMissingException => _mockMissingException;
 
         public TypeSyntax MockType => _mockType;
+
+        public TypeSyntax RuntimeArgumentHandle => _runtimeArgumentHandle;
     }
 }

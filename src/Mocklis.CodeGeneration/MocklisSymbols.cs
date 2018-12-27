@@ -31,6 +31,7 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol PropertyStepCaller1 { get; }
         public INamedTypeSymbol MockMissingException { get; }
         public INamedTypeSymbol MockType { get; }
+        public INamedTypeSymbol RuntimeArgumentHandle { get; }
 
         public MocklisSymbols(Compilation compilation)
         {
@@ -51,6 +52,7 @@ namespace Mocklis.CodeGeneration
             PropertyStepCaller1 = compilation.GetTypeByMetadataName("Mocklis.Core.IPropertyStepCaller`1");
             MockMissingException = compilation.GetTypeByMetadataName("Mocklis.Core.MockMissingException");
             MockType = compilation.GetTypeByMetadataName("Mocklis.Core.MockType");
+            RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
         }
     }
 }
