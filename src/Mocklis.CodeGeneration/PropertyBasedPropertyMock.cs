@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MocklisProperty.cs">
+// <copyright file="PropertyBasedPropertyMock.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,6 +8,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,29 +16,41 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class MocklisProperty : MocklisMember<IPropertySymbol>
+    public class PropertyBasedPropertyMock : PropertyBasedMock<IPropertySymbol>, IMemberMock
     {
         private TypeSyntax ValueTypeSyntax { get; }
-        public override TypeSyntax MockPropertyType { get; }
+        private TypeSyntax MockPropertyType { get; }
 
-        public MocklisProperty(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol) : base(mocklisClass,
-            interfaceSymbol, symbol)
+        public PropertyBasedPropertyMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
+            IPropertySymbol symbol,
+            string mockMemberName) : base(typesForSymbols,
+            classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            ValueTypeSyntax = mocklisClass.ParseTypeName(symbol.Type);
-
-            MockPropertyType = mocklisClass.PropertyMock(ValueTypeSyntax);
+            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
+            MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);
         }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        {
+            declarationList.Add(MockProperty(MockPropertyType));
+            declarationList.Add(ExplicitInterfaceMember());
+        }
+
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        {
+            constructorStatements.Add(InitialisationStatement(MockPropertyType));
+        }
+
+        private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
             var mockedProperty = F.PropertyDeclaration(ValueTypeSyntax, Symbol.Name)
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.IsReadOnly)
             {
                 mockedProperty = mockedProperty
                     .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(memberMockName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+                        F.IdentifierName(MemberMockName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {
@@ -45,7 +58,7 @@ namespace Mocklis.CodeGeneration
                 {
                     mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            F.IdentifierName(memberMockName),
+                            F.IdentifierName(MemberMockName),
                             F.IdentifierName("Value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                     );
@@ -57,7 +70,7 @@ namespace Mocklis.CodeGeneration
                         .WithExpressionBody(
                             F.ArrowExpressionClause(
                                 F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(memberMockName),
+                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(MemberMockName),
                                         F.IdentifierName("Value")),
                                     F.IdentifierName("value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))

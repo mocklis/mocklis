@@ -8,7 +8,6 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -20,20 +19,8 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public sealed class MocklisClass
+    public static class MocklisClass
     {
-        private readonly SemanticModel _semanticModel;
-        private readonly ClassDeclarationSyntax _classDeclaration;
-        private readonly MocklisSymbols _mocklisSymbols;
-        private readonly (string uniqueName, MocklisMember item)[] _interfaceMembers;
-        private readonly NameSyntax _valueTuple;
-        private readonly NameSyntax _action;
-        private readonly NameSyntax _mockMissingException;
-        private readonly NameSyntax _mockType;
-        private readonly NameSyntax _runtimeArgumentHandle;
-        private readonly string[] _problematicMembers;
-        private readonly bool _isAbstract;
-
         public static ClassDeclarationSyntax EmptyMocklisClass(ClassDeclarationSyntax classDecl)
         {
             return classDecl.WithMembers(F.List<MemberDeclarationSyntax>())
@@ -44,272 +31,139 @@ namespace Mocklis.CodeGeneration
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
             MocklisSymbols mocklisSymbols)
         {
-            var mocklisClass = new MocklisClass(semanticModel, classDecl, mocklisSymbols);
-            return classDecl.WithMembers(F.List(mocklisClass.GenerateMembers()))
+            var populator = new MocklisClassPopulator(semanticModel, classDecl, mocklisSymbols);
+            return classDecl.WithMembers(F.List(populator.GenerateMembers()))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }
 
-        public MocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
+        private class MocklisClassPopulator
         {
-            _semanticModel = semanticModel;
-            _classDeclaration = classDeclaration;
+            private readonly INamedTypeSymbol _classSymbol;
+            private readonly IMemberMock[] _mocks;
 
-            _mocklisSymbols = mocklisSymbols;
-            _valueTuple = ParseName(mocklisSymbols.ValueTuple);
-            _action = ParseName(mocklisSymbols.Action);
-            _mockMissingException = ParseName(mocklisSymbols.MockMissingException);
-            _mockType = ParseName(mocklisSymbols.MockType);
-            _runtimeArgumentHandle = ParseName(mocklisSymbols.RuntimeArgumentHandle);
-            INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-            _isAbstract = classSymbol.IsAbstract;
-
-            List<string> problematicMembers = new List<string>();
-
-            var interfaceMembers = FindAllMembersInClass(classSymbol, problematicMembers).ToArray();
-
-            _problematicMembers = problematicMembers.ToArray();
-
-            // make sure to reserve and use all names defined by the basetypes
-            var uniquifier = new Uniquifier(classSymbol.BaseType.GetUsableNames());
-
-            _interfaceMembers = uniquifier.GetUniqueNames(interfaceMembers).ToArray();
-        }
-
-
-        public string Name => _classDeclaration.Identifier.Text;
-
-        private IEnumerable<MocklisMember> FindAllMembersInClass(INamedTypeSymbol classSymbol, List<string> problematicMembers)
-        {
-            var baseTypeSymbol = classSymbol.BaseType;
-
-            foreach (var interfaceSymbol in classSymbol.AllInterfaces)
+            public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
             {
-                foreach (var memberSymbol in interfaceSymbol.GetMembers())
-                {
-                    if (baseTypeSymbol?.FindImplementationForInterfaceMember(memberSymbol) != null)
-                    {
-                        continue;
-                    }
+                _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
+                _mocks = CreateMocks(_classSymbol, new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols));
+            }
 
-                    if (memberSymbol is IPropertySymbol memberPropertySymbol)
+            private static IMemberMock[] CreateMocks(INamedTypeSymbol classSymbol, MocklisTypesForSymbols typesForSymbols)
+            {
+                var members = GetMembers(classSymbol).ToArray();
+
+                // make sure to reserve and use all names defined by the basetypes
+                var uniquifier = new Uniquifier(classSymbol.BaseType.GetUsableNames());
+
+                // Then reserve all names used by new members
+                foreach (var member in members)
+                {
+                    uniquifier.ReserveName(member.memberSymbol.MetadataName);
+                }
+
+                return members.Select(m =>
+                    CreateMock(classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier.GetUniqueName(m.memberSymbol.MetadataName),
+                        typesForSymbols)).ToArray();
+            }
+
+            private static IEnumerable<(INamedTypeSymbol interfaceSymbol, ISymbol memberSymbol)> GetMembers(ITypeSymbol classSymbol)
+            {
+                var baseTypeSymbol = classSymbol.BaseType;
+                foreach (var interfaceSymbol in classSymbol.AllInterfaces)
+                {
+                    foreach (var memberSymbol in interfaceSymbol.GetMembers())
                     {
+                        if (memberSymbol is IMethodSymbol && !memberSymbol.CanBeReferencedByName)
+                        {
+                            continue;
+                        }
+
+                        if (baseTypeSymbol?.FindImplementationForInterfaceMember(memberSymbol) != null)
+                        {
+                            continue;
+                        }
+
+                        yield return (interfaceSymbol, memberSymbol);
+                    }
+                }
+            }
+
+            private static IMemberMock CreateMock(INamedTypeSymbol classSymbol, ISymbol memberSymbol, INamedTypeSymbol interfaceSymbol,
+                string mockMemberName, MocklisTypesForSymbols typesForSymbols)
+            {
+                switch (memberSymbol)
+                {
+                    case IPropertySymbol memberPropertySymbol:
+                    {
+                        bool useVirtualMethod = memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly;
+
                         if (memberPropertySymbol.IsIndexer)
                         {
-                            if (memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly)
+                            if (useVirtualMethod)
                             {
-                                yield return new MocklisRefIndexer(this, interfaceSymbol, memberPropertySymbol);
+                                return new VirtualMethodBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol,
+                                    mockMemberName);
                             }
-                            else
-                            {
-                                yield return new MocklisIndexer(this, interfaceSymbol, memberPropertySymbol);
-                            }
+
+                            return new PropertyBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                         }
-                        else
+
+                        if (useVirtualMethod)
                         {
-                            if (memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly)
-                            {
-                                yield return new MocklisRefProperty(this, interfaceSymbol, memberPropertySymbol);
-                            }
-                            else
-                            {
-                                yield return new MocklisProperty(this, interfaceSymbol, memberPropertySymbol);
-                            }
+                            return new VirtualMethodBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol,
+                                mockMemberName);
                         }
+
+                        return new PropertyBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
-                    else if (memberSymbol is IEventSymbol memberEventSymbol)
+                    case IEventSymbol memberEventSymbol:
+                        return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
+                    case IMethodSymbol memberMethodSymbol:
                     {
-                        yield return new MocklisEvent(this, interfaceSymbol, memberEventSymbol);
+                        bool useVirtualMethod = memberMethodSymbol.Arity > 0 || memberMethodSymbol.ReturnsByRef ||
+                                                memberMethodSymbol.ReturnsByRefReadonly ||
+                                                memberMethodSymbol.IsVararg;
+                        if (useVirtualMethod)
+                        {
+                            return new VirtualMethodBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,
+                                mockMemberName);
+                        }
+
+                        return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
                     }
-                    else if (memberSymbol is IMethodSymbol memberMethodSymbol && memberMethodSymbol.CanBeReferencedByName)
-                    {
-                        if (memberMethodSymbol.Arity > 0)
-                        {
-                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
-                        }
-                        else if (memberMethodSymbol.ReturnsByRef)
-                        {
-                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
-                        }
-                        else if (memberMethodSymbol.ReturnsByRefReadonly)
-                        {
-                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
-                        }
-                        else if (memberMethodSymbol.IsVararg)
-                        {
-                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
-                        }
-                        else
-                        {
-                            yield return new MocklisMethod(this, interfaceSymbol, memberMethodSymbol);
-                        }
-                    }
+                    default:
+                        return null;
                 }
             }
-        }
 
-        public IEnumerable<MemberDeclarationSyntax> GenerateMembers()
-        {
-            var constructor = GenerateConstructor();
-            if (_problematicMembers.Any())
+            public SyntaxList<MemberDeclarationSyntax> GenerateMembers()
             {
-                var triviaList = F.TriviaList().Add(F.Comment("// Could not create mocks for the following members:" + Environment.NewLine));
-                foreach (var problematicMember in _problematicMembers)
+                var declarationList = new List<MemberDeclarationSyntax>();
+
+                GenerateConstructors(declarationList);
+
+                foreach (var mock in _mocks)
                 {
-                    triviaList = triviaList.Add(F.Comment("// * " + problematicMember + Environment.NewLine));
+                    mock.AddMembersToClass(declarationList);
                 }
 
-                triviaList = triviaList.Add(F.Comment("//" + Environment.NewLine));
-                triviaList = triviaList.Add(F.Comment("// Future version of Mocklis will handle these by introducing virtual members" +
-                                                      Environment.NewLine));
-                triviaList = triviaList.Add(F.Comment("// that can be given a 'mock' implementation in a derived class." + Environment.NewLine +
-                                                      Environment.NewLine));
-
-                constructor = constructor.WithLeadingTrivia(triviaList);
+                return new SyntaxList<MemberDeclarationSyntax>(declarationList);
             }
 
-            yield return constructor;
-
-            foreach (var interfaceMember in _interfaceMembers)
+            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList)
             {
-                var p = interfaceMember.item.MockProperty(interfaceMember.uniqueName);
-                if (p != null)
+                var constructorStatements = new List<StatementSyntax>();
+
+                foreach (var mock in _mocks)
                 {
-                    yield return p;
+                    mock.AddInitialisersToConstructor(constructorStatements);
                 }
 
-                var x = interfaceMember.item.ExplicitInterfaceMember(interfaceMember.uniqueName);
-                if (x != null)
-                {
-                    yield return x;
-                }
+                declarationList.Add(F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
+                    .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
+                    .WithBody(F.Block(constructorStatements)));
             }
         }
-
-        private MemberDeclarationSyntax GenerateConstructor()
-        {
-            List<StatementSyntax> constructorStatements = new List<StatementSyntax>();
-
-            foreach (var interfaceMember in _interfaceMembers)
-            {
-                var initialisation = interfaceMember.item.InitialiseMockProperty(interfaceMember.uniqueName);
-                if (initialisation != null)
-                {
-                    constructorStatements.Add(initialisation);
-                }
-            }
-
-            return F.ConstructorDeclaration(_classDeclaration.Identifier)
-                .WithModifiers(F.TokenList(F.Token(_isAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
-                .WithBody(F.Block(constructorStatements));
-        }
-
-        public TypeSyntax ParseTypeName(ITypeSymbol propertyType)
-        {
-            return F.ParseTypeName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
-        }
-
-        public NameSyntax ParseName(ITypeSymbol propertyType)
-        {
-            if (propertyType == null)
-            {
-                return null;
-            }
-
-            return F.ParseName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
-        }
-
-        public NameSyntax ParseGenericName(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
-        {
-            NameSyntax ApplyTypeParameters(NameSyntax nameSyntax)
-            {
-                if (nameSyntax is GenericNameSyntax genericNameSyntax)
-                {
-                    return genericNameSyntax.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
-                }
-
-                if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
-                {
-                    return qualifiedNameSyntax.WithRight((SimpleNameSyntax)ApplyTypeParameters(qualifiedNameSyntax.Right));
-                }
-
-                return nameSyntax;
-            }
-
-            NameSyntax result = F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
-
-            return ApplyTypeParameters(result);
-        }
-
-        public TypeSyntax ActionMethodMock()
-        {
-            return ParseTypeName(_mocklisSymbols.ActionMethodMock0);
-        }
-
-        public TypeSyntax ActionMethodMock(TypeSyntax tparam)
-        {
-            return ParseGenericName(_mocklisSymbols.ActionMethodMock1, tparam);
-        }
-
-        public TypeSyntax EventMock(TypeSyntax thandler)
-        {
-            return ParseGenericName(_mocklisSymbols.EventMock1, thandler);
-        }
-
-        public TypeSyntax FuncMethodMock(TypeSyntax tresult)
-        {
-            return ParseGenericName(_mocklisSymbols.FuncMethodMock1, tresult);
-        }
-
-        public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult)
-        {
-            return ParseGenericName(_mocklisSymbols.FuncMethodMock2, tparam, tresult);
-        }
-
-        public TypeSyntax IndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.IndexerMock2, tkey, tvalue);
-        }
-
-        public TypeSyntax PropertyMock(TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.PropertyMock1, tvalue);
-        }
-
-        public TypeSyntax Action(TypeSyntax t)
-        {
-            return ParseGenericName(_mocklisSymbols.Action1, t);
-        }
-
-        public TypeSyntax Action() => _action;
-
-        public TypeSyntax ValueTuple => _valueTuple;
-
-        public TypeSyntax EventStepCallerMock(TypeSyntax thandler)
-        {
-            return ParseGenericName(_mocklisSymbols.EventStepCaller1, thandler);
-        }
-
-        public TypeSyntax IndexerStepCallerMock(TypeSyntax tkey, TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.IndexerStepCaller2, tkey, tvalue);
-        }
-
-        public TypeSyntax MethodStepCallerMock(TypeSyntax tparam, TypeSyntax tresult)
-        {
-            return ParseGenericName(_mocklisSymbols.MethodStepCaller2, tparam, tresult);
-        }
-
-        public TypeSyntax PropertyStepCallerMock(TypeSyntax tvalue)
-        {
-            return ParseGenericName(_mocklisSymbols.PropertyStepCaller1, tvalue);
-        }
-
-        public TypeSyntax MockMissingException => _mockMissingException;
-
-        public TypeSyntax MockType => _mockType;
-
-        public TypeSyntax RuntimeArgumentHandle => _runtimeArgumentHandle;
     }
 }

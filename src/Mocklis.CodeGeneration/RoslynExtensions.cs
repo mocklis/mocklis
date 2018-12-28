@@ -11,8 +11,8 @@ namespace Mocklis.CodeGeneration
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
 
@@ -23,7 +23,7 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax[] expressions)
         {
             return objectCreationExpression.WithArgumentList(
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
+                F.ArgumentList(F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
         }
 
         public static InvocationExpressionSyntax WithExpressionsAsArgumentList(
@@ -31,7 +31,7 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax[] expressions)
         {
             return invocationExpression.WithArgumentList(
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
+                F.ArgumentList(F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
         }
 
         public static ElementAccessExpressionSyntax WithExpressionsAsArgumentList(
@@ -39,8 +39,8 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax[] expressions)
         {
             return elementAccessExpression.WithArgumentList(
-                SyntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.SeparatedList(expressions.Where(e => e != null).Select(SyntaxFactory.Argument))));
+                F.BracketedArgumentList(
+                    F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
         }
 
         public static IEnumerable<string> GetUsableNames(this ITypeSymbol typeSymbol)

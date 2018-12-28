@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MocklisMethod.cs">
+// <copyright file="PropertyBasedMethodMock.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -18,21 +18,26 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class MocklisMethod : MocklisMember<IMethodSymbol>
+    public class PropertyBasedMethodMock : PropertyBasedMock<IMethodSymbol>, IMemberMock
     {
-        private (string uniqueName, ParameterOrReturnValue item)[] MockParameters { get; }
-        private (string uniqueName, ParameterOrReturnValue item)[] MockReturnValues { get; }
-        private (string uniqueName, ParameterOrReturnValue item)[] MethodParameters { get; }
+        private ParameterOrReturnValue[] MockParameters { get; }
+        private ParameterOrReturnValue[] MockReturnValues { get; }
+        private ParameterOrReturnValue[] MethodParameters { get; }
+        private TypeSyntax MockPropertyType { get; }
 
-        public MocklisMethod(MocklisClass mocklisClass, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol) : base(mocklisClass,
-            interfaceSymbol, symbol)
+        public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
+            IMethodSymbol symbol,
+            string mockMemberName) : base(typesForSymbols,
+            classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             var parameterOrReturnValueList = new List<ParameterOrReturnValue>();
+
+            var uniquifier = new Uniquifier();
 
             if (!symbol.ReturnsVoid)
             {
                 parameterOrReturnValueList.Add(new ParameterOrReturnValue(ParameterOrReturnValueKind.ReturnValue, "returnValue",
-                    mocklisClass.ParseTypeName(symbol.ReturnType)));
+                    uniquifier.GetUniqueName("returnValue"), typesForSymbols.ParseTypeName(symbol.ReturnType)));
             }
 
             foreach (var parameter in symbol.Parameters)
@@ -71,21 +76,19 @@ namespace Mocklis.CodeGeneration
                     }
                 }
 
-                parameterOrReturnValueList.Add(new ParameterOrReturnValue(kind, parameter.Name,
-                    mocklisClass.ParseTypeName(parameter.Type)));
+                parameterOrReturnValueList.Add(new ParameterOrReturnValue(kind, parameter.Name, uniquifier.GetUniqueName(parameter.Name),
+                    typesForSymbols.ParseTypeName(parameter.Type)));
             }
 
-            var parameters = new Uniquifier().GetUniqueNames(parameterOrReturnValueList).ToArray();
+            MockParameters = parameterOrReturnValueList.Where(i =>
+                i.Kind == ParameterOrReturnValueKind.Normal || i.Kind == ParameterOrReturnValueKind.In ||
+                i.Kind == ParameterOrReturnValueKind.Ref).ToArray();
 
-            MockParameters = parameters.Where(i =>
-                i.item.Kind == ParameterOrReturnValueKind.Normal || i.item.Kind == ParameterOrReturnValueKind.In ||
-                i.item.Kind == ParameterOrReturnValueKind.Ref).ToArray();
+            MockReturnValues = parameterOrReturnValueList.Where(i =>
+                i.Kind == ParameterOrReturnValueKind.ReturnValue || i.Kind == ParameterOrReturnValueKind.Ref ||
+                i.Kind == ParameterOrReturnValueKind.Out).ToArray();
 
-            MockReturnValues = parameters.Where(i =>
-                i.item.Kind == ParameterOrReturnValueKind.ReturnValue || i.item.Kind == ParameterOrReturnValueKind.Ref ||
-                i.item.Kind == ParameterOrReturnValueKind.Out).ToArray();
-
-            MethodParameters = parameters.Where(i => i.item.Kind != ParameterOrReturnValueKind.ReturnValue).ToArray();
+            MethodParameters = parameterOrReturnValueList.Where(i => i.Kind != ParameterOrReturnValueKind.ReturnValue).ToArray();
 
             var parameterTypeSyntax = ParameterOrReturnValue.BuildType(MockParameters);
 
@@ -94,35 +97,44 @@ namespace Mocklis.CodeGeneration
             if (returnValueTypeSyntax == null)
             {
                 MockPropertyType = parameterTypeSyntax == null
-                    ? MocklisClass.ActionMethodMock()
-                    : MocklisClass.ActionMethodMock(parameterTypeSyntax);
+                    ? TypesForSymbols.ActionMethodMock()
+                    : TypesForSymbols.ActionMethodMock(parameterTypeSyntax);
             }
             else
             {
                 MockPropertyType = parameterTypeSyntax == null
-                    ? MocklisClass.FuncMethodMock(returnValueTypeSyntax)
-                    : MocklisClass.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
+                    ? TypesForSymbols.FuncMethodMock(returnValueTypeSyntax)
+                    : TypesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
             }
         }
 
-        public override TypeSyntax MockPropertyType { get; }
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        {
+            declarationList.Add(MockProperty(MockPropertyType));
+            declarationList.Add(ExplicitInterfaceMember());
+        }
 
-        public override MemberDeclarationSyntax ExplicitInterfaceMember(string memberMockName)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        {
+            constructorStatements.Add(InitialisationStatement(MockPropertyType));
+        }
+
+        private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
             // we currently don't add ref, in or out as required.
-            var mockedMethod = F.MethodDeclaration(MocklisClass.ParseTypeName(Symbol.ReturnType), Symbol.Name)
-                .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.item.AsParameterSyntax()))))
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(InterfaceName));
+            var mockedMethod = F.MethodDeclaration(TypesForSymbols.ParseTypeName(Symbol.ReturnType), Symbol.Name)
+                .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.AsParameterSyntax()))))
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
             var invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(memberMockName), F.IdentifierName("Call")))
-                .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters.Select(a => a.item)));
+                        F.IdentifierName(MemberMockName), F.IdentifierName("Call")))
+                .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters));
 
             // look at the return parameters. If we don't have any we can just make the call.
             // if we only have one and that's the return value, we can just return it.
             if (MockReturnValues.Length == 0 ||
-                MockReturnValues.Length == 1 && MockReturnValues[0].item.Kind == ParameterOrReturnValueKind.ReturnValue)
+                MockReturnValues.Length == 1 && MockReturnValues[0].Kind == ParameterOrReturnValueKind.ReturnValue)
             {
                 mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
@@ -132,35 +144,35 @@ namespace Mocklis.CodeGeneration
             else if (MockReturnValues.Length == 1)
             {
                 mockedMethod = mockedMethod.WithBody(F.Block(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                    F.IdentifierName(MockReturnValues[0].item.PreferredName), invocation))));
+                    F.IdentifierName(MockReturnValues[0].ParameterName), invocation))));
             }
 
             else
             {
                 // if we have more than one, put it in a temporary variable. (consider name clashes with method parameter names)
 
-                var x = new Uniquifier(MethodParameters.Select(m => m.item.PreferredName));
+                var x = new Uniquifier(MethodParameters.Select(m => m.ParameterName));
                 string tmp = x.GetUniqueName("tmp");
 
-                List<StatementSyntax> statements = new List<StatementSyntax>
+                var statements = new List<StatementSyntax>
                 {
                     F.LocalDeclarationStatement(F.VariableDeclaration(F.IdentifierName("var")).WithVariables(
                         F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(tmp)).WithInitializer(F.EqualsValueClause(invocation)))))
                 };
 
                 // then for any out or ref parameters, set their values from the temporary variable.
-                foreach (var rv in MockReturnValues.Where(a => a.item.Kind != ParameterOrReturnValueKind.ReturnValue))
+                foreach (var rv in MockReturnValues.Where(a => a.Kind != ParameterOrReturnValueKind.ReturnValue))
                 {
                     statements.Add(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                        F.IdentifierName(rv.item.PreferredName),
-                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp), F.IdentifierName(rv.uniqueName)))));
+                        F.IdentifierName(rv.ParameterName),
+                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp), F.IdentifierName(rv.UniqueName)))));
                 }
 
                 // finally, if there is a 'proper' return type, return the corresponding value from the temporary variable.
-                foreach (var rv in MockReturnValues.Where(a => a.item.Kind == ParameterOrReturnValueKind.ReturnValue))
+                foreach (var rv in MockReturnValues.Where(a => a.Kind == ParameterOrReturnValueKind.ReturnValue))
                 {
                     statements.Add(F.ReturnStatement(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
-                        F.IdentifierName(rv.uniqueName))));
+                        F.IdentifierName(rv.UniqueName))));
                 }
 
                 mockedMethod = mockedMethod.WithBody(F.Block(statements));
@@ -178,20 +190,22 @@ namespace Mocklis.CodeGeneration
             Ref
         }
 
-        private class ParameterOrReturnValue : IHasPreferredName
+        private class ParameterOrReturnValue
         {
             public ParameterOrReturnValueKind Kind { get; }
-            public string PreferredName { get; }
-            public TypeSyntax TypeSyntax { get; }
+            public string ParameterName { get; }
+            public string UniqueName { get; }
+            private TypeSyntax TypeSyntax { get; }
 
-            public ParameterOrReturnValue(ParameterOrReturnValueKind kind, string preferredName, TypeSyntax typeSyntax)
+            public ParameterOrReturnValue(ParameterOrReturnValueKind kind, string parameterName, string uniqueName, TypeSyntax typeSyntax)
             {
                 Kind = kind;
-                PreferredName = preferredName;
+                ParameterName = parameterName;
+                UniqueName = uniqueName;
                 TypeSyntax = typeSyntax;
             }
 
-            public static TypeSyntax BuildType(IEnumerable<(string uniqueName, ParameterOrReturnValue item)> items)
+            public static TypeSyntax BuildType(IEnumerable<ParameterOrReturnValue> items)
             {
                 var itemsArray = items.ToArray();
                 switch (itemsArray.Length)
@@ -199,9 +213,9 @@ namespace Mocklis.CodeGeneration
                     case 0:
                         return null;
                     case 1:
-                        return itemsArray[0].item.TypeSyntax;
+                        return itemsArray[0].TypeSyntax;
                     default:
-                        return F.TupleType(F.SeparatedList(itemsArray.Select(a => F.TupleElement(a.item.TypeSyntax, F.Identifier(a.uniqueName)))));
+                        return F.TupleType(F.SeparatedList(itemsArray.Select(a => F.TupleElement(a.TypeSyntax, F.Identifier(a.UniqueName)))));
                 }
             }
 
@@ -213,15 +227,15 @@ namespace Mocklis.CodeGeneration
                     case 0:
                         return null;
                     case 1:
-                        return F.IdentifierName(itemsArray[0].PreferredName);
+                        return F.IdentifierName(itemsArray[0].ParameterName);
                     default:
-                        return F.TupleExpression(F.SeparatedList(itemsArray.Select(a => F.Argument(F.IdentifierName(a.PreferredName)))));
+                        return F.TupleExpression(F.SeparatedList(itemsArray.Select(a => F.Argument(F.IdentifierName(a.ParameterName)))));
                 }
             }
 
             public ParameterSyntax AsParameterSyntax()
             {
-                var result = F.Parameter(F.Identifier(PreferredName)).WithType(TypeSyntax);
+                var result = F.Parameter(F.Identifier(ParameterName)).WithType(TypeSyntax);
                 switch (Kind)
                 {
                     case ParameterOrReturnValueKind.In:
