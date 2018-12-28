@@ -126,7 +126,7 @@ namespace Mocklis.CodeGeneration
                     {
                         if (memberMethodSymbol.Arity > 0)
                         {
-                            problematicMembers.Add($"{interfaceSymbol.Name}.{memberMethodSymbol.Name} (introduces new type parameter)");
+                            yield return new MocklisVirtualMethod(this, interfaceSymbol, memberMethodSymbol);
                         }
                         else if (memberMethodSymbol.ReturnsByRef)
                         {
