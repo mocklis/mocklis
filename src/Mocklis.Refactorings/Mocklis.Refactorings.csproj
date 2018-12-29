@@ -8,8 +8,8 @@
     <Authors>Esbjörn Redmo</Authors>
     <Company />
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Refactorings provides the ability to update a Mocklis class from within visual studio as a Roslyn refactoring.</Description>
-    <Version>0.1.2-alpha</Version>
-    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <Version>0.1.3-alpha</Version>
+    <AssemblyVersion>0.1.3.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.ncrunchproject" />
