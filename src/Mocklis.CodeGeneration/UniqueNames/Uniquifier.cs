@@ -52,7 +52,7 @@ namespace Mocklis.CodeGeneration.UniqueNames
 
             for (int i = 0;; i++)
             {
-                string candidateName = FormattableString.Invariant($"{name}_{i}");
+                string candidateName = FormattableString.Invariant($"{name}{i}");
                 if (_reservedNames.Contains(candidateName) || _usedNames.Contains(candidateName))
                 {
                     continue;
