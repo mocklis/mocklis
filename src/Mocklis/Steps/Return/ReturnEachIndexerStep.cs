@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnEachIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class ReturnEachIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly object _lockObject = new object();
         private IEnumerator<TValue> _values;

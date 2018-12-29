@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnOnceMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>
+    public class ReturnOnceMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
         private readonly TResult _result;
         private int _returnCount;

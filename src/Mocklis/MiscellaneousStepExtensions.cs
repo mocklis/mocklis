@@ -17,8 +17,8 @@ namespace Mocklis
 
     public static class MiscellaneousStepExtensions
     {
-        public static IPropertyStepCaller<TValue> RaisePropertyChangedEvent<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> RaisePropertyChangedEvent<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent)
         {
             return caller.SetNextStep(new RaisePropertyChangedEventPropertyStep<TValue>(propertyChangedEvent));

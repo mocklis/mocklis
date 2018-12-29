@@ -12,7 +12,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class ReturnIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly TValue _value;
 

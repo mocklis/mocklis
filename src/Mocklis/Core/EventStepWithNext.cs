@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MedialMethodStep.cs">
+// <copyright file="EventStepWithNext.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,11 +13,11 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MedialMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>, IMethodStepCaller<TParam, TResult>
+    public class EventStepWithNext<THandler> : IEventStep<THandler>, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
-        protected IMethodStep<TParam, TResult> NextStep { get; private set; } = MissingMethodStep<TParam, TResult>.Instance;
+        protected IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
 
-        TStep IMethodStepCaller<TParam, TResult>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextEventStep<THandler>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {
@@ -28,9 +28,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public virtual TResult Call(IMockInfo mockInfo, TParam param)
+        public virtual void Add(IMockInfo mockInfo, THandler value)
         {
-            return NextStep.Call(mockInfo, param);
+            NextStep.Add(mockInfo, value);
+        }
+
+        public virtual void Remove(IMockInfo mockInfo, THandler value)
+        {
+            NextStep.Remove(mockInfo, value);
         }
     }
 }

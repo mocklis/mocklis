@@ -18,13 +18,13 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public abstract class IfMethodStepBase<TParam, TResult> : MedialMethodStep<TParam, TResult>
+    public abstract class IfMethodStepBase<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
-        public sealed class IfBranchCaller : IMethodStep<TParam, TResult>, IMethodStepCaller<TParam, TResult>
+        public sealed class IfBranchCaller : IMethodStep<TParam, TResult>, ICanHaveNextMethodStep<TParam, TResult>
         {
             private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
 
-            TStep IMethodStepCaller<TParam, TResult>.SetNextStep<TStep>(TStep step)
+            TStep ICanHaveNextMethodStep<TParam, TResult>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

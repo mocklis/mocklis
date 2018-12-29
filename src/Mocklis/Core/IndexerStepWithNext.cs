@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MedialEventStep.cs">
+// <copyright file="IndexerStepWithNext.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,11 +13,11 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MedialEventStep<THandler> : IEventStep<THandler>, IEventStepCaller<THandler> where THandler : Delegate
+    public class IndexerStepWithNext<TKey, TValue> : IIndexerStep<TKey, TValue>, ICanHaveNextIndexerStep<TKey, TValue>
     {
-        protected IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
+        protected IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
 
-        TStep IEventStepCaller<THandler>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextIndexerStep<TKey, TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {
@@ -28,14 +28,14 @@ namespace Mocklis.Core
             return step;
         }
 
-        public virtual void Add(IMockInfo mockInfo, THandler value)
+        public virtual TValue Get(IMockInfo mockInfo, TKey key)
         {
-            NextStep.Add(mockInfo, value);
+            return NextStep.Get(mockInfo, key);
         }
 
-        public virtual void Remove(IMockInfo mockInfo, THandler value)
+        public virtual void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            NextStep.Remove(mockInfo, value);
+            NextStep.Set(mockInfo, key, value);
         }
     }
 }

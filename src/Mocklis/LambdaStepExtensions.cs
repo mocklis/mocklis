@@ -16,85 +16,85 @@ namespace Mocklis
 
     public static class LambdaStepExtensions
     {
-        public static IIndexerStepCaller<TKey, TValue> Func<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+        public static ICanHaveNextIndexerStep<TKey, TValue> Func<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             Func<TKey, TValue> func)
         {
             return caller.SetNextStep(new FuncIndexerStep<TKey, TValue>(func));
         }
 
-        public static IIndexerStepCaller<TKey, TValue> InstanceFunc<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+        public static ICanHaveNextIndexerStep<TKey, TValue> InstanceFunc<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             Func<object, TKey, TValue> func)
         {
             return caller.SetNextStep(new InstanceFuncIndexerStep<TKey, TValue>(func));
         }
 
         public static void Action<TParam>(
-            this IMethodStepCaller<TParam, ValueTuple> caller,
+            this ICanHaveNextMethodStep<TParam, ValueTuple> caller,
             Action<TParam> action)
         {
             caller.SetNextStep(new ActionMethodStep<TParam>(action));
         }
 
         public static void Action(
-            this IMethodStepCaller<ValueTuple, ValueTuple> caller,
+            this ICanHaveNextMethodStep<ValueTuple, ValueTuple> caller,
             Action action)
         {
             caller.SetNextStep(new ActionMethodStep(action));
         }
 
         public static void Func<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             Func<TParam, TResult> func)
         {
             caller.SetNextStep(new FuncMethodStep<TParam, TResult>(func));
         }
 
         public static void Func<TResult>(
-            this IMethodStepCaller<ValueTuple, TResult> caller,
+            this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
             Func<TResult> func)
         {
             caller.SetNextStep(new FuncMethodStep<TResult>(func));
         }
 
         public static void InstanceAction<TParam>(
-            this IMethodStepCaller<TParam, ValueTuple> caller,
+            this ICanHaveNextMethodStep<TParam, ValueTuple> caller,
             Action<object, TParam> action)
         {
             caller.SetNextStep(new InstanceActionMethodStep<TParam>(action));
         }
 
         public static void InstanceAction(
-            this IMethodStepCaller<ValueTuple, ValueTuple> caller,
+            this ICanHaveNextMethodStep<ValueTuple, ValueTuple> caller,
             Action<object> action)
         {
             caller.SetNextStep(new InstanceActionMethodStep(action));
         }
 
         public static void InstanceFunc<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             Func<object, TParam, TResult> func)
         {
             caller.SetNextStep(new InstanceFuncMethodStep<TParam, TResult>(func));
         }
 
         public static void InstanceFunc<TResult>(
-            this IMethodStepCaller<ValueTuple, TResult> caller,
+            this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
             Func<object, TResult> func)
         {
             caller.SetNextStep(new InstanceFuncMethodStep<TResult>(func));
         }
 
-        public static IPropertyStepCaller<TValue> Func<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> Func<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             Func<TValue> func)
         {
             return caller.SetNextStep(new FuncPropertyStep<TValue>(func));
         }
 
-        public static IPropertyStepCaller<TValue> InstanceFunc<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> InstanceFunc<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             Func<object, TValue> func)
         {
             return caller.SetNextStep(new InstanceFuncPropertyStep<TValue>(func));

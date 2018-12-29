@@ -14,7 +14,7 @@ namespace Mocklis.Verification.Steps
 
     #endregion
 
-    public sealed class ExpectedUsageMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>, IVerifiable
+    public sealed class ExpectedUsageMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>, IVerifiable
     {
         public string Name { get; }
         private readonly int _expectedNumberOfCalls;

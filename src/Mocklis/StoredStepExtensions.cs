@@ -20,13 +20,13 @@ namespace Mocklis
     public static class StoredStepExtensions
     {
         public static IStoredEvent<THandler> Stored<THandler>(
-            this IEventStepCaller<THandler> caller) where THandler : Delegate
+            this ICanHaveNextEventStep<THandler> caller) where THandler : Delegate
         {
             return caller.SetNextStep(new StoredEventStep<THandler>());
         }
 
         public static IStoredEvent<THandler> Stored<THandler>(
-            this IEventStepCaller<THandler> caller,
+            this ICanHaveNextEventStep<THandler> caller,
             out StoredEventStep<THandler> step) where THandler : Delegate
         {
             step = new StoredEventStep<THandler>();
@@ -34,7 +34,7 @@ namespace Mocklis
         }
 
         public static IStoredEvent<EventHandler<TArgs>> Stored<TArgs>(
-            this IEventStepCaller<EventHandler<TArgs>> caller,
+            this ICanHaveNextEventStep<EventHandler<TArgs>> caller,
             out StoredGenericEventStep<TArgs> step)
         {
             step = new StoredGenericEventStep<TArgs>();
@@ -42,13 +42,13 @@ namespace Mocklis
         }
 
         public static IStoredIndexer<TKey, TValue> StoredAsDictionary<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller)
+            this ICanHaveNextIndexerStep<TKey, TValue> caller)
         {
             return caller.SetNextStep(new StoredAsDictionaryIndexerStep<TKey, TValue>());
         }
 
         public static IStoredIndexer<TKey, TValue> StoredAsDictionary<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             out StoredAsDictionaryIndexerStep<TKey, TValue> step)
         {
             step = new StoredAsDictionaryIndexerStep<TKey, TValue>();
@@ -56,14 +56,14 @@ namespace Mocklis
         }
 
         public static IStoredProperty<TValue> Stored<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             TValue initialValue = default)
         {
             return caller.SetNextStep(new StoredPropertyStep<TValue>(initialValue));
         }
 
         public static IStoredProperty<TValue> Stored<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             out StoredPropertyStep<TValue> step,
             TValue initialValue = default)
         {
@@ -72,7 +72,7 @@ namespace Mocklis
         }
 
         public static IStoredProperty<TValue> StoredWithChangeNotification<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,
             IEqualityComparer<TValue> comparer = null)
@@ -84,7 +84,7 @@ namespace Mocklis
         }
 
         public static IStoredProperty<TValue> StoredWithChangeNotification<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             out StoredPropertyStep<TValue> storedPropertyStep,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,

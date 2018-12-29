@@ -18,8 +18,8 @@ namespace Mocklis.Verification
 
     public static class MockExtensions
     {
-        public static IEventStepCaller<THandler> ExpectedUsage<THandler>(
-            this IEventStepCaller<THandler> caller,
+        public static ICanHaveNextEventStep<THandler> ExpectedUsage<THandler>(
+            this ICanHaveNextEventStep<THandler> caller,
             VerificationGroup collector,
             string name,
             int? expectedNumberOfAdds = null,
@@ -30,8 +30,8 @@ namespace Mocklis.Verification
             return caller.SetNextStep(step);
         }
 
-        public static IIndexerStepCaller<TKey, TValue> ExpectedUsage<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+        public static ICanHaveNextIndexerStep<TKey, TValue> ExpectedUsage<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             VerificationGroup collector,
             string name,
             int? expectedNumberOfGets = null,
@@ -42,8 +42,8 @@ namespace Mocklis.Verification
             return caller.SetNextStep(step);
         }
 
-        public static IMethodStepCaller<TParam, TResult> ExpectedUsage<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+        public static ICanHaveNextMethodStep<TParam, TResult> ExpectedUsage<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             VerificationGroup collector,
             string name,
             int expectedNumberOfCalls)
@@ -53,8 +53,8 @@ namespace Mocklis.Verification
             return caller.SetNextStep(step);
         }
 
-        public static IPropertyStepCaller<TValue> ExpectedUsage<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> ExpectedUsage<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             VerificationGroup collector,
             string name,
             int? expectedNumberOfGets = null,

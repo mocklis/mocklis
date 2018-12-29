@@ -16,34 +16,34 @@ namespace Mocklis
 
     public static class RepetitionStepExtensions
     {
-        public static IEventStepCaller<THandler> Times<THandler>(
-            this IEventStepCaller<THandler> caller,
+        public static ICanHaveNextEventStep<THandler> Times<THandler>(
+            this ICanHaveNextEventStep<THandler> caller,
             int times,
-            Action<IEventStepCaller<THandler>> branch) where THandler : Delegate
+            Action<ICanHaveNextEventStep<THandler>> branch) where THandler : Delegate
         {
             return caller.SetNextStep(new TimesEventStep<THandler>(times, branch));
         }
 
-        public static IIndexerStepCaller<TKey, TValue> Times<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+        public static ICanHaveNextIndexerStep<TKey, TValue> Times<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             int times,
-            Action<IIndexerStepCaller<TKey, TValue>> branch)
+            Action<ICanHaveNextIndexerStep<TKey, TValue>> branch)
         {
             return caller.SetNextStep(new TimesIndexerStep<TKey, TValue>(times, branch));
         }
 
-        public static IMethodStepCaller<TParam, TResult> Times<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+        public static ICanHaveNextMethodStep<TParam, TResult> Times<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             int times,
-            Action<IMethodStepCaller<TParam, TResult>> branch)
+            Action<ICanHaveNextMethodStep<TParam, TResult>> branch)
         {
             return caller.SetNextStep(new TimesMethodStep<TParam, TResult>(times, branch));
         }
 
-        public static IPropertyStepCaller<TValue> Times<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> Times<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             int times,
-            Action<IPropertyStepCaller<TValue>> branch)
+            Action<ICanHaveNextPropertyStep<TValue>> branch)
         {
             return caller.SetNextStep(new TimesPropertyStep<TValue>(times, branch));
         }

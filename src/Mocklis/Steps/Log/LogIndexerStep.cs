@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Log
 
     #endregion
 
-    public sealed class LogIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public sealed class LogIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly ILogContext _logContext;
 

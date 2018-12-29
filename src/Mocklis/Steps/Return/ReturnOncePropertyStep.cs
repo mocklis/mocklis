@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnOncePropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class ReturnOncePropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly TValue _value;
         private int _returnCount;

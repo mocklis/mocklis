@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MedialPropertyStep.cs">
+// <copyright file="PropertyStepWithNext.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -13,11 +13,11 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MedialPropertyStep<TValue> : IPropertyStep<TValue>, IPropertyStepCaller<TValue>
+    public class PropertyStepWithNext<TValue> : IPropertyStep<TValue>, ICanHaveNextPropertyStep<TValue>
     {
         protected IPropertyStep<TValue> NextStep { get; private set; } = MissingPropertyStep<TValue>.Instance;
 
-        TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextPropertyStep<TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

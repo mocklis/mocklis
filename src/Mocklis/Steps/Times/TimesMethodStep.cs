@@ -13,14 +13,14 @@ namespace Mocklis.Steps.Times
 
     #endregion
 
-    public class TimesMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>
+    public class TimesMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
         private readonly object _lockObject = new object();
         private readonly int _times;
         private int _calls;
-        private readonly MedialMethodStep<TParam, TResult> _branch = new MedialMethodStep<TParam, TResult>();
+        private readonly MethodStepWithNext<TParam, TResult> _branch = new MethodStepWithNext<TParam, TResult>();
 
-        public TimesMethodStep(int times, Action<IMethodStepCaller<TParam, TResult>> branch)
+        public TimesMethodStep(int times, Action<ICanHaveNextMethodStep<TParam, TResult>> branch)
         {
             _times = times;
             branch(_branch);

@@ -13,14 +13,14 @@ namespace Mocklis.Steps.Times
 
     #endregion
 
-    public class TimesEventStep<THandler> : MedialEventStep<THandler> where THandler : Delegate
+    public class TimesEventStep<THandler> : EventStepWithNext<THandler> where THandler : Delegate
     {
         private readonly object _lockObject = new object();
         private readonly int _times;
         private int _calls;
-        private readonly MedialEventStep<THandler> _branch = new MedialEventStep<THandler>();
+        private readonly EventStepWithNext<THandler> _branch = new EventStepWithNext<THandler>();
 
-        public TimesEventStep(int times, Action<IEventStepCaller<THandler>> branch)
+        public TimesEventStep(int times, Action<ICanHaveNextEventStep<THandler>> branch)
         {
             _times = times;
             branch(_branch);

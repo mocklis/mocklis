@@ -29,7 +29,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((IMethodStepCaller<int, ValueTuple>)_actionMock).SetNextStep((IMethodStep<int, ValueTuple>)null));
+                ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep((IMethodStep<int, ValueTuple>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -37,7 +37,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockMethodStep<int, ValueTuple>();
-            var returnedStep = ((IMethodStepCaller<int, ValueTuple>)_actionMock).SetNextStep(newStep);
+            var returnedStep = ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -48,7 +48,7 @@ namespace Mocklis.Core.Tests.Core
             var newStep = new MockMethodStep<ValueTuple, ValueTuple>();
 
             newStep.Call.Action(_ => { called = true; });
-            ((IMethodStepCaller<ValueTuple, ValueTuple>)_parameterLessActionMock).SetNextStep(newStep);
+            ((ICanHaveNextMethodStep<ValueTuple, ValueTuple>)_parameterLessActionMock).SetNextStep(newStep);
             _parameterLessActionMock.Call();
             Assert.True(called);
         }
@@ -59,7 +59,7 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockMethodStep<int, ValueTuple>();
             newStep.Call.Action(_ => called = true);
-            ((IMethodStepCaller<int, ValueTuple>)_actionMock).SetNextStep(newStep);
+            ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep(newStep);
             _actionMock.Call(5);
             Assert.True(called);
         }

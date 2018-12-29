@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Lambda
 
     #endregion
 
-    public class InstanceFuncIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class InstanceFuncIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly Func<object, TKey, TValue> _func;
 

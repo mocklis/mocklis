@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IEventStepCaller.cs">
+// <copyright file="ICanHaveNextIndexerStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -8,14 +8,13 @@ namespace Mocklis.Core
 {
     #region Using Directives
 
-    using System;
     using System.ComponentModel;
 
     #endregion
 
-    public interface IEventStepCaller<out THandler> where THandler : Delegate
+    public interface ICanHaveNextIndexerStep<out TKey, TValue>
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
-        TStep SetNextStep<TStep>(TStep step) where TStep : IEventStep<THandler>;
+        TStep SetNextStep<TStep>(TStep step) where TStep : IIndexerStep<TKey, TValue>;
     }
 }

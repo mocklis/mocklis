@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMethodStepCaller.cs">
+// <copyright file="ICanHaveNextPropertyStep.cs">
 //   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,9 +12,9 @@ namespace Mocklis.Core
 
     #endregion
 
-    public interface IMethodStepCaller<out TParam, in TResult>
+    public interface ICanHaveNextPropertyStep<TValue>
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
-        TStep SetNextStep<TStep>(TStep step) where TStep : IMethodStep<TParam, TResult>;
+        TStep SetNextStep<TStep>(TStep step) where TStep : IPropertyStep<TValue>;
     }
 }

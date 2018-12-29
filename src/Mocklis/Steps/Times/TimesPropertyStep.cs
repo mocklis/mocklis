@@ -13,14 +13,14 @@ namespace Mocklis.Steps.Times
 
     #endregion
 
-    public class TimesPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class TimesPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly object _lockObject = new object();
         private readonly int _times;
         private int _calls;
-        private readonly MedialPropertyStep<TValue> _branch = new MedialPropertyStep<TValue>();
+        private readonly PropertyStepWithNext<TValue> _branch = new PropertyStepWithNext<TValue>();
 
-        public TimesPropertyStep(int times, Action<IPropertyStepCaller<TValue>> branch)
+        public TimesPropertyStep(int times, Action<ICanHaveNextPropertyStep<TValue>> branch)
         {
             _times = times;
             branch(_branch);

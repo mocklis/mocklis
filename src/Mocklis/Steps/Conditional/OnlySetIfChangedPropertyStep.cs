@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public class OnlySetIfChangedPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class OnlySetIfChangedPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private IEqualityComparer<TValue> Comparer { get; }
 

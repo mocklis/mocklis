@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnEachMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>
+    public class ReturnEachMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
         private readonly object _lockobject = new object();
         private IEnumerator<TResult> _results;

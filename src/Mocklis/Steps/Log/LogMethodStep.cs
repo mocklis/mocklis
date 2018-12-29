@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Log
 
     #endregion
 
-    public sealed class LogMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>
+    public sealed class LogMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
         private readonly ILogContext _logContext;
         private readonly bool _hasParameters;

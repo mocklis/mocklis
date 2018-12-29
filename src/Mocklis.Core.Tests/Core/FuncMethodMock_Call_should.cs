@@ -36,7 +36,7 @@ namespace Mocklis.Core.Tests.Core
                 sentMockInfo = p.mockInfo;
                 return "5";
             });
-            ((IMethodStepCaller<ValueTuple, string>)_parameterLessFuncMock).SetNextStep(newStep);
+            ((ICanHaveNextMethodStep<ValueTuple, string>)_parameterLessFuncMock).SetNextStep(newStep);
 
             _parameterLessFuncMock.Call();
 
@@ -56,7 +56,7 @@ namespace Mocklis.Core.Tests.Core
                 sentParam = p.param;
                 return "5";
             });
-            ((IMethodStepCaller<int, string>)_funcMock).SetNextStep(newStep);
+            ((ICanHaveNextMethodStep<int, string>)_funcMock).SetNextStep(newStep);
 
             string result = _funcMock.Call(5);
 

@@ -15,7 +15,7 @@ namespace Mocklis.Verification.Steps
 
     #endregion
 
-    public sealed class ExpectedUsageEventStep<THandler> : MedialEventStep<THandler>, IVerifiable where THandler : Delegate
+    public sealed class ExpectedUsageEventStep<THandler> : EventStepWithNext<THandler>, IVerifiable where THandler : Delegate
     {
         public string Name { get; }
         private readonly int? _expectedNumberOfAdds;

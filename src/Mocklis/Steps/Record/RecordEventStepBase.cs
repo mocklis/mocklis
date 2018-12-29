@@ -15,7 +15,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public abstract class RecordEventStepBase<THandler, TRecord> : MedialEventStep<THandler>, IReadOnlyList<TRecord> where THandler : Delegate
+    public abstract class RecordEventStepBase<THandler, TRecord> : EventStepWithNext<THandler>, IReadOnlyList<TRecord> where THandler : Delegate
     {
         private readonly object _lockObject = new object();
         private readonly List<TRecord> _ledger = new List<TRecord>();

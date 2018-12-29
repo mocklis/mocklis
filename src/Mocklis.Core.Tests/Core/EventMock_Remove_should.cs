@@ -35,7 +35,7 @@ namespace Mocklis.Core.Tests.Core
                 sentMockInfo = p.mockInfo;
                 sentEventHandler = p.value;
             });
-            ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep(newStep);
             EventHandler handler = (sender, e) => { };
 
             _eventMock.Remove(handler);

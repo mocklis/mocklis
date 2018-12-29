@@ -14,7 +14,7 @@ namespace Mocklis.Verification.Steps
 
     #endregion
 
-    public sealed class ExpectedUsageIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>, IVerifiable
+    public sealed class ExpectedUsageIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>, IVerifiable
     {
         public string Name { get; }
         private readonly int? _expectedNumberOfGets;

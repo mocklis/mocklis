@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Lambda
 
     #endregion
 
-    public class FuncPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class FuncPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly Func<TValue> _func;
 

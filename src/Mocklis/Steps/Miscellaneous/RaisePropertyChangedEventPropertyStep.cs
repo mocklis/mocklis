@@ -15,7 +15,7 @@ namespace Mocklis.Steps.Miscellaneous
 
     #endregion
 
-    public class RaisePropertyChangedEventPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class RaisePropertyChangedEventPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly IStoredEvent<PropertyChangedEventHandler> _propertyChangedEvent;
 

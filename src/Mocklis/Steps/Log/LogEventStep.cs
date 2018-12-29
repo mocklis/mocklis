@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Log
 
     #endregion
 
-    public sealed class LogEventStep<THandler> : MedialEventStep<THandler> where THandler : Delegate
+    public sealed class LogEventStep<THandler> : EventStepWithNext<THandler> where THandler : Delegate
     {
         private readonly ILogContext _logContext;
 

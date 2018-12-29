@@ -13,14 +13,14 @@ namespace Mocklis.Steps.Times
 
     #endregion
 
-    public class TimesIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class TimesIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly object _lockObject = new object();
         private readonly int _times;
         private int _calls;
-        private readonly MedialIndexerStep<TKey, TValue> _branch = new MedialIndexerStep<TKey, TValue>();
+        private readonly IndexerStepWithNext<TKey, TValue> _branch = new IndexerStepWithNext<TKey, TValue>();
 
-        public TimesIndexerStep(int times, Action<IIndexerStepCaller<TKey, TValue>> branch)
+        public TimesIndexerStep(int times, Action<ICanHaveNextIndexerStep<TKey, TValue>> branch)
         {
             _times = times;
             branch(_branch);

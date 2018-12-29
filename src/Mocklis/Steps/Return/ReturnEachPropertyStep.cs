@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Return
 
     #endregion
 
-    public class ReturnEachPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public class ReturnEachPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly object _lockObject = new object();
         private IEnumerator<TValue> _values;

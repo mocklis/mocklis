@@ -27,7 +27,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep((IEventStep<EventHandler>)null));
+                ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep((IEventStep<EventHandler>)null));
             Assert.Equal("step", exception.ParamName);
         }
 
@@ -35,7 +35,7 @@ namespace Mocklis.Core.Tests.Core
         public void return_new_step()
         {
             var newStep = new MockEventStep<EventHandler>();
-            var returnedStep = ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            var returnedStep = ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
@@ -45,7 +45,7 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockEventStep<EventHandler>();
             newStep.Add.Action(_ => { called = true; });
-            ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep(newStep);
             _eventMock.Add((sender, e) => { });
             Assert.True(called);
         }
@@ -56,7 +56,7 @@ namespace Mocklis.Core.Tests.Core
             bool called = false;
             var newStep = new MockEventStep<EventHandler>();
             newStep.Remove.Action(_ => { called = true; });
-            ((IEventStepCaller<EventHandler>)_eventMock).SetNextStep(newStep);
+            ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep(newStep);
             _eventMock.Remove((sender, e) => { });
             Assert.True(called);
         }

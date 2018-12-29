@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Log
 
     #endregion
 
-    public sealed class LogPropertyStep<TValue> : MedialPropertyStep<TValue>
+    public sealed class LogPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly ILogContext _logContext;
 

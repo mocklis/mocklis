@@ -16,8 +16,8 @@ namespace Mocklis
 
     public static class GateStepExtensions
     {
-        public static IMethodStepCaller<TParam, TResult> Gate<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+        public static ICanHaveNextMethodStep<TParam, TResult> Gate<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             out IGate gate,
             CancellationToken cancellationToken = default)
         {

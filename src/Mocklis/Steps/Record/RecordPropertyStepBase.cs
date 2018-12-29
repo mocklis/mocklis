@@ -14,7 +14,7 @@ namespace Mocklis.Steps.Record
 
     #endregion
 
-    public abstract class RecordPropertyStepBase<TValue, TRecord> : MedialPropertyStep<TValue>, IReadOnlyList<TRecord>
+    public abstract class RecordPropertyStepBase<TValue, TRecord> : PropertyStepWithNext<TValue>, IReadOnlyList<TRecord>
     {
         private readonly object _lockObject = new object();
         private readonly List<TRecord> _ledger = new List<TRecord>();

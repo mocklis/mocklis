@@ -16,66 +16,66 @@ namespace Mocklis
     public static class JoinStepExtensions
     {
         public static void Join<THandler>(
-            this IEventStepCaller<THandler> caller,
+            this ICanHaveNextEventStep<THandler> caller,
             IEventStep<THandler> joinPoint) where THandler : Delegate
         {
             caller.SetNextStep(joinPoint);
         }
 
         public static void Join<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             IIndexerStep<TKey, TValue> joinPoint)
         {
             caller.SetNextStep(joinPoint);
         }
 
         public static void Join<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             IMethodStep<TParam, TResult> joinPoint)
         {
             caller.SetNextStep(joinPoint);
         }
 
         public static void Join<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             IPropertyStep<TValue> joinPoint)
         {
             caller.SetNextStep(joinPoint);
         }
 
-        public static IEventStepCaller<THandler> JoinPoint<THandler>(
-            this IEventStepCaller<THandler> caller,
+        public static ICanHaveNextEventStep<THandler> JoinPoint<THandler>(
+            this ICanHaveNextEventStep<THandler> caller,
             out IEventStep<THandler> joinPoint)
             where THandler : Delegate
         {
-            var joinStep = new MedialEventStep<THandler>();
+            var joinStep = new EventStepWithNext<THandler>();
             joinPoint = joinStep;
             return caller.SetNextStep(joinStep);
         }
 
-        public static IIndexerStepCaller<TKey, TValue> JoinPoint<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+        public static ICanHaveNextIndexerStep<TKey, TValue> JoinPoint<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             out IIndexerStep<TKey, TValue> joinPoint)
         {
-            var joinStep = new MedialIndexerStep<TKey, TValue>();
+            var joinStep = new IndexerStepWithNext<TKey, TValue>();
             joinPoint = joinStep;
             return caller.SetNextStep(joinStep);
         }
 
-        public static IMethodStepCaller<TParam, TResult> JoinPoint<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+        public static ICanHaveNextMethodStep<TParam, TResult> JoinPoint<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             out IMethodStep<TParam, TResult> joinPoint)
         {
-            var joinStep = new MedialMethodStep<TParam, TResult>();
+            var joinStep = new MethodStepWithNext<TParam, TResult>();
             joinPoint = joinStep;
             return caller.SetNextStep(joinStep);
         }
 
-        public static IPropertyStepCaller<TValue> JoinPoint<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+        public static ICanHaveNextPropertyStep<TValue> JoinPoint<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
             out IPropertyStep<TValue> joinPoint)
         {
-            var joinStep = new MedialPropertyStep<TValue>();
+            var joinStep = new PropertyStepWithNext<TValue>();
             joinPoint = joinStep;
             return caller.SetNextStep(joinStep);
         }

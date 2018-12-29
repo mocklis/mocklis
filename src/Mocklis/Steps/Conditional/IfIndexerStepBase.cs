@@ -18,13 +18,13 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public abstract class IfIndexerStepBase<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public abstract class IfIndexerStepBase<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
-        public sealed class IfBranchCaller : IIndexerStep<TKey, TValue>, IIndexerStepCaller<TKey, TValue>
+        public sealed class IfBranchCaller : IIndexerStep<TKey, TValue>, ICanHaveNextIndexerStep<TKey, TValue>
         {
             private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
 
-            TStep IIndexerStepCaller<TKey, TValue>.SetNextStep<TStep>(TStep step)
+            TStep ICanHaveNextIndexerStep<TKey, TValue>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

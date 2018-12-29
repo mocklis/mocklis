@@ -25,7 +25,7 @@ namespace Mocklis.Steps.Conditional
      * further steps would stop working. It needs to be an inner class to IfBranchCaller to
      * be able to construct the ElseBranchRejoiner for its ElseBranch property.
      *
-     * Lastly, while the IfBranchCaller has much code in common with MedialEventStep
+     * Lastly, while the IfBranchCaller has much code in common with EventStepWithNext
      * we prefer to have an explicit declaration of the IEventStep<THandler> interface,
      * otherwise the Add and Remove methods would show up in intellisense when setting up
      * the steps for the if branch.
@@ -41,13 +41,13 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public abstract class IfEventStepBase<THandler> : MedialEventStep<THandler> where THandler : Delegate
+    public abstract class IfEventStepBase<THandler> : EventStepWithNext<THandler> where THandler : Delegate
     {
-        public sealed class IfBranchCaller : IEventStep<THandler>, IEventStepCaller<THandler>
+        public sealed class IfBranchCaller : IEventStep<THandler>, ICanHaveNextEventStep<THandler>
         {
             private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
-            TStep IEventStepCaller<THandler>.SetNextStep<TStep>(TStep step)
+            TStep ICanHaveNextEventStep<THandler>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

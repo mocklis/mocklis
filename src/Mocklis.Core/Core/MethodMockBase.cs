@@ -13,7 +13,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public abstract class MethodMockBase<TParam, TResult> : MemberMock, IMethodStepCaller<TParam, TResult>
+    public abstract class MethodMockBase<TParam, TResult> : MemberMock, ICanHaveNextMethodStep<TParam, TResult>
     {
         private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
 
@@ -23,7 +23,7 @@ namespace Mocklis.Core
         {
         }
 
-        TStep IMethodStepCaller<TParam, TResult>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextMethodStep<TParam, TResult>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

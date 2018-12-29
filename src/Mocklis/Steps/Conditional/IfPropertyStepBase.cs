@@ -18,13 +18,13 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public abstract class IfPropertyStepBase<TValue> : MedialPropertyStep<TValue>
+    public abstract class IfPropertyStepBase<TValue> : PropertyStepWithNext<TValue>
     {
-        public sealed class IfBranchCaller : IPropertyStep<TValue>, IPropertyStepCaller<TValue>
+        public sealed class IfBranchCaller : IPropertyStep<TValue>, ICanHaveNextPropertyStep<TValue>
         {
             private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
 
-            TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
+            TStep ICanHaveNextPropertyStep<TValue>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
                 {

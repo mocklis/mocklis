@@ -17,25 +17,25 @@ namespace Mocklis
     public static class MissingStepExtensions
     {
         public static void Missing<THandler>(
-            this IEventStepCaller<THandler> caller) where THandler : Delegate
+            this ICanHaveNextEventStep<THandler> caller) where THandler : Delegate
         {
             caller.SetNextStep(MissingEventStep<THandler>.Instance);
         }
 
         public static void Missing<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller)
+            this ICanHaveNextIndexerStep<TKey, TValue> caller)
         {
             caller.SetNextStep(MissingIndexerStep<TKey, TValue>.Instance);
         }
 
         public static void Missing<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller)
+            this ICanHaveNextMethodStep<TParam, TResult> caller)
         {
             caller.SetNextStep(MissingMethodStep<TParam, TResult>.Instance);
         }
 
         public static void Missing<TValue>(
-            this IPropertyStepCaller<TValue> caller)
+            this ICanHaveNextPropertyStep<TValue> caller)
         {
             caller.SetNextStep(MissingPropertyStep<TValue>.Instance);
         }

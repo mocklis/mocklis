@@ -15,7 +15,7 @@ namespace Mocklis.Steps.Gate
 
     #endregion
 
-    public class GateMethodStep<TParam, TResult> : MedialMethodStep<TParam, TResult>, IGate
+    public class GateMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>, IGate
     {
         private readonly TaskCompletionSource<ValueTuple> _taskCompletionSource;
 

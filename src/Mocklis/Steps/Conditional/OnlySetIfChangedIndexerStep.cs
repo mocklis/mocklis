@@ -13,7 +13,7 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
-    public class OnlySetIfChangedIndexerStep<TKey, TValue> : MedialIndexerStep<TKey, TValue>
+    public class OnlySetIfChangedIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private IEqualityComparer<TValue> Comparer { get; }
 

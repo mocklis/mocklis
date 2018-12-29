@@ -14,7 +14,7 @@ namespace Mocklis.Verification.Steps
 
     #endregion
 
-    public sealed class ExpectedUsagePropertyStep<TValue> : MedialPropertyStep<TValue>, IVerifiable
+    public sealed class ExpectedUsagePropertyStep<TValue> : PropertyStepWithNext<TValue>, IVerifiable
     {
         private readonly string _name;
         private readonly int? _expectedNumberOfGets;

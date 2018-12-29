@@ -13,7 +13,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class EventMock<THandler> : MemberMock, IEventStepCaller<THandler> where THandler : Delegate
+    public sealed class EventMock<THandler> : MemberMock, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
         private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         {
         }
 
-        TStep IEventStepCaller<THandler>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextEventStep<THandler>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

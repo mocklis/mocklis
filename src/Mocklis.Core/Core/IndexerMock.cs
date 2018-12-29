@@ -13,7 +13,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class IndexerMock<TKey, TValue> : MemberMock, IIndexerStepCaller<TKey, TValue>
+    public sealed class IndexerMock<TKey, TValue> : MemberMock, ICanHaveNextIndexerStep<TKey, TValue>
     {
         private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
 
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         {
         }
 
-        TStep IIndexerStepCaller<TKey, TValue>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextIndexerStep<TKey, TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

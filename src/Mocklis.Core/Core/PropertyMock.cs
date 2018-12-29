@@ -13,7 +13,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public sealed class PropertyMock<TValue> : MemberMock, IPropertyStepCaller<TValue>
+    public sealed class PropertyMock<TValue> : MemberMock, ICanHaveNextPropertyStep<TValue>
     {
         private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
 
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         {
         }
 
-        TStep IPropertyStepCaller<TValue>.SetNextStep<TStep>(TStep step)
+        TStep ICanHaveNextPropertyStep<TValue>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
             {

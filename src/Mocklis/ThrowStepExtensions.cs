@@ -17,35 +17,35 @@ namespace Mocklis
     public static class ThrowStepExtensions
     {
         public static void Throw<THandler>(
-            this IEventStepCaller<THandler> caller,
+            this ICanHaveNextEventStep<THandler> caller,
             Func<Exception> exceptionFactory) where THandler : Delegate
         {
             caller.SetNextStep(new ThrowEventStep<THandler>(exceptionFactory));
         }
 
         public static void Throw<TKey, TValue>(
-            this IIndexerStepCaller<TKey, TValue> caller,
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
             Func<TKey, Exception> exceptionFactory)
         {
             caller.SetNextStep(new ThrowIndexerStep<TKey, TValue>(exceptionFactory));
         }
 
         public static void Throw<TResult>(
-            this IMethodStepCaller<ValueTuple, TResult> caller,
+            this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
             Func<Exception> exceptionFactory)
         {
             caller.SetNextStep(new ThrowMethodStep<TResult>(exceptionFactory));
         }
 
         public static void Throw<TParam, TResult>(
-            this IMethodStepCaller<TParam, TResult> caller,
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
             Func<TParam, Exception> exceptionFactory)
         {
             caller.SetNextStep(new ThrowMethodStep<TParam, TResult>(exceptionFactory));
         }
 
         public static void Throw<TValue>(
-            this IPropertyStepCaller<TValue> caller,
+            this ICanHaveNextPropertyStep<TValue> caller,
             Func<Exception> exceptionFactory)
         {
             caller.SetNextStep(new ThrowPropertyStep<TValue>(exceptionFactory));

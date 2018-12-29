@@ -33,7 +33,7 @@ namespace Mocklis.Core.Tests.Core
                 sentMockInfo = p;
                 return 5;
             });
-            ((IPropertyStepCaller<int>)_propertyMock).SetNextStep(newStep);
+            ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep(newStep);
 
             int value = _propertyMock.Value;
             Assert.Equal(5, value);
@@ -52,7 +52,7 @@ namespace Mocklis.Core.Tests.Core
                 sentMockInfo = p.mockInfo;
                 sentValue = p.value;
             });
-            ((IPropertyStepCaller<int>)_propertyMock).SetNextStep(newStep);
+            ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep(newStep);
 
             _propertyMock.Value = 5;
 
