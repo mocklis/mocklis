@@ -43,7 +43,7 @@ namespace Mocklis.CodeGeneration
         protected ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType)
         {
             return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                F.IdentifierName(MemberMockName),
+                F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(), F.IdentifierName(MemberMockName)),
                 F.ObjectCreationExpression(mockPropertyType)
                     .WithExpressionsAsArgumentList(
                         F.ThisExpression(),

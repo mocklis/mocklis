@@ -41,12 +41,14 @@ namespace Mocklis.CodeGeneration
         private class MocklisClassPopulator
         {
             private readonly INamedTypeSymbol _classSymbol;
+            private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
             public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-                _mocks = CreateMocks(_classSymbol, new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols));
+                _typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols);
+                _mocks = CreateMocks(_classSymbol, _typesForSymbols);
             }
 
             private static IMemberMock[] CreateMocks(INamedTypeSymbol classSymbol, MocklisTypesForSymbols typesForSymbols)
@@ -160,9 +162,30 @@ namespace Mocklis.CodeGeneration
                     mock.AddInitialisersToConstructor(constructorStatements);
                 }
 
-                declarationList.Add(F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
-                    .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
-                    .WithBody(F.Block(constructorStatements)));
+                foreach (var constructor in _classSymbol.BaseType.Constructors)
+                {
+                    if (constructor.IsStatic || constructor.IsVararg)
+                    {
+                        continue;
+                    }
+
+                    switch (constructor.DeclaredAccessibility)
+                    {
+                        case Accessibility.Protected:
+                        case Accessibility.ProtectedOrInternal:
+                        case Accessibility.Public:
+                        {
+                            declarationList.Add(F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
+                                .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
+                                .WithParameterList(
+                                    F.ParameterList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsParameterSyntax))))
+                                .WithInitializer(F.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
+                                    F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))))
+                                .WithBody(F.Block(constructorStatements)));
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
