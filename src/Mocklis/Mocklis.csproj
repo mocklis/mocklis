@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Mocklis</Product>
     <Copyright>Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
