@@ -1,19 +1,29 @@
-using System.Collections.Immutable;
-using System.Composition;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MocklisCodeFixProvider.cs">
+//   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Analyzer
 {
+    #region Using Directives
+
+    using System.Collections.Immutable;
+    using System.Composition;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CodeActions;
+    using Microsoft.CodeAnalysis.CodeFixes;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MocklisCodeFixProvider)), Shared]
+    #endregion
+
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MocklisCodeFixProvider))]
+    [Shared]
     public class MocklisCodeFixProvider : CodeFixProvider
     {
         private const string MocklisEmptiedClass = "mocklis_emptied_class";
@@ -26,7 +36,7 @@ namespace Mocklis.Analyzer
         }
 
         public sealed override FixAllProvider GetFixAllProvider() => null;
-        
+
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -87,22 +97,6 @@ namespace Mocklis.Analyzer
 
             var newRoot = emptyRoot.ReplaceNode(emptyClassDecl, newClassDecl);
             return emptyDoc.WithSyntaxRoot(newRoot).Project.Solution;
-
-
-
-
-
-            //// Get the symbol representing the type to be renamed.
-            //var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            //var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
-
-            //// Produce a new solution that has all references to that type renamed, including the declaration.
-            //var originalSolution = document.Project.Solution;
-            //var optionSet = originalSolution.Workspace.Options;
-            //var newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, typeSymbol, newName, optionSet, cancellationToken).ConfigureAwait(false);
-
-            //// Return the new solution with the now-uppercase type name.
-            //return newSolution;
         }
     }
 }
