@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Product>Mocklis</Product>
@@ -8,25 +8,43 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Authors>Esbjörn Redmo</Authors>
     <Company />
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Analyzer contains the code generator packaged as a Roslyn Analyzer/Code fix pair.</Description>
     <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <Version>0.1.3-alpha</Version>
-    <AssemblyVersion>0.1.3.0</AssemblyVersion>
+    <Version>0.1.5-alpha</Version>
+    <AssemblyVersion>0.1.5.0</AssemblyVersion>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RootNamespace>Mocklis.Analyzer</RootNamespace>
-    <FileVersion>0.1.3.0</FileVersion>
+    <RootNamespace>Mocklis</RootNamespace>
+    <FileVersion>0.1.5.0</FileVersion>
     <NoPackageAnalysis>true</NoPackageAnalysis>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.6.2" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" PrivateAssets="all" />
+    <Compile Include="..\Mocklis.CodeGeneration\IMemberMock.cs" Link="CodeGeneration\IMemberMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\MocklisClass.cs" Link="CodeGeneration\MocklisClass.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\MocklisSymbols.cs" Link="CodeGeneration\MocklisSymbols.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\MocklisTypesForSymbols.cs" Link="CodeGeneration\MocklisTypesForSymbols.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\ProjectInspector.cs" Link="CodeGeneration\ProjectInspector.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedEventMock.cs" Link="CodeGeneration\PropertyBasedEventMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedIndexerMock.cs" Link="CodeGeneration\PropertyBasedIndexerMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMethodMock.cs" Link="CodeGeneration\PropertyBasedMethodMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMock.cs" Link="CodeGeneration\PropertyBasedMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedPropertyMock.cs" Link="CodeGeneration\PropertyBasedPropertyMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\RoslynExtensions.cs" Link="CodeGeneration\RoslynExtensions.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\UniqueNames\Uniquifier.cs" Link="CodeGeneration\UniqueNames\Uniquifier.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedIndexerMock.cs" Link="CodeGeneration\VirtualMethodBasedIndexerMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedMethodMock.cs" Link="CodeGeneration\VirtualMethodBasedMethodMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedMock.cs" Link="CodeGeneration\VirtualMethodBasedMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedPropertyMock.cs" Link="CodeGeneration\VirtualMethodBasedPropertyMock.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.6.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0-beta4-63006-05" PrivateAssets="all" />
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
   </ItemGroup>
 
@@ -38,17 +56,6 @@
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(OutputPath)\Mocklis.CodeGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mocklis.CodeGeneration\Mocklis.CodeGeneration.csproj" PrivateAssets="all" />
-  </ItemGroup>
-
-  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-    </ItemGroup>
-  </Target>
 
 </Project>
