@@ -43,14 +43,32 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
-            var mockedProperty = F.PropertyDeclaration(ValueTypeSyntax, Symbol.Name)
+            var decoratedValueTypeSyntax = ValueTypeSyntax;
+
+            if (Symbol.ReturnsByRef)
+            {
+                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+
+            var mockedProperty = F.PropertyDeclaration(decoratedValueTypeSyntax, Symbol.Name)
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.IsReadOnly)
             {
-                mockedProperty = mockedProperty
-                    .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(MemberMockName), F.IdentifierName("Value")))).WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+                ExpressionSyntax elementAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(MemberMockName),
+                    F.IdentifierName("Value"));
+
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    elementAccess = TypesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                }
+
+                mockedProperty = mockedProperty.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {

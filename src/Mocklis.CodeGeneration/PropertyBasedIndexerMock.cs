@@ -54,7 +54,18 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
-            var mockedIndexer = F.IndexerDeclaration(ValueTypeSyntax)
+            var decoratedValueTypeSyntax = ValueTypeSyntax;
+
+            if (Symbol.ReturnsByRef)
+            {
+                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+
+            var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
                 .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
                     F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type))))))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
@@ -66,9 +77,15 @@ namespace Mocklis.CodeGeneration
 
             if (Symbol.IsReadOnly)
             {
-                mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(
-                        F.ElementAccessExpression(F.IdentifierName(MemberMockName))
-                            .WithExpressionsAsArgumentList(keyParameter)))
+                ExpressionSyntax elementAccess = F.ElementAccessExpression(F.IdentifierName(MemberMockName))
+                    .WithExpressionsAsArgumentList(keyParameter);
+
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    elementAccess = TypesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                }
+
+                mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else

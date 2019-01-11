@@ -121,12 +121,22 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
-            // we currently don't add ref, in or out as required.
-            var mockedMethod = F.MethodDeclaration(TypesForSymbols.ParseTypeName(Symbol.ReturnType), Symbol.Name)
+            var baseReturnType = TypesForSymbols.ParseTypeName(Symbol.ReturnType);
+            var returnType = baseReturnType;
+            if (Symbol.ReturnsByRef)
+            {
+                returnType = F.RefType(returnType);
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                returnType = F.RefType(returnType).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+
+            var mockedMethod = F.MethodDeclaration(returnType, Symbol.Name)
                 .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.AsParameterSyntax()))))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
-            var invocation = F.InvocationExpression(
+            ExpressionSyntax invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         F.IdentifierName(MemberMockName), F.IdentifierName("Call")))
                 .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters));
@@ -136,6 +146,11 @@ namespace Mocklis.CodeGeneration
             if (MockReturnValues.Length == 0 ||
                 MockReturnValues.Length == 1 && MockReturnValues[0].Kind == ParameterOrReturnValueKind.ReturnValue)
             {
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    invocation = TypesForSymbols.WrapByRef(invocation, baseReturnType);
+                }
+
                 mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
@@ -171,8 +186,15 @@ namespace Mocklis.CodeGeneration
                 // finally, if there is a 'proper' return type, return the corresponding value from the temporary variable.
                 foreach (var rv in MockReturnValues.Where(a => a.Kind == ParameterOrReturnValueKind.ReturnValue))
                 {
-                    statements.Add(F.ReturnStatement(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
-                        F.IdentifierName(rv.UniqueName))));
+                    ExpressionSyntax memberAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
+                        F.IdentifierName(rv.UniqueName));
+
+                    if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                    {
+                        memberAccess = TypesForSymbols.WrapByRef(memberAccess, baseReturnType);
+                    }
+
+                    statements.Add(F.ReturnStatement(memberAccess));
                 }
 
                 mockedMethod = mockedMethod.WithBody(F.Block(statements));

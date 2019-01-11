@@ -48,10 +48,35 @@ namespace Mocklis.CodeGeneration
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
                 _typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols);
-                _mocks = CreateMocks(_classSymbol, _typesForSymbols);
+                bool mockReturnsByRef = false;
+                bool mockReturnsByRefReadonly = true;
+                var attribute = _classSymbol.GetAttributes().Single(a => a.AttributeClass == mocklisSymbols.MocklisClassAttribute);
+                foreach (var k in attribute.NamedArguments)
+                {
+                    switch (k.Key)
+                    {
+                        case "MockReturnsByRef":
+                            if (k.Value.Value is bool newMockReturnsByRef)
+                            {
+                                mockReturnsByRef = newMockReturnsByRef;
+                            }
+
+                            break;
+                        case "MockReturnsByRefReadonly":
+                            if (k.Value.Value is bool newMockReturnsByRefReadonly)
+                            {
+                                mockReturnsByRefReadonly = newMockReturnsByRefReadonly;
+                            }
+
+                            break;
+                    }
+                }
+
+                _mocks = CreateMocks(_classSymbol, _typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly);
             }
 
-            private static IMemberMock[] CreateMocks(INamedTypeSymbol classSymbol, MocklisTypesForSymbols typesForSymbols)
+            private static IMemberMock[] CreateMocks(INamedTypeSymbol classSymbol, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef,
+                bool mockReturnsByRefReadonly)
             {
                 var members = GetMembers(classSymbol).ToArray();
 
@@ -66,7 +91,7 @@ namespace Mocklis.CodeGeneration
 
                 return members.Select(m =>
                     CreateMock(classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier.GetUniqueName(m.memberSymbol.MetadataName),
-                        typesForSymbols)).ToArray();
+                        typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly)).ToArray();
             }
 
             private static IEnumerable<(INamedTypeSymbol interfaceSymbol, ISymbol memberSymbol)> GetMembers(ITypeSymbol classSymbol)
@@ -92,13 +117,14 @@ namespace Mocklis.CodeGeneration
             }
 
             private static IMemberMock CreateMock(INamedTypeSymbol classSymbol, ISymbol memberSymbol, INamedTypeSymbol interfaceSymbol,
-                string mockMemberName, MocklisTypesForSymbols typesForSymbols)
+                string mockMemberName, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
             {
                 switch (memberSymbol)
                 {
                     case IPropertySymbol memberPropertySymbol:
                     {
-                        bool useVirtualMethod = memberPropertySymbol.ReturnsByRef || memberPropertySymbol.ReturnsByRefReadonly;
+                        bool useVirtualMethod = memberPropertySymbol.ReturnsByRef && !mockReturnsByRef ||
+                                                memberPropertySymbol.ReturnsByRefReadonly && !mockReturnsByRefReadonly;
 
                         if (memberPropertySymbol.IsIndexer)
                         {
@@ -123,9 +149,11 @@ namespace Mocklis.CodeGeneration
                         return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
                     case IMethodSymbol memberMethodSymbol:
                     {
-                        bool useVirtualMethod = memberMethodSymbol.Arity > 0 || memberMethodSymbol.ReturnsByRef ||
-                                                memberMethodSymbol.ReturnsByRefReadonly ||
-                                                memberMethodSymbol.IsVararg;
+                        bool useVirtualMethod = memberMethodSymbol.Arity > 0 || memberMethodSymbol.IsVararg;
+
+                        useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRef && !mockReturnsByRef;
+                        useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRefReadonly && !mockReturnsByRefReadonly;
+
                         if (useVirtualMethod)
                         {
                             return new VirtualMethodBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,

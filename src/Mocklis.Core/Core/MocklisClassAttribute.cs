@@ -15,5 +15,14 @@ namespace Mocklis.Core
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class MocklisClassAttribute : Attribute
     {
+        public MocklisClassAttribute()
+        {
+            MockReturnsByRef = false;
+            MockReturnsByRefReadonly = true;
+        }
+
+        public bool MockReturnsByRef { get; set; }
+
+        public bool MockReturnsByRefReadonly { get; set; }
     }
 }

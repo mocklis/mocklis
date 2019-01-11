@@ -102,6 +102,11 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax MockType { get; }
 
+        public TypeSyntax ByRef(TypeSyntax tresult)
+        {
+            return ParseGenericName(_mocklisSymbols.ByRef1, tresult);
+        }
+
         public TypeSyntax RuntimeArgumentHandle { get; }
 
         public ArgumentSyntax AsArgumentSyntax(IParameterSymbol p)
@@ -191,6 +196,14 @@ namespace Mocklis.CodeGeneration
         public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters)
         {
             return typeParameters.Select(CreateConstraintClauseFromTypeParameter).Where(a => a != null).ToArray();
+        }
+
+        public ExpressionSyntax WrapByRef(ExpressionSyntax invocation, TypeSyntax returnType)
+        {
+            var byref = ByRef(returnType);
+            var wrap = F.InvocationExpression(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, byref, F.IdentifierName("Wrap")))
+                .WithExpressionsAsArgumentList(invocation);
+            return F.RefExpression(wrap);
         }
     }
 }
