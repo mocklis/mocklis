@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Uniquifier.cs">
-//   Copyright © 2018 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
