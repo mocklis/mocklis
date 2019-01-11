@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Product>Mocklis</Product>
@@ -14,12 +14,12 @@
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Analyzer contains the code generator packaged as a Roslyn Analyzer/Code fix pair.</Description>
     <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <Version>0.1.5-alpha</Version>
-    <AssemblyVersion>0.1.5.0</AssemblyVersion>
+    <Version>0.1.6-alpha</Version>
+    <AssemblyVersion>0.1.6.0</AssemblyVersion>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RootNamespace>Mocklis</RootNamespace>
-    <FileVersion>0.1.5.0</FileVersion>
+    <FileVersion>0.1.6.0</FileVersion>
     <NoPackageAnalysis>true</NoPackageAnalysis>
   </PropertyGroup>
 

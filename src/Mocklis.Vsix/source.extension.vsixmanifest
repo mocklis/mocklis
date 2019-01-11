@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Mocklis.89944ba4-dfa2-40c7-b9fe-ae61cefb033a" Version="0.1.3" Language="en-US" Publisher="Esbjörn Redmo" />
+        <Identity Id="Mocklis.89944ba4-dfa2-40c7-b9fe-ae61cefb033a" Version="0.1.6" Language="en-US" Publisher="Esbjörn Redmo" />
         <DisplayName>Mocklis</DisplayName>
         <Description xml:space="preserve">Roslyn Refactoring to generate code for Mocklis mock classes.</Description>
         <Icon>mocklis.ico</Icon>
