@@ -27,7 +27,7 @@ namespace Mocklis.Steps.Miscellaneous
         public override void Set(IMockInfo mockInfo, TValue value)
         {
             base.Set(mockInfo, value);
-            _propertyChangedEvent.EventHandler?.Invoke(mockInfo.MockInstance, new PropertyChangedEventArgs(mockInfo.MemberName));
+            _propertyChangedEvent.Raise(mockInfo.MockInstance, new PropertyChangedEventArgs(mockInfo.MemberName));
         }
     }
 }

@@ -33,14 +33,6 @@ namespace Mocklis
             return caller.SetNextStep(step);
         }
 
-        public static IStoredEvent<EventHandler<TArgs>> Stored<TArgs>(
-            this ICanHaveNextEventStep<EventHandler<TArgs>> caller,
-            out StoredGenericEventStep<TArgs> step)
-        {
-            step = new StoredGenericEventStep<TArgs>();
-            return caller.SetNextStep(step);
-        }
-
         public static IStoredIndexer<TKey, TValue> StoredAsDictionary<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller)
         {
