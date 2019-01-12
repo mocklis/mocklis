@@ -203,13 +203,31 @@ namespace Mocklis.CodeGeneration
                         case Accessibility.ProtectedOrInternal:
                         case Accessibility.Public:
                         {
+                            var parameterNames = constructor.Parameters.Select(p => p.Name).ToArray();
+
+                            var constructorStatementsWithThisWhereRequired = constructorStatements.Select(constructorStatement =>
+                            {
+                                if (constructorStatement is ExpressionStatementSyntax expressionStatementSyntax
+                                    && expressionStatementSyntax.Expression is AssignmentExpressionSyntax assignmentExpressionSyntax
+                                    && assignmentExpressionSyntax.Left is IdentifierNameSyntax identifierNameSyntax
+                                    && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
+                                )
+                                {
+                                    var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(),
+                                        identifierNameSyntax);
+                                    return expressionStatementSyntax.WithExpression(assignmentExpressionSyntax.WithLeft(newLeft));
+                                }
+
+                                return constructorStatement;
+                            });
+
                             declarationList.Add(F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
                                 .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                                 .WithParameterList(
                                     F.ParameterList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsParameterSyntax))))
                                 .WithInitializer(F.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
                                     F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))))
-                                .WithBody(F.Block(constructorStatements)));
+                                .WithBody(F.Block(constructorStatementsWithThisWhereRequired)));
                             break;
                         }
                     }
