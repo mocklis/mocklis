@@ -229,13 +229,20 @@ namespace Mocklis.CodeGeneration
                                 return constructorStatement;
                             });
 
-                            declarationList.Add(F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
+                            var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
                                 .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                                 .WithParameterList(
                                     F.ParameterList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsParameterSyntax))))
-                                .WithInitializer(F.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
-                                    F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))))
-                                .WithBody(F.Block(constructorStatementsWithThisWhereRequired)));
+                                .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
+
+                            if (parameterNames.Any())
+                            {
+                                constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
+                                    SyntaxKind.BaseConstructorInitializer,
+                                    F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))));
+                            }
+
+                            declarationList.Add(constructorDeclaration);
                             break;
                         }
                     }
