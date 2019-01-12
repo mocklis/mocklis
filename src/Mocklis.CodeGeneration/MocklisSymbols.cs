@@ -26,9 +26,12 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol MockType { get; }
         public INamedTypeSymbol ByRef1 { get; }
         public INamedTypeSymbol RuntimeArgumentHandle { get; }
+        private INamedTypeSymbol Object { get; }
+        private Compilation Compilation { get; }
 
         public MocklisSymbols(Compilation compilation)
         {
+            Compilation = compilation;
             MocklisClassAttribute = compilation.GetTypeByMetadataName("Mocklis.Core.MocklisClassAttribute");
             ActionMethodMock0 = compilation.GetTypeByMetadataName("Mocklis.Core.ActionMethodMock");
             ActionMethodMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.ActionMethodMock`1");
@@ -41,6 +44,12 @@ namespace Mocklis.CodeGeneration
             MockType = compilation.GetTypeByMetadataName("Mocklis.Core.MockType");
             ByRef1 = compilation.GetTypeByMetadataName("Mocklis.Core.ByRef`1");
             RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
+            Object = compilation.GetTypeByMetadataName("System.Object");
+        }
+
+        public bool HasImplicitConversionToObject(ITypeSymbol symbol)
+        {
+            return Compilation.HasImplicitConversion(symbol, Object);
         }
     }
 }
