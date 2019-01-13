@@ -20,7 +20,6 @@ namespace Mocklis.CodeGeneration
     public class PropertyBasedMethodMockWithTypeParameters : PropertyBasedMethodMock
     {
         public string MockProviderName { get; }
-        private readonly TypeParameterNameSubstitutions _typeParameterNameSubstitutions;
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
             INamedTypeSymbol interfaceSymbol,
@@ -29,7 +28,6 @@ namespace Mocklis.CodeGeneration
             classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
-            _typeParameterNameSubstitutions = new TypeParameterNameSubstitutions(classSymbol, symbol);
         }
 
         public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
@@ -80,7 +78,7 @@ namespace Mocklis.CodeGeneration
 
             m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters, _typeParameterNameSubstitutions);
+            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters, TypeParameterNameSubstitutions);
 
             if (constraints.Any())
             {
@@ -94,7 +92,7 @@ namespace Mocklis.CodeGeneration
         {
             return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                 F.SeparatedList<ExpressionSyntax>(Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeOfExpression(F.IdentifierName(typeParameter.Name))))));
+                    F.TypeOfExpression(F.IdentifierName(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))))));
         }
 
         public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
@@ -113,13 +111,15 @@ namespace Mocklis.CodeGeneration
 
         private TypeParameterListSyntax TypeParameterList()
         {
-            return F.TypeParameterList(F.SeparatedList(Symbol.TypeParameters.Select(typeParameter => F.TypeParameter(typeParameter.Name))));
+            return F.TypeParameterList(F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
+                F.TypeParameter(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))));
         }
 
         private TypeArgumentListSyntax TypeArgumentList()
         {
             return F.TypeArgumentList(
-                F.SeparatedList<TypeSyntax>(Symbol.TypeParameters.Select(typeParameter => F.IdentifierName(typeParameter.Name))));
+                F.SeparatedList<TypeSyntax>(Symbol.TypeParameters.Select(typeParameter =>
+                    F.IdentifierName(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))));
         }
     }
 }
