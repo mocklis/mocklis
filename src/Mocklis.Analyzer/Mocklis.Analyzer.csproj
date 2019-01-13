@@ -36,6 +36,7 @@
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMock.cs" Link="CodeGeneration\PropertyBasedMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedPropertyMock.cs" Link="CodeGeneration\PropertyBasedPropertyMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\RoslynExtensions.cs" Link="CodeGeneration\RoslynExtensions.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\TypeParameterNameSubstitutions.cs" Link="CodeGeneration\TypeParameterNameSubstitutions.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\UniqueNames\Uniquifier.cs" Link="CodeGeneration\UniqueNames\Uniquifier.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedIndexerMock.cs" Link="CodeGeneration\VirtualMethodBasedIndexerMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\VirtualMethodBasedMethodMock.cs" Link="CodeGeneration\VirtualMethodBasedMethodMock.cs" />

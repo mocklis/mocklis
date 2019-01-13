@@ -248,7 +248,8 @@ namespace Mocklis.CodeGeneration
                             var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
                                 .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                                 .WithParameterList(
-                                    F.ParameterList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsParameterSyntax))))
+                                    F.ParameterList(
+                                        F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp, null)))))
                                 .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
 
                             if (parameterNames.Any())

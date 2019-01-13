@@ -20,6 +20,7 @@ namespace Mocklis.CodeGeneration
     public class PropertyBasedMethodMockWithTypeParameters : PropertyBasedMethodMock
     {
         public string MockProviderName { get; }
+        private readonly TypeParameterNameSubstitutions _typeParameterNameSubstitutions;
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
             INamedTypeSymbol interfaceSymbol,
@@ -28,6 +29,7 @@ namespace Mocklis.CodeGeneration
             classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
+            _typeParameterNameSubstitutions = new TypeParameterNameSubstitutions(classSymbol, symbol);
         }
 
         public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
@@ -78,7 +80,7 @@ namespace Mocklis.CodeGeneration
 
             m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters);
+            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters, _typeParameterNameSubstitutions);
 
             if (constraints.Any())
             {

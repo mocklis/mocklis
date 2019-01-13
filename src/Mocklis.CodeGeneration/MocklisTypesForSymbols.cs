@@ -34,8 +34,14 @@ namespace Mocklis.CodeGeneration
             RuntimeArgumentHandle = ParseName(mocklisSymbols.RuntimeArgumentHandle);
         }
 
-        public TypeSyntax ParseTypeName(ITypeSymbol propertyType)
+        public TypeSyntax ParseTypeName(ITypeSymbol propertyType, TypeParameterNameSubstitutions substitutions = null)
         {
+            string substitutedTypeName = substitutions?.GetName(propertyType);
+            if (substitutedTypeName != null)
+            {
+                return F.IdentifierName(substitutedTypeName);
+            }
+
             return F.ParseTypeName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
         }
 
@@ -133,9 +139,9 @@ namespace Mocklis.CodeGeneration
             return syntax;
         }
 
-        public ParameterSyntax AsParameterSyntax(IParameterSymbol p)
+        public ParameterSyntax AsParameterSyntax(IParameterSymbol p, TypeParameterNameSubstitutions substitutions)
         {
-            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type));
+            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, substitutions));
 
             switch (p.RefKind)
             {
@@ -159,7 +165,8 @@ namespace Mocklis.CodeGeneration
             return syntax;
         }
 
-        private TypeParameterConstraintClauseSyntax CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter)
+        private TypeParameterConstraintClauseSyntax CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter,
+            TypeParameterNameSubstitutions substitutions)
         {
             var constraints = new List<TypeParameterConstraintSyntax>();
 
@@ -190,15 +197,17 @@ namespace Mocklis.CodeGeneration
 
             if (constraints.Any())
             {
-                return F.TypeParameterConstraintClause(F.IdentifierName(typeParameter.Name), F.SeparatedList(constraints));
+                var name = substitutions.GetName(typeParameter) ?? typeParameter.Name;
+                return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
             }
 
             return null;
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters)
+        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters,
+            TypeParameterNameSubstitutions substitutions)
         {
-            return typeParameters.Select(CreateConstraintClauseFromTypeParameter).Where(a => a != null).ToArray();
+            return typeParameters.Select(tp => CreateConstraintClauseFromTypeParameter(tp, substitutions)).Where(a => a != null).ToArray();
         }
 
         public ExpressionSyntax WrapByRef(ExpressionSyntax invocation, TypeSyntax returnType)
