@@ -25,7 +25,9 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol MockMissingException { get; }
         public INamedTypeSymbol MockType { get; }
         public INamedTypeSymbol ByRef1 { get; }
+        public INamedTypeSymbol TypedMockProvider { get; }
         public INamedTypeSymbol RuntimeArgumentHandle { get; }
+
         private INamedTypeSymbol Object { get; }
         private Compilation Compilation { get; }
 
@@ -43,6 +45,7 @@ namespace Mocklis.CodeGeneration
             MockMissingException = compilation.GetTypeByMetadataName("Mocklis.Core.MockMissingException");
             MockType = compilation.GetTypeByMetadataName("Mocklis.Core.MockType");
             ByRef1 = compilation.GetTypeByMetadataName("Mocklis.Core.ByRef`1");
+            TypedMockProvider = compilation.GetTypeByMetadataName("Mocklis.Core.TypedMockProvider");
             RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
             Object = compilation.GetTypeByMetadataName("System.Object");
         }

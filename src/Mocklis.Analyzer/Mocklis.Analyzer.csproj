@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Product>Mocklis</Product>
@@ -32,6 +32,7 @@
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedEventMock.cs" Link="CodeGeneration\PropertyBasedEventMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedIndexerMock.cs" Link="CodeGeneration\PropertyBasedIndexerMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMethodMock.cs" Link="CodeGeneration\PropertyBasedMethodMock.cs" />
+    <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMethodMockWithTypeParameters.cs" Link="CodeGeneration\PropertyBasedMethodMockWithTypeParameters.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedMock.cs" Link="CodeGeneration\PropertyBasedMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\PropertyBasedPropertyMock.cs" Link="CodeGeneration\PropertyBasedPropertyMock.cs" />
     <Compile Include="..\Mocklis.CodeGeneration\RoslynExtensions.cs" Link="CodeGeneration\RoslynExtensions.cs" />

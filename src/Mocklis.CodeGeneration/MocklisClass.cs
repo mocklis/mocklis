@@ -91,7 +91,7 @@ namespace Mocklis.CodeGeneration
                 }
 
                 return members.Select(m =>
-                    CreateMock(mocklisSymbols, classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier.GetUniqueName(m.memberSymbol.MetadataName),
+                    CreateMock(mocklisSymbols, classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier,
                         typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly)).ToArray();
             }
 
@@ -119,13 +119,19 @@ namespace Mocklis.CodeGeneration
 
             private static IMemberMock CreateMock(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
                 INamedTypeSymbol interfaceSymbol,
-                string mockMemberName, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
+                Uniquifier uniquifier, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
             {
+                string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
+
                 switch (memberSymbol)
                 {
                     case IPropertySymbol memberPropertySymbol:
                     {
-                        bool useVirtualMethod = memberPropertySymbol.ReturnsByRef && !mockReturnsByRef ||
+                        var hasRestrictedParameter = memberPropertySymbol.Parameters.Any(p => !mocklisSymbols.HasImplicitConversionToObject(p.Type));
+                        var hasRestrictedReturnType = !mocklisSymbols.HasImplicitConversionToObject(memberPropertySymbol.Type);
+
+                        bool useVirtualMethod = hasRestrictedParameter || hasRestrictedReturnType ||
+                                                memberPropertySymbol.ReturnsByRef && !mockReturnsByRef ||
                                                 memberPropertySymbol.ReturnsByRefReadonly && !mockReturnsByRefReadonly;
 
                         if (memberPropertySymbol.IsIndexer)
@@ -151,13 +157,11 @@ namespace Mocklis.CodeGeneration
                         return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
                     case IMethodSymbol memberMethodSymbol:
                     {
-                        // we need to use a virtual method if this is a vararg or if any of the parameters (or return type) are restricted types.
                         var hasRestrictedParameter = memberMethodSymbol.Parameters.Any(p => !mocklisSymbols.HasImplicitConversionToObject(p.Type));
                         var hasRestrictedReturnType = !memberMethodSymbol.ReturnsVoid &&
                                                       !mocklisSymbols.HasImplicitConversionToObject(memberMethodSymbol.ReturnType);
 
-                        bool useVirtualMethod = memberMethodSymbol.Arity > 0 || hasRestrictedParameter || hasRestrictedReturnType ||
-                                                memberMethodSymbol.IsVararg;
+                        bool useVirtualMethod = hasRestrictedParameter || hasRestrictedReturnType || memberMethodSymbol.IsVararg;
 
                         useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRef && !mockReturnsByRef;
                         useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRefReadonly && !mockReturnsByRefReadonly;
@@ -168,11 +172,23 @@ namespace Mocklis.CodeGeneration
                                 mockMemberName);
                         }
 
+                        if (memberMethodSymbol.Arity > 0)
+                        {
+                            var mockProviderName = uniquifier.GetUniqueName(CreateMockProviderName(memberSymbol.MetadataName));
+                            return new PropertyBasedMethodMockWithTypeParameters(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,
+                                mockMemberName, mockProviderName);
+                        }
+
                         return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
                     }
                     default:
                         return null;
                 }
+            }
+
+            private static string CreateMockProviderName(string memberName)
+            {
+                return "_" + char.ToLowerInvariant(memberName[0]) + memberName.Substring(1);
             }
 
             public SyntaxList<MemberDeclarationSyntax> GenerateMembers()

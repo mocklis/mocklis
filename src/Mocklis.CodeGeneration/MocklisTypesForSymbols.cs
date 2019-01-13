@@ -30,6 +30,7 @@ namespace Mocklis.CodeGeneration
             _mocklisSymbols = mocklisSymbols;
             MockMissingException = ParseName(mocklisSymbols.MockMissingException);
             MockType = ParseName(mocklisSymbols.MockType);
+            TypedMockProvider = ParseName(mocklisSymbols.TypedMockProvider);
             RuntimeArgumentHandle = ParseName(mocklisSymbols.RuntimeArgumentHandle);
         }
 
@@ -106,6 +107,8 @@ namespace Mocklis.CodeGeneration
         {
             return ParseGenericName(_mocklisSymbols.ByRef1, tresult);
         }
+
+        public TypeSyntax TypedMockProvider { get; }
 
         public TypeSyntax RuntimeArgumentHandle { get; }
 

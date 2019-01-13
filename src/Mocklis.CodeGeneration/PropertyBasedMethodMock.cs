@@ -23,7 +23,7 @@ namespace Mocklis.CodeGeneration
         private ParameterOrReturnValue[] MockParameters { get; }
         private ParameterOrReturnValue[] MockReturnValues { get; }
         private ParameterOrReturnValue[] MethodParameters { get; }
-        private TypeSyntax MockPropertyType { get; }
+        protected TypeSyntax MockMemberType { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IMethodSymbol symbol,
@@ -96,30 +96,30 @@ namespace Mocklis.CodeGeneration
 
             if (returnValueTypeSyntax == null)
             {
-                MockPropertyType = parameterTypeSyntax == null
+                MockMemberType = parameterTypeSyntax == null
                     ? TypesForSymbols.ActionMethodMock()
                     : TypesForSymbols.ActionMethodMock(parameterTypeSyntax);
             }
             else
             {
-                MockPropertyType = parameterTypeSyntax == null
+                MockMemberType = parameterTypeSyntax == null
                     ? TypesForSymbols.FuncMethodMock(returnValueTypeSyntax)
                     : TypesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
             }
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
         {
-            declarationList.Add(MockProperty(MockPropertyType));
+            declarationList.Add(MockProperty(MockMemberType));
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType));
+            constructorStatements.Add(InitialisationStatement(MockMemberType));
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        protected MemberDeclarationSyntax ExplicitInterfaceMember()
         {
             var baseReturnType = TypesForSymbols.ParseTypeName(Symbol.ReturnType);
             var returnType = baseReturnType;
@@ -132,13 +132,13 @@ namespace Mocklis.CodeGeneration
                 returnType = F.RefType(returnType).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
             }
 
-            var mockedMethod = F.MethodDeclaration(returnType, Symbol.Name)
-                .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.AsParameterSyntax()))))
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+            var mockedMethod = ExplicitInterfaceMemberMethodDeclaration(returnType);
+
+            var memberMockInstance = ExplicitInterfaceMemberMemberMockInstance();
 
             ExpressionSyntax invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        F.IdentifierName(MemberMockName), F.IdentifierName("Call")))
+                        memberMockInstance, F.IdentifierName("Call")))
                 .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters));
 
             // look at the return parameters. If we don't have any we can just make the call.
@@ -203,7 +203,19 @@ namespace Mocklis.CodeGeneration
             return mockedMethod;
         }
 
-        private enum ParameterOrReturnValueKind
+        protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
+        {
+            return F.MethodDeclaration(returnType, Symbol.Name)
+                .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.AsParameterSyntax()))))
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+        }
+
+        protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()
+        {
+            return F.IdentifierName(MemberMockName);
+        }
+
+        protected enum ParameterOrReturnValueKind
         {
             ReturnValue,
             Normal,
@@ -212,7 +224,7 @@ namespace Mocklis.CodeGeneration
             Ref
         }
 
-        private class ParameterOrReturnValue
+        protected class ParameterOrReturnValue
         {
             public ParameterOrReturnValueKind Kind { get; }
             public string ParameterName { get; }
