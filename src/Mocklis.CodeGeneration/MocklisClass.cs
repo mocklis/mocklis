@@ -81,8 +81,9 @@ namespace Mocklis.CodeGeneration
             {
                 var members = GetMembers(classSymbol).ToArray();
 
-                // make sure to reserve and use all names defined by the basetypes
-                var uniquifier = new Uniquifier(classSymbol.BaseType.GetUsableNames());
+                // make sure to reserve and use all names defined by the basetypes, and the class itself
+                var namesToReserveAndUse = new List<string>(classSymbol.BaseType.GetUsableNames()) { classSymbol.Name };
+                var uniquifier = new Uniquifier(namesToReserveAndUse);
 
                 // Then reserve all names used by new members
                 foreach (var member in members)
