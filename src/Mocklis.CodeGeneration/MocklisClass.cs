@@ -208,6 +208,23 @@ namespace Mocklis.CodeGeneration
 
             private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList)
             {
+                bool CanAccessConstructor(IMethodSymbol constructor)
+                {
+                    switch (constructor.DeclaredAccessibility)
+                    {
+                        case Accessibility.Protected:
+                        case Accessibility.ProtectedOrInternal:
+                        case Accessibility.Public:
+                        {
+                            return true;
+                        }
+                        default:
+                        {
+                            return false;
+                        }
+                    }
+                }
+
                 var constructorStatements = new List<StatementSyntax>();
 
                 foreach (var mock in _mocks)
@@ -215,55 +232,50 @@ namespace Mocklis.CodeGeneration
                     mock.AddInitialisersToConstructor(constructorStatements);
                 }
 
-                foreach (var constructor in _classSymbol.BaseType.Constructors)
+                var baseTypeConstructors = _classSymbol.BaseType.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
+                    .ToArray();
+
+                if (baseTypeConstructors.Length == 1 && baseTypeConstructors[0].Parameters.Length == 0 && constructorStatements.Count == 0)
                 {
-                    if (constructor.IsStatic || constructor.IsVararg)
-                    {
-                        continue;
-                    }
+                    // This would correspond to emitting just a default constructor, which we don't really need to do.
+                    return;
+                }
 
-                    switch (constructor.DeclaredAccessibility)
+                foreach (var constructor in baseTypeConstructors)
+                {
+                    var parameterNames = constructor.Parameters.Select(p => p.Name).ToArray();
+
+                    var constructorStatementsWithThisWhereRequired = constructorStatements.Select(constructorStatement =>
                     {
-                        case Accessibility.Protected:
-                        case Accessibility.ProtectedOrInternal:
-                        case Accessibility.Public:
+                        if (constructorStatement is ExpressionStatementSyntax expressionStatementSyntax
+                            && expressionStatementSyntax.Expression is AssignmentExpressionSyntax assignmentExpressionSyntax
+                            && assignmentExpressionSyntax.Left is IdentifierNameSyntax identifierNameSyntax
+                            && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
+                        )
                         {
-                            var parameterNames = constructor.Parameters.Select(p => p.Name).ToArray();
-
-                            var constructorStatementsWithThisWhereRequired = constructorStatements.Select(constructorStatement =>
-                            {
-                                if (constructorStatement is ExpressionStatementSyntax expressionStatementSyntax
-                                    && expressionStatementSyntax.Expression is AssignmentExpressionSyntax assignmentExpressionSyntax
-                                    && assignmentExpressionSyntax.Left is IdentifierNameSyntax identifierNameSyntax
-                                    && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
-                                )
-                                {
-                                    var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(),
-                                        identifierNameSyntax);
-                                    return expressionStatementSyntax.WithExpression(assignmentExpressionSyntax.WithLeft(newLeft));
-                                }
-
-                                return constructorStatement;
-                            });
-
-                            var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
-                                .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
-                                .WithParameterList(
-                                    F.ParameterList(
-                                        F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp, null)))))
-                                .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
-
-                            if (parameterNames.Any())
-                            {
-                                constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
-                                    SyntaxKind.BaseConstructorInitializer,
-                                    F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))));
-                            }
-
-                            declarationList.Add(constructorDeclaration);
-                            break;
+                            var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(),
+                                identifierNameSyntax);
+                            return expressionStatementSyntax.WithExpression(assignmentExpressionSyntax.WithLeft(newLeft));
                         }
+
+                        return constructorStatement;
+                    });
+
+                    var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(_classSymbol.Name))
+                        .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
+                        .WithParameterList(
+                            F.ParameterList(
+                                F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp, null)))))
+                        .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
+
+                    if (parameterNames.Any())
+                    {
+                        constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
+                            SyntaxKind.BaseConstructorInitializer,
+                            F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))));
                     }
+
+                    declarationList.Add(constructorDeclaration);
                 }
             }
         }
