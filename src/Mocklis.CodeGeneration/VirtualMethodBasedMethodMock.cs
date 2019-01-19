@@ -106,7 +106,6 @@ namespace Mocklis.CodeGeneration
             return method;
         }
 
-
         private MemberDeclarationSyntax ExplicitInterfaceMember()
         {
             var parameters = F.SeparatedList(Symbol.Parameters.Select(p => TypesForSymbols.AsParameterSyntax(p, _typeParameterNameSubstitutions)));

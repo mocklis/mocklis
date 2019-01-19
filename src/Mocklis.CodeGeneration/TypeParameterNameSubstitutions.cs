@@ -30,19 +30,14 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-        public string GetName(ITypeSymbol typeSymbol)
-        {
-            if (typeSymbol.Kind == SymbolKind.TypeParameter && typeSymbol.ContainingSymbol.Kind == SymbolKind.Method)
-            {
-                return _typeParameterNameTranslations[typeSymbol.Name];
-            }
-
-            return null;
-        }
-
         public string GetName(string typeParameterName)
         {
-            return _typeParameterNameTranslations[typeParameterName];
+            if (_typeParameterNameTranslations.ContainsKey(typeParameterName))
+            {
+                return _typeParameterNameTranslations[typeParameterName];
+            }
+
+            return typeParameterName;
         }
     }
 }

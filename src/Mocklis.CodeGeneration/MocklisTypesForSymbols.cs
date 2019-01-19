@@ -36,13 +36,35 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax ParseTypeName(ITypeSymbol propertyType, TypeParameterNameSubstitutions substitutions = null)
         {
-            string substitutedTypeName = substitutions?.GetName(propertyType);
-            if (substitutedTypeName != null)
+            var x = propertyType.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart);
+
+            string s = string.Empty;
+            foreach (var part in x)
             {
-                return F.IdentifierName(substitutedTypeName);
+                switch (part.Kind)
+                {
+                    case SymbolDisplayPartKind.TypeParameterName:
+                    {
+                        if (part.Symbol.ContainingSymbol is IMethodSymbol methodSymbol && methodSymbol.TypeParameters.Contains(part.Symbol))
+                        {
+                            s += substitutions?.GetName(part.Symbol.Name);
+                        }
+                        else
+                        {
+                            s += part.ToString();
+                        }
+
+                        break;
+                    }
+                    default:
+                    {
+                        s += part.ToString();
+                        break;
+                    }
+                }
             }
 
-            return F.ParseTypeName(propertyType.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
+            return F.ParseTypeName(s);
         }
 
         public NameSyntax ParseName(ITypeSymbol symbol)
@@ -187,7 +209,7 @@ namespace Mocklis.CodeGeneration
 
             foreach (var type in typeParameter.ConstraintTypes)
             {
-                constraints.Add(F.TypeConstraint(ParseName(type)));
+                constraints.Add(F.TypeConstraint(ParseTypeName(type, substitutions)));
             }
 
             if (typeParameter.HasConstructorConstraint)
@@ -197,7 +219,7 @@ namespace Mocklis.CodeGeneration
 
             if (constraints.Any())
             {
-                var name = substitutions.GetName(typeParameter) ?? typeParameter.Name;
+                var name = substitutions.GetName(typeParameter.Name);
                 return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
             }
 
