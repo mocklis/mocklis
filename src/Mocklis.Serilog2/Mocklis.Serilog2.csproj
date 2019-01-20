@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Product>Mocklis.Serilog2</Product>
     <RootNamespace>Mocklis</RootNamespace>
@@ -10,7 +10,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Authors>Esbjörn Redmo</Authors>
     <Company />
-    <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This package contains an ILogContext and extension methods to log to Serilog.</Description>
+    <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This package contains an ILogContext which writes to a Serilog ILogger.</Description>
     <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <Version>0.1.7-alpha</Version>
@@ -29,7 +29,7 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="Serilog" Version="[2.0.0, 3.0.0)" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' == 'netstandard1.3'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>

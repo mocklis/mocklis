@@ -20,28 +20,28 @@ namespace Mocklis
             this ICanHaveNextEventStep<THandler> caller,
             ILogContext logContext = null) where THandler : Delegate
         {
-            return caller.SetNextStep(new LogEventStep<THandler>(logContext ?? TextWriterLogContext.Console));
+            return caller.SetNextStep(new LogEventStep<THandler>(logContext ?? WriteLineLogContext.Console));
         }
 
         public static ICanHaveNextIndexerStep<TKey, TValue> Log<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
             ILogContext logContext = null)
         {
-            return caller.SetNextStep(new LogIndexerStep<TKey, TValue>(logContext ?? TextWriterLogContext.Console));
+            return caller.SetNextStep(new LogIndexerStep<TKey, TValue>(logContext ?? WriteLineLogContext.Console));
         }
 
         public static ICanHaveNextMethodStep<TParam, TResult> Log<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             ILogContext logContext = null)
         {
-            return caller.SetNextStep(new LogMethodStep<TParam, TResult>(logContext ?? TextWriterLogContext.Console));
+            return caller.SetNextStep(new LogMethodStep<TParam, TResult>(logContext ?? WriteLineLogContext.Console));
         }
 
         public static ICanHaveNextPropertyStep<TValue> Log<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
             ILogContext logContext = null)
         {
-            return caller.SetNextStep(new LogPropertyStep<TValue>(logContext ?? TextWriterLogContext.Console));
+            return caller.SetNextStep(new LogPropertyStep<TValue>(logContext ?? WriteLineLogContext.Console));
         }
     }
 }
