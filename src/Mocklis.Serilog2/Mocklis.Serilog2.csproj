@@ -13,12 +13,12 @@
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This package contains an ILogContext which writes to a Serilog ILogger.</Description>
     <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <Version>0.1.7-alpha</Version>
-    <AssemblyVersion>0.1.7.0</AssemblyVersion>
+    <Version>0.1.8-alpha</Version>
+    <AssemblyVersion>0.1.8.0</AssemblyVersion>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <FileVersion>0.1.7.0</FileVersion>
+    <FileVersion>0.1.8.0</FileVersion>
   </PropertyGroup>
    <ItemGroup>
     <None Remove="**\*.ncrunchproject" />

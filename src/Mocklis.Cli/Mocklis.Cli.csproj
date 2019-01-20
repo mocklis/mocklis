@@ -7,8 +7,8 @@
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Cli is a command line interface for the code generator.</Description>
     <Copyright>Copyright © 2019 Esbjörn Redmo and contributors</Copyright>
     <Authors>Esbjörn Redmo</Authors>
-    <Version>0.1.7-alpha</Version>
-    <AssemblyVersion>0.1.7.0</AssemblyVersion>
+    <Version>0.1.8-alpha</Version>
+    <AssemblyVersion>0.1.8.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

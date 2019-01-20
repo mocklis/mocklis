@@ -8,8 +8,8 @@
     <Authors>Esbjörn Redmo</Authors>
     <Company />
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.CodeGeneration provides the ability to generate test doubles from interface definitions.</Description>
-    <Version>0.1.7-alpha</Version>
-    <AssemblyVersion>0.1.7.0</AssemblyVersion>
+    <Version>0.1.8-alpha</Version>
+    <AssemblyVersion>0.1.8.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.ncrunchproject" />
