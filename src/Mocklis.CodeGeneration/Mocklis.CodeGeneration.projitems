@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>640710a2-756b-496c-976a-1656690795a7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Mocklis</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\IMemberMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisSymbols.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisTypesForSymbols.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\ProjectInspector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedEventMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedIndexerMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMethodMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMethodMockWithTypeParameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedPropertyMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\RoslynExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\TypeParameterNameSubstitutions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\UniqueNames\Uniquifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedIndexerMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMethodMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedPropertyMock.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)CodeGeneration\" />
+  </ItemGroup>
+</Project>

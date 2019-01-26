@@ -16,7 +16,7 @@ namespace Mocklis.Cli
 
     #endregion
 
-    internal class Program
+    internal static class Program
     {
         private static async Task<int> Main(string[] args)
         {

@@ -18,11 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mocklis.CodeGeneration\Mocklis.CodeGeneration.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Import Project="..\Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems" Label="Shared" />
 
 </Project>
