@@ -51,24 +51,38 @@ namespace Mocklis.CodeGeneration
                 bool mockReturnsByRef = false;
                 bool mockReturnsByRefReadonly = true;
                 var attribute = _classSymbol.GetAttributes().Single(a => a.AttributeClass == mocklisSymbols.MocklisClassAttribute);
-                foreach (var k in attribute.NamedArguments)
+
+                var attributeArguments = classDeclaration.FindNode(attribute.ApplicationSyntaxReference.Span).DescendantNodes()
+                    .OfType<AttributeArgumentSyntax>().ToList();
+
+                foreach (var k in attributeArguments)
                 {
-                    switch (k.Key)
+                    if (k.Expression is LiteralExpressionSyntax les)
                     {
-                        case "MockReturnsByRef":
-                            if (k.Value.Value is bool newMockReturnsByRef)
-                            {
-                                mockReturnsByRef = newMockReturnsByRef;
-                            }
-
+                        var name = k.NameEquals.Name.Identifier.Text;
+                        bool value;
+                        if (les.IsKind(SyntaxKind.TrueLiteralExpression))
+                        {
+                            value = true;
+                        }
+                        else if (les.IsKind(SyntaxKind.FalseLiteralExpression))
+                        {
+                            value = false;
+                        }
+                        else
+                        {
                             break;
-                        case "MockReturnsByRefReadonly":
-                            if (k.Value.Value is bool newMockReturnsByRefReadonly)
-                            {
-                                mockReturnsByRefReadonly = newMockReturnsByRefReadonly;
-                            }
+                        }
 
-                            break;
+                        switch (name)
+                        {
+                            case "MockReturnsByRef":
+                                mockReturnsByRef = value;
+                                break;
+                            case "MockReturnsByRefReadonly":
+                                mockReturnsByRefReadonly = value;
+                                break;
+                        }
                     }
                 }
 

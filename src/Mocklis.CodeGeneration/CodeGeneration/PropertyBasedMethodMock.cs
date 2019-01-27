@@ -124,8 +124,11 @@ namespace Mocklis.CodeGeneration
 
         protected MemberDeclarationSyntax ExplicitInterfaceMember()
         {
-            var baseReturnType = TypesForSymbols.ParseTypeName(Symbol.ReturnType, TypeParameterNameSubstitutions);
+            var baseReturnType = Symbol.ReturnsVoid
+                ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
+                : TypesForSymbols.ParseTypeName(Symbol.ReturnType, TypeParameterNameSubstitutions);
             var returnType = baseReturnType;
+
             if (Symbol.ReturnsByRef)
             {
                 returnType = F.RefType(returnType);
