@@ -80,8 +80,9 @@ namespace Mocklis.Analyzer.Tests
                 foreach (var error in result.Errors)
                 {
                     _testOutputHelper.WriteLine(error);
-                    throw new Exception("Compilation failed...");
                 }
+
+                throw new Exception("Compilation failed...");
             }
         }
     }
