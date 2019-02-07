@@ -91,6 +91,8 @@ namespace Mocklis.Analyzer.Tests.Helpers
             var operations = await action.GetOperationsAsync(CancellationToken.None);
             var solution = operations.OfType<ApplyChangesOperation>().Single().ChangedSolution;
             var updatedDocument = solution.GetDocument(document.Id);
+            var root = await updatedDocument.GetSyntaxRootAsync();
+            var code = root.GetText().ToString();
 
             var project = updatedDocument.Project;
             var newCompilation = await project.GetCompilationAsync();
@@ -101,12 +103,11 @@ namespace Mocklis.Analyzer.Tests.Helpers
                 {
                     var errors = emitResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error || d.IsWarningAsError)
                         .Select(d => d.Id + ": " + d.GetMessage()).ToArray();
-                    return MocklisClassUpdaterResult.Failure(errors);
+                    return MocklisClassUpdaterResult.Failure(code, errors);
                 }
             }
 
-            var root = await updatedDocument.GetSyntaxRootAsync();
-            return MocklisClassUpdaterResult.Success(root.GetText().ToString());
+            return MocklisClassUpdaterResult.Success(code);
         }
     }
 }

@@ -30,9 +30,9 @@ namespace Mocklis.Analyzer.Tests.Helpers
             return new MocklisClassUpdaterResult(true, code, Array.Empty<string>());
         }
 
-        public static MocklisClassUpdaterResult Failure(string[] errors)
+        public static MocklisClassUpdaterResult Failure(string code, string[] errors)
         {
-            return new MocklisClassUpdaterResult(false, string.Empty, errors);
+            return new MocklisClassUpdaterResult(false, code, errors);
         }
     }
 }

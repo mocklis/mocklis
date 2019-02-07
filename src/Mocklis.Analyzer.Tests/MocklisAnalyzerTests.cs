@@ -61,6 +61,16 @@ namespace Mocklis.Analyzer.Tests
 
             var result = await _mocklisClassUpdater.UpdateMocklisClass(source);
 
+// Uncomment to create expected value for regression purposes
+// #if !NCRUNCH
+//            if (expected == null || expected != result.Code)
+//            {
+//                string newPath = Path.Combine(TestCaseFolder, "..", "..", "..", "..", "TestCases", testCase + ".Expected.cs");
+//                File.WriteAllText(newPath, result.Code);
+//                expected = result.Code;
+//            }
+// #endif
+
             if (result.IsSuccess)
             {
                 Assert.Equal(expected, result.Code);
