@@ -145,6 +145,9 @@
     <value>No mock implementation found for Method '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method.</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualPropertyGet" xml:space="preserve">
-    <value>No mock implementation found for getting value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method.</value>
+    <value>No mock implementation found for getting value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
+  </data>
+  <data name="MockMissingExceptionMessageForVirtualPropertySet" xml:space="preserve">
+    <value>No mock implementation found for setting value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
   </data>
 </root>

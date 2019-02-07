@@ -143,11 +143,20 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method..
+        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one returning a value if more than one)..
         /// </summary>
         internal static string MockMissingExceptionMessageForVirtualPropertyGet {
             get {
                 return ResourceManager.GetString("MockMissingExceptionMessageForVirtualPropertyGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No mock implementation found for setting value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one not returning a value if more than one)..
+        /// </summary>
+        internal static string MockMissingExceptionMessageForVirtualPropertySet {
+            get {
+                return ResourceManager.GetString("MockMissingExceptionMessageForVirtualPropertySet", resourceCulture);
             }
         }
     }

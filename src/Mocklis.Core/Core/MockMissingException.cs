@@ -59,6 +59,9 @@ namespace Mocklis.Core
                 case MockType.VirtualPropertyGet:
                     rawMessage = Resources.MockMissingExceptionMessageForVirtualPropertyGet;
                     break;
+                case MockType.VirtualPropertySet:
+                    rawMessage = Resources.MockMissingExceptionMessageForVirtualPropertySet;
+                    break;
                 case MockType.VirtualIndexerGet:
                     rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerGet;
                     break;
