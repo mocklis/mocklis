@@ -139,7 +139,10 @@
     <value>No mock implementation found for setting value of Property '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualIndexerGet" xml:space="preserve">
-    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method.</value>
+    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
+  </data>
+  <data name="MockMissingExceptionMessageForVirtualIndexerSet" xml:space="preserve">
+    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualMethod" xml:space="preserve">
     <value>No mock implementation found for Method '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method.</value>

@@ -65,6 +65,9 @@ namespace Mocklis.Core
                 case MockType.VirtualIndexerGet:
                     rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerGet;
                     break;
+                case MockType.VirtualIndexerSet:
+                    rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerSet;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(memberType));
             }

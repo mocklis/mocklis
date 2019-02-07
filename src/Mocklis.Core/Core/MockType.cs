@@ -18,6 +18,7 @@ namespace Mocklis.Core
         VirtualMethod = 8,
         VirtualPropertyGet = 10,
         VirtualPropertySet = 11,
-        VirtualIndexerGet = 14
+        VirtualIndexerGet = 14,
+        VirtualIndexerSet = 15
     }
 }
