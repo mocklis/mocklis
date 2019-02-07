@@ -68,7 +68,7 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax MockSetVirtualMethod()
         {
-            return F.MethodDeclaration(ValueTypeSyntax, F.Identifier(MemberMockName))
+            return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(MemberMockName))
                 .WithParameterList(F.ParameterList(F.SeparatedList(new[]
                 {
                     F.Parameter(F.Identifier("Value")).WithType(ValueTypeSyntax)
