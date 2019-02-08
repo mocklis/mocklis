@@ -6,7 +6,7 @@ namespace Test
     public interface ITestClass
     {
         string Test(int i);
-        bool AnotherTest { get; set;}
+        bool AnotherTest { get; set; }
     }
 
     public class BaseClass
