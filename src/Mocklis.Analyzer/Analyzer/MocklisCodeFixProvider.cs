@@ -28,12 +28,9 @@ namespace Mocklis.Analyzer
     {
         private const string MocklisEmptiedClass = "mocklis_emptied_class";
 
-        private const string Title = "Update Mocklis Class (codefix)";
+        private const string Title = "Update Mocklis Class";
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get { return ImmutableArray.Create(MocklisAnalyzer.DiagnosticId); }
-        }
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MocklisAnalyzer.DiagnosticId);
 
         public sealed override FixAllProvider GetFixAllProvider() => null;
 
@@ -41,7 +38,6 @@ namespace Mocklis.Analyzer
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-            // TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
@@ -86,7 +82,7 @@ namespace Mocklis.Analyzer
 
             // And find the class again
             emptyClassDecl = emptyRoot.DescendantNodesAndSelf().OfType<ClassDeclarationSyntax>()
-                .FirstOrDefault(n => n.GetAnnotations("mocklis_emptied_class").Any());
+                .FirstOrDefault(n => n.GetAnnotations(MocklisEmptiedClass).Any());
 
             if (emptyClassDecl == null)
             {

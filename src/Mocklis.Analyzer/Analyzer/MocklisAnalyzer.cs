@@ -38,17 +38,14 @@ namespace Mocklis.Analyzer
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category,
             DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get { return ImmutableArray.Create(Rule); }
-        }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
         }
 
-        private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
             if (context.Node is ClassDeclarationSyntax classDecl && MightBeMocklisClass(classDecl))
             {
@@ -57,7 +54,7 @@ namespace Mocklis.Analyzer
             }
         }
 
-        private bool MightBeMocklisClass(ClassDeclarationSyntax classDecl)
+        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl)
         {
             var hasMocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).Any(a =>
                 a.Name.DescendantTokens().Any(t => t.Text == "MocklisClass" || t.Text == "MocklisClassAttribute"));
