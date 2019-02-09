@@ -5,12 +5,7 @@ namespace Test
 {
     public ref struct RefStruct
     {
-        public int Test { get; }
-
-        public RefStruct(int test)
-        {
-            Test = test;
-        }
+        int Test { get; set;}
     }
 
     public interface ITestClass<TOuter>
