@@ -12,7 +12,6 @@ namespace Mocklis.Cli
     using System.Threading.Tasks;
     using Microsoft.Build.Locator;
     using Microsoft.CodeAnalysis.MSBuild;
-    using Mocklis.CodeGeneration;
 
     #endregion
 

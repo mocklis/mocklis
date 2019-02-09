@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisSymbols.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisTypesForSymbols.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\ProjectInspector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedEventMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedIndexerMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMethodMock.cs" />
