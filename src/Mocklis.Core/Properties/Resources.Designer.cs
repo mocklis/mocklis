@@ -62,7 +62,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for adding handler to Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for adding a handler to Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForEventAdd {
             get {
@@ -71,7 +71,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for removing handler from Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for removing a handler from Event &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForEventRemove {
             get {
@@ -80,7 +80,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value via the Indexer on &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for getting a value via the Indexer on &apos;{1}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForIndexerGet {
             get {
@@ -89,7 +89,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for setting value via the Indexer on &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for setting a value via the Indexer on &apos;{1}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForIndexerSet {
             get {
@@ -98,7 +98,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for Method &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for Method &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForMethod {
             get {
@@ -107,7 +107,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for getting the value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForPropertyGet {
             get {
@@ -116,7 +116,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for setting value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on the &apos;{0}&apos; class..
+        ///   Looks up a localized string similar to No mock implementation found for setting the value of Property &apos;{1}.{2}&apos;. Add one using &apos;{3}&apos; on your &apos;{0}&apos; instance..
         /// </summary>
         internal static string MockMissingExceptionMessageForPropertySet {
             get {
@@ -125,7 +125,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value via the Indexer on &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one returning a value if more than one)..
+        ///   Looks up a localized string similar to No mock implementation found for getting a value via the Indexer on &apos;{1}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one returning a value if more than one)..
         /// </summary>
         internal static string MockMissingExceptionMessageForVirtualIndexerGet {
             get {
@@ -134,7 +134,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value via the Indexer on &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one not returning a value if more than one)..
+        ///   Looks up a localized string similar to No mock implementation found for setting a value via the Indexer on &apos;{1}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one not returning a value if more than one)..
         /// </summary>
         internal static string MockMissingExceptionMessageForVirtualIndexerSet {
             get {
@@ -152,7 +152,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for getting value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one returning a value if more than one)..
+        ///   Looks up a localized string similar to No mock implementation found for getting the value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one returning a value if more than one)..
         /// </summary>
         internal static string MockMissingExceptionMessageForVirtualPropertyGet {
             get {
@@ -161,7 +161,7 @@ namespace Mocklis.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No mock implementation found for setting value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one not returning a value if more than one)..
+        ///   Looks up a localized string similar to No mock implementation found for setting the value of Property &apos;{1}.{2}&apos;. Add one by subclassing &apos;{0}&apos; and overriding the &apos;{3}&apos; method (the one not returning a value if more than one)..
         /// </summary>
         internal static string MockMissingExceptionMessageForVirtualPropertySet {
             get {

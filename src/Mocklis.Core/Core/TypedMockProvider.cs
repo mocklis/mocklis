@@ -31,6 +31,22 @@ namespace Mocklis.Core
 
         private readonly Dictionary<Type[], MemberMock> _mocks = new Dictionary<Type[], MemberMock>(TypeArrayComparer.Instance);
 
+        private string GetNameOfType(Type type)
+        {
+            string name = type.Name;
+            if (type.IsConstructedGenericType)
+            {
+                return name.Substring(0, name.IndexOf('`')) + TypeParameterString(type.GenericTypeArguments);
+            }
+
+            return name;
+        }
+
+        private string TypeParameterString(Type[] types)
+        {
+            return "<" + string.Join(",", types.Select(GetNameOfType)) + ">";
+        }
+
         public MemberMock GetOrAdd(Type[] types, Func<string, MemberMock> factory)
         {
             if (types == null)
@@ -50,9 +66,7 @@ namespace Mocklis.Core
                     return _mocks[types];
                 }
 
-                var keyString = "<" + string.Join(",", types.Select(k => k.Name)) + ">";
-
-                var mock = factory(keyString);
+                var mock = factory(TypeParameterString(types));
                 _mocks[types] = mock;
                 return mock;
             }

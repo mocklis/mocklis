@@ -51,7 +51,7 @@ namespace Mocklis.Core
                     rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
                     break;
                 case MockType.IndexerSet:
-                    rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
+                    rawMessage = Resources.MockMissingExceptionMessageForIndexerSet;
                     break;
                 case MockType.VirtualMethod:
                     rawMessage = Resources.MockMissingExceptionMessageForVirtualMethod;

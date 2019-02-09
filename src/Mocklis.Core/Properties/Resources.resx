@@ -118,39 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MockMissingExceptionMessageForEventAdd" xml:space="preserve">
-    <value>No mock implementation found for adding handler to Event '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for adding a handler to Event '{1}.{2}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForEventRemove" xml:space="preserve">
-    <value>No mock implementation found for removing handler from Event '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for removing a handler from Event '{1}.{2}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForIndexerGet" xml:space="preserve">
-    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for getting a value via the Indexer on '{1}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForIndexerSet" xml:space="preserve">
-    <value>No mock implementation found for setting value via the Indexer on '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for setting a value via the Indexer on '{1}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForMethod" xml:space="preserve">
-    <value>No mock implementation found for Method '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for Method '{1}.{2}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForPropertyGet" xml:space="preserve">
-    <value>No mock implementation found for getting value of Property '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for getting the value of Property '{1}.{2}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForPropertySet" xml:space="preserve">
-    <value>No mock implementation found for setting value of Property '{1}.{2}'. Add one using '{3}' on the '{0}' class.</value>
+    <value>No mock implementation found for setting the value of Property '{1}.{2}'. Add one using '{3}' on your '{0}' instance.</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualIndexerGet" xml:space="preserve">
-    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
+    <value>No mock implementation found for getting a value via the Indexer on '{1}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualIndexerSet" xml:space="preserve">
-    <value>No mock implementation found for getting value via the Indexer on '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
+    <value>No mock implementation found for setting a value via the Indexer on '{1}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualMethod" xml:space="preserve">
     <value>No mock implementation found for Method '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method.</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualPropertyGet" xml:space="preserve">
-    <value>No mock implementation found for getting value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
+    <value>No mock implementation found for getting the value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one returning a value if more than one).</value>
   </data>
   <data name="MockMissingExceptionMessageForVirtualPropertySet" xml:space="preserve">
-    <value>No mock implementation found for setting value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
+    <value>No mock implementation found for setting the value of Property '{1}.{2}'. Add one by subclassing '{0}' and overriding the '{3}' method (the one not returning a value if more than one).</value>
   </data>
 </root>
