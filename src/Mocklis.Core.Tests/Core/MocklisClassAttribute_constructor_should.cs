@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EventMock_Add_should.cs">
+// <copyright file="MocklisClassAttribute_constructor_should.cs">
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
