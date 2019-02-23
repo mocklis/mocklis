@@ -18,9 +18,9 @@ namespace Mocklis.Steps.Conditional
      * ElseBranchRejoiner needs to be an inner class to IfEventStepBase to have visibility
      * on its NextStep property. 
      *
-     * IfBranchCaller needs to be public, since it needs to expose IEventStepCaller<THandler>
+     * IfBranchCaller needs to be public, since it needs to expose ICanHaveNextEventStep<THandler>
      * and the ElseBranch Property through the IfBranch property of the IfEventStepBase class.
-     * If the latter returned IEventStepCaller we wouldn't see the ElseBranch, and if it
+     * If the latter returned ICanHaveNextEventStep we wouldn't see the ElseBranch, and if it
      * returned an interface incorporating both then the extension methods that connect up
      * further steps would stop working. It needs to be an inner class to IfBranchCaller to
      * be able to construct the ElseBranchRejoiner for its ElseBranch property.

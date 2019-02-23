@@ -24,7 +24,7 @@ namespace Mocklis.Tests.Steps.Dummy
         private readonly MockMembers _mockMembers = new MockMembers();
 
         [Fact]
-        public void not_do_anything()
+        public void not_throw()
         {
             _mockMembers.MyEvent.Dummy();
             ((IEvents)_mockMembers).MyEvent -= MyEventHandler;
