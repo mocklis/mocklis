@@ -115,7 +115,7 @@ namespace Mocklis
         /// <typeparam name="TResult">The method return type.</typeparam>
         /// <param name="caller">The mock or step to which this 'join' step is added.</param>
         /// <param name="joinPoint">A reference to this step that can be used in a Join step.</param>
-        /// <returns>An <see cref="ICanHaveNextMethodStep{TParam, TREsult}" /> that can be used to add further steps.</returns>
+        /// <returns>An <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextMethodStep<TParam, TResult> JoinPoint<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             out IMethodStep<TParam, TResult> joinPoint)
