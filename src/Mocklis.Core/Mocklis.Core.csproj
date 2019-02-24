@@ -19,6 +19,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RootNamespace>Mocklis</RootNamespace>
     <FileVersion>0.1.9.0</FileVersion>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.ncrunchproject" />

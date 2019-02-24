@@ -11,19 +11,52 @@ namespace Mocklis.Core
     using System;
     using Mocklis.Properties;
 
-    #endregion
-
 #if NETSTANDARD2_0
     using System.Runtime.Serialization;
 
+#endif
+
+    #endregion
+
+    /// <summary>
+    ///     Exception class that indicates that a mocked member was accessed but didn't have (enough) behaviour configured to
+    ///     handle the access properly.
+    ///     Inherits from the <see cref="System.Exception" /> class.
+    /// </summary>
+    /// <seealso cref="System.Exception" />
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class MockMissingException : Exception
     {
+        /// <summary>
+        ///     Gets the 'mock type' of the mocked member.
+        /// </summary>
+        /// <value>The 'mock type' of the mocked member.</value>
         public MockType MemberType { get; }
+
+        /// <summary>
+        ///     Gets the name of the mocklis class.
+        /// </summary>
+        /// <value>The name of the mocklis class.</value>
         public string MocklisClassName { get; }
+
+        /// <summary>
+        ///     Gets the name of the interface on which the mocked member is defined.
+        /// </summary>
+        /// <value>The name of the interface on which the mocked member is defined.</value>
         public string InterfaceName { get; }
+
+        /// <summary>
+        ///     Gets the name of the mocked member.
+        /// </summary>
+        /// <value>The name of the mocked member.</value>
         public string MemberName { get; }
+
+        /// <summary>
+        ///     Gets the name of the property or method used to provide the mocked member with behaviour.
+        /// </summary>
+        /// <value>The name of the property or method used to provide the mocked member with behaviour.</value>
         public string MemberMockName { get; }
 
         private static string CreateMessage(MockType memberType, string mocklisClassName, string interfaceName, string memberName,
@@ -80,6 +113,11 @@ namespace Mocklis.Core
                 memberMockName ?? throw new ArgumentNullException(nameof(memberMockName)));
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MockMissingException" /> class with mock information.
+        /// </summary>
+        /// <param name="memberType">The 'mock type' of the mocked member.</param>
+        /// <param name="memberMock">Information about the mocked member.</param>
         public MockMissingException(MockType memberType, IMockInfo memberMock) : this(
             memberType,
             (memberMock ?? throw new ArgumentNullException(nameof(memberMock))).MocklisClassName,
@@ -89,6 +127,14 @@ namespace Mocklis.Core
         {
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MockMissingException" /> class with explicit mock information.
+        /// </summary>
+        /// <param name="memberType">The 'mock type' of the mocked member.</param>
+        /// <param name="mocklisClassName">The name of the mocklis class.</param>
+        /// <param name="interfaceName">The name of the interface on which the mocked member is defined.</param>
+        /// <param name="memberName">The name of the mocked member.</param>
+        /// <param name="memberMockName">The name of the property or method used to provide the mocked member with behaviour.</param>
         public MockMissingException(MockType memberType, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
             : base(CreateMessage(memberType, mocklisClassName, interfaceName, memberName, memberMockName))
         {
@@ -99,6 +145,13 @@ namespace Mocklis.Core
             MemberMockName = memberMockName;
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MockMissingException" /> class with mock information and a reference
+        ///     to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="memberType">The 'mock type' of the mocked member.</param>
+        /// <param name="memberMock">Information about the mocked member.</param>
+        /// <param name="innerException">The inner exception.</param>
         public MockMissingException(MockType memberType, IMockInfo memberMock, Exception innerException) : this(
             memberType,
             (memberMock ?? throw new ArgumentNullException(nameof(memberMock))).MocklisClassName,
@@ -109,6 +162,16 @@ namespace Mocklis.Core
         {
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MockMissingException" /> class with explicit mock information and a
+        ///     reference to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="memberType">The 'mock type' of the mocked member.</param>
+        /// <param name="mocklisClassName">The name of the mocklis class.</param>
+        /// <param name="interfaceName">The name of the interface on which the mocked member is defined.</param>
+        /// <param name="memberName">The name of the mocked member.</param>
+        /// <param name="memberMockName">The name of the property or method used to provide the mocked member with behaviour.</param>
+        /// <param name="innerException">The inner exception.</param>
         public MockMissingException(MockType memberType, string mocklisClassName, string interfaceName, string memberName, string memberMockName,
             Exception innerException)
             : base(CreateMessage(memberType, mocklisClassName, interfaceName, memberName, memberMockName), innerException)
@@ -121,6 +184,17 @@ namespace Mocklis.Core
         }
 
 #if NETSTANDARD2_0
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MockMissingException" /> class with serialized data.
+        /// </summary>
+        /// <param name="info">
+        ///     The <see cref="SerializationInfo" /> that holds the serialized object data about the exception being
+        ///     thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="StreamingContext" /> that contains contextual information about the source or
+        ///     destination.
+        /// </param>
         protected MockMissingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             MemberType = (MockType)info.GetInt32(nameof(MemberType));
@@ -130,6 +204,17 @@ namespace Mocklis.Core
             MemberMockName = info.GetString(nameof(MemberMockName));
         }
 
+        /// <summary>
+        ///     Sets the <see cref="SerializationInfo" /> with information abouet the exception.
+        /// </summary>
+        /// <param name="info">
+        ///     The <see cref="SerializationInfo" /> that holds the serialized object data about the exception being
+        ///     thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="StreamingContext" /> that contains contextual information about the source or
+        ///     destination.
+        /// </param>
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);

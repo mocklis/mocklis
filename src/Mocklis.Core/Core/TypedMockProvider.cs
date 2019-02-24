@@ -14,6 +14,9 @@ namespace Mocklis.Core
 
     #endregion
 
+    /// <summary>
+    ///     'Dictionary' of mocks for the same mocked method with different type parameters. This class cannot be inherited.
+    /// </summary>
     public sealed class TypedMockProvider
     {
         private sealed class TypeArrayComparer : IEqualityComparer<Type[]>
@@ -47,6 +50,13 @@ namespace Mocklis.Core
             return "<" + string.Join(",", types.Select(GetNameOfType)) + ">";
         }
 
+        /// <summary>
+        ///     Gets the existing mock for the given set of types, using the factory method to create one if it was not already
+        ///     created.
+        /// </summary>
+        /// <param name="types">The types used as type parameters for the mocked method.</param>
+        /// <param name="factory">A method that will be called to create the corresponding member mock.</param>
+        /// <returns>The newly or previously created member mock for the given set of type parameters.</returns>
         public MemberMock GetOrAdd(Type[] types, Func<string, MemberMock> factory)
         {
             if (types == null)

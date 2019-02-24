@@ -13,15 +13,37 @@ namespace Mocklis.Core
 
     #endregion
 
+    /// <summary>
+    ///     Class that represents a mock of an event of a give type. This class cannot be inherited.
+    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
+    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" /> interface.
+    /// </summary>
+    /// <typeparam name="THandler">The event handler type for the event.</typeparam>
+    /// <seealso cref="Mocklis.Core.MemberMock" />
+    /// <seealso cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" />
     public sealed class EventMock<THandler> : MemberMock, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
         private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="EventMock{THandler}" /> class.
+        /// </summary>
+        /// <param name="mockInstance">The instance of the mocklis class through with the mocked member is accessed.</param>
+        /// <param name="mocklisClassName">The name of the mocklis class.</param>
+        /// <param name="interfaceName">The name of the interface on which the mocked member is defined.</param>
+        /// <param name="memberName">The name of the mocked member.</param>
+        /// <param name="memberMockName">The name of the property or method used to provide the mocked member with behaviour.</param>
         public EventMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
             : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 
+        /// <summary>
+        ///     Replaces the current 'next' step with a new step.
+        /// </summary>
+        /// <typeparam name="TStep">The actual type of the new step.</typeparam>
+        /// <param name="step">The new step.</param>
+        /// <returns>The new step, so that we can add further steps in a fluent fashion.</returns>
         TStep ICanHaveNextEventStep<THandler>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
@@ -33,11 +55,27 @@ namespace Mocklis.Core
             return step;
         }
 
+        /// <summary>
+        ///     Adds an event handler to the mocked event.
+        /// </summary>
+        /// <remarks>
+        ///     This method is called when the event is called through a mocked interface, but can also be used to interact with
+        ///     the mock directly.
+        /// </remarks>
+        /// <param name="value">The event handler.</param>
         public void Add(THandler value)
         {
             _nextStep.Add(this, value);
         }
 
+        /// <summary>
+        ///     Removes an event handler from the mocked event.
+        /// </summary>
+        /// <remarks>
+        ///     This method is called when the event is called through a mocked interface, but can also be used to interact with
+        ///     the mock directly.
+        /// </remarks>
+        /// <param name="value">The event handler.</param>
         public void Remove(THandler value)
         {
             _nextStep.Remove(this, value);

@@ -7,14 +7,14 @@
 namespace Mocklis.Core
 {
     /// <summary>
-    ///     Interface that models the mock through which a mocked member is accessed.
+    ///     Interface that provides information about a mock member that is accessed.
     /// </summary>
     public interface IMockInfo
     {
         /// <summary>
-        ///     Gets the instance of the mocklis class.
+        ///     Gets the instance of the mocklis class through with the mocked member is accessed.
         /// </summary>
-        /// <value>The instance of the mocklis class.</value>
+        /// <value>The instance of the mocklis class through with the mocked member is accessed.</value>
         object MockInstance { get; }
 
         /// <summary>
@@ -24,21 +24,21 @@ namespace Mocklis.Core
         string MocklisClassName { get; }
 
         /// <summary>
-        ///     Gets the name of the interface on which the accessed member is defined.
+        ///     Gets the name of the interface on which the mocked member is defined.
         /// </summary>
-        /// <value>The name of the interface on which the accessed member is defined.</value>
+        /// <value>The name of the interface on which the mocked member is defined.</value>
         string InterfaceName { get; }
 
         /// <summary>
-        ///     Gets the name of the accessed member.
+        ///     Gets the name of the mocked member.
         /// </summary>
-        /// <value>The name of the accessed member.</value>
+        /// <value>The name of the mocked member.</value>
         string MemberName { get; }
 
         /// <summary>
-        ///     Gets the name of the property or method used to provide the mock with behaviour for this member.
+        ///     Gets the name of the property or method used to provide the mocked member with behaviour.
         /// </summary>
-        /// <value>The name of the property or method used to provide the mock with behaviour for this member.</value>
+        /// <value>The name of the property or method used to provide the mocked member with behaviour.</value>
         string MemberMockName { get; }
     }
 }

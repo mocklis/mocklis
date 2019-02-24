@@ -13,16 +13,39 @@ namespace Mocklis.Core
 
     #endregion
 
+    /// <summary>
+    ///     Abstract class that represents a mock of a method of a given type.
+    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
+    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" /> interface.
+    /// </summary>
+    /// <typeparam name="TParam">The method parameter type.</typeparam>
+    /// <typeparam name="TResult">The method return type.</typeparam>
+    /// <seealso cref="Mocklis.Core.MemberMock" />
+    /// <seealso cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" />
     public abstract class MethodMockBase<TParam, TResult> : MemberMock, ICanHaveNextMethodStep<TParam, TResult>
     {
         private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MethodMockBase{TParam, TResult}" /> class.
+        /// </summary>
+        /// <param name="mockInstance">The instance of the mocklis class through with the mocked member is accessed.</param>
+        /// <param name="mocklisClassName">The name of the mocklis class.</param>
+        /// <param name="interfaceName">The name of the interface on which the mocked member is defined.</param>
+        /// <param name="memberName">The name of the mocked member.</param>
+        /// <param name="memberMockName">The name of the property or method used to provide the mocked member with behaviour.</param>
         protected internal MethodMockBase(object mockInstance, string mocklisClassName, string interfaceName, string memberName,
             string memberMockName)
             : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
         {
         }
 
+        /// <summary>
+        ///     Replaces the current 'next' step with a new step.
+        /// </summary>
+        /// <typeparam name="TStep">The actual type of the new step.</typeparam>
+        /// <param name="step">The new step.</param>
+        /// <returns>The new step, so that we can add further steps in a fluent fashion.</returns>
         TStep ICanHaveNextMethodStep<TParam, TResult>.SetNextStep<TStep>(TStep step)
         {
             if (step == null)
@@ -34,6 +57,15 @@ namespace Mocklis.Core
             return step;
         }
 
+        /// <summary>
+        ///     Calls the mocked method.
+        /// </summary>
+        /// <remarks>
+        ///     This method is called when the method is called through a mocked interface, but can also be used to interact with
+        ///     the mock directly.
+        /// </remarks>
+        /// <param name="param">The parameters used.</param>
+        /// <returns>The returned result.</returns>
         protected TResult Call(TParam param)
         {
             return _nextStep.Call(this, param);
