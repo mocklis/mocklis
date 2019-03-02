@@ -14,15 +14,31 @@ namespace Mocklis
 
     #endregion
 
+    /// <summary>
+    ///     A class with extension methods for adding 'throw' steps to an existing mock or step.
+    /// </summary>
     public static class ThrowStepExtensions
     {
+        /// <summary>
+        ///     Introduces a step that will throw an exception whenever an event handler is added or removed.
+        /// </summary>
+        /// <typeparam name="THandler">The event handler type for the event.</typeparam>
+        /// <param name="caller">The mock or step to which this 'throw' step is added.</param>
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the event handler as parameter.</param>
         public static void Throw<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<Exception> exceptionFactory) where THandler : Delegate
+            Func<THandler, Exception> exceptionFactory) where THandler : Delegate
         {
             caller.SetNextStep(new ThrowEventStep<THandler>(exceptionFactory));
         }
 
+        /// <summary>
+        ///     Introduces a step that will throw an exception whenever a value is written to or read from the indexer.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the indexer key.</typeparam>
+        /// <typeparam name="TValue">The type of the indexer value.</typeparam>
+        /// <param name="caller">The mock or step to which this 'throw' step is added.</param>
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the indexer key as parameter.</param>
         public static void Throw<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
             Func<TKey, Exception> exceptionFactory)
@@ -30,6 +46,12 @@ namespace Mocklis
             caller.SetNextStep(new ThrowIndexerStep<TKey, TValue>(exceptionFactory));
         }
 
+        /// <summary>
+        ///     Introduces a step that will throw an exception whenever the method is called.
+        /// </summary>
+        /// <typeparam name="TResult">The method return type.</typeparam>
+        /// <param name="caller">The mock or step to which this 'throw' step is added.</param>
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown.</param>
         public static void Throw<TResult>(
             this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
             Func<Exception> exceptionFactory)
@@ -37,6 +59,16 @@ namespace Mocklis
             caller.SetNextStep(new ThrowMethodStep<TResult>(exceptionFactory));
         }
 
+        /// <summary>
+        ///     Introduces a step that will throw an exception whenever the method is called.
+        /// </summary>
+        /// <typeparam name="TParam">The method parameter type.</typeparam>
+        /// <typeparam name="TResult">The method return type.</typeparam>
+        /// <param name="caller">The mock or step to which this 'throw' step is added.</param>
+        /// <param name="exceptionFactory">
+        ///     A Func that creates the exception to be thrown. Takes the parameters sent to the method
+        ///     as parameter.
+        /// </param>
         public static void Throw<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             Func<TParam, Exception> exceptionFactory)
@@ -44,6 +76,12 @@ namespace Mocklis
             caller.SetNextStep(new ThrowMethodStep<TParam, TResult>(exceptionFactory));
         }
 
+        /// <summary>
+        ///     Introduces a step that will throw an exception whenever a value is written to or read from the property.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the property.</typeparam>
+        /// <param name="caller">The mock or step to which this 'throw' step is added.</param>
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown.</param>
         public static void Throw<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
             Func<Exception> exceptionFactory)

@@ -15,21 +15,21 @@ namespace Mocklis.Steps.Throw
 
     public class ThrowEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
-        private readonly Func<Exception> _exceptionFactory;
+        private readonly Func<THandler, Exception> _exceptionFactory;
 
-        public ThrowEventStep(Func<Exception> exceptionFactory)
+        public ThrowEventStep(Func<THandler, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
 
         public void Add(IMockInfo mockInfo, THandler value)
         {
-            throw _exceptionFactory();
+            throw _exceptionFactory(value);
         }
 
         public void Remove(IMockInfo mockInfo, THandler value)
         {
-            throw _exceptionFactory();
+            throw _exceptionFactory(value);
         }
     }
 }
