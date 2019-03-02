@@ -12,8 +12,15 @@ namespace Mocklis.Verification
 
     #endregion
 
+    /// <summary>
+    ///     Interface that provides access to stored event handler for a 'stored' event step.
+    /// </summary>
+    /// <typeparam name="THandler">The event handler type for the event.</typeparam>
     public interface IStoredEvent<out THandler> where THandler : Delegate
     {
+        /// <summary>
+        ///     Gets the currently stored event handler.
+        /// </summary>
         THandler EventHandler { get; }
     }
 }

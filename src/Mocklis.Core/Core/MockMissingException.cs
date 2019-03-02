@@ -10,10 +10,8 @@ namespace Mocklis.Core
 
     using System;
     using Mocklis.Properties;
-
 #if NETSTANDARD2_0
     using System.Runtime.Serialization;
-
 #endif
 
     #endregion
@@ -21,9 +19,9 @@ namespace Mocklis.Core
     /// <summary>
     ///     Exception class that indicates that a mocked member was accessed but didn't have (enough) behaviour configured to
     ///     handle the access properly.
-    ///     Inherits from the <see cref="System.Exception" /> class.
+    ///     Inherits from the <see cref="Exception" /> class.
     /// </summary>
-    /// <seealso cref="System.Exception" />
+    /// <seealso cref="Exception" />
 #if NETSTANDARD2_0
     [Serializable]
 #endif

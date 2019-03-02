@@ -14,6 +14,12 @@ namespace Mocklis.Verification.Checks
 
     #endregion
 
+    /// <summary>
+    ///     Check that verifies that the current value in a property store is the expected value.
+    ///     Implements the <see cref="Mocklis.Verification.IVerifiable" /> interface.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the property.</typeparam>
+    /// <seealso cref="Mocklis.Verification.IVerifiable" />
     public class CurrentValuePropertyCheck<TValue> : IVerifiable
     {
         private readonly string _name;
@@ -21,6 +27,13 @@ namespace Mocklis.Verification.Checks
         private readonly TValue _expectedValue;
         private readonly IEqualityComparer<TValue> _comparer;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CurrentValuePropertyCheck{TValue}" /> class.
+        /// </summary>
+        /// <param name="property">The property store to check.</param>
+        /// <param name="name">A name that can be used to identify the check in its verification group.</param>
+        /// <param name="expectedValue">The expected value.</param>
+        /// <param name="comparer">Optional parameter with a comparer used to verify that the values are equal.</param>
         public CurrentValuePropertyCheck(IStoredProperty<TValue> property, string name, TValue expectedValue,
             IEqualityComparer<TValue> comparer = null)
         {
@@ -30,6 +43,13 @@ namespace Mocklis.Verification.Checks
             _comparer = comparer ?? EqualityComparer<TValue>.Default;
         }
 
+        /// <summary>
+        ///     Checks that the current and expected values match and returns an <see cref="VerificationResult" />.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
+        ///     were successful.
+        /// </returns>
         public IEnumerable<VerificationResult> Verify()
         {
             string prefix = string.IsNullOrEmpty(_name) ? "Value check" : Invariant($"Value check '{_name}'");

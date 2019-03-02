@@ -60,7 +60,7 @@ namespace Mocklis.Core
         }
 
         /// <summary>
-        ///     Called when an event handler is being removed to the mocked event.
+        ///     Called when an event handler is being removed from the mocked event.
         ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward the removes on to
         ///     the next step.
         /// </summary>
