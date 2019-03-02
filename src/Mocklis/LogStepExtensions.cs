@@ -14,6 +14,9 @@ namespace Mocklis
 
     #endregion
 
+    /// <summary>
+    ///     A class with extension methods for adding 'log' steps to an existing mock or step.
+    /// </summary>
     public static class LogStepExtensions
     {
         /// <summary>
