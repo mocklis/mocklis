@@ -18,12 +18,32 @@ namespace Mocklis.Steps.Conditional
 
     #endregion
 
+    /// <summary>
+    ///     Base class for conditional property steps with an alternative branch and the ability to
+    ///     rejoin the normal branch from the alternative branch.
+    ///     Inherits from the <see cref="PropertyStepWithNext{TValue}" /> class.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the property.</typeparam>
+    /// <seealso cref="PropertyStepWithNext{TValue}" />
     public abstract class IfPropertyStepBase<TValue> : PropertyStepWithNext<TValue>
     {
+        /// <summary>
+        ///     Starting point for the alternative path of a conditional property step. This class cannot be inherited.
+        ///     Implements the <see cref="Mocklis.Core.IPropertyStep{TValue}" /> interface.
+        ///     Implements the <see cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" /> interface.
+        /// </summary>
+        /// <seealso cref="Mocklis.Core.IPropertyStep{TValue}" />
+        /// <seealso cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" />
         public sealed class IfBranchCaller : IPropertyStep<TValue>, ICanHaveNextPropertyStep<TValue>
         {
             private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
 
+            /// <summary>
+            ///     Replaces the current 'next' step with a new step.
+            /// </summary>
+            /// <typeparam name="TStep">The actual type of the new step.</typeparam>
+            /// <param name="step">The new step.</param>
+            /// <returns>The new step, so that we can add further steps in a fluent fashion.</returns>
             TStep ICanHaveNextPropertyStep<TValue>.SetNextStep<TStep>(TStep step)
             {
                 if (step == null)
@@ -35,18 +55,35 @@ namespace Mocklis.Steps.Conditional
                 return step;
             }
 
+            /// <summary>
+            ///     Called when a value is read from the property.
+            /// </summary>
+            /// <param name="mockInfo">Information about the mock through which the value is read.</param>
+            /// <returns>The value being read.</returns>
             TValue IPropertyStep<TValue>.Get(IMockInfo mockInfo)
             {
                 return _nextStep.Get(mockInfo);
             }
 
+            /// <summary>
+            ///     Called when a value is written to the property.
+            /// </summary>
+            /// <param name="mockInfo">Information about the mock through which the value is written.</param>
+            /// <param name="value">The value being written.</param>
             void IPropertyStep<TValue>.Set(IMockInfo mockInfo, TValue value)
             {
                 _nextStep.Set(mockInfo, value);
             }
 
+            /// <summary>
+            ///     Gets a step that can be used to rejain the normal ('else') branch.
+            /// </summary>
             public IPropertyStep<TValue> ElseBranch { get; }
 
+            /// <summary>
+            ///     Initializes a new instance of the <see cref="IfBranchCaller" /> class.
+            /// </summary>
+            /// <param name="ifPropertyStep">The if step whose 'default' set of steps will constitute 'else' branch.</param>
             public IfBranchCaller(IfPropertyStepBase<TValue> ifPropertyStep)
             {
                 ElseBranch = new ElseBranchRejoiner(ifPropertyStep);
@@ -75,8 +112,18 @@ namespace Mocklis.Steps.Conditional
             }
         }
 
+        /// <summary>
+        ///     Gets the alternative branch.
+        /// </summary>
         protected IPropertyStep<TValue> IfBranch { get; }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="IfPropertyStepBase{TValue}" /> class.
+        /// </summary>
+        /// <param name="branch">
+        ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
+        ///     branch.
+        /// </param>
         protected IfPropertyStepBase(Action<IfBranchCaller> branch)
         {
             var ifBranch = new IfBranchCaller(this);
