@@ -15,12 +15,29 @@ namespace Mocklis.Steps.Stored
 
     #endregion
 
+    /// <summary>
+    ///     Class that represents a 'Stored' event step. It tracks event handlers exactly as a normal event would, combining
+    ///     and removing delegates as needed.
+    ///     Implements the <see cref="IEventStep{THandler}" /> interface.
+    ///     Implements the <see cref="IStoredEvent{THandler}" /> interface.
+    /// </summary>
+    /// <typeparam name="THandler">The event handler type for the event.</typeparam>
+    /// <seealso cref="IEventStep{THandler}" />
+    /// <seealso cref="IStoredEvent{THandler}" />
     public class StoredEventStep<THandler> : IEventStep<THandler>, IStoredEvent<THandler> where THandler : Delegate
     {
         private THandler _eventHandler;
 
+        /// <summary>
+        ///     Gets the currently stored event handler.
+        /// </summary>
         public THandler EventHandler => _eventHandler;
 
+        /// <summary>
+        ///     Called when an event handler is being added to the mocked event.
+        /// </summary>
+        /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
+        /// <param name="value">The event handler that is being added.</param>
         void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value)
         {
             THandler previousHandler;
@@ -34,6 +51,11 @@ namespace Mocklis.Steps.Stored
             while (eventHandler != previousHandler);
         }
 
+        /// <summary>
+        ///     Called when an event handler is being removed to the mocked event.
+        /// </summary>
+        /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
+        /// <param name="value">The event handler that is being removed.</param>
         void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value)
         {
             THandler previousHandler;

@@ -19,7 +19,7 @@ namespace Mocklis.Steps.Record
     ///     Base class for steps that track adding or removing event handlers to a mocked event. It also acts as a ledger of
     ///     recorded information.
     ///     Inherits from the <see cref="EventStepWithNext{THandler}" /> class.
-    ///     Implements the <see cref="IReadOnlyList{TRecord}" /> interface.
+    ///     Implements the <see cref="IReadOnlyList{T}" /> interface.
     /// </summary>
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
     /// <typeparam name="TRecord">The type of data recorded in the ledger.</typeparam>

@@ -18,7 +18,7 @@ namespace Mocklis.Steps.Record
     ///     Base class for steps that track adding or removing event handlers to a mocked property. It also acts as a ledger of
     ///     recorded information.
     ///     Implements the <see cref="PropertyStepWithNext{TValue}" />
-    ///     Implements the <see cref="IReadOnlyList{TRecord}" />
+    ///     Implements the <see cref="IReadOnlyList{T}" />
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
     /// <typeparam name="TRecord">The type of data recorded in the ledger.</typeparam>

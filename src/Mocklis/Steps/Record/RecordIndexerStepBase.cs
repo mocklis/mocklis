@@ -18,7 +18,7 @@ namespace Mocklis.Steps.Record
     ///     Base class for steps that track reading from and writing to a mocked indexer. It also acts as a ledger of recorded
     ///     information.
     ///     Inherits from the <see cref="IndexerStepWithNext{TKey,TValue}" /> class
-    ///     Implements the <see cref="IReadOnlyList{TRecord}" /> interface.
+    ///     Implements the <see cref="IReadOnlyList{T}" /> interface.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
