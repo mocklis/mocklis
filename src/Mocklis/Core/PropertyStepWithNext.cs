@@ -49,7 +49,7 @@ namespace Mocklis.Core
 
         /// <summary>
         ///     Called when a value is read from the property.
-        ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward the reads on to the
+        ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward the reads on to the
         ///     next step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
@@ -61,7 +61,7 @@ namespace Mocklis.Core
 
         /// <summary>
         ///     Called when a value is written to the property.
-        ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward the reads on to the
+        ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward the reads on to the
         ///     next step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is written.</param>

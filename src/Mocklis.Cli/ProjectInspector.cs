@@ -91,7 +91,7 @@ namespace Mocklis.Cli
             var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
             var symbols = new MocklisSymbols(compilation);
 
-            // If we don't reference the right assemly, we could bail early.
+            // If we don't reference the right assembly, we could bail early.
             if (symbols.MocklisClassAttribute == null)
             {
                 return project;

@@ -16,7 +16,7 @@ namespace Mocklis.Steps.Conditional
     /// <summary>
     ///     Event step with alternative branch, where the alternative branch will be taken when event handlers are added,
     ///     and the normal branch when they are removed.
-    ///     Inherits from the <see cref="Mocklis.Steps.Conditional.IfEventStepBase{THandler}" /> classe
+    ///     Inherits from the <see cref="Mocklis.Steps.Conditional.IfEventStepBase{THandler}" /> class.
     /// </summary>
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
     /// <seealso cref="Mocklis.Steps.Conditional.IfEventStepBase{THandler}" />

@@ -128,7 +128,7 @@ namespace Mocklis.Steps.Log
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
-        /// <param name="param">The parameters passaed to the method.</param>
+        /// <param name="param">The parameters passed to the method.</param>
         void LogBeforeMethodCallWithParameters<TParam>(IMockInfo mockInfo, TParam param);
 
         /// <summary>

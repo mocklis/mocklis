@@ -49,7 +49,7 @@ namespace Mocklis.Core
 
         /// <summary>
         ///     Called when an event handler is being added to the mocked event.
-        ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward the adds on to the
+        ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward the adds on to the
         ///     next step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
@@ -61,7 +61,7 @@ namespace Mocklis.Core
 
         /// <summary>
         ///     Called when an event handler is being removed from the mocked event.
-        ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward the removes on to
+        ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward the removes on to
         ///     the next step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>

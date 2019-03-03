@@ -13,7 +13,7 @@ namespace Mocklis.Core
     #endregion
 
     /// <summary>
-    ///     Class that reperesents a mock of a method that takes parameters and returns a result. This class cannot be
+    ///     Class that represents a mock of a method that takes parameters and returns a result. This class cannot be
     ///     inherited.
     ///     Inherits from the <see cref="Mocklis.Core.MethodMockBase{TParam, TResult}" /> class.
     /// </summary>
@@ -51,7 +51,7 @@ namespace Mocklis.Core
     }
 
     /// <summary>
-    ///     Class that reperesents a mock of a method that doesn't take parameters but returns a result. This class cannot be
+    ///     Class that represents a mock of a method that doesn't take parameters but returns a result. This class cannot be
     ///     inherited.
     ///     Inherits from the <see cref="Mocklis.Core.MethodMockBase{ValueTuple, TResult}" /> class.
     /// </summary>

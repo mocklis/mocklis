@@ -50,7 +50,8 @@ namespace Mocklis.Core
 
         /// <summary>
         ///     Called when the mocked method is called.
-        ///     Can be overriden to provide a bespoke behaviour in a step. The default behaviour is to forward calls on to the next
+        ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward calls on to the
+        ///     next
         ///     step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>

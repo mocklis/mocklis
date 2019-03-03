@@ -16,7 +16,7 @@ namespace Mocklis
     #endregion
 
     /// <summary>
-    ///     A clall with extension methods for adding 'record' steps to an existing mock or step.
+    ///     A class with extension methods for adding 'record' steps to an existing mock or step.
     /// </summary>
     public static class RecordStepExtensions
     {
@@ -24,7 +24,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before an event handler is added.
         /// </summary>
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -46,7 +46,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before an event handler is removed.
         /// </summary>
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -68,7 +68,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before an event handler is added.
         /// </summary>
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">A Func that selects what we want to record. Takes the event as parameter.</param>
@@ -87,7 +87,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before an event handler is removed.
         /// </summary>
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">A Func that selects what we want to record. Takes the event as parameter.</param>
@@ -107,7 +107,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TKey">The type of the indexer key.</typeparam>
         /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -135,7 +135,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TKey">The type of the indexer key.</typeparam>
         /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -159,7 +159,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TKey">The type of the indexer key.</typeparam>
         /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -187,7 +187,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TKey">The type of the indexer key.</typeparam>
         /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -210,7 +210,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -238,7 +238,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -261,7 +261,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -289,7 +289,7 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -312,7 +312,7 @@ namespace Mocklis
         ///     exceptions.
         /// </summary>
         /// <typeparam name="TValue">The type of the property.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -339,7 +339,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before a value as been written to the property.
         /// </summary>
         /// <typeparam name="TValue">The type of the property.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">
@@ -362,7 +362,7 @@ namespace Mocklis
         ///     exceptions.
         /// </summary>
         /// <typeparam name="TValue">The type of the property.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">A Func that selects what we want to record. Takes the read value as parameter.</param>
@@ -386,7 +386,7 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before a value as been written to the property.
         /// </summary>
         /// <typeparam name="TValue">The type of the property.</typeparam>
-        /// <typeparam name="TRecord">The type of the entries that will be recorded in the legder.</typeparam>
+        /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
         /// <param name="selection">A Func that selects what we want to record. Takes the value to be written as parameter.</param>

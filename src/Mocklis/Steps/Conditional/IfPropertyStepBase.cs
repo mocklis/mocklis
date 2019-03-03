@@ -76,7 +76,7 @@ namespace Mocklis.Steps.Conditional
             }
 
             /// <summary>
-            ///     Gets a step that can be used to rejain the normal ('else') branch.
+            ///     Gets a step that can be used to rejoin the normal ('else') branch.
             /// </summary>
             public IPropertyStep<TValue> ElseBranch { get; }
 

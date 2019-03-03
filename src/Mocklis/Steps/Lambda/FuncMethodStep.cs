@@ -66,7 +66,7 @@ namespace Mocklis.Steps.Lambda
         }
 
         /// <summary>
-        ///     Called when the mocked method is called. This implementation calls the function and returs the result.
+        ///     Called when the mocked method is called. This implementation calls the function and returns the result.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>

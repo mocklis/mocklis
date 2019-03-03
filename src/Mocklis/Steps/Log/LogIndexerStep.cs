@@ -35,7 +35,7 @@ namespace Mocklis.Steps.Log
 
         /// <summary>
         ///     Called when a value is read from the indexer.
-        ///     This implementation logs befor and after the value has been read, along with any exceptions thrown.
+        ///     This implementation logs before and after the value has been read, along with any exceptions thrown.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>
@@ -60,7 +60,7 @@ namespace Mocklis.Steps.Log
 
         /// <summary>
         ///     Called when a value is written to the indexer.
-        ///     This implementation logs befor and after the value has been written, along with any exceptions thrown.
+        ///     This implementation logs before and after the value has been written, along with any exceptions thrown.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is written.</param>
         /// <param name="key">The indexer key used.</param>

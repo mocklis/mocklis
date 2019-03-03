@@ -16,7 +16,7 @@ namespace Mocklis.Verification.Steps
 
     /// <summary>
     ///     Indexer step that counts the number of times values have been read from and written to the indexer, and can verify
-    ///     these agains given expeceted number of reads and writes. This class cannot be inherited.
+    ///     these against given expected number of reads and writes. This class cannot be inherited.
     ///     Inherits from the <see cref="IndexerStepWithNext{TKey,TValue}" /> class.
     ///     Implements the <see cref="IVerifiable" /> interface.
     /// </summary>

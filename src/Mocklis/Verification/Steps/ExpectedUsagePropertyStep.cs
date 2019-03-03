@@ -17,7 +17,7 @@ namespace Mocklis.Verification.Steps
     /// <summary>
     ///     Property step that counts the number of times values have been read from and written to the property, and can
     ///     verify
-    ///     these agains given expeceted number of reads and writes. This class cannot be inherited.
+    ///     these against given expected number of reads and writes. This class cannot be inherited.
     ///     Implements the <see cref="PropertyStepWithNext{TValue}" />
     ///     Implements the <see cref="IVerifiable" />
     /// </summary>

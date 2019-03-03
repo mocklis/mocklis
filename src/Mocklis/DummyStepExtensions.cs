@@ -43,7 +43,7 @@ namespace Mocklis
         }
 
         /// <summary>
-        ///     Introduces a step that will ignore parameter values and just return defalt return values when called.
+        ///     Introduces a step that will ignore parameter values and just return default return values when called.
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>

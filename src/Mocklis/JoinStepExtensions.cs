@@ -51,7 +51,7 @@ namespace Mocklis
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
         /// <param name="caller">The mock or step to which this 'join' step is added.</param>
-        /// <param name="joinPoint">The step to wich method execution will be forwarded.</param>
+        /// <param name="joinPoint">The step to which method execution will be forwarded.</param>
         public static void Join<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             IMethodStep<TParam, TResult> joinPoint)

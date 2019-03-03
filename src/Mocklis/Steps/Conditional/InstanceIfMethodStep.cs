@@ -42,7 +42,7 @@ namespace Mocklis.Steps.Conditional
 
         /// <summary>
         ///     Called when the mocked method is called.
-        ///     This implementation will select the aternative branch if the condition evaluates to <c>true</c>.
+        ///     This implementation will select the alternative branch if the condition evaluates to <c>true</c>.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>
@@ -88,7 +88,7 @@ namespace Mocklis.Steps.Conditional
 
         /// <summary>
         ///     Called when the mocked method is called.
-        ///     This implementation will select the aternative branch if the condition evaluates to <c>true</c>.
+        ///     This implementation will select the alternative branch if the condition evaluates to <c>true</c>.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>

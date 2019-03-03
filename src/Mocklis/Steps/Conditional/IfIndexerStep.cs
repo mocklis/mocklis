@@ -46,7 +46,7 @@ namespace Mocklis.Steps.Conditional
 
         /// <summary>
         ///     Called when a value is read from the indexer.
-        ///     This implementation will select the aternative branch if the get condition evaluates to <c>true</c>.
+        ///     This implementation will select the alternative branch if the get condition evaluates to <c>true</c>.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>

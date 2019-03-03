@@ -14,7 +14,7 @@ namespace Mocklis.Core
     #endregion
 
     /// <summary>
-    ///     Class that reperesents a mock of a property of a given type. This class cannot be inherited.
+    ///     Class that represents a mock of a property of a given type. This class cannot be inherited.
     ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
     ///     Implements the <see cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" /> interface.
     /// </summary>
