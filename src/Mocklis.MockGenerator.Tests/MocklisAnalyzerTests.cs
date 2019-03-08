@@ -63,12 +63,12 @@ namespace Mocklis.MockGenerator.Tests
 
             // Uncomment to create expected value for regression purposes
 #if !NCRUNCH
-            if (expected == null || expected != result.Code)
-            {
-                string newPath = Path.Combine(TestCaseFolder, "..", "..", "..", "..", "TestCases", testCase + ".Expected.cs");
-                File.WriteAllText(newPath, result.Code);
-                expected = result.Code;
-            }
+            // if (expected == null || expected != result.Code)
+            // {
+            //    string newPath = Path.Combine(TestCaseFolder, "..", "..", "..", "..", "TestCases", testCase + ".Expected.cs");
+            //    File.WriteAllText(newPath, result.Code);
+            //    expected = result.Code;
+            // }
 #endif
 
             if (result.IsSuccess)
