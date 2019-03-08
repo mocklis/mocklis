@@ -15,12 +15,12 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Class that represents a mock of an event of a give type. This class cannot be inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" /> interface.
+    ///     Inherits from the <see cref="MemberMock" /> class.
+    ///     Implements the <see cref="ICanHaveNextEventStep{THandler}" /> interface.
     /// </summary>
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-    /// <seealso cref="Mocklis.Core.MemberMock" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" />
+    /// <seealso cref="MemberMock" />
+    /// <seealso cref="ICanHaveNextEventStep{THandler}" />
     public sealed class EventMock<THandler> : MemberMock, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
         private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;

@@ -17,10 +17,10 @@ namespace Mocklis.Steps.Conditional
     ///     Event step with an alternative set of steps that can be chosen given the provided conditions, where the conditions
     ///     can
     ///     depend on the state of the entire mock instance.
-    ///     Inherits from the <see cref="Conditional.IfEventStepBase{THandler}" /> class.
+    ///     Inherits from the <see cref="IfEventStepBase{THandler}" /> class.
     /// </summary>
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-    /// <seealso cref="Conditional.IfEventStepBase{THandler}" />
+    /// <seealso cref="IfEventStepBase{THandler}" />
     public class InstanceIfEventStep<THandler> : IfEventStepBase<THandler> where THandler : Delegate
     {
         private readonly Func<object, THandler, bool> _addCondition;

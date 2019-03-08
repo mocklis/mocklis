@@ -15,11 +15,11 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that represents a mock of a method that takes parameters and returns a result. This class cannot be
     ///     inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MethodMockBase{TParam, TResult}" /> class.
+    ///     Inherits from the <see cref="MethodMockBase{TParam, TResult}" /> class.
     /// </summary>
     /// <typeparam name="TParam">The method parameter type.</typeparam>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Mocklis.Core.MethodMockBase{TParam, TResult}" />
+    /// <seealso cref="MethodMockBase{TParam, TResult}" />
     public sealed class FuncMethodMock<TParam, TResult> : MethodMockBase<TParam, TResult>
     {
         /// <summary>
@@ -53,10 +53,10 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that represents a mock of a method that doesn't take parameters but returns a result. This class cannot be
     ///     inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MethodMockBase{ValueTuple, TResult}" /> class.
+    ///     Inherits from the <see cref="MethodMockBase{ValueTuple, TResult}" /> class.
     /// </summary>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Mocklis.Core.MethodMockBase{ValueTuple, TResult}" />
+    /// <seealso cref="MethodMockBase{ValueTuple, TResult}" />
     public sealed class FuncMethodMock<TResult> : MethodMockBase<ValueTuple, TResult>
     {
         /// <summary>

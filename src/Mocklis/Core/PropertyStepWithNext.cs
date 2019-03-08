@@ -16,12 +16,12 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that models a property step that can forward calls on to a next step. It is a common base class for
     ///     implementing new steps.
-    ///     Implements the <see cref="Mocklis.Core.IPropertyStep{TValue}" /> interface.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" /> interface.
+    ///     Implements the <see cref="IPropertyStep{TValue}" /> interface.
+    ///     Implements the <see cref="ICanHaveNextPropertyStep{TValue}" /> interface.
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    /// <seealso cref="Mocklis.Core.IPropertyStep{TValue}" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" />
+    /// <seealso cref="IPropertyStep{TValue}" />
+    /// <seealso cref="ICanHaveNextPropertyStep{TValue}" />
     public class PropertyStepWithNext<TValue> : IPropertyStep<TValue>, ICanHaveNextPropertyStep<TValue>
     {
         /// <summary>

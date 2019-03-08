@@ -15,10 +15,10 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that represents a mock of a method that takes parameters but doesn't return a result. This class cannot be
     ///     inherited.
-    ///     Implements the <see cref="Mocklis.Core.MethodMockBase{TParam, ValueTuple}" />
+    ///     Implements the <see cref="MethodMockBase{TParam, ValueTuple}" />
     /// </summary>
     /// <typeparam name="TParam">The method parameter type.</typeparam>
-    /// <seealso cref="Mocklis.Core.MethodMockBase{TParam, ValueTuple}" />
+    /// <seealso cref="MethodMockBase{TParam, ValueTuple}" />
     public sealed class ActionMethodMock<TParam> : MethodMockBase<TParam, ValueTuple>
     {
         /// <summary>
@@ -51,9 +51,9 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that represents a mock of a method that doesn't take parameters and also doesn't return a result. This class
     ///     cannot be inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MethodMockBase{ValueTuple, ValueTuple}" /> class.
+    ///     Inherits from the <see cref="MethodMockBase{ValueTuple, ValueTuple}" /> class.
     /// </summary>
-    /// <seealso cref="Mocklis.Core.MethodMockBase{ValueTuple, ValueTuple}" />
+    /// <seealso cref="MethodMockBase{ValueTuple, ValueTuple}" />
     public sealed class ActionMethodMock : MethodMockBase<ValueTuple, ValueTuple>
     {
         /// <summary>

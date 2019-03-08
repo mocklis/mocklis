@@ -15,10 +15,10 @@ namespace Mocklis.Steps.Conditional
 
     /// <summary>
     ///     Property step with an alternative set of steps that can be chosen given the provided conditions.
-    ///     Inherits from the <see cref="Mocklis.Steps.Conditional.IfPropertyStepBase{TValue}" /> class.
+    ///     Inherits from the <see cref="IfPropertyStepBase{TValue}" /> class.
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    /// <seealso cref="Mocklis.Steps.Conditional.IfPropertyStepBase{TValue}" />
+    /// <seealso cref="IfPropertyStepBase{TValue}" />
     public class IfPropertyStep<TValue> : IfPropertyStepBase<TValue>
     {
         private readonly Func<bool> _getCondition;

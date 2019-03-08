@@ -87,7 +87,7 @@ namespace Mocklis.Verification
         }
 
         /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance, recursing over any sub-verification nodes.
+        ///     Returns a <see cref="string" /> that represents this instance, recursing over any sub-verification nodes.
         /// </summary>
         public override string ToString()
         {
@@ -95,7 +95,7 @@ namespace Mocklis.Verification
         }
 
         /// <summary>
-        ///     Returns a <see cref="System.String" /> that represents this instance, recursing over any sub-verification nodes..
+        ///     Returns a <see cref="string" /> that represents this instance, recursing over any sub-verification nodes..
         /// </summary>
         /// <param name="includeSuccessfulVerifications">
         ///     A value indicating whether to include successful verifications in the

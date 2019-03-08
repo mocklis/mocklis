@@ -15,13 +15,13 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Abstract class that represents a mock of a method of a given type.
-    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" /> interface.
+    ///     Inherits from the <see cref="MemberMock" /> class.
+    ///     Implements the <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> interface.
     /// </summary>
     /// <typeparam name="TParam">The method parameter type.</typeparam>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Mocklis.Core.MemberMock" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" />
+    /// <seealso cref="MemberMock" />
+    /// <seealso cref="ICanHaveNextMethodStep{TParam, TResult}" />
     public abstract class MethodMockBase<TParam, TResult> : MemberMock, ICanHaveNextMethodStep<TParam, TResult>
     {
         private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;

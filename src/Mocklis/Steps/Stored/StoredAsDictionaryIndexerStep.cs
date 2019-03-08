@@ -21,15 +21,14 @@ namespace Mocklis.Steps.Stored
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// 3
-    /// <seealso cref="Mocklis.Core.IIndexerStep{TKey, TValue}" />
-    /// <seealso cref="Mocklis.Verification.IStoredIndexer{TKey, TValue}" />
+    /// <seealso cref="IIndexerStep{TKey, TValue}" />
+    /// <seealso cref="IStoredIndexer{TKey, TValue}" />
     public class StoredAsDictionaryIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>, IStoredIndexer<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
 
         /// <summary>
-        ///     Gets or sets the <see cref="TValue" /> with the specified key.
+        ///     Gets or sets the <typeparamref name="TValue" /> with the specified key.
         /// </summary>
         /// <param name="key">The key used.</param>
         /// <returns>the <typeparamref name="TValue" /> read or written.</returns>

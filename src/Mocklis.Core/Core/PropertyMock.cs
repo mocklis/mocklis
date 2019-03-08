@@ -15,12 +15,12 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Class that represents a mock of a property of a given type. This class cannot be inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" /> interface.
+    ///     Inherits from the <see cref="MemberMock" /> class.
+    ///     Implements the <see cref="ICanHaveNextPropertyStep{TValue}" /> interface.
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    /// <seealso cref="Mocklis.Core.MemberMock" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" />
+    /// <seealso cref="MemberMock" />
+    /// <seealso cref="ICanHaveNextPropertyStep{TValue}" />
     public sealed class PropertyMock<TValue> : MemberMock, ICanHaveNextPropertyStep<TValue>
     {
         private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;

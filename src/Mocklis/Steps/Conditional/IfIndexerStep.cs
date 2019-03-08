@@ -15,11 +15,11 @@ namespace Mocklis.Steps.Conditional
 
     /// <summary>
     ///     Indexer step with an alternative set of steps that can be chosen given the provided conditions.
-    ///     Inherits from the <see cref="Mocklis.Steps.Conditional.IfIndexerStepBase{TKey, TValue}" /> class.
+    ///     Inherits from the <see cref="IfIndexerStepBase{TKey, TValue}" /> class.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// <seealso cref="Mocklis.Steps.Conditional.IfIndexerStepBase{TKey, TValue}" />
+    /// <seealso cref="IfIndexerStepBase{TKey, TValue}" />
     public class IfIndexerStep<TKey, TValue> : IfIndexerStepBase<TKey, TValue>
     {
         private readonly Func<TKey, bool> _getCondition;

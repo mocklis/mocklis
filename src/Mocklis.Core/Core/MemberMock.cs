@@ -14,9 +14,9 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Abstract base class for all Mocklis mock classes.
-    ///     Implements the <see cref="Mocklis.Core.IMockInfo" /> interface.
+    ///     Implements the <see cref="IMockInfo" /> interface.
     /// </summary>
-    /// <seealso cref="Mocklis.Core.IMockInfo" />
+    /// <seealso cref="IMockInfo" />
     public abstract class MemberMock : IMockInfo
     {
         private readonly object _mockInstance;

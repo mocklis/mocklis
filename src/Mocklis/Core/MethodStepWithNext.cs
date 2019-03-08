@@ -16,13 +16,13 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that models a method step that can forward calls on to a next step. It is a common base class for
     ///     implementing new steps.
-    ///     Implements the <see cref="Mocklis.Core.IMethodStep{TParam, TResult}" /> interface.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" /> interface.
+    ///     Implements the <see cref="IMethodStep{TParam, TResult}" /> interface.
+    ///     Implements the <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> interface.
     /// </summary>
     /// <typeparam name="TParam">The method parameter type.</typeparam>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Mocklis.Core.IMethodStep{TParam, TResult}" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextMethodStep{TParam, TResult}" />
+    /// <seealso cref="IMethodStep{TParam, TResult}" />
+    /// <seealso cref="ICanHaveNextMethodStep{TParam, TResult}" />
     public class MethodStepWithNext<TParam, TResult> : IMethodStep<TParam, TResult>, ICanHaveNextMethodStep<TParam, TResult>
     {
         /// <summary>

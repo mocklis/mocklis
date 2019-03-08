@@ -29,11 +29,11 @@ namespace Mocklis.Steps.Conditional
     {
         /// <summary>
         ///     Starting point for the alternative path of a conditional property step. This class cannot be inherited.
-        ///     Implements the <see cref="Mocklis.Core.IPropertyStep{TValue}" /> interface.
-        ///     Implements the <see cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" /> interface.
+        ///     Implements the <see cref="IPropertyStep{TValue}" /> interface.
+        ///     Implements the <see cref="ICanHaveNextPropertyStep{TValue}" /> interface.
         /// </summary>
-        /// <seealso cref="Mocklis.Core.IPropertyStep{TValue}" />
-        /// <seealso cref="Mocklis.Core.ICanHaveNextPropertyStep{TValue}" />
+        /// <seealso cref="IPropertyStep{TValue}" />
+        /// <seealso cref="ICanHaveNextPropertyStep{TValue}" />
         public sealed class IfBranchCaller : IPropertyStep<TValue>, ICanHaveNextPropertyStep<TValue>
         {
             private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;

@@ -16,12 +16,12 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that models an event step that can forward calls on to a next step. It is a common base class for
     ///     implementing new steps.
-    ///     Implements the <see cref="Mocklis.Core.IEventStep{THandler}" /> interface.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" /> interface.
+    ///     Implements the <see cref="IEventStep{THandler}" /> interface.
+    ///     Implements the <see cref="ICanHaveNextEventStep{THandler}" /> interface.
     /// </summary>
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
-    /// <seealso cref="Mocklis.Core.IEventStep{THandler}" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextEventStep{THandler}" />
+    /// <seealso cref="IEventStep{THandler}" />
+    /// <seealso cref="ICanHaveNextEventStep{THandler}" />
     public class EventStepWithNext<THandler> : IEventStep<THandler>, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
         /// <summary>

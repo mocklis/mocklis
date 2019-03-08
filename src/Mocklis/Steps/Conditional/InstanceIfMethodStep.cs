@@ -15,10 +15,10 @@ namespace Mocklis.Steps.Conditional
 
     /// <summary>
     ///     Method step with an alternative set of steps that can be chosen given the provided conditions.
-    ///     Inherits from the <see cref="Conditional.IfMethodStepBase{ValueTuple, TResult}" />
+    ///     Inherits from the <see cref="IfMethodStepBase{ValueTuple, TResult}" />
     /// </summary>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Conditional.IfMethodStepBase{ValueTuple, TResult}" />
+    /// <seealso cref="IfMethodStepBase{ValueTuple, TResult}" />
     public class InstanceIfMethodStep<TResult> : IfMethodStepBase<ValueTuple, TResult>
     {
         private readonly Func<object, bool> _condition;
@@ -60,11 +60,11 @@ namespace Mocklis.Steps.Conditional
 
     /// <summary>
     ///     Method step with an alternative set of steps that can be chosen given the provided conditions.
-    ///     Inherits from the <see cref="Conditional.IfMethodStepBase{ValueTuple, TResult}" />
+    ///     Inherits from the <see cref="IfMethodStepBase{ValueTuple, TResult}" />
     /// </summary>
     /// <typeparam name="TParam">The method parameter type.</typeparam>
     /// <typeparam name="TResult">The method return type.</typeparam>
-    /// <seealso cref="Conditional.IfMethodStepBase{ValueTuple, TResult}" />
+    /// <seealso cref="IfMethodStepBase{ValueTuple, TResult}" />
     public class InstanceIfMethodStep<TParam, TResult> : IfMethodStepBase<TParam, TResult>
     {
         private readonly Func<object, TParam, bool> _condition;

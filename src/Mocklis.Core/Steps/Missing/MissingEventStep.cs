@@ -50,7 +50,7 @@ namespace Mocklis.Steps.Missing
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        /// <exception cref="Mocklis.Core.MockMissingException"></exception>
+        /// <exception cref="MockMissingException"></exception>
         public void Remove(IMockInfo mockInfo, THandler value)
         {
             throw new MockMissingException(MockType.EventRemove, mockInfo);

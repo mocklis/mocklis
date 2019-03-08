@@ -14,9 +14,9 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Attribute used to identify classes that Mocklis should autogenerate the code for. This class cannot be inherited.
-    ///     Inherits from the <see cref="System.Attribute" /> class.
+    ///     Inherits from the <see cref="Attribute" /> class.
     /// </summary>
-    /// <seealso cref="System.Attribute" />
+    /// <seealso cref="Attribute" />
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class MocklisClassAttribute : Attribute
     {

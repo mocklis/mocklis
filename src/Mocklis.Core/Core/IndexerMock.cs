@@ -15,13 +15,13 @@ namespace Mocklis.Core
 
     /// <summary>
     ///     Class that represents a mock of an indexer of a given type. This class cannot be inherited.
-    ///     Inherits from the <see cref="Mocklis.Core.MemberMock" /> class.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextIndexerStep{TKey, TValue}" /> interface.
+    ///     Inherits from the <see cref="MemberMock" /> class.
+    ///     Implements the <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> interface.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// <seealso cref="Mocklis.Core.MemberMock" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextIndexerStep{TKey, TValue}" />
+    /// <seealso cref="MemberMock" />
+    /// <seealso cref="ICanHaveNextIndexerStep{TKey, TValue}" />
     public sealed class IndexerMock<TKey, TValue> : MemberMock, ICanHaveNextIndexerStep<TKey, TValue>
     {
         private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;

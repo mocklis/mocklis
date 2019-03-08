@@ -16,11 +16,11 @@ namespace Mocklis.Steps.Conditional
     /// <summary>
     ///     Indexer step with alternative branch, where the alternative branch will be taken when a value is written to
     ///     the indexer, and the normal branch when a value is read.
-    ///     Inherits from the <see cref="Mocklis.Steps.Conditional.IfIndexerStepBase{TKey, TValue}" /> class.
+    ///     Inherits from the <see cref="IfIndexerStepBase{TKey, TValue}" /> class.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// <seealso cref="Mocklis.Steps.Conditional.IfIndexerStepBase{TKey, TValue}" />
+    /// <seealso cref="IfIndexerStepBase{TKey, TValue}" />
     public class IfSetIndexerStep<TKey, TValue> : IfIndexerStepBase<TKey, TValue>
     {
         /// <summary>

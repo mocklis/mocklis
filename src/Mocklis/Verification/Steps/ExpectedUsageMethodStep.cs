@@ -58,7 +58,7 @@ namespace Mocklis.Verification.Steps
         ///     Verifies that the method has been called the expected number of times.
         /// </summary>
         /// <returns>
-        ///     An <see cref="T:System.Collections.Generic.IEnumerable`1" /> with information about the verifications and
+        ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and
         ///     whether they were successful.
         /// </returns>
         public IEnumerable<VerificationResult> Verify()

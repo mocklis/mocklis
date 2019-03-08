@@ -16,9 +16,9 @@ namespace Mocklis.Verification
 
     /// <summary>
     ///     Class that represents a group of verifications.
-    ///     Implements the <see cref="Mocklis.Verification.IVerifiable" /> interface.
+    ///     Implements the <see cref="IVerifiable" /> interface.
     /// </summary>
-    /// <seealso cref="Mocklis.Verification.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public class VerificationGroup : IVerifiable
     {
         private readonly List<IVerifiable> _verifiables = new List<IVerifiable>();

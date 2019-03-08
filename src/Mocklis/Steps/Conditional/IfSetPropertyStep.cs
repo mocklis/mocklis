@@ -16,10 +16,10 @@ namespace Mocklis.Steps.Conditional
     /// <summary>
     ///     Property step with alternative branch, where the alternative branch will be taken when a value is written to
     ///     the property, and the normal branch when a value is read.
-    ///     Inherits from the <see cref="Conditional.IfPropertyStepBase{TValue}" /> class.
+    ///     Inherits from the <see cref="IfPropertyStepBase{TValue}" /> class.
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    /// <seealso cref="Conditional.IfPropertyStepBase{TValue}" />
+    /// <seealso cref="IfPropertyStepBase{TValue}" />
     public class IfSetPropertyStep<TValue> : IfPropertyStepBase<TValue>
     {
         /// <summary>

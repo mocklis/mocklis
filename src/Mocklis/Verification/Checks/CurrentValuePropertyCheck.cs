@@ -16,10 +16,10 @@ namespace Mocklis.Verification.Checks
 
     /// <summary>
     ///     Check that verifies that the current value in a property store is the expected value.
-    ///     Implements the <see cref="Mocklis.Verification.IVerifiable" /> interface.
+    ///     Implements the <see cref="IVerifiable" /> interface.
     /// </summary>
     /// <typeparam name="TValue">The type of the property.</typeparam>
-    /// <seealso cref="Mocklis.Verification.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public class CurrentValuePropertyCheck<TValue> : IVerifiable
     {
         private readonly string _name;

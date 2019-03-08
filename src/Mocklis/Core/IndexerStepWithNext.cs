@@ -16,13 +16,13 @@ namespace Mocklis.Core
     /// <summary>
     ///     Class that models an indexer step that can forward calls on to a next step. It is a common base class for
     ///     implementing new steps.
-    ///     Implements the <see cref="Mocklis.Core.IIndexerStep{TKey, TValue}" /> interface.
-    ///     Implements the <see cref="Mocklis.Core.ICanHaveNextIndexerStep{TKey, TValue}" /> interface.
+    ///     Implements the <see cref="IIndexerStep{TKey, TValue}" /> interface.
+    ///     Implements the <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> interface.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// <seealso cref="Mocklis.Core.IIndexerStep{TKey, TValue}" />
-    /// <seealso cref="Mocklis.Core.ICanHaveNextIndexerStep{TKey, TValue}" />
+    /// <seealso cref="IIndexerStep{TKey, TValue}" />
+    /// <seealso cref="ICanHaveNextIndexerStep{TKey, TValue}" />
     public class IndexerStepWithNext<TKey, TValue> : IIndexerStep<TKey, TValue>, ICanHaveNextIndexerStep<TKey, TValue>
     {
         /// <summary>

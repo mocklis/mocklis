@@ -17,11 +17,11 @@ namespace Mocklis.Verification.Checks
 
     /// <summary>
     ///     Check that verifies that the indexer store has the expected values.
-    ///     Implements the <see cref="Mocklis.Verification.IVerifiable" /> interface.
+    ///     Implements the <see cref="IVerifiable" /> interface.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
-    /// <seealso cref="Mocklis.Verification.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public class CurrentValuesIndexerCheck<TKey, TValue> : IVerifiable
     {
         private readonly IStoredIndexer<TKey, TValue> _indexer;
