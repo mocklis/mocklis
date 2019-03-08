@@ -10,7 +10,7 @@ namespace Mocklis.Verification.Checks
 
     using System;
     using System.Collections.Generic;
-    using static System.FormattableString;
+    using System.Globalization;
 
     #endregion
 
@@ -52,9 +52,11 @@ namespace Mocklis.Verification.Checks
         /// </returns>
         public IEnumerable<VerificationResult> Verify()
         {
-            string prefix = string.IsNullOrEmpty(_name) ? "Value check" : Invariant($"Value check '{_name}'");
+            string prefix = string.IsNullOrEmpty(_name) ? "Value check" : $"Value check '{_name}'";
             TValue currentValue = _property.Value;
-            yield return new VerificationResult(Invariant($"{prefix}: Expected '{_expectedValue}'; Current Value is '{currentValue}'"),
+            string expectedValueString = Convert.ToString(_expectedValue, CultureInfo.InvariantCulture);
+            string currentValueString = Convert.ToString(currentValue, CultureInfo.InvariantCulture);
+            yield return new VerificationResult($"{prefix}: Expected '{expectedValueString}'; Current Value is '{currentValueString}'",
                 _comparer.Equals(_expectedValue, currentValue));
         }
     }

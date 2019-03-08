@@ -38,7 +38,7 @@ namespace Mocklis.Steps.Gate
         public GateMethodStep(CancellationToken cancellationToken = default)
         {
             _taskCompletionSource = new TaskCompletionSource<TResult>();
-            cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled(cancellationToken));
+            cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled());
         }
 
         /// <summary>

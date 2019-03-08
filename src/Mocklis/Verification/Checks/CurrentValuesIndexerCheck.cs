@@ -10,8 +10,8 @@ namespace Mocklis.Verification.Checks
 
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
-    using static System.FormattableString;
 
     #endregion
 
@@ -63,12 +63,15 @@ namespace Mocklis.Verification.Checks
                 TKey key = expectation.Key;
                 TValue expectedValue = expectation.Value;
                 TValue currentValue = _indexer[key];
-                string description = Invariant($"Key '{key}'; Expected '{expectedValue}'; Current Value is '{currentValue}'");
+                string keyString = Convert.ToString(key, CultureInfo.InvariantCulture);
+                string expectedValueString = Convert.ToString(expectedValue, CultureInfo.InvariantCulture);
+                string currentValueString = Convert.ToString(currentValue, CultureInfo.InvariantCulture);
+                string description = $"Key '{keyString}'; Expected '{expectedValueString}'; Current Value is '{currentValueString}'";
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);
             }
 
-            string commonDescription = string.IsNullOrEmpty(_name) ? "Values check:" : Invariant($"Values check '{_name}':");
+            string commonDescription = string.IsNullOrEmpty(_name) ? "Values check:" : $"Values check '{_name}':";
 
             yield return new VerificationResult(commonDescription, _expectations.Select(SubResult));
         }

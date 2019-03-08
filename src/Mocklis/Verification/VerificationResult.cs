@@ -13,14 +13,14 @@ namespace Mocklis.Verification
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 #endif
 
     #endregion
 
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
     /// <summary>
     ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
     ///     only on that check) or a branch node (and it's deemed successful only if all its child nodes are successful.)
@@ -37,6 +37,13 @@ namespace Mocklis.Verification
     public readonly struct VerificationResult
 #endif
     {
+#if NET45
+        private static readonly VerificationResult[] EmptyVerificationResultArray = new VerificationResult[0];
+#else
+        private static readonly VerificationResult[] EmptyVerificationResultArray = Array.Empty<VerificationResult>();
+
+#endif
+
         /// <summary>
         ///     Gets the description of the verification node.
         /// </summary>
@@ -60,7 +67,7 @@ namespace Mocklis.Verification
         public VerificationResult(string description, bool success)
         {
             Description = description;
-            SubResults = Array.Empty<VerificationResult>();
+            SubResults = EmptyVerificationResultArray;
             Success = success;
         }
 
@@ -80,7 +87,7 @@ namespace Mocklis.Verification
             {
                 SubResults =
                     new ReadOnlyCollection<VerificationResult>(
-                        subResults?.ToArray() ?? Array.Empty<VerificationResult>());
+                        subResults?.ToArray() ?? EmptyVerificationResultArray);
             }
 
             Success = SubResults.All(sr => sr.Success);
@@ -126,7 +133,7 @@ namespace Mocklis.Verification
             }
         }
 
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
         private VerificationResult(SerializationInfo info, StreamingContext context)
         {
             Description = info.GetString(nameof(Description));
