@@ -52,20 +52,25 @@ namespace Mocklis.Verification.Checks
         ///     Verifies a set of conditions and returns the result of the verifications. Each key checked in the indexer is
         ///     treated as one such condition.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify()
+        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             VerificationResult SubResult(KeyValuePair<TKey, TValue> expectation)
             {
                 TKey key = expectation.Key;
                 TValue expectedValue = expectation.Value;
                 TValue currentValue = _indexer[key];
-                string keyString = Convert.ToString(key, CultureInfo.InvariantCulture);
-                string expectedValueString = Convert.ToString(expectedValue, CultureInfo.InvariantCulture);
-                string currentValueString = Convert.ToString(currentValue, CultureInfo.InvariantCulture);
+                string keyString = Convert.ToString(key, provider);
+                string expectedValueString = Convert.ToString(expectedValue, provider);
+                string currentValueString = Convert.ToString(currentValue, provider);
                 string description = $"Key '{keyString}'; Expected '{expectedValueString}'; Current Value is '{currentValueString}'";
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);

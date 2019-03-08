@@ -10,6 +10,7 @@ namespace Mocklis.Verification.Steps
 
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -74,23 +75,34 @@ namespace Mocklis.Verification.Steps
         ///     Verifies that the expected number of event handlers have been added and removed, and returns the result of the
         ///     verifications.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify()
+        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 
             if (_expectedNumberOfAdds is int expectedAdds)
             {
-                yield return new VerificationResult($"{prefix}: Expected {expectedAdds} add(s); received {_currentNumberOfAdds} add(s).",
+                string expectedAddsString = expectedAdds.ToString(provider);
+                string currentAddsString = _currentNumberOfAdds.ToString(provider);
+                yield return new VerificationResult($"{prefix}: Expected {expectedAddsString} add(s); received {currentAddsString} add(s).",
                     expectedAdds == _currentNumberOfAdds);
             }
 
             if (_expectedNumberOfRemoves is int expectedRemoves)
             {
-                yield return new VerificationResult($"{prefix}: Expected {expectedRemoves} remove(s); received {_currentNumberOfRemoves} remove(s).",
+                string expectedRemovesString = expectedRemoves.ToString(provider);
+                string currentRemovesString = _currentNumberOfRemoves.ToString(provider);
+
+                yield return new VerificationResult(
+                    $"{prefix}: Expected {expectedRemovesString} remove(s); received {currentRemovesString} remove(s).",
                     expectedRemoves == _currentNumberOfRemoves);
             }
         }

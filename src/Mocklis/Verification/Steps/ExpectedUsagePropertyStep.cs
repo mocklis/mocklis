@@ -8,7 +8,9 @@ namespace Mocklis.Verification.Steps
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -74,23 +76,34 @@ namespace Mocklis.Verification.Steps
         ///     Verifies that the expected number of reads from and writes to the property have occurred and returns the result of
         ///     the verifications.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify()
+        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 
             if (_expectedNumberOfGets is int expectedGets)
             {
-                yield return new VerificationResult($"{prefix}: Expected {expectedGets} get(s); received {_currentNumberOfGets} get(s).",
+                string expectedGetsString = expectedGets.ToString(provider);
+                string currentGetsString = _currentNumberOfGets.ToString(provider);
+
+                yield return new VerificationResult($"{prefix}: Expected {expectedGetsString} get(s); received {currentGetsString} get(s).",
                     expectedGets == _currentNumberOfGets);
             }
 
             if (_expectedNumberOfSets is int expectedSets)
             {
-                yield return new VerificationResult($"{prefix}: Expected {expectedSets} set(s); received {_currentNumberOfSets} set(s).",
+                string expectedSetsString = expectedSets.ToString();
+                string currentSetsString = _currentNumberOfSets.ToString();
+
+                yield return new VerificationResult($"{prefix}: Expected {expectedSetsString} set(s); received {currentSetsString} set(s).",
                     expectedSets == _currentNumberOfSets);
             }
         }

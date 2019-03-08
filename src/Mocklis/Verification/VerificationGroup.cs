@@ -10,6 +10,7 @@ namespace Mocklis.Verification
 
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
 
     #endregion
@@ -19,7 +20,7 @@ namespace Mocklis.Verification
     ///     Implements the <see cref="IVerifiable" /> interface.
     /// </summary>
     /// <seealso cref="IVerifiable" />
-    public class VerificationGroup : IVerifiable
+    public sealed class VerificationGroup : IVerifiable
     {
         private readonly List<IVerifiable> _verifiables = new List<IVerifiable>();
 
@@ -40,23 +41,31 @@ namespace Mocklis.Verification
         /// <summary>
         ///     Verifies all the verifications in this group and returns the result.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>A single <see cref="VerificationResult" /> representing the success of the entire group.</returns>
-        public VerificationResult Verify()
+        private VerificationResult VerifyGroup(IFormatProvider provider)
         {
             string description = string.IsNullOrEmpty(Name) ? "Verification Group:" : $"Verification Group '{Name}':";
-            return new VerificationResult(description, _verifiables.SelectMany(a => a.Verify()));
+            return new VerificationResult(description, _verifiables.SelectMany(a => a.Verify(provider)));
         }
 
         /// <summary>
         ///     Verifies a set of conditions and returns the result of the verifications.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        IEnumerable<VerificationResult> IVerifiable.Verify()
+        IEnumerable<VerificationResult> IVerifiable.Verify(IFormatProvider provider)
         {
-            yield return Verify();
+            provider = provider ?? CultureInfo.CurrentCulture;
+
+            yield return VerifyGroup(provider);
         }
 
         /// <summary>
@@ -72,10 +81,15 @@ namespace Mocklis.Verification
         ///     Asserts that the verifications in this group are all successful, throws a
         ///     <see cref="VerificationFailedException" /> otherwise.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <param name="includeSuccessfulVerifications">Whether to include successful verifications in the exception if thrown.</param>
-        public void Assert(bool includeSuccessfulVerifications = false)
+        public void Assert(bool includeSuccessfulVerifications = false, IFormatProvider provider = null)
         {
-            VerificationResult result = Verify();
+            provider = provider ?? CultureInfo.CurrentCulture;
+
+            VerificationResult result = VerifyGroup(provider);
             if (!result.Success)
             {
                 var message = "Verification failed." + Environment.NewLine + Environment.NewLine + result.ToString(includeSuccessfulVerifications);

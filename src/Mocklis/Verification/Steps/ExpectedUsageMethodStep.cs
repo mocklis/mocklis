@@ -8,7 +8,9 @@ namespace Mocklis.Verification.Steps
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -57,15 +59,24 @@ namespace Mocklis.Verification.Steps
         /// <summary>
         ///     Verifies that the method has been called the expected number of times.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and
         ///     whether they were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify()
+        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
-            yield return new VerificationResult($"{prefix}: Expected {_expectedNumberOfCalls} call(s); received {_currentNumberOfCalls} call(s).",
-                _expectedNumberOfCalls == _currentNumberOfCalls);
+            int expectedCalls = _expectedNumberOfCalls;
+            string expectedCallsString = expectedCalls.ToString(provider);
+            string currentCallsString = _currentNumberOfCalls.ToString(provider);
+
+            yield return new VerificationResult($"{prefix}: Expected {expectedCallsString} call(s); received {currentCallsString} call(s).",
+                expectedCalls == _currentNumberOfCalls);
         }
     }
 }

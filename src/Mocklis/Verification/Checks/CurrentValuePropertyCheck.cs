@@ -46,16 +46,22 @@ namespace Mocklis.Verification.Checks
         /// <summary>
         ///     Checks that the current and expected values match and returns an <see cref="VerificationResult" />.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify()
+        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             string prefix = string.IsNullOrEmpty(_name) ? "Value check" : $"Value check '{_name}'";
+
             TValue currentValue = _property.Value;
-            string expectedValueString = Convert.ToString(_expectedValue, CultureInfo.InvariantCulture);
-            string currentValueString = Convert.ToString(currentValue, CultureInfo.InvariantCulture);
+            string expectedValueString = Convert.ToString(_expectedValue, provider);
+            string currentValueString = Convert.ToString(currentValue, provider);
             yield return new VerificationResult($"{prefix}: Expected '{expectedValueString}'; Current Value is '{currentValueString}'",
                 _comparer.Equals(_expectedValue, currentValue));
         }

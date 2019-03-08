@@ -8,6 +8,7 @@ namespace Mocklis.Verification
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
 
     #endregion
@@ -21,10 +22,13 @@ namespace Mocklis.Verification
         /// <summary>
         ///     Verifies a set of conditions and returns the result of the verifications.
         /// </summary>
+        /// <param name="provider">
+        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        IEnumerable<VerificationResult> Verify();
+        IEnumerable<VerificationResult> Verify(IFormatProvider provider = null);
     }
 }
