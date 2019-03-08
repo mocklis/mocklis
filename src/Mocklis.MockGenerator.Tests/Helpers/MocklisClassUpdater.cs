@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Analyzer.Tests.Helpers
+namespace Mocklis.MockGenerator.Tests.Helpers
 {
     #region Using Directives
 

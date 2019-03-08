@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Analyzer.Tests
+namespace Mocklis.MockGenerator.Tests
 {
     #region Using Directives
 
@@ -12,7 +12,7 @@ namespace Mocklis.Analyzer.Tests
     using System.IO;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Mocklis.Analyzer.Tests.Helpers;
+    using Mocklis.MockGenerator.Tests.Helpers;
     using Xunit;
     using Xunit.Abstractions;
 

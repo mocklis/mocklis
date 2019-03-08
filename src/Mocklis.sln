@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis", "Mocklis\Mocklis.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Core.Tests", "Mocklis.Core.Tests\Mocklis.Core.Tests.csproj", "{7C9A19F8-166D-493E-9560-249EECF54D32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Analyzer", "Mocklis.Analyzer\Mocklis.Analyzer.csproj", "{F5D8C9AC-02D4-4164-B965-C528E9CEF06D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.MockGenerator", "Mocklis.MockGenerator\Mocklis.MockGenerator.csproj", "{F5D8C9AC-02D4-4164-B965-C528E9CEF06D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Experimental", "Mocklis.Experimental\Mocklis.Experimental.csproj", "{E50EAC40-3E55-44C7-B9DE-3F856EAF22B5}"
 EndProject
@@ -18,9 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Serilog2", "Mocklis
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mocklis.CodeGeneration", "Mocklis.CodeGeneration\Mocklis.CodeGeneration.shproj", "{640710A2-756B-496C-976A-1656690795A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Analyzer.Tests", "Mocklis.Analyzer.Tests\Mocklis.Analyzer.Tests.csproj", "{A68EB6DA-12D3-4930-B530-C5A1FB2CD0E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.MockGenerator.Tests", "Mocklis.MockGenerator.Tests\Mocklis.MockGenerator.Tests.csproj", "{A68EB6DA-12D3-4930-B530-C5A1FB2CD0E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.Tests", "Mocklis.Tests\Mocklis.Tests.csproj", "{E2ED57DB-8388-4296-AF57-FB3133474DFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Tests", "Mocklis.Tests\Mocklis.Tests.csproj", "{E2ED57DB-8388-4296-AF57-FB3133474DFF}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

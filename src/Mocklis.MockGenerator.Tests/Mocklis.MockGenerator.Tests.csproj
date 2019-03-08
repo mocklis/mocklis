@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mocklis.Analyzer\Mocklis.Analyzer.csproj" />
+    <ProjectReference Include="..\Mocklis.MockGenerator\Mocklis.MockGenerator.csproj" />
     <ProjectReference Include="..\Mocklis.Core\Mocklis.Core.csproj" />
   </ItemGroup>
 
