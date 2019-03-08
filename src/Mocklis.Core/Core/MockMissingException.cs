@@ -10,7 +10,7 @@ namespace Mocklis.Core
 
     using System;
     using Mocklis.Properties;
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
     using System.Runtime.Serialization;
 #endif
 
@@ -22,7 +22,7 @@ namespace Mocklis.Core
     ///     Inherits from the <see cref="Exception" /> class.
     /// </summary>
     /// <seealso cref="Exception" />
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
     [Serializable]
 #endif
     public class MockMissingException : Exception
@@ -181,7 +181,7 @@ namespace Mocklis.Core
             MemberMockName = memberMockName;
         }
 
-#if NETSTANDARD2_0
+#if !NETSTANDARD1_3
         /// <summary>
         ///     Initializes a new instance of the <see cref="MockMissingException" /> class with serialized data.
         /// </summary>
