@@ -22,6 +22,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.MockGenerator.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Tests", "Mocklis.Tests\Mocklis.Tests.csproj", "{E2ED57DB-8388-4296-AF57-FB3133474DFF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D6A5B215-51E9-4A8A-858E-CBA238EDCFCD}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.msbuild = NuGet.msbuild
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{640710a2-756b-496c-976a-1656690795a7}*SharedItemsImports = 13

@@ -1,24 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\NuGet.msbuild" />
   <PropertyGroup>
-    <Product>Mocklis</Product>
-    <Copyright>Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
     <CodeAnalysisRuleSet>..\MocklisDefault.ruleset</CodeAnalysisRuleSet>
     <LangVersion>7.3</LangVersion>
     <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Authors>Esbjörn Redmo</Authors>
-    <Company />
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Core contains classes and interfaces used by the generated test doubles. See also the Mocklis package for a more comprehensive set of tools for writing tests using the generated code.</Description>
-    <PackageLicenseUrl>https://opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <Version>0.1.9-alpha</Version>
-    <AssemblyVersion>0.1.9.0</AssemblyVersion>
-    <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RootNamespace>Mocklis</RootNamespace>
-    <FileVersion>0.1.9.0</FileVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
