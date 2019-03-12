@@ -1,5 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MissingStepExtensions_Missing_should.cs">
+//   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
