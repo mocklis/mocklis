@@ -27,7 +27,7 @@ namespace Mocklis.Steps.Log
         /// <summary>
         ///     WriteLineLogContext singleton that writes log lines to the console.
         /// </summary>
-        public static readonly WriteLineLogContext Console = new WriteLineLogContext(s => System. Console.Out.WriteLine(s));
+        public static readonly WriteLineLogContext Console = new WriteLineLogContext(s => System.Console.Out.WriteLine(s));
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WriteLineLogContext" /> class.
@@ -65,7 +65,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogEventAddException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Adding event handler to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Adding event handler to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -95,7 +96,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogEventRemoveException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Removing event handler from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Removing event handler from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -128,7 +130,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogIndexerGetException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -141,7 +144,8 @@ namespace Mocklis.Steps.Log
         /// <param name="value">The value being written.</param>
         public void LogBeforeIndexerSet<TKey, TValue>(IMockInfo mockInfo, TKey key, TValue value)
         {
-            _writeLine($"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' to '{value}' using key '{key}'");
+            _writeLine(
+                $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' to '{value}' using key '{key}'");
         }
 
         /// <summary>
@@ -160,7 +164,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogIndexerSetException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -210,7 +215,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogMethodCallException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Call to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Call to '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -241,7 +247,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogPropertyGetException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Getting value from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
 
         /// <summary>
@@ -271,7 +278,8 @@ namespace Mocklis.Steps.Log
         /// <param name="exception">The exception that was thrown.</param>
         public void LogPropertySetException(IMockInfo mockInfo, Exception exception)
         {
-            _writeLine($"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
+            _writeLine(
+                $"Setting value on '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}' threw exception '{exception.Message}'");
         }
     }
 }
