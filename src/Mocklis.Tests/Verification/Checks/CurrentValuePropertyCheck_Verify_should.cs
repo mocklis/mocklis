@@ -22,7 +22,7 @@ namespace Mocklis.Tests.Verification.Checks
     public class CurrentValuePropertyCheck_Verify_should
     {
         [Fact]
-        private void use_invariant_in_successful_description()
+        private void use_current_culture_in_successful_description()
         {
             // Arrange
             var store = new MockStoredProperty<DateTime>();
@@ -31,11 +31,14 @@ namespace Mocklis.Tests.Verification.Checks
             var sut = new CurrentValuePropertyCheck<DateTime>(store, "TestName", 20190308.AtUtc(120931));
 
             // Act
-            var result = sut.Verify(CultureInfo.InvariantCulture).FirstOrDefault();
+            using (Scope.CurrentCulture(CultureInfo.InvariantCulture))
+            {
+                var result = sut.Verify().FirstOrDefault();
 
-            // Assert;
-            Assert.True(result.Success);
-            Assert.Equal("Value check 'TestName': Expected '03/08/2019 12:09:31'; Current Value is '03/08/2019 12:09:31'", result.Description);
+                // Assert;
+                Assert.True(result.Success);
+                Assert.Equal("Value check 'TestName': Expected '03/08/2019 12:09:31'; Current Value is '03/08/2019 12:09:31'", result.Description);
+            }
         }
 
         [Fact]
