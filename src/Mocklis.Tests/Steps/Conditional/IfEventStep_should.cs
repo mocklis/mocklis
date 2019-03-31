@@ -10,6 +10,7 @@ namespace Mocklis.Tests.Steps.Conditional
     #region Using Directives
 
     using System;
+    using Mocklis.Core;
     using Mocklis.Steps.Stored;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
@@ -74,6 +75,18 @@ namespace Mocklis.Tests.Steps.Conditional
 
             Assert.Equal(2, _firstEventHandlerCallCount);
             Assert.Equal(0, _secondEventHandlerCallCount);
+        }
+
+        [Fact]
+        public void throw_when_passed_null_as_NextStep()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                MockMembers.MyEvent.If(
+                    e => true,
+                    e => true,
+                    s => ((ICanHaveNextEventStep<EventHandler>)s).SetNextStep((IEventStep<EventHandler>)null)
+                )
+            );
         }
     }
 }

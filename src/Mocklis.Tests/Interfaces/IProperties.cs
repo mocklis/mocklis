@@ -11,5 +11,6 @@ namespace Mocklis.Tests.Interfaces
     {
         string Name { get; set; }
         int Age { get; set; }
+        bool Flag { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace Mocklis.Steps.Stored
         /// <returns>the <typeparamref name="TValue" /> read or written.</returns>
         public TValue this[TKey key]
         {
-            get => _dictionary[key];
+            get => _dictionary.ContainsKey(key) ? _dictionary[key] : default;
             set => _dictionary[key] = value;
         }
 
@@ -50,15 +50,7 @@ namespace Mocklis.Steps.Stored
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>
         /// <returns>The value being read.</returns>
-        public TValue Get(IMockInfo mockInfo, TKey key)
-        {
-            if (_dictionary.ContainsKey(key))
-            {
-                return _dictionary[key];
-            }
-
-            return default;
-        }
+        public TValue Get(IMockInfo mockInfo, TKey key) => this[key];
 
         /// <summary>
         ///     Called when a value is written to the indexer.
@@ -68,7 +60,7 @@ namespace Mocklis.Steps.Stored
         /// <param name="value">The value being written.</param>
         public void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            _dictionary[key] = value;
+            this[key] = value;
         }
     }
 }

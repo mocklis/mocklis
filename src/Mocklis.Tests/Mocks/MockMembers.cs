@@ -24,6 +24,7 @@ namespace Mocklis.Tests.Mocks
             DoStuff = new FuncMethodMock<int, int>(this, "MockMembers", "IMethods", "DoStuff", "DoStuff");
             Name = new PropertyMock<string>(this, "MockMembers", "IProperties", "Name", "Name");
             Age = new PropertyMock<int>(this, "MockMembers", "IProperties", "Age", "Age");
+            Flag = new PropertyMock<bool>(this, "MockMembers", "IProperties", "Flag", "Flag");
             Item = new IndexerMock<int, string>(this, "MockMembers", "IIndexers", "this[]", "Item");
         }
 
@@ -53,6 +54,14 @@ namespace Mocklis.Tests.Mocks
         {
             get => Age.Value;
             set => Age.Value = value;
+        }
+
+        public PropertyMock<bool> Flag { get; }
+
+        bool IProperties.Flag
+        {
+            get => Flag.Value;
+            set => Flag.Value = value;
         }
 
         public IndexerMock<int, string> Item { get; }
