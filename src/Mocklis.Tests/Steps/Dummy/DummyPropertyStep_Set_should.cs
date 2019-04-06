@@ -22,11 +22,11 @@ namespace Mocklis.Tests.Steps.Dummy
         [Fact]
         public void not_throw()
         {
-            _mockMembers.Name.Dummy();
-            _mockMembers.Age.Dummy();
+            _mockMembers.StringProperty.Dummy();
+            _mockMembers.IntProperty.Dummy();
 
-            ((IProperties)_mockMembers).Name = "test";
-            ((IProperties)_mockMembers).Age = 5;
+            ((IProperties)_mockMembers).StringProperty = "test";
+            ((IProperties)_mockMembers).IntProperty = 5;
         }
     }
 }

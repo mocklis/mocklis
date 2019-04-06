@@ -35,13 +35,13 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_common_condition()
         {
             StoredEventStep<EventHandler> eventStore = null;
-            MockMembers.MyEvent.InstanceIf((instance, e) => ((IProperties)instance).Name == "Go", i => i.Stored(out eventStore)).Dummy();
-            MockMembers.Name.Stored();
+            MockMembers.MyEvent.InstanceIf((instance, e) => ((IProperties)instance).StringProperty == "Go", i => i.Stored(out eventStore)).Dummy();
+            MockMembers.StringProperty.Stored();
 
-            MockMembers.Name.Value = "Go";
+            MockMembers.StringProperty.Value = "Go";
             Sut.MyEvent += MyFirstEventHandler;
             eventStore.Raise(this, EventArgs.Empty);
-            MockMembers.Name.Value = "Don't go";
+            MockMembers.StringProperty.Value = "Don't go";
             Sut.MyEvent -= MyFirstEventHandler;
             eventStore.Raise(this, EventArgs.Empty);
 
@@ -53,20 +53,20 @@ namespace Mocklis.Tests.Steps.Conditional
         {
             StoredEventStep<EventHandler> eventStore = null;
             MockMembers.MyEvent.InstanceIf(
-                (instance, e) => ((IProperties)instance).Name == "Go",
-                (instance, e) => ((IProperties)instance).Age == 42,
+                (instance, e) => ((IProperties)instance).StringProperty == "Go",
+                (instance, e) => ((IProperties)instance).IntProperty == 42,
                 i => i.Stored(out eventStore)).Dummy();
-            MockMembers.Name.Stored();
-            MockMembers.Age.Stored();
+            MockMembers.StringProperty.Stored();
+            MockMembers.IntProperty.Stored();
 
 
-            MockMembers.Name.Value = "Go";
-            MockMembers.Age.Value = 99;
+            MockMembers.StringProperty.Value = "Go";
+            MockMembers.IntProperty.Value = 99;
             Sut.MyEvent += MyFirstEventHandler;
             eventStore.Raise(this, EventArgs.Empty);
 
-            MockMembers.Name.Value = "Don't go";
-            MockMembers.Age.Value = 42;
+            MockMembers.StringProperty.Value = "Don't go";
+            MockMembers.IntProperty.Value = 42;
             Sut.MyEvent -= MyFirstEventHandler;
             eventStore.Raise(this, EventArgs.Empty);
 

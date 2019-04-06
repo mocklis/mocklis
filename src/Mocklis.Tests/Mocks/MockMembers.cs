@@ -21,10 +21,13 @@ namespace Mocklis.Tests.Mocks
         public MockMembers()
         {
             MyEvent = new EventMock<EventHandler>(this, "MockMembers", "IEvents", "MyEvent", "MyEvent");
-            DoStuff = new FuncMethodMock<int, int>(this, "MockMembers", "IMethods", "DoStuff", "DoStuff");
-            Name = new PropertyMock<string>(this, "MockMembers", "IProperties", "Name", "Name");
-            Age = new PropertyMock<int>(this, "MockMembers", "IProperties", "Age", "Age");
-            Flag = new PropertyMock<bool>(this, "MockMembers", "IProperties", "Flag", "Flag");
+            SimpleAction = new ActionMethodMock(this, "MockMembers", "IMethods", "SimpleAction", "SimpleAction");
+            ActionWithParameter = new ActionMethodMock<int>(this, "MockMembers", "IMethods", "ActionWithParameter", "ActionWithParameter");
+            SimpleFunc = new FuncMethodMock<int>(this, "MockMembers", "IMethods", "SimpleFunc", "SimpleFunc");
+            FuncWithParameter = new FuncMethodMock<int, int>(this, "MockMembers", "IMethods", "FuncWithParameter", "FuncWithParameter");
+            StringProperty = new PropertyMock<string>(this, "MockMembers", "IProperties", "StringProperty", "StringProperty");
+            IntProperty = new PropertyMock<int>(this, "MockMembers", "IProperties", "IntProperty", "IntProperty");
+            BoolProperty = new PropertyMock<bool>(this, "MockMembers", "IProperties", "BoolProperty", "BoolProperty");
             Item = new IndexerMock<int, string>(this, "MockMembers", "IIndexers", "this[]", "Item");
         }
 
@@ -36,32 +39,44 @@ namespace Mocklis.Tests.Mocks
             remove => MyEvent.Remove(value);
         }
 
-        public FuncMethodMock<int, int> DoStuff { get; }
+        public ActionMethodMock SimpleAction { get; }
 
-        int IMethods.DoStuff(int parameter) => DoStuff.Call(parameter);
+        void IMethods.SimpleAction() => SimpleAction.Call();
 
-        public PropertyMock<string> Name { get; }
+        public ActionMethodMock<int> ActionWithParameter { get; }
 
-        string IProperties.Name
+        void IMethods.ActionWithParameter(int i) => ActionWithParameter.Call(i);
+
+        public FuncMethodMock<int> SimpleFunc { get; }
+
+        int IMethods.SimpleFunc() => SimpleFunc.Call();
+
+        public FuncMethodMock<int, int> FuncWithParameter { get; }
+
+        int IMethods.FuncWithParameter(int i) => FuncWithParameter.Call(i);
+
+        public PropertyMock<string> StringProperty { get; }
+
+        string IProperties.StringProperty
         {
-            get => Name.Value;
-            set => Name.Value = value;
+            get => StringProperty.Value;
+            set => StringProperty.Value = value;
         }
 
-        public PropertyMock<int> Age { get; }
+        public PropertyMock<int> IntProperty { get; }
 
-        int IProperties.Age
+        int IProperties.IntProperty
         {
-            get => Age.Value;
-            set => Age.Value = value;
+            get => IntProperty.Value;
+            set => IntProperty.Value = value;
         }
 
-        public PropertyMock<bool> Flag { get; }
+        public PropertyMock<bool> BoolProperty { get; }
 
-        bool IProperties.Flag
+        bool IProperties.BoolProperty
         {
-            get => Flag.Value;
-            set => Flag.Value = value;
+            get => BoolProperty.Value;
+            set => BoolProperty.Value = value;
         }
 
         public IndexerMock<int, string> Item { get; }

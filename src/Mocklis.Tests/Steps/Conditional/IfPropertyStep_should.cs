@@ -29,26 +29,26 @@ namespace Mocklis.Tests.Steps.Conditional
         [InlineData(true)]
         public void check_get_conditions(bool value)
         {
-            MockMembers.Flag
+            MockMembers.BoolProperty
                 .If(() => value, null, s => s.Return(true))
                 .Return(false);
 
-            Assert.Equal(value, Sut.Flag);
+            Assert.Equal(value, Sut.BoolProperty);
         }
 
         [Fact]
         public void check_set_conditions()
         {
             IReadOnlyList<string> ledger = null;
-            MockMembers.Name
+            MockMembers.StringProperty
                 .If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger, a => a).Dummy())
                 .Dummy();
 
-            Sut.Name = "Apple";
-            Sut.Name = "Banana";
-            Sut.Name = "Orange";
-            Sut.Name = "Avocado";
-            Sut.Name = "Pear";
+            Sut.StringProperty = "Apple";
+            Sut.StringProperty = "Banana";
+            Sut.StringProperty = "Orange";
+            Sut.StringProperty = "Avocado";
+            Sut.StringProperty = "Pear";
 
             Assert.Equal(new[] { "Apple", "Avocado" }, ledger);
         }
@@ -57,12 +57,12 @@ namespace Mocklis.Tests.Steps.Conditional
         public void use_ElseBranch_if_asked()
         {
             var vg = new VerificationGroup();
-            MockMembers.Name
+            MockMembers.StringProperty
                 .If(() => true, v => true, s => s.ExpectedUsage(vg, "IfBranch", 1, 1).Join(s.ElseBranch))
                 .ExpectedUsage(vg, "ElseBranch", 1, 1).Dummy();
 
-            Sut.Name = "one";
-            var _ = Sut.Name;
+            Sut.StringProperty = "one";
+            var _ = Sut.StringProperty;
 
             vg.Assert();
         }
@@ -71,7 +71,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void throw_when_passed_null_as_NextStep()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                MockMembers.Name.If(
+                MockMembers.StringProperty.If(
                     () => true,
                     v => true,
                     s => ((ICanHaveNextPropertyStep<string>)s).SetNextStep((IPropertyStep<string>)null)

@@ -26,23 +26,23 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_condition()
         {
-            MockMembers.DoStuff
+            MockMembers.FuncWithParameter
                 .If(a => a < 5, s => s.Func(v => v * 2))
                 .Func(v => v * 4);
 
-            Assert.Equal(4, Sut.DoStuff(2));
-            Assert.Equal(24, Sut.DoStuff(6));
+            Assert.Equal(4, Sut.FuncWithParameter(2));
+            Assert.Equal(24, Sut.FuncWithParameter(6));
         }
 
         [Fact]
         public void use_ElseBranch_if_asked()
         {
             var vg = new VerificationGroup();
-            MockMembers.DoStuff
+            MockMembers.FuncWithParameter
                 .If(_ => true, s => s.ExpectedUsage(vg, "IfBranch", 1).Join(s.ElseBranch))
                 .ExpectedUsage(vg, "ElseBranch", 1).Dummy();
 
-            Sut.DoStuff(5);
+            Sut.FuncWithParameter(5);
 
             vg.Assert();
         }
@@ -51,7 +51,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void throw_when_passed_null_as_NextStep()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                MockMembers.DoStuff.If(
+                MockMembers.FuncWithParameter.If(
                     v => true,
                     s => ((ICanHaveNextMethodStep<int, int>)s).SetNextStep((IMethodStep<int, int>)null)
                 )

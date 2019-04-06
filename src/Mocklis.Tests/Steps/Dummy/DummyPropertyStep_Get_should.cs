@@ -22,10 +22,10 @@ namespace Mocklis.Tests.Steps.Dummy
         [Fact]
         public void return_default_value()
         {
-            _mockMembers.Name.Dummy();
-            _mockMembers.Age.Dummy();
-            Assert.Null(((IProperties)_mockMembers).Name);
-            Assert.Equal(0, ((IProperties)_mockMembers).Age);
+            _mockMembers.StringProperty.Dummy();
+            _mockMembers.IntProperty.Dummy();
+            Assert.Null(((IProperties)_mockMembers).StringProperty);
+            Assert.Equal(0, ((IProperties)_mockMembers).IntProperty);
         }
     }
 }

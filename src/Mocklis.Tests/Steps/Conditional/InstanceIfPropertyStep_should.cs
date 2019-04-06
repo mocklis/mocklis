@@ -25,12 +25,12 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_get_conditions()
         {
-            MockMembers.Flag.Stored();
-            MockMembers.Name.InstanceIf(inst => ((IProperties)inst).Flag, null, s => s.Return("Name")).Dummy();
+            MockMembers.BoolProperty.Stored();
+            MockMembers.StringProperty.InstanceIf(inst => ((IProperties)inst).BoolProperty, null, s => s.Return("Name")).Dummy();
 
-            var v1 = Sut.Name;
-            Sut.Flag = true;
-            var v3 = Sut.Name;
+            var v1 = Sut.StringProperty;
+            Sut.BoolProperty = true;
+            var v3 = Sut.StringProperty;
 
             Assert.Null(v1);
             Assert.Equal("Name", v3);
@@ -39,13 +39,14 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_set_conditions()
         {
-            MockMembers.Flag.Stored();
+            MockMembers.BoolProperty.Stored();
             IReadOnlyList<string> ledger = null;
-            MockMembers.Name.InstanceIf(null, (inst, v) => ((IProperties)inst).Flag, s => s.RecordBeforeSet(out ledger, a => a).Dummy()).Dummy();
+            MockMembers.StringProperty
+                .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger, a => a).Dummy()).Dummy();
 
-            Sut.Name = "off";
-            Sut.Flag = true;
-            Sut.Name = "on";
+            Sut.StringProperty = "off";
+            Sut.BoolProperty = true;
+            Sut.StringProperty = "on";
 
             Assert.Equal(new[] { "on" }, ledger);
         }
@@ -54,12 +55,12 @@ namespace Mocklis.Tests.Steps.Conditional
         public void use_ElseBranch_if_asked()
         {
             var vg = new VerificationGroup();
-            MockMembers.Name
+            MockMembers.StringProperty
                 .InstanceIf(inst => true, (inst, v) => true, s => s.ExpectedUsage(vg, "IfBranch", 1, 1).Join(s.ElseBranch))
                 .ExpectedUsage(vg, "ElseBranch", 1, 1).Dummy();
 
-            Sut.Name = "one";
-            var _ = Sut.Name;
+            Sut.StringProperty = "one";
+            var _ = Sut.StringProperty;
 
             vg.Assert();
         }

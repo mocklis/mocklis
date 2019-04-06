@@ -24,14 +24,14 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void only_forward_values_if_changed()
         {
-            MockMembers.Name.OnlySetIfChanged().RecordBeforeSet(out var ledger, a => a).Stored();
+            MockMembers.StringProperty.OnlySetIfChanged().RecordBeforeSet(out var ledger, a => a).Stored();
 
-            Sut.Name = "Alpha";
-            Sut.Name = "Beta";
-            Sut.Name = "Beta";
-            Sut.Name = "Alpha";
-            Sut.Name = "Alpha";
-            Sut.Name = "Gamma";
+            Sut.StringProperty = "Alpha";
+            Sut.StringProperty = "Beta";
+            Sut.StringProperty = "Beta";
+            Sut.StringProperty = "Alpha";
+            Sut.StringProperty = "Alpha";
+            Sut.StringProperty = "Gamma";
 
             Assert.Equal(new[] { "Alpha", "Beta", "Alpha", "Gamma" }, ledger);
         }
@@ -39,14 +39,14 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void only_forward_values_if_comparer_considers_them_changed()
         {
-            MockMembers.Age.OnlySetIfChanged(new ModuloNComparer(5)).RecordBeforeSet(out var ledger, a => a).Stored();
+            MockMembers.IntProperty.OnlySetIfChanged(new ModuloNComparer(5)).RecordBeforeSet(out var ledger, a => a).Stored();
 
-            Sut.Age = 6;
-            Sut.Age = 11;
-            Sut.Age = 21;
-            Sut.Age = 20;
-            Sut.Age = 15;
-            Sut.Age = 2;
+            Sut.IntProperty = 6;
+            Sut.IntProperty = 11;
+            Sut.IntProperty = 21;
+            Sut.IntProperty = 20;
+            Sut.IntProperty = 15;
+            Sut.IntProperty = 2;
 
             Assert.Equal(new[] { 6, 20, 2 }, ledger);
         }

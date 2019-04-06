@@ -22,8 +22,8 @@ namespace Mocklis.Tests.Steps.Dummy
         [Fact]
         public void return_default_value()
         {
-            _mockMembers.DoStuff.Dummy();
-            var result = ((IMethods)_mockMembers).DoStuff(150);
+            _mockMembers.FuncWithParameter.Dummy();
+            var result = ((IMethods)_mockMembers).FuncWithParameter(150);
             Assert.Equal(default, result);
         }
     }

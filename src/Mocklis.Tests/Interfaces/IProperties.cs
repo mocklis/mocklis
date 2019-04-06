@@ -9,8 +9,8 @@ namespace Mocklis.Tests.Interfaces
 {
     public interface IProperties
     {
-        string Name { get; set; }
-        int Age { get; set; }
-        bool Flag { get; set; }
+        string StringProperty { get; set; }
+        int IntProperty { get; set; }
+        bool BoolProperty { get; set; }
     }
 }

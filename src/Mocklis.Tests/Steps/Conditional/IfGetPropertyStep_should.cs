@@ -26,7 +26,7 @@ namespace Mocklis.Tests.Steps.Conditional
         {
             var mockMembers = new MockMembers();
 
-            mockMembers.Name
+            mockMembers.StringProperty
                 .IfGet(i => i
                     .RecordAfterGet(out _gets, n => n)
                     .RecordBeforeSet(out _sets, n => n)
@@ -39,14 +39,14 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void forward_Get()
         {
-            var _ = Sut.Name;
+            var _ = Sut.StringProperty;
             Assert.Equal(1, _gets.Count);
         }
 
         [Fact]
         public void not_forward_Set()
         {
-            Sut.Name = "one";
+            Sut.StringProperty = "one";
             Assert.Equal(0, _sets.Count);
         }
     }

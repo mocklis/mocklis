@@ -26,15 +26,15 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_get_conditions()
         {
-            MockMembers.Flag.Stored();
+            MockMembers.BoolProperty.Stored();
             StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.InstanceIf((inst, i) => ((IProperties)inst).Flag, null, s => s.StoredAsDictionary(out indexerStore)).Dummy();
+            MockMembers.Item.InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, null, s => s.StoredAsDictionary(out indexerStore)).Dummy();
 
             indexerStore[1] = "one";
             indexerStore[3] = "three";
 
             var v1 = Sut[1];
-            Props.Flag = true;
+            Props.BoolProperty = true;
             var v3 = Sut[3];
 
             Assert.Null(v1);
@@ -44,12 +44,12 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_set_conditions()
         {
-            MockMembers.Flag.Stored();
+            MockMembers.BoolProperty.Stored();
             StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.InstanceIf(null, (inst, i, v) => ((IProperties)inst).Flag, s => s.StoredAsDictionary(out indexerStore)).Dummy();
+            MockMembers.Item.InstanceIf(null, (inst, i, v) => ((IProperties)inst).BoolProperty, s => s.StoredAsDictionary(out indexerStore)).Dummy();
 
             Sut[1] = "one";
-            Props.Flag = true;
+            Props.BoolProperty = true;
             Sut[3] = "three";
 
             Assert.Null(indexerStore[1]);

@@ -13,6 +13,9 @@ namespace Mocklis.Tests.Interfaces
 
     public interface IMethods
     {
-        int DoStuff(int parameter);
+        void SimpleAction();
+        void ActionWithParameter(int i);
+        int SimpleFunc();
+        int FuncWithParameter(int i);
     }
 }
