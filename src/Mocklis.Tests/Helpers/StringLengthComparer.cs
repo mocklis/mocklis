@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ModuloNComparer.cs">
+// <copyright file="StringLengthComparer.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -9,19 +9,19 @@ namespace Mocklis.Tests.Helpers
 {
     #region Using Directives
 
-    using System;
     using System.Collections.Generic;
 
     #endregion
 
     public sealed class StringLengthComparer : IEqualityComparer<string>
     {
-        public StringLengthComparer()
+        private int GetLength(string s)
         {
+            return s?.Length ?? 0;
         }
 
-        public bool Equals(string x, string y) => ((x?.Length) ?? 0) == ((y?.Length) ?? 0);
+        public bool Equals(string x, string y) => GetLength(x) == GetLength(y);
 
-        public int GetHashCode(string obj) => (obj?.Length) ?? 0;
+        public int GetHashCode(string obj) => GetLength(obj);
     }
 }
