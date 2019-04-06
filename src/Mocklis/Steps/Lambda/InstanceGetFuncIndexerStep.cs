@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InstanceFuncIndexerStep.cs">
+// <copyright file="InstanceGetFuncIndexerStep.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -15,23 +15,23 @@ namespace Mocklis.Steps.Lambda
     #endregion
 
     /// <summary>
-    ///     Class that represents a 'Func' indexer step, where the function can also depend on the current mock instance.
+    ///     Class that represents a 'GetFunc' indexer step, where the function can also depend on the current mock instance.
     ///     Inherits from the <see cref="IndexerStepWithNext{TKey,TValue}" /> class.
     /// </summary>
     /// <typeparam name="TKey">The type of the indexer key.</typeparam>
     /// <typeparam name="TValue">The type of the indexer value.</typeparam>
     /// <seealso cref="IndexerStepWithNext{TKey, TValue}" />
-    public class InstanceFuncIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
+    public class InstanceGetFuncIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>
     {
         private readonly Func<object, TKey, TValue> _func;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InstanceFuncIndexerStep{TKey, TValue}" /> class.
+        ///     Initializes a new instance of the <see cref="InstanceGetFuncIndexerStep{TKey,TValue}" /> class.
         /// </summary>
         /// <param name="func">A function used to create a value when the indexer is read from.</param>
-        public InstanceFuncIndexerStep(Func<object, TKey, TValue> func)
+        public InstanceGetFuncIndexerStep(Func<object, TKey, TValue> func)
         {
-            _func = func;
+            _func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
         /// <summary>

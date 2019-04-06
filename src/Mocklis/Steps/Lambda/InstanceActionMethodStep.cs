@@ -30,7 +30,7 @@ namespace Mocklis.Steps.Lambda
         /// <param name="action">An action to take when the method is called.</param>
         public InstanceActionMethodStep(Action<object, TParam> action)
         {
-            _action = action;
+            _action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Mocklis.Steps.Lambda
         /// <param name="action">An action to take when the method is called.</param>
         public InstanceActionMethodStep(Action<object> action)
         {
-            _action = action;
+            _action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
         /// <summary>

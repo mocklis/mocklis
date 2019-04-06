@@ -31,7 +31,7 @@ namespace Mocklis.Steps.Lambda
         /// <param name="func">A function that is used to create a return value when the method is called.</param>
         public InstanceFuncMethodStep(Func<object, TParam, TResult> func)
         {
-            _func = func;
+            _func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Mocklis.Steps.Lambda
         /// <param name="func">A function that is used to create a return value when the method is called.</param>
         public InstanceFuncMethodStep(Func<object, TResult> func)
         {
-            _func = func;
+            _func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
         /// <summary>
