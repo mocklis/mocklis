@@ -69,6 +69,22 @@ namespace Mocklis
         ///     Introduces a step that will record an entry before an event handler is added.
         /// </summary>
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextEventStep<THandler> RecordBeforeAdd<THandler>(
+            this ICanHaveNextEventStep<THandler> caller,
+            out IReadOnlyList<THandler> ledger) where THandler : Delegate
+        {
+            var newStep = new RecordBeforeAddEventStep<THandler, THandler>(h => h);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry before an event handler is added.
+        /// </summary>
+        /// <typeparam name="THandler">The event handler type for the event.</typeparam>
         /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
@@ -80,6 +96,22 @@ namespace Mocklis
             Func<THandler, TRecord> selection) where THandler : Delegate
         {
             var newStep = new RecordBeforeAddEventStep<THandler, TRecord>(selection);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry before an event handler is removed.
+        /// </summary>
+        /// <typeparam name="THandler">The event handler type for the event.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextEventStep<THandler> RecordBeforeRemove<THandler>(
+            this ICanHaveNextEventStep<THandler> caller,
+            out IReadOnlyList<THandler> ledger) where THandler : Delegate
+        {
+            var newStep = new RecordBeforeRemoveEventStep<THandler, THandler>(h => h);
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }
@@ -155,6 +187,23 @@ namespace Mocklis
         }
 
         /// <summary>
+        ///     Introduces a step that will record an entry after a value is read from the indexer.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the indexer key.</typeparam>
+        /// <typeparam name="TValue">The type of the indexer value.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextIndexerStep<TKey, TValue> RecordAfterGet<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
+            out IReadOnlyList<(TKey, TValue)> ledger)
+        {
+            var newStep = new RecordAfterGetIndexerStep<TKey, TValue, (TKey, TValue)>((k, v) => (k, v));
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
         ///     Introduces a step that will record an entry after a value is read from the indexer; optionally also recording
         ///     exceptions.
         /// </summary>
@@ -179,6 +228,23 @@ namespace Mocklis
             Func<Exception, TRecord> onError = null)
         {
             var newStep = new RecordAfterGetIndexerStep<TKey, TValue, TRecord>(selection, onError);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry before a value as been written to the indexer.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the indexer key.</typeparam>
+        /// <typeparam name="TValue">The type of the indexer value.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextIndexerStep<TKey, TValue> RecordBeforeSet<TKey, TValue>(
+            this ICanHaveNextIndexerStep<TKey, TValue> caller,
+            out IReadOnlyList<(TKey, TValue)> ledger)
+        {
+            var newStep = new RecordBeforeSetIndexerStep<TKey, TValue, (TKey, TValue)>((k, v) => (k, v));
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }
@@ -262,6 +328,23 @@ namespace Mocklis
         /// </summary>
         /// <typeparam name="TParam">The method parameter type.</typeparam>
         /// <typeparam name="TResult">The method return type.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextMethodStep<TParam, TResult> RecordAfterCall<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
+            out IReadOnlyList<(TParam, TResult)> ledger)
+        {
+            var newStep = new RecordAfterCallMethodStep<TParam, TResult, (TParam, TResult)>((p, r) => (p, r));
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry when a method has been called; optionally also recording exceptions.
+        /// </summary>
+        /// <typeparam name="TParam">The method parameter type.</typeparam>
+        /// <typeparam name="TResult">The method return type.</typeparam>
         /// <typeparam name="TRecord">The type of the entries that will be recorded in the ledger.</typeparam>
         /// <param name="caller">The mock or step to which this 'record' step is added.</param>
         /// <param name="ledger">A list that contains recorded entries.</param>
@@ -281,6 +364,23 @@ namespace Mocklis
             Func<Exception, TRecord> onError = null)
         {
             var newStep = new RecordAfterCallMethodStep<TParam, TResult, TRecord>(selection, onError);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry before a method is about to be called.
+        /// </summary>
+        /// <typeparam name="TParam">The method parameter type.</typeparam>
+        /// <typeparam name="TResult">The method return type.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextMethodStep<TParam, TResult> RecordBeforeCall<TParam, TResult>(
+            this ICanHaveNextMethodStep<TParam, TResult> caller,
+            out IReadOnlyList<TParam> ledger)
+        {
+            var newStep = new RecordBeforeCallMethodStep<TParam, TResult, TParam>(p => p);
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }
@@ -359,6 +459,22 @@ namespace Mocklis
         }
 
         /// <summary>
+        ///     Introduces a step that will record an entry after a value is read from the property.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the property.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextPropertyStep<TValue> RecordAfterGet<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
+            out IReadOnlyList<TValue> ledger)
+        {
+            var newStep = new RecordAfterGetPropertyStep<TValue, TValue>(v => v);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
         ///     Introduces a step that will record an entry after a value is read from the property; optionally also recording
         ///     exceptions.
         /// </summary>
@@ -379,6 +495,22 @@ namespace Mocklis
             Func<Exception, TRecord> onError = null)
         {
             var newStep = new RecordAfterGetPropertyStep<TValue, TRecord>(selection, onError);
+            ledger = newStep;
+            return caller.SetNextStep(newStep);
+        }
+
+        /// <summary>
+        ///     Introduces a step that will record an entry before a value as been written to the property.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the property.</typeparam>
+        /// <param name="caller">The mock or step to which this 'record' step is added.</param>
+        /// <param name="ledger">A list that contains recorded entries.</param>
+        /// <returns>An <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> that can be used to add further steps.</returns>
+        public static ICanHaveNextPropertyStep<TValue> RecordBeforeSet<TValue>(
+            this ICanHaveNextPropertyStep<TValue> caller,
+            out IReadOnlyList<TValue> ledger)
+        {
+            var newStep = new RecordBeforeSetPropertyStep<TValue, TValue>(v => v);
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }

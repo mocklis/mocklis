@@ -28,8 +28,8 @@ namespace Mocklis.Tests.Steps.Conditional
 
             mockMembers.StringProperty
                 .IfSet(i => i
-                    .RecordAfterGet(out _gets, n => n)
-                    .RecordBeforeSet(out _sets, n => n)
+                    .RecordAfterGet(out _gets)
+                    .RecordBeforeSet(out _sets)
                     .Join(i.ElseBranch))
                 .Dummy();
 

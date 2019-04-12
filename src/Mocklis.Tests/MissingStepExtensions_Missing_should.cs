@@ -23,7 +23,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var eventMock = new MockCanHaveNextEventStep<EventHandler>();
-            eventMock.SetNextStep<MissingEventStep<EventHandler>>().RecordBeforeCall(out var ledger, s => s).Dummy();
+            eventMock.SetNextStep<MissingEventStep<EventHandler>>().RecordBeforeCall(out var ledger).Dummy();
 
             // Act
             eventMock.Missing();
@@ -38,7 +38,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var indexerMock = new MockCanHaveNextIndexerStep<int, string>();
-            indexerMock.SetNextStep<MissingIndexerStep<int, string>>().RecordBeforeCall(out var ledger, s => s).Dummy();
+            indexerMock.SetNextStep<MissingIndexerStep<int, string>>().RecordBeforeCall(out var ledger).Dummy();
 
             // Act
             indexerMock.Missing();
@@ -53,7 +53,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var eventMock = new MockCanHaveNextMethodStep<int, string>();
-            eventMock.SetNextStep<MissingMethodStep<int, string>>().RecordBeforeCall(out var ledger, s => s).Dummy();
+            eventMock.SetNextStep<MissingMethodStep<int, string>>().RecordBeforeCall(out var ledger).Dummy();
 
             // Act
             eventMock.Missing();
@@ -68,7 +68,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var indexerMock = new MockCanHaveNextPropertyStep<int>();
-            indexerMock.SetNextStep<MissingPropertyStep<int>>().RecordBeforeCall(out var ledger, s => s).Dummy();
+            indexerMock.SetNextStep<MissingPropertyStep<int>>().RecordBeforeCall(out var ledger).Dummy();
 
             // Act
             indexerMock.Missing();

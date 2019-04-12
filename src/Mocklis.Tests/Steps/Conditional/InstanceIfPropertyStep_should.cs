@@ -42,7 +42,7 @@ namespace Mocklis.Tests.Steps.Conditional
             MockMembers.BoolProperty.Stored();
             IReadOnlyList<string> ledger = null;
             MockMembers.StringProperty
-                .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger, a => a).Dummy()).Dummy();
+                .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger).Dummy()).Dummy();
 
             Sut.StringProperty = "off";
             Sut.BoolProperty = true;

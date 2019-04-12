@@ -42,7 +42,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void forward_gets()
         {
-            MockMembers.StringProperty.SetAction(a => throw new InvalidOperationException()).RecordAfterGet(out var ledger, v => v).Dummy();
+            MockMembers.StringProperty.SetAction(a => throw new InvalidOperationException()).RecordAfterGet(out var ledger).Dummy();
 
             var _ = Sut.StringProperty;
 

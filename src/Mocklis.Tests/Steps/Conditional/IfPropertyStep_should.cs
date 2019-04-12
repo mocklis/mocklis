@@ -41,7 +41,7 @@ namespace Mocklis.Tests.Steps.Conditional
         {
             IReadOnlyList<string> ledger = null;
             MockMembers.StringProperty
-                .If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger, a => a).Dummy())
+                .If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger).Dummy())
                 .Dummy();
 
             Sut.StringProperty = "Apple";

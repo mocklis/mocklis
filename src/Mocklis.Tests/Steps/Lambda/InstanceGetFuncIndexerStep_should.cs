@@ -50,7 +50,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void forward_sets()
         {
-            MockMembers.Item.InstanceGetFunc((o, i) => throw new InvalidOperationException()).RecordBeforeSet(out var ledger, (i, v) => (i, v))
+            MockMembers.Item.InstanceGetFunc((o, i) => throw new InvalidOperationException()).RecordBeforeSet(out var ledger)
                 .Dummy();
 
             Sut[5] = "Test";

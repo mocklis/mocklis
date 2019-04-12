@@ -44,7 +44,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void forward_adds()
         {
-            MockMembers.MyEvent.RemoveAction(_ => throw new InvalidOperationException()).RecordBeforeAdd(out var ledger, v => v).Dummy();
+            MockMembers.MyEvent.RemoveAction(_ => throw new InvalidOperationException()).RecordBeforeAdd(out var ledger).Dummy();
 
             Sut.MyEvent += HandlerInstance;
 

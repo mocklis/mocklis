@@ -33,8 +33,8 @@ namespace Mocklis.Tests.Steps.Conditional
 
             mockMembers.MyEvent
                 .IfAdd(i => i
-                    .RecordBeforeAdd(out _adds, a => a)
-                    .RecordBeforeRemove(out _removes, a => a)
+                    .RecordBeforeAdd(out _adds)
+                    .RecordBeforeRemove(out _removes)
                     .Join(i.ElseBranch))
                 .Dummy();
 
