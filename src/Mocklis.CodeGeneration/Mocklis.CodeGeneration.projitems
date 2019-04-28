@@ -20,14 +20,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedPropertyMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\RoslynExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\SingleTypeOrValueTuple.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\TypeParameterNameSubstitutions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\UniqueNames\Uniquifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedIndexerMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMethodMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedPropertyMock.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)CodeGeneration\" />
   </ItemGroup>
 </Project>

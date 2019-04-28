@@ -10,7 +10,6 @@ namespace Mocklis.CodeGeneration
     #region Using Directives
 
     using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,7 +19,7 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedIndexerMock : PropertyBasedMock<IPropertySymbol>, IMemberMock
     {
-        private bool IsMultiDimensional { get; }
+        private SingleTypeOrValueTuple KeyType { get; }
         private TypeSyntax KeyTypeSyntax { get; }
         private TypeSyntax ValueTypeSyntax { get; }
         private TypeSyntax MockPropertyType { get; }
@@ -30,12 +29,9 @@ namespace Mocklis.CodeGeneration
             string mockMemberName) : base(typesForSymbols,
             classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            IsMultiDimensional = symbol.Parameters.Length > 1;
+            KeyType = new SingleTypeOrValueTuple(symbol.Parameters, mockMemberName);
 
-            KeyTypeSyntax = IsMultiDimensional
-                ? F.TupleType(F.SeparatedList(symbol.Parameters.Select(a =>
-                    F.TupleElement(typesForSymbols.ParseTypeName(a.Type), F.Identifier(a.Name)))))
-                : typesForSymbols.ParseTypeName(symbol.Parameters[0].Type);
+            KeyTypeSyntax = KeyType.BuildTypeSyntax(typesForSymbols);
 
             ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
 
@@ -67,19 +63,15 @@ namespace Mocklis.CodeGeneration
             }
 
             var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
-                .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type))))))
+                .WithParameterList(KeyType.BuildParameterList(TypesForSymbols))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
-            var keyParameter = IsMultiDimensional
-                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(Symbol.Parameters
-                    .Select(a => F.Argument(F.IdentifierName(a.Name))).ToArray()))
-                : F.IdentifierName(Symbol.Parameters[0].Name);
+            var arguments = KeyType.BuildArgumentList();
 
             if (Symbol.IsReadOnly)
             {
                 ExpressionSyntax elementAccess = F.ElementAccessExpression(F.IdentifierName(MemberMockName))
-                    .WithExpressionsAsArgumentList(keyParameter);
+                    .WithExpressionsAsArgumentList(arguments);
 
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
@@ -95,7 +87,7 @@ namespace Mocklis.CodeGeneration
                 {
                     mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithExpressionBody(F.ArrowExpressionClause(F.ElementAccessExpression(F.IdentifierName(MemberMockName))
-                            .WithExpressionsAsArgumentList(keyParameter)))
+                            .WithExpressionsAsArgumentList(arguments)))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
                     );
                 }
@@ -105,7 +97,7 @@ namespace Mocklis.CodeGeneration
                     mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                         .WithExpressionBody(F.ArrowExpressionClause(
                             F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                F.ElementAccessExpression(F.IdentifierName(MemberMockName)).WithExpressionsAsArgumentList(keyParameter),
+                                F.ElementAccessExpression(F.IdentifierName(MemberMockName)).WithExpressionsAsArgumentList(arguments),
                                 F.IdentifierName("value"))))
                         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
                 }
