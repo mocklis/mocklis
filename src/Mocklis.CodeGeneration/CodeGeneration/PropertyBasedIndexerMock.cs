@@ -29,9 +29,15 @@ namespace Mocklis.CodeGeneration
             string mockMemberName) : base(typesForSymbols,
             classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            KeyType = new SingleTypeOrValueTuple(symbol.Parameters, mockMemberName);
+            var builder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
+            foreach (var p in symbol.Parameters)
+            {
+                builder.AddParameter(p);
+            }
 
-            KeyTypeSyntax = KeyType.BuildTypeSyntax(typesForSymbols);
+            KeyType = builder.Build(mockMemberName);
+
+            KeyTypeSyntax = KeyType.BuildTypeSyntax();
 
             ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
 
@@ -63,7 +69,7 @@ namespace Mocklis.CodeGeneration
             }
 
             var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
-                .WithParameterList(KeyType.BuildParameterList(TypesForSymbols))
+                .WithParameterList(KeyType.BuildParameterList())
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
             var arguments = KeyType.BuildArgumentList();

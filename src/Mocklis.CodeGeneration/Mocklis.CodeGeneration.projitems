@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedPropertyMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\RoslynExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\SingleTypeOrValueTupleBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\SingleTypeOrValueTuple.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\UniqueNames\Uniquifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedIndexerMock.cs" />

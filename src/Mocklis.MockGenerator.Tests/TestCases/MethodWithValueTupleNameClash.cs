@@ -5,9 +5,8 @@ namespace Test
 {
     public interface ITestClass
     {
-        ref int ReturnsByRef();
-        ref readonly int ReturnsByRefReadonly();
-        ref readonly int ReturnsMoreStuffByRef(out int blah);
+        void Test(int Item2, int AnotherItem);
+        int Test2(out int Item1);
     }
 
     [MocklisClass]

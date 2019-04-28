@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SingleTypeOrValueTuple.cs">
+// <copyright file="SingleValueOrValueTuple.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -10,136 +10,93 @@ namespace Mocklis.CodeGeneration
     #region Using Directives
 
     using System;
+    using System.Collections;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
 
-    public sealed class SingleTypeOrValueTuple
+    public sealed class SingleTypeOrValueTuple : IReadOnlyList<SingleTypeOrValueTuple.Entry>
     {
-        private struct NameAndType
+        public struct Entry
         {
-            public NameAndType(string tupleSafeName, ITypeSymbol type)
+            public Entry(string originalName, TypeSyntax type, bool isReturnValue, string tupleSafeName)
             {
-                TupleSafeName = tupleSafeName;
+                OriginalName = originalName;
                 Type = type;
+                IsReturnValue = isReturnValue;
+                TupleSafeName = tupleSafeName;
             }
 
+            public string OriginalName { get; }
+            public TypeSyntax Type { get; }
+            public bool IsReturnValue { get; }
             public string TupleSafeName { get; }
-            public ITypeSymbol Type { get; }
         }
 
-        public bool IsMultiDimensional { get; }
+        private Entry[] Entries { get; }
 
-        private NameAndType[] Items { get; }
-
-        public SingleTypeOrValueTuple(IEnumerable<IParameterSymbol> parameters, string mockMemberName = null)
+        public SingleTypeOrValueTuple(IEnumerable<Entry> entries)
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            var paramArray = parameters.ToArray();
-
-            int count = paramArray.Length;
-
-            if (count == 0)
-            {
-                throw new ArgumentException("Parameter list must contain at least one element", nameof(parameters));
-            }
-
-            IsMultiDimensional = count != 1;
-
-            Items = new NameAndType[count];
-
-            if (IsMultiDimensional)
-            {
-                var uniquifier = new Uniquifier();
-
-                for (int i = 0; i < count; i++)
-                {
-                    string name = paramArray[i].Name;
-                    name = name == mockMemberName ? name + "_" : name;
-                    if (IsNameValidForPosition(name, i))
-                    {
-                        name = uniquifier.GetUniqueName(name);
-                        Items[i] = new NameAndType(name, paramArray[i].Type);
-                    }
-                }
-
-                for (int i = 0; i < count; i++)
-                {
-                    string name = paramArray[i].Name;
-                    name = name == mockMemberName ? name + "_" : name;
-                    if (!IsNameValidForPosition(name, i))
-                    {
-                        name = uniquifier.GetUniqueName(name + "_");
-                        Items[i] = new NameAndType(name, paramArray[i].Type);
-                    }
-                }
-            }
-            else
-            {
-                string name = paramArray[0].Name;
-                name = name == mockMemberName ? name + "_" : name;
-
-                Items[0] = new NameAndType(name, paramArray[0].Type);
-            }
+            Entries = entries?.ToArray() ?? Array.Empty<Entry>();
         }
 
-        private bool IsNameValidForPosition(string name, int position)
+        public IEnumerator<Entry> GetEnumerator() => Entries.OfType<Entry>().GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public int Count => Entries.Length;
+
+        public Entry this[int index] => Entries[index];
+
+        public bool IsMultiDimensional => Count > 1;
+
+        public TypeSyntax BuildTypeSyntax()
         {
-            if (!name.StartsWith("Item"))
+            if (Count == 0)
             {
-                return true;
+                return null;
             }
 
-            string rest = name.Substring(4);
-            if (rest == string.Empty)
-            {
-                return true;
-            }
-
-            if (rest[0] == '0')
-            {
-                return true;
-            }
-
-            if (rest == (position + 1).ToString(CultureInfo.InvariantCulture))
-            {
-                return true;
-            }
-
-            return rest.Any(ch => ch < '0' || ch > '9');
+            return IsMultiDimensional
+                ? F.TupleType(F.SeparatedList(this.Select(a => F.TupleElement(a.Type, F.Identifier(a.TupleSafeName)))))
+                : this[0].Type;
         }
 
-        public TypeSyntax BuildTypeSyntax(MocklisTypesForSymbols typesForSymbols)
+        public BracketedParameterListSyntax BuildParameterList()
         {
-            return
-                IsMultiDimensional
-                    ? F.TupleType(F.SeparatedList(Items.Select(a =>
-                        F.TupleElement(typesForSymbols.ParseTypeName(a.Type), F.Identifier(a.TupleSafeName)))))
-                    : typesForSymbols.ParseTypeName(Items[0].Type);
-        }
+            if (Count == 0)
+            {
+                return null;
+            }
 
-        public BracketedParameterListSyntax BuildParameterList(MocklisTypesForSymbols typesForSymbols)
-        {
-            return F.BracketedParameterList(F.SeparatedList(Items.Select(a =>
-                F.Parameter(F.Identifier(a.TupleSafeName)).WithType(typesForSymbols.ParseTypeName(a.Type)))));
+            return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.Type))));
         }
 
         public ExpressionSyntax BuildArgumentList()
         {
+            if (Count == 0)
+            {
+                return null;
+            }
+
             return IsMultiDimensional
-                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(Items
-                    .Select(a => F.Argument(F.IdentifierName(a.TupleSafeName))).ToArray()))
-                : F.IdentifierName(Items[0].TupleSafeName);
+                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.TupleSafeName))).ToArray()))
+                : F.IdentifierName(this[0].TupleSafeName);
+        }
+
+        public ExpressionSyntax BuildArgumentListWithOriginalNames()
+        {
+            if (Count == 0)
+            {
+                return null;
+            }
+
+            return IsMultiDimensional
+                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.OriginalName))).ToArray()))
+                : F.IdentifierName(this[0].OriginalName);
         }
     }
 }

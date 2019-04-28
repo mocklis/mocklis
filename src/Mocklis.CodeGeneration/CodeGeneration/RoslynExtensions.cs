@@ -86,5 +86,36 @@ namespace Mocklis.CodeGeneration
 
             return F.SeparatedList(args);
         }
+
+        public static ParameterListSyntax AsParameterList(this IEnumerable<IParameterSymbol> parameters, MocklisTypesForSymbols typesForSymbols)
+        {
+            var args = parameters.Select(p =>
+            {
+                var syntax = F.Parameter(F.Identifier(p.Name)).WithType(typesForSymbols.ParseTypeName(p.Type));
+
+                switch (p.RefKind)
+                {
+                    case RefKind.In:
+                    {
+                        syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.InKeyword)));
+                        break;
+                    }
+                    case RefKind.Out:
+                    {
+                        syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.OutKeyword)));
+                        break;
+                    }
+                    case RefKind.Ref:
+                    {
+                        syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.RefKeyword)));
+                        break;
+                    }
+                }
+
+                return syntax;
+            });
+
+            return F.ParameterList(F.SeparatedList(args));
+        }
     }
 }

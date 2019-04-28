@@ -21,78 +21,56 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedMethodMock : PropertyBasedMock<IMethodSymbol>, IMemberMock
     {
-        private ParameterOrReturnValue[] MockParameters { get; }
-        private ParameterOrReturnValue[] MockReturnValues { get; }
-        private ParameterOrReturnValue[] MethodParameters { get; }
+        private SingleTypeOrValueTuple ParametersType { get; }
+        private SingleTypeOrValueTuple ReturnValuesType { get; }
+
         protected TypeSyntax MockMemberType { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol,
-            string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
+            IMethodSymbol symbol, string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            var parameterOrReturnValueList = new List<ParameterOrReturnValue>();
-
-            var uniquifier = new Uniquifier();
+            var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
+            var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
 
             if (!symbol.ReturnsVoid)
             {
-                parameterOrReturnValueList.Add(new ParameterOrReturnValue(ParameterOrReturnValueKind.ReturnValue, "returnValue",
-                    uniquifier.GetUniqueName("returnValue"), TypesForSymbols.ParseTypeName(symbol.ReturnType)));
+                returnValuesBuilder.AddReturnValue(symbol.ReturnType);
             }
 
             foreach (var parameter in symbol.Parameters)
             {
-                if (parameter.IsThis)
-                {
-                    continue;
-                }
-
-                ParameterOrReturnValueKind kind;
                 switch (parameter.RefKind)
                 {
                     case RefKind.Ref:
                     {
-                        kind = ParameterOrReturnValueKind.Ref;
+                        parametersBuilder.AddParameter(parameter);
+                        returnValuesBuilder.AddParameter(parameter);
                         break;
                     }
                     case RefKind.Out:
                     {
-                        kind = ParameterOrReturnValueKind.Out;
+                        returnValuesBuilder.AddParameter(parameter);
                         break;
                     }
                     case RefKind.In:
                     {
-                        kind = ParameterOrReturnValueKind.In;
+                        parametersBuilder.AddParameter(parameter);
                         break;
                     }
                     case RefKind.None:
                     {
-                        kind = ParameterOrReturnValueKind.Normal;
+                        parametersBuilder.AddParameter(parameter);
                         break;
                     }
-                    default:
-                    {
-                        continue;
-                    }
                 }
-
-                parameterOrReturnValueList.Add(new ParameterOrReturnValue(kind, parameter.Name, uniquifier.GetUniqueName(parameter.Name),
-                    TypesForSymbols.ParseTypeName(parameter.Type)));
             }
 
-            MockParameters = parameterOrReturnValueList.Where(i =>
-                i.Kind == ParameterOrReturnValueKind.Normal || i.Kind == ParameterOrReturnValueKind.In ||
-                i.Kind == ParameterOrReturnValueKind.Ref).ToArray();
+            ParametersType = parametersBuilder.Build();
+            ReturnValuesType = returnValuesBuilder.Build();
 
-            MockReturnValues = parameterOrReturnValueList.Where(i =>
-                i.Kind == ParameterOrReturnValueKind.ReturnValue || i.Kind == ParameterOrReturnValueKind.Ref ||
-                i.Kind == ParameterOrReturnValueKind.Out).ToArray();
+            var parameterTypeSyntax = ParametersType.BuildTypeSyntax();
 
-            MethodParameters = parameterOrReturnValueList.Where(i => i.Kind != ParameterOrReturnValueKind.ReturnValue).ToArray();
-
-            var parameterTypeSyntax = ParameterOrReturnValue.BuildType(MockParameters);
-
-            var returnValueTypeSyntax = ParameterOrReturnValue.BuildType(MockReturnValues);
+            var returnValueTypeSyntax = ReturnValuesType.BuildTypeSyntax();
 
             if (returnValueTypeSyntax == null)
             {
@@ -142,12 +120,12 @@ namespace Mocklis.CodeGeneration
             ExpressionSyntax invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         memberMockInstance, F.IdentifierName("Call")))
-                .WithExpressionsAsArgumentList(ParameterOrReturnValue.BuildArgument(MockParameters));
+                .WithExpressionsAsArgumentList(ParametersType.BuildArgumentListWithOriginalNames());
 
             // look at the return parameters. If we don't have any we can just make the call.
             // if we only have one and that's the return value, we can just return it.
-            if (MockReturnValues.Length == 0 ||
-                MockReturnValues.Length == 1 && MockReturnValues[0].Kind == ParameterOrReturnValueKind.ReturnValue)
+            if (ReturnValuesType.Count == 0 ||
+                ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue)
             {
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
@@ -157,19 +135,16 @@ namespace Mocklis.CodeGeneration
                 mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
-
             // if we only have one and that's not a return value, we can just assign it to the out or ref parameter it corresponds to.
-            else if (MockReturnValues.Length == 1)
+            else if (ReturnValuesType.Count == 1)
             {
                 mockedMethod = mockedMethod.WithBody(F.Block(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                    F.IdentifierName(MockReturnValues[0].ParameterName), invocation))));
+                    F.IdentifierName(ReturnValuesType[0].OriginalName), invocation))));
             }
-
             else
             {
                 // if we have more than one, put it in a temporary variable. (consider name clashes with method parameter names)
-
-                var x = new Uniquifier(MethodParameters.Select(m => m.ParameterName));
+                var x = new Uniquifier(Symbol.Parameters.Select(m => m.Name));
                 string tmp = x.GetUniqueName("tmp");
 
                 var statements = new List<StatementSyntax>
@@ -179,18 +154,19 @@ namespace Mocklis.CodeGeneration
                 };
 
                 // then for any out or ref parameters, set their values from the temporary variable.
-                foreach (var rv in MockReturnValues.Where(a => a.Kind != ParameterOrReturnValueKind.ReturnValue))
+                foreach (var rv in ReturnValuesType.Where(a => !a.IsReturnValue))
                 {
                     statements.Add(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                        F.IdentifierName(rv.ParameterName),
-                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp), F.IdentifierName(rv.UniqueName)))));
+                        F.IdentifierName(rv.OriginalName),
+                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
+                            F.IdentifierName(rv.TupleSafeName)))));
                 }
 
                 // finally, if there is a 'proper' return type, return the corresponding value from the temporary variable.
-                foreach (var rv in MockReturnValues.Where(a => a.Kind == ParameterOrReturnValueKind.ReturnValue))
+                foreach (var rv in ReturnValuesType.Where(a => a.IsReturnValue))
                 {
                     ExpressionSyntax memberAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
-                        F.IdentifierName(rv.UniqueName));
+                        F.IdentifierName(rv.TupleSafeName));
 
                     if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                     {
@@ -209,88 +185,13 @@ namespace Mocklis.CodeGeneration
         protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
         {
             return F.MethodDeclaration(returnType, Symbol.Name)
-                .WithParameterList(F.ParameterList(F.SeparatedList(MethodParameters.Select(p => p.AsParameterSyntax()))))
+                .WithParameterList(Symbol.Parameters.AsParameterList(TypesForSymbols))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
         }
 
         protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()
         {
             return F.IdentifierName(MemberMockName);
-        }
-
-        protected enum ParameterOrReturnValueKind
-        {
-            ReturnValue,
-            Normal,
-            In,
-            Out,
-            Ref
-        }
-
-        protected class ParameterOrReturnValue
-        {
-            public ParameterOrReturnValueKind Kind { get; }
-            public string ParameterName { get; }
-            public string UniqueName { get; }
-            private TypeSyntax TypeSyntax { get; }
-
-            public ParameterOrReturnValue(ParameterOrReturnValueKind kind, string parameterName, string uniqueName, TypeSyntax typeSyntax)
-            {
-                Kind = kind;
-                ParameterName = parameterName;
-                UniqueName = uniqueName;
-                TypeSyntax = typeSyntax;
-            }
-
-            public static TypeSyntax BuildType(IEnumerable<ParameterOrReturnValue> items)
-            {
-                var itemsArray = items.ToArray();
-                switch (itemsArray.Length)
-                {
-                    case 0:
-                        return null;
-                    case 1:
-                        return itemsArray[0].TypeSyntax;
-                    default:
-                        return F.TupleType(F.SeparatedList(itemsArray.Select(a => F.TupleElement(a.TypeSyntax, F.Identifier(a.UniqueName)))));
-                }
-            }
-
-            public static ExpressionSyntax BuildArgument(IEnumerable<ParameterOrReturnValue> items)
-            {
-                var itemsArray = items.ToArray();
-                switch (itemsArray.Length)
-                {
-                    case 0:
-                        return null;
-                    case 1:
-                        return F.IdentifierName(itemsArray[0].ParameterName);
-                    default:
-                        return F.TupleExpression(F.SeparatedList(itemsArray.Select(a => F.Argument(F.IdentifierName(a.ParameterName)))));
-                }
-            }
-
-            public ParameterSyntax AsParameterSyntax()
-            {
-                var result = F.Parameter(F.Identifier(ParameterName)).WithType(TypeSyntax);
-                switch (Kind)
-                {
-                    case ParameterOrReturnValueKind.In:
-                    {
-                        return result.WithModifiers(F.TokenList(F.Token(SyntaxKind.InKeyword)));
-                    }
-                    case ParameterOrReturnValueKind.Out:
-                    {
-                        return result.WithModifiers(F.TokenList(F.Token(SyntaxKind.OutKeyword)));
-                    }
-                    case ParameterOrReturnValueKind.Ref:
-                    {
-                        return result.WithModifiers(F.TokenList(F.Token(SyntaxKind.RefKeyword)));
-                    }
-                    default:
-                        return result;
-                }
-            }
         }
     }
 }

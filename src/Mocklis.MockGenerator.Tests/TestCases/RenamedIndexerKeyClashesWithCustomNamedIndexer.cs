@@ -1,13 +1,13 @@
 using System;
+using System.Runtime.CompilerServices;
 using Mocklis.Core;
 
 namespace Test
 {
     public interface ITestClass
     {
-        ref int ReturnsByRef();
-        ref readonly int ReturnsByRefReadonly();
-        ref readonly int ReturnsMoreStuffByRef(out int blah);
+        [IndexerName("Item2_")]
+        int this[int Item2, int otherItem] { get; set; }
     }
 
     [MocklisClass]

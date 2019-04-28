@@ -23,10 +23,8 @@ namespace Mocklis.CodeGeneration
         public string MockProviderName { get; }
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
-            INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol,
-            string mockMemberName, string mockProviderName) : base(typesForSymbols.WithSubstitutions(classSymbol, symbol),
-            classSymbol, interfaceSymbol, symbol, mockMemberName)
+            INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName)
+            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
         }
