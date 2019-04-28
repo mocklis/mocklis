@@ -17,6 +17,7 @@ namespace Test
     {
         void Test<T>(RefStruct refStruct, TOuter outer, T parameter);
         void TestWithConstraint<T>(RefStruct refStruct, TOuter outer, T parameter) where T : TOuter;
+        ref readonly T TestWithRef<T>();
     }
 
     [MocklisClass]

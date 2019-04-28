@@ -25,7 +25,7 @@ namespace Mocklis.CodeGeneration
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
             INamedTypeSymbol interfaceSymbol,
             IMethodSymbol symbol,
-            string mockMemberName, string mockProviderName) : base(typesForSymbols,
+            string mockMemberName, string mockProviderName) : base(typesForSymbols.WithSubstitutions(classSymbol, symbol),
             classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
@@ -40,9 +40,9 @@ namespace Mocklis.CodeGeneration
 
         private MemberDeclarationSyntax TypedMockProviderField()
         {
-            return F.FieldDeclaration(F.VariableDeclaration(TypesForSymbols.TypedMockProvider).WithVariables(
+            return F.FieldDeclaration(F.VariableDeclaration(TypesForSymbols.TypedMockProvider()).WithVariables(
                 F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(MockProviderName))
-                    .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(TypesForSymbols.TypedMockProvider)
+                    .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(TypesForSymbols.TypedMockProvider())
                         .WithArgumentList(F.ArgumentList())))))
             ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
         }
@@ -79,7 +79,7 @@ namespace Mocklis.CodeGeneration
 
             m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters, TypeParameterNameSubstitutions);
+            var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters);
 
             if (constraints.Any())
             {
@@ -93,7 +93,7 @@ namespace Mocklis.CodeGeneration
         {
             return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                 F.SeparatedList<ExpressionSyntax>(Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeOfExpression(F.IdentifierName(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))))));
+                    F.TypeOfExpression(F.IdentifierName(TypesForSymbols.FindTypeParameterName(typeParameter.Name)))))));
         }
 
         public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
@@ -113,14 +113,14 @@ namespace Mocklis.CodeGeneration
         private TypeParameterListSyntax TypeParameterList()
         {
             return F.TypeParameterList(F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
-                F.TypeParameter(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))));
+                F.TypeParameter(TypesForSymbols.FindTypeParameterName(typeParameter.Name)))));
         }
 
         private TypeArgumentListSyntax TypeArgumentList()
         {
             return F.TypeArgumentList(
                 F.SeparatedList<TypeSyntax>(Symbol.TypeParameters.Select(typeParameter =>
-                    F.IdentifierName(TypeParameterNameSubstitutions.GetName(typeParameter.Name)))));
+                    F.IdentifierName(TypesForSymbols.FindTypeParameterName(typeParameter.Name)))));
         }
     }
 }

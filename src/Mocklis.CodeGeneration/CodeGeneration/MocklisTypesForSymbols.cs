@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -23,19 +24,45 @@ namespace Mocklis.CodeGeneration
         private readonly SemanticModel _semanticModel;
         private readonly ClassDeclarationSyntax _classDeclaration;
         private readonly MocklisSymbols _mocklisSymbols;
+        private readonly Dictionary<string, string> _typeParameterNameSubstitutions;
 
         public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
         {
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
-            MockMissingException = ParseName(mocklisSymbols.MockMissingException);
-            MockType = ParseName(mocklisSymbols.MockType);
-            TypedMockProvider = ParseName(mocklisSymbols.TypedMockProvider);
-            RuntimeArgumentHandle = ParseName(mocklisSymbols.RuntimeArgumentHandle);
+            _typeParameterNameSubstitutions = null;
         }
 
-        public TypeSyntax ParseTypeName(ITypeSymbol propertyType, TypeParameterNameSubstitutions substitutions = null)
+        public MocklisTypesForSymbols WithSubstitutions(INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
+        {
+            return new MocklisTypesForSymbols(_semanticModel, _classDeclaration, _mocklisSymbols, classSymbol, methodSymbol);
+        }
+
+        private MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
+            INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
+        {
+            _semanticModel = semanticModel;
+            _classDeclaration = classDeclaration;
+            _mocklisSymbols = mocklisSymbols;
+            _typeParameterNameSubstitutions = new Dictionary<string, string>();
+            Uniquifier t = new Uniquifier(classSymbol.TypeParameters.Select(tp => tp.Name));
+
+            foreach (var methodTypeParameter in methodSymbol.TypeParameters)
+            {
+                string uniqueName = t.GetUniqueName(methodTypeParameter.Name);
+                _typeParameterNameSubstitutions[methodTypeParameter.Name] = uniqueName;
+            }
+        }
+
+        public string FindTypeParameterName(string typeParameterName)
+        {
+            return _typeParameterNameSubstitutions != null && _typeParameterNameSubstitutions.ContainsKey(typeParameterName)
+                ? _typeParameterNameSubstitutions[typeParameterName]
+                : typeParameterName;
+        }
+
+        public TypeSyntax ParseTypeName(ITypeSymbol propertyType)
         {
             var x = propertyType.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart);
 
@@ -48,7 +75,7 @@ namespace Mocklis.CodeGeneration
                     {
                         if (part.Symbol.ContainingSymbol is IMethodSymbol methodSymbol && methodSymbol.TypeParameters.Contains(part.Symbol))
                         {
-                            s += substitutions?.GetName(part.Symbol.Name);
+                            s += FindTypeParameterName(part.Symbol.Name);
                         }
                         else
                         {
@@ -73,24 +100,24 @@ namespace Mocklis.CodeGeneration
             return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
         }
 
-        private NameSyntax ParseGenericName(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
+        private TypeSyntax ParseGenericType(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
         {
-            NameSyntax ApplyTypeParameters(NameSyntax nameSyntax)
+            TypeSyntax ApplyTypeParameters(TypeSyntax typeSyntax)
             {
-                if (nameSyntax is GenericNameSyntax genericNameSyntax)
+                if (typeSyntax is GenericNameSyntax genericNameSyntax)
                 {
                     return genericNameSyntax.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
                 }
 
-                if (nameSyntax is QualifiedNameSyntax qualifiedNameSyntax)
+                if (typeSyntax is QualifiedNameSyntax qualifiedNameSyntax)
                 {
                     return qualifiedNameSyntax.WithRight((SimpleNameSyntax)ApplyTypeParameters(qualifiedNameSyntax.Right));
                 }
 
-                return nameSyntax;
+                return typeSyntax;
             }
 
-            return ApplyTypeParameters(ParseName(symbol));
+            return ApplyTypeParameters(ParseTypeName(symbol));
         }
 
         public TypeSyntax ActionMethodMock()
@@ -100,71 +127,51 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax ActionMethodMock(TypeSyntax tparam)
         {
-            return ParseGenericName(_mocklisSymbols.ActionMethodMock1, tparam);
+            return ParseGenericType(_mocklisSymbols.ActionMethodMock1, tparam);
         }
 
         public TypeSyntax EventMock(TypeSyntax thandler)
         {
-            return ParseGenericName(_mocklisSymbols.EventMock1, thandler);
+            return ParseGenericType(_mocklisSymbols.EventMock1, thandler);
         }
 
         public TypeSyntax FuncMethodMock(TypeSyntax tresult)
         {
-            return ParseGenericName(_mocklisSymbols.FuncMethodMock1, tresult);
+            return ParseGenericType(_mocklisSymbols.FuncMethodMock1, tresult);
         }
 
         public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult)
         {
-            return ParseGenericName(_mocklisSymbols.FuncMethodMock2, tparam, tresult);
+            return ParseGenericType(_mocklisSymbols.FuncMethodMock2, tparam, tresult);
         }
 
         public TypeSyntax IndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
         {
-            return ParseGenericName(_mocklisSymbols.IndexerMock2, tkey, tvalue);
+            return ParseGenericType(_mocklisSymbols.IndexerMock2, tkey, tvalue);
         }
 
         public TypeSyntax PropertyMock(TypeSyntax tvalue)
         {
-            return ParseGenericName(_mocklisSymbols.PropertyMock1, tvalue);
+            return ParseGenericType(_mocklisSymbols.PropertyMock1, tvalue);
         }
 
-        public TypeSyntax MockMissingException { get; }
+        public TypeSyntax MockMissingException() => ParseTypeName(_mocklisSymbols.MockMissingException);
 
-        public TypeSyntax MockType { get; }
+
+        public TypeSyntax MockType() => ParseTypeName(_mocklisSymbols.MockType);
 
         public TypeSyntax ByRef(TypeSyntax tresult)
         {
-            return ParseGenericName(_mocklisSymbols.ByRef1, tresult);
+            return ParseGenericType(_mocklisSymbols.ByRef1, tresult);
         }
 
-        public TypeSyntax TypedMockProvider { get; }
+        public TypeSyntax TypedMockProvider() => ParseTypeName(_mocklisSymbols.TypedMockProvider);
 
-        public TypeSyntax RuntimeArgumentHandle { get; }
+        public TypeSyntax RuntimeArgumentHandle() => ParseTypeName(_mocklisSymbols.RuntimeArgumentHandle);
 
-        public ArgumentSyntax AsArgumentSyntax(IParameterSymbol p)
+        public ParameterSyntax AsParameterSyntax(IParameterSymbol p)
         {
-            var syntax = F.Argument(F.IdentifierName(p.Name));
-
-            switch (p.RefKind)
-            {
-                case RefKind.Out:
-                {
-                    syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.OutKeyword));
-                    break;
-                }
-                case RefKind.Ref:
-                {
-                    syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.RefKeyword));
-                    break;
-                }
-            }
-
-            return syntax;
-        }
-
-        public ParameterSyntax AsParameterSyntax(IParameterSymbol p, TypeParameterNameSubstitutions substitutions)
-        {
-            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, substitutions));
+            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type));
 
             switch (p.RefKind)
             {
@@ -188,8 +195,7 @@ namespace Mocklis.CodeGeneration
             return syntax;
         }
 
-        private TypeParameterConstraintClauseSyntax CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter,
-            TypeParameterNameSubstitutions substitutions)
+        private TypeParameterConstraintClauseSyntax CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter)
         {
             var constraints = new List<TypeParameterConstraintSyntax>();
 
@@ -210,7 +216,7 @@ namespace Mocklis.CodeGeneration
 
             foreach (var type in typeParameter.ConstraintTypes)
             {
-                constraints.Add(F.TypeConstraint(ParseTypeName(type, substitutions)));
+                constraints.Add(F.TypeConstraint(ParseTypeName(type)));
             }
 
             if (typeParameter.HasConstructorConstraint)
@@ -220,17 +226,16 @@ namespace Mocklis.CodeGeneration
 
             if (constraints.Any())
             {
-                var name = substitutions.GetName(typeParameter.Name);
+                var name = FindTypeParameterName(typeParameter.Name);
                 return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
             }
 
             return null;
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters,
-            TypeParameterNameSubstitutions substitutions)
+        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters)
         {
-            return typeParameters.Select(tp => CreateConstraintClauseFromTypeParameter(tp, substitutions)).Where(a => a != null).ToArray();
+            return typeParameters.Select(CreateConstraintClauseFromTypeParameter).Where(a => a != null).ToArray();
         }
 
         public ExpressionSyntax WrapByRef(ExpressionSyntax invocation, TypeSyntax returnType)

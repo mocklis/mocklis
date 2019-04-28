@@ -280,14 +280,14 @@ namespace Mocklis.CodeGeneration
                         .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                         .WithParameterList(
                             F.ParameterList(
-                                F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp, null)))))
+                                F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp)))))
                         .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
 
                     if (parameterNames.Any())
                     {
                         constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
                             SyntaxKind.BaseConstructorInitializer,
-                            F.ArgumentList(F.SeparatedList(constructor.Parameters.Select(_typesForSymbols.AsArgumentSyntax)))));
+                            F.ArgumentList(constructor.Parameters.AsArgumentList())));
                     }
 
                     declarationList.Add(constructorDeclaration);

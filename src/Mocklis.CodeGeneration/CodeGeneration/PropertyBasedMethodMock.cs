@@ -25,15 +25,11 @@ namespace Mocklis.CodeGeneration
         private ParameterOrReturnValue[] MockReturnValues { get; }
         private ParameterOrReturnValue[] MethodParameters { get; }
         protected TypeSyntax MockMemberType { get; }
-        protected TypeParameterNameSubstitutions TypeParameterNameSubstitutions { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IMethodSymbol symbol,
-            string mockMemberName) : base(typesForSymbols,
-            classSymbol, interfaceSymbol, symbol, mockMemberName)
+            string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            TypeParameterNameSubstitutions = new TypeParameterNameSubstitutions(classSymbol, symbol);
-
             var parameterOrReturnValueList = new List<ParameterOrReturnValue>();
 
             var uniquifier = new Uniquifier();
@@ -41,7 +37,7 @@ namespace Mocklis.CodeGeneration
             if (!symbol.ReturnsVoid)
             {
                 parameterOrReturnValueList.Add(new ParameterOrReturnValue(ParameterOrReturnValueKind.ReturnValue, "returnValue",
-                    uniquifier.GetUniqueName("returnValue"), typesForSymbols.ParseTypeName(symbol.ReturnType, TypeParameterNameSubstitutions)));
+                    uniquifier.GetUniqueName("returnValue"), TypesForSymbols.ParseTypeName(symbol.ReturnType)));
             }
 
             foreach (var parameter in symbol.Parameters)
@@ -81,7 +77,7 @@ namespace Mocklis.CodeGeneration
                 }
 
                 parameterOrReturnValueList.Add(new ParameterOrReturnValue(kind, parameter.Name, uniquifier.GetUniqueName(parameter.Name),
-                    typesForSymbols.ParseTypeName(parameter.Type, TypeParameterNameSubstitutions)));
+                    TypesForSymbols.ParseTypeName(parameter.Type)));
             }
 
             MockParameters = parameterOrReturnValueList.Where(i =>
@@ -127,7 +123,7 @@ namespace Mocklis.CodeGeneration
         {
             var baseReturnType = Symbol.ReturnsVoid
                 ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                : TypesForSymbols.ParseTypeName(Symbol.ReturnType, TypeParameterNameSubstitutions);
+                : TypesForSymbols.ParseTypeName(Symbol.ReturnType);
             var returnType = baseReturnType;
 
             if (Symbol.ReturnsByRef)

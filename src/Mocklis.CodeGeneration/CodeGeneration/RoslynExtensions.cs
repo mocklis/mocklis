@@ -12,6 +12,7 @@ namespace Mocklis.CodeGeneration
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -58,6 +59,32 @@ namespace Mocklis.CodeGeneration
 
                 typeSymbol = typeSymbol.BaseType;
             }
+        }
+
+        public static SeparatedSyntaxList<ArgumentSyntax> AsArgumentList(this IEnumerable<IParameterSymbol> parameters)
+        {
+            var args = parameters.Select(p =>
+            {
+                var syntax = F.Argument(F.IdentifierName(p.Name));
+
+                switch (p.RefKind)
+                {
+                    case RefKind.Out:
+                    {
+                        syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.OutKeyword));
+                        break;
+                    }
+                    case RefKind.Ref:
+                    {
+                        syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.RefKeyword));
+                        break;
+                    }
+                }
+
+                return syntax;
+            });
+
+            return F.SeparatedList(args);
         }
     }
 }

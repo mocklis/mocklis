@@ -36,9 +36,9 @@ namespace Mocklis.CodeGeneration
 
         protected ThrowStatementSyntax ThrowMockMissingStatement(string mockType)
         {
-            return F.ThrowStatement(F.ObjectCreationExpression(TypesForSymbols.MockMissingException)
+            return F.ThrowStatement(F.ObjectCreationExpression(TypesForSymbols.MockMissingException())
                 .WithExpressionsAsArgumentList(
-                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, TypesForSymbols.MockType,
+                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, TypesForSymbols.MockType(),
                         F.IdentifierName(mockType)),
                     F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(ClassSymbol.Name)),
                     F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
