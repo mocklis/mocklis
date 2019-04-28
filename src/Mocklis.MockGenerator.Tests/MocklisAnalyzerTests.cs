@@ -80,7 +80,14 @@ namespace Mocklis.MockGenerator.Tests
             {
                 foreach (var error in result.Errors)
                 {
-                    _testOutputHelper.WriteLine(error);
+                    _testOutputHelper.WriteLine(error.ErrorText);
+                    _testOutputHelper.WriteLine(string.Empty);
+                    foreach (var line in error.MarkedCodeLines())
+                    {
+                        _testOutputHelper.WriteLine(line);
+                    }
+
+                    _testOutputHelper.WriteLine(string.Empty);
                 }
 
                 throw new Exception("Compilation failed...");

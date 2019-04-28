@@ -9,6 +9,8 @@ namespace Mocklis.MockGenerator.Tests.Helpers
 {
     #region Using Directives
 
+    using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -102,9 +104,34 @@ namespace Mocklis.MockGenerator.Tests.Helpers
                 EmitResult emitResult = newCompilation.Emit(ms);
                 if (!emitResult.Success)
                 {
-                    var errors = emitResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error || d.IsWarningAsError)
-                        .Select(d => d.Id + ": " + d.GetMessage()).ToArray();
-                    return MocklisClassUpdaterResult.Failure(code, errors);
+                    var codeLines = code.Split(Environment.NewLine);
+                    var errors = emitResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error || d.IsWarningAsError);
+
+                    var errorList = new List<MocklisClassUpdaterResult.Error>();
+                    foreach (var error in errors)
+                    {
+                        string errorText = $"{error.Id}: {error.GetMessage()}";
+                        var location = error.Location;
+                        switch (location.Kind)
+                        {
+                            case LocationKind.SourceFile:
+                            {
+                                var span = location.GetLineSpan();
+                                var lines = codeLines.Skip(span.StartLinePosition.Line)
+                                    .Take(span.EndLinePosition.Line - span.StartLinePosition.Line + 1).ToArray();
+                                errorList.Add(new MocklisClassUpdaterResult.Error(errorText, lines, span.StartLinePosition.Character,
+                                    span.EndLinePosition.Character));
+                                break;
+                            }
+                            default:
+                            {
+                                errorList.Add(new MocklisClassUpdaterResult.Error(errorText, Array.Empty<string>(), 0, 0));
+                                break;
+                            }
+                        }
+                    }
+
+                    return MocklisClassUpdaterResult.Failure(code, errorList.ToArray());
                 }
             }
 
