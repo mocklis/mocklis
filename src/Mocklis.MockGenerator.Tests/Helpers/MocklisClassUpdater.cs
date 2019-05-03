@@ -123,6 +123,7 @@ namespace Mocklis.MockGenerator.Tests.Helpers
                                     span.EndLinePosition.Character));
                                 break;
                             }
+
                             default:
                             {
                                 errorList.Add(new MocklisClassUpdaterResult.Error(errorText, Array.Empty<string>(), 0, 0));

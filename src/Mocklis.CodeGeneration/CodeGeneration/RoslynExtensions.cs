@@ -74,6 +74,7 @@ namespace Mocklis.CodeGeneration
                         syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.OutKeyword));
                         break;
                     }
+
                     case RefKind.Ref:
                     {
                         syntax = syntax.WithRefOrOutKeyword(F.Token(SyntaxKind.RefKeyword));
@@ -100,11 +101,13 @@ namespace Mocklis.CodeGeneration
                         syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.InKeyword)));
                         break;
                     }
+
                     case RefKind.Out:
                     {
                         syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.OutKeyword)));
                         break;
                     }
+
                     case RefKind.Ref:
                     {
                         syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.RefKeyword)));

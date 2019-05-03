@@ -47,16 +47,19 @@ namespace Mocklis.CodeGeneration
                         returnValuesBuilder.AddParameter(parameter);
                         break;
                     }
+
                     case RefKind.Out:
                     {
                         returnValuesBuilder.AddParameter(parameter);
                         break;
                     }
+
                     case RefKind.In:
                     {
                         parametersBuilder.AddParameter(parameter);
                         break;
                     }
+
                     case RefKind.None:
                     {
                         parametersBuilder.AddParameter(parameter);

@@ -169,6 +169,7 @@ namespace Mocklis.CodeGeneration
 
                         return new PropertyBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
+
                     case IEventSymbol memberEventSymbol:
                         return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
                     case IMethodSymbol memberMethodSymbol:
@@ -197,6 +198,7 @@ namespace Mocklis.CodeGeneration
 
                         return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
                     }
+
                     default:
                         return null;
                 }
@@ -233,6 +235,7 @@ namespace Mocklis.CodeGeneration
                         {
                             return true;
                         }
+
                         default:
                         {
                             return false;
