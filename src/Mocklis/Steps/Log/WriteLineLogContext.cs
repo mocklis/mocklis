@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TextWriterLogContext.cs">
+// <copyright file="WriteLineLogContext.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
