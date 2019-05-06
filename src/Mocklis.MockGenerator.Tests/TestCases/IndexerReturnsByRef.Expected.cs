@@ -12,6 +12,9 @@ namespace Test
     [MocklisClass]
     public class TestClass : ITestClass
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public TestClass()
         {
             Item0 = new IndexerMock<string, int>(this, "TestClass", "ITestClass", "this[]", "Item0");

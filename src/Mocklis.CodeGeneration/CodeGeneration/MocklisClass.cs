@@ -22,6 +22,16 @@ namespace Mocklis.CodeGeneration
 
     public static class MocklisClass
     {
+        private static readonly SyntaxTrivia[] Comments =
+        {
+            F.CarriageReturnLineFeed,
+            F.Comment("// The contents of this class were created by the Mocklis code-generator."),
+            F.CarriageReturnLineFeed,
+            F.Comment("// Any changes you make will be overwritten if the contents are re-generated."),
+            F.CarriageReturnLineFeed,
+            F.CarriageReturnLineFeed
+        };
+
         public static ClassDeclarationSyntax EmptyMocklisClass(ClassDeclarationSyntax classDecl)
         {
             return classDecl.WithMembers(F.List<MemberDeclarationSyntax>())
@@ -34,7 +44,7 @@ namespace Mocklis.CodeGeneration
         {
             var populator = new MocklisClassPopulator(semanticModel, classDecl, mocklisSymbols);
             return classDecl.WithMembers(F.List(populator.GenerateMembers()))
-                .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken))
+                .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }

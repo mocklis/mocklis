@@ -13,6 +13,9 @@ namespace Test
     [MocklisClass]
     public class TestClass : ITestClass
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         private readonly TypedMockProvider _test = new TypedMockProvider();
 
         public FuncMethodMock<T1, T2> Test<T1, T2>()

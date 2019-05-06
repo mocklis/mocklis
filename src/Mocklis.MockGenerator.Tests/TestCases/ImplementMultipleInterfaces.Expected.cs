@@ -16,6 +16,9 @@ namespace Test
     [MocklisClass]
     public class TestClass : ITest1, ITest2
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public TestClass()
         {
             Property1 = new PropertyMock<int>(this, "TestClass", "ITest1", "Property1", "Property1");

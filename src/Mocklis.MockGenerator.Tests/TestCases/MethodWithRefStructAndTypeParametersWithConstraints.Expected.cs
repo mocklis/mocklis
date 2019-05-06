@@ -18,6 +18,9 @@ namespace Test
     [MocklisClass]
     public class TestClass<TOuter> : ITestClass<TOuter>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         protected virtual T TakesRefStructParameter<T, T2>(RefStruct refStruct, T2 parameter)
             where T : TOuter, new()
             where T2 : struct, IDisposable

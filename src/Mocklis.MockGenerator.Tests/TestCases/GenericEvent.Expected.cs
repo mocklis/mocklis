@@ -11,6 +11,9 @@ namespace Test
     [MocklisClass]
     public class TestClass<T> : ITestClass<T> where T : EventArgs
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public TestClass()
         {
             MyEvent = new EventMock<EventHandler<T>>(this, "TestClass", "ITestClass", "MyEvent", "MyEvent");

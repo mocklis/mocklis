@@ -23,6 +23,9 @@ namespace Test
     [MocklisClass]
     public class TestClass<T> : ITestClass<T>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         protected virtual void Test<T0>(RefStruct refStruct, T outer, T0 parameter)
         {
             throw new MockMissingException(MockType.VirtualMethod, "TestClass", "ITestClass", "Test", "Test");

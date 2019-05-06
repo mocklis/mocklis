@@ -12,6 +12,9 @@ namespace Test
     [MocklisClass(MockReturnsByRef = true, MockReturnsByRefReadonly = false)]
     public class TestClass : ITestClass
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public TestClass()
         {
             ReturnsByRef = new PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef");

@@ -7,6 +7,9 @@ namespace Test
     [MocklisClass]
     public class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public TestClass()
         {
             ContainsKey = new FuncMethodMock<TKey, bool>(this, "TestClass", "IDictionary", "ContainsKey", "ContainsKey");

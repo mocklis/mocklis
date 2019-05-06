@@ -19,6 +19,9 @@ namespace Test
     [MocklisClass]
     public class TestClass : ITestClass
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         protected virtual RefStruct RefStructProperty()
         {
             throw new MockMissingException(MockType.VirtualPropertyGet, "TestClass", "ITestClass", "RefStructProperty", "RefStructProperty");
