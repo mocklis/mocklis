@@ -19,8 +19,10 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mocklis.Core" Version="0.1.11-alpha" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mocklis.Core\Mocklis.Core.csproj" />
   </ItemGroup>
 </Project>

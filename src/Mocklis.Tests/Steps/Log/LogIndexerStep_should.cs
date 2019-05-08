@@ -55,9 +55,9 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnSet()
         {
             // Arrange
-            _mockMembers.Item.Log(_logContext).Dummy();
-            _logContext.LogBeforeIndexerSet<int, string>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterIndexerSet.RecordBeforeCall(out var after).Dummy();
+            _mockMembers.Item.Log(_logContext);
+            _logContext.LogBeforeIndexerSet<int, string>().RecordBeforeCall(out var before);
+            _logContext.LogAfterIndexerSet.RecordBeforeCall(out var after);
 
             // Act
             _indexers[5] = "Test";
@@ -76,8 +76,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.Item.Log(_logContext).Throw(key => new Exception("Exception thrown!"));
-            _logContext.LogBeforeIndexerSet<int, string>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogIndexerSetException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforeIndexerSet<int, string>().RecordBeforeCall(out var before);
+            _logContext.LogIndexerSetException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _indexers[5] = "Test");
@@ -97,8 +97,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.Item.Log(_logContext).Return("Test");
-            _logContext.LogBeforeIndexerGet<int>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterIndexerGet<string>().RecordBeforeCall(out var after).Dummy();
+            _logContext.LogBeforeIndexerGet<int>().RecordBeforeCall(out var before);
+            _logContext.LogAfterIndexerGet<string>().RecordBeforeCall(out var after);
 
             // Act
             var _ = _indexers[5];
@@ -117,8 +117,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.Item.Log(_logContext).Throw(key => new Exception("Exception thrown!"));
-            _logContext.LogBeforeIndexerGet<int>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogIndexerGetException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforeIndexerGet<int>().RecordBeforeCall(out var before);
+            _logContext.LogIndexerGetException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _indexers[5]);

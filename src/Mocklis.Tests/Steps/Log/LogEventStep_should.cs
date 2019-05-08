@@ -56,9 +56,9 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnAdd()
         {
             // Arrange
-            _mockMembers.MyEvent.Log(_logContext).Dummy();
-            _logContext.LogBeforeEventAdd<EventHandler>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterEventAdd.RecordBeforeCall(out var after).Dummy();
+            _mockMembers.MyEvent.Log(_logContext);
+            _logContext.LogBeforeEventAdd<EventHandler>().RecordBeforeCall(out var before);
+            _logContext.LogAfterEventAdd.RecordBeforeCall(out var after);
 
             // Act
             _events.MyEvent += _sampleEventHandler;
@@ -76,8 +76,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.MyEvent.Log(_logContext).Throw(handler => new Exception("Exception thrown!"));
-            _logContext.LogBeforeEventAdd<EventHandler>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogEventAddException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforeEventAdd<EventHandler>().RecordBeforeCall(out var before);
+            _logContext.LogEventAddException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _events.MyEvent += _sampleEventHandler);
@@ -95,9 +95,9 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnRemove()
         {
             // Arrange
-            _mockMembers.MyEvent.Log(_logContext).Dummy();
-            _logContext.LogBeforeEventRemove<EventHandler>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterEventRemove.RecordBeforeCall(out var after).Dummy();
+            _mockMembers.MyEvent.Log(_logContext);
+            _logContext.LogBeforeEventRemove<EventHandler>().RecordBeforeCall(out var before);
+            _logContext.LogAfterEventRemove.RecordBeforeCall(out var after);
 
             // Act
             _events.MyEvent -= _sampleEventHandler;
@@ -115,8 +115,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.MyEvent.Log(_logContext).Throw(handler => new Exception("Exception thrown!"));
-            _logContext.LogBeforeEventRemove<EventHandler>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogEventRemoveException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforeEventRemove<EventHandler>().RecordBeforeCall(out var before);
+            _logContext.LogEventRemoveException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _events.MyEvent -= _sampleEventHandler);

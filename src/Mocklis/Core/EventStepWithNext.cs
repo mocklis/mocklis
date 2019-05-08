@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -23,13 +22,14 @@ namespace Mocklis.Core
     /// <typeparam name="THandler">The event handler type for the event.</typeparam>
     /// <seealso cref="IEventStep{THandler}" />
     /// <seealso cref="ICanHaveNextEventStep{THandler}" />
+    /// <seealso cref="IEventStep{THandler}" />
     public class EventStepWithNext<THandler> : IEventStep<THandler>, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
         /// <summary>
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IEventStep<THandler> NextStep { get; private set; } = MissingEventStep<THandler>.Instance;
+        protected IEventStep<THandler> NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.
@@ -57,7 +57,7 @@ namespace Mocklis.Core
         /// <param name="value">The event handler that is being added.</param>
         public virtual void Add(IMockInfo mockInfo, THandler value)
         {
-            NextStep.Add(mockInfo, value);
+            NextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Mocklis.Core
         /// <param name="value">The event handler that is being removed.</param>
         public virtual void Remove(IMockInfo mockInfo, THandler value)
         {
-            NextStep.Remove(mockInfo, value);
+            NextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
         }
     }
 }

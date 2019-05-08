@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -25,7 +24,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextMethodStep{TParam, TResult}" />
     public abstract class MethodMockBase<TParam, TResult> : MemberMock, ICanHaveNextMethodStep<TParam, TResult>
     {
-        private IMethodStep<TParam, TResult> _nextStep = MissingMethodStep<TParam, TResult>.Instance;
+        private IMethodStep<TParam, TResult> _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MethodMockBase{TParam, TResult}" /> class.
@@ -60,6 +59,15 @@ namespace Mocklis.Core
         }
 
         /// <summary>
+        ///     Restores the Mock to an unconfigured state.
+        /// </summary>
+        public override void Clear()
+        {
+            _nextStep = null;
+        }
+
+
+        /// <summary>
         ///     Calls the mocked method.
         /// </summary>
         /// <remarks>
@@ -70,6 +78,18 @@ namespace Mocklis.Core
         /// <returns>The returned result.</returns>
         protected TResult Call(TParam param)
         {
+            if (_nextStep == null)
+            {
+                IMockInfo mockInfo = this;
+
+                if (mockInfo.Strictness == Strictness.Lenient)
+                {
+                    return default;
+                }
+
+                throw new MockMissingException(MockType.Method, mockInfo);
+            }
+
             return _nextStep.Call(this, param);
         }
     }

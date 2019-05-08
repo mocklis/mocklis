@@ -46,7 +46,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void forward_sets()
         {
-            MockMembers.StringProperty.InstanceGetFunc(o => throw new InvalidOperationException()).RecordBeforeSet(out var ledger).Dummy();
+            MockMembers.StringProperty.InstanceGetFunc(o => throw new InvalidOperationException()).RecordBeforeSet(out var ledger);
 
             Sut.StringProperty = "Test";
 

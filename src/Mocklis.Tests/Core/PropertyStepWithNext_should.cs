@@ -30,24 +30,48 @@ namespace Mocklis.Tests.Core
         }
 
         [Fact]
-        public void default_to_missing_for_Get()
+        public void do_nothing_if_nextstep_missing_for_Get_lenient()
         {
-            Assert.Throws<MockMissingException>(() => PropertyStep.Get(MockInfo.Default));
+            PropertyStep.Get(MockInfo.Lenient);
         }
 
         [Fact]
-        public void default_to_missing_for_Set()
+        public void do_nothing_if_nextstep_missing_for_Get_strict()
         {
-            Assert.Throws<MockMissingException>(() => PropertyStep.Set(MockInfo.Default, 1));
+            PropertyStep.Get(MockInfo.Strict);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Get_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => PropertyStep.Get(MockInfo.VeryStrict));
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Set_lenient()
+        {
+            PropertyStep.Set(MockInfo.Lenient, 1);
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Set_strict()
+        {
+            PropertyStep.Set(MockInfo.Strict, 1);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Set_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => PropertyStep.Set(MockInfo.VeryStrict, 1));
         }
 
         [Fact]
         public void forward_to_NextStep_for_Get()
         {
             var vg = new VerificationGroup();
-            PropertyStep.ExpectedUsage(vg, null, 1, 0).Dummy();
+            PropertyStep.ExpectedUsage(vg, null, 1, 0);
 
-            PropertyStep.Get(MockInfo.Default);
+            PropertyStep.Get(MockInfo.Lenient);
 
             vg.Assert();
         }
@@ -56,9 +80,9 @@ namespace Mocklis.Tests.Core
         public void forward_to_NextStep_for_Remove()
         {
             var vg = new VerificationGroup();
-            PropertyStep.ExpectedUsage(vg, null, 0, 1).Dummy();
+            PropertyStep.ExpectedUsage(vg, null, 0, 1);
 
-            PropertyStep.Set(MockInfo.Default, 1);
+            PropertyStep.Set(MockInfo.Lenient, 1);
 
             vg.Assert();
         }

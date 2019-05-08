@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -25,7 +24,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextIndexerStep{TKey, TValue}" />
     public sealed class IndexerMock<TKey, TValue> : MemberMock, ICanHaveNextIndexerStep<TKey, TValue>
     {
-        private IIndexerStep<TKey, TValue> _nextStep = MissingIndexerStep<TKey, TValue>.Instance;
+        private IIndexerStep<TKey, TValue> _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IndexerMock{TKey, TValue}" /> class.
@@ -60,14 +59,52 @@ namespace Mocklis.Core
         }
 
         /// <summary>
+        ///     Restores the Mock to an unconfigured state.
+        /// </summary>
+        public override void Clear()
+        {
+            _nextStep = null;
+        }
+
+        /// <summary>
         ///     Gets or sets the <typeparamref name="TValue" /> with the specified key on the mocked indexer.
         /// </summary>
         /// <param name="key">The indexer key used.</param>
         /// <returns>The value being read or written.</returns>
         public TValue this[TKey key]
         {
-            get => _nextStep.Get(this, key);
-            set => _nextStep.Set(this, key, value);
+            get
+            {
+                if (_nextStep == null)
+                {
+                    IMockInfo mockInfo = this;
+
+                    if (mockInfo.Strictness == Strictness.Lenient)
+                    {
+                        return default;
+                    }
+
+                    throw new MockMissingException(MockType.IndexerGet, mockInfo);
+                }
+
+                return _nextStep.Get(this, key);
+            }
+            set
+            {
+                if (_nextStep == null)
+                {
+                    IMockInfo mockInfo = this;
+
+                    if (mockInfo.Strictness == Strictness.Lenient)
+                    {
+                        return;
+                    }
+
+                    throw new MockMissingException(MockType.IndexerSet, mockInfo);
+                }
+
+                _nextStep.Set(this, key, value);
+            }
         }
     }
 }

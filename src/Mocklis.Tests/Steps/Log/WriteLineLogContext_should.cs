@@ -62,7 +62,7 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnEventAdd()
         {
             // Arrange
-            _mockMembers.MyEvent.Log(_logLineContext).Dummy();
+            _mockMembers.MyEvent.Log(_logLineContext);
 
             // Act
             _events.MyEvent += _sampleEventHandler;
@@ -92,7 +92,7 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnEventRemove()
         {
             // Arrange
-            _mockMembers.MyEvent.Log(_logLineContext).Dummy();
+            _mockMembers.MyEvent.Log(_logLineContext);
 
             // Act
             _events.MyEvent -= _sampleEventHandler;
@@ -122,7 +122,7 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnIndexerSet()
         {
             // Arrange
-            _mockMembers.Item.Log(_logLineContext).Dummy();
+            _mockMembers.Item.Log(_logLineContext);
 
             // Act
             _indexers[5] = "Test";
@@ -197,7 +197,7 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnMethodCallWithoutParameterOrResult()
         {
             // Arrange
-            _mockMembers.SimpleAction.Log(_logLineContext).Dummy();
+            _mockMembers.SimpleAction.Log(_logLineContext);
 
             // Act
             _methods.SimpleAction();
@@ -227,7 +227,7 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnPropertySet()
         {
             // Arrange
-            _mockMembers.StringProperty.Log(_logLineContext).Dummy();
+            _mockMembers.StringProperty.Log(_logLineContext);
 
             // Act
             _properties.StringProperty = "Test";

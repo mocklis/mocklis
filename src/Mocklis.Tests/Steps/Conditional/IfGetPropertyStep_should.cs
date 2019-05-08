@@ -30,8 +30,7 @@ namespace Mocklis.Tests.Steps.Conditional
                 .IfGet(i => i
                     .RecordAfterGet(out _gets)
                     .RecordBeforeSet(out _sets)
-                    .Join(i.ElseBranch))
-                .Dummy();
+                    .Join(i.ElseBranch));
 
             Sut = mockMembers;
         }

@@ -66,8 +66,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.FuncWithParameter.Log(_logContext).Return(5);
-            _logContext.LogBeforeMethodCallWithParameters<int>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterMethodCallWithResult<int>().RecordBeforeCall(out var after).Dummy();
+            _logContext.LogBeforeMethodCallWithParameters<int>().RecordBeforeCall(out var before);
+            _logContext.LogAfterMethodCallWithResult<int>().RecordBeforeCall(out var after);
 
             // Act
             var result = _methods.FuncWithParameter(9);
@@ -86,9 +86,9 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnCallWithoutParameterOrResult()
         {
             // Arrange
-            _mockMembers.SimpleAction.Log(_logContext).Dummy();
-            _logContext.LogBeforeMethodCallWithoutParameters.RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterMethodCallWithoutResult.RecordBeforeCall(out var after).Dummy();
+            _mockMembers.SimpleAction.Log(_logContext);
+            _logContext.LogBeforeMethodCallWithoutParameters.RecordBeforeCall(out var before);
+            _logContext.LogAfterMethodCallWithoutResult.RecordBeforeCall(out var after);
 
             // Act
             _methods.SimpleAction();
@@ -105,8 +105,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.FuncWithParameter.Log(_logContext).Throw(p => new Exception("Exception thrown!"));
-            _logContext.LogBeforeMethodCallWithParameters<int>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogMethodCallException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforeMethodCallWithParameters<int>().RecordBeforeCall(out var before);
+            _logContext.LogMethodCallException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _methods.FuncWithParameter(9));

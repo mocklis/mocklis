@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -30,7 +29,7 @@ namespace Mocklis.Core
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IIndexerStep<TKey, TValue> NextStep { get; private set; } = MissingIndexerStep<TKey, TValue>.Instance;
+        protected IIndexerStep<TKey, TValue> NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.
@@ -59,7 +58,7 @@ namespace Mocklis.Core
         /// <returns>The value being read.</returns>
         public virtual TValue Get(IMockInfo mockInfo, TKey key)
         {
-            return NextStep.Get(mockInfo, key);
+            return NextStep.GetWithStrictnessCheckIfNull(mockInfo, key);
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace Mocklis.Core
         /// <param name="value">The value being written.</param>
         public virtual void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            NextStep.Set(mockInfo, key, value);
+            NextStep.SetWithStrictnessCheckIfNull(mockInfo, key, value);
         }
     }
 }

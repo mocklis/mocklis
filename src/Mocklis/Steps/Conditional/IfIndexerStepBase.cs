@@ -65,7 +65,7 @@ namespace Mocklis.Steps.Conditional
             /// <returns>The value being read.</returns>
             TValue IIndexerStep<TKey, TValue>.Get(IMockInfo mockInfo, TKey key)
             {
-                return _nextStep.Get(mockInfo, key);
+                return _nextStep.GetWithStrictnessCheckIfNull(mockInfo, key);
             }
 
             /// <summary>
@@ -76,7 +76,7 @@ namespace Mocklis.Steps.Conditional
             /// <param name="value">The value being written.</param>
             void IIndexerStep<TKey, TValue>.Set(IMockInfo mockInfo, TKey key, TValue value)
             {
-                _nextStep.Set(mockInfo, key, value);
+                _nextStep.SetWithStrictnessCheckIfNull(mockInfo, key, value);
             }
 
             /// <summary>
@@ -106,13 +106,13 @@ namespace Mocklis.Steps.Conditional
             public TValue Get(IMockInfo mockInfo, TKey key)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifIndexerStep.NextStep.Get(mockInfo, key);
+                return _ifIndexerStep.NextStep.GetWithStrictnessCheckIfNull(mockInfo, key);
             }
 
             public void Set(IMockInfo mockInfo, TKey key, TValue value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifIndexerStep.NextStep.Set(mockInfo, key, value);
+                _ifIndexerStep.NextStep.SetWithStrictnessCheckIfNull(mockInfo, key, value);
             }
         }
 

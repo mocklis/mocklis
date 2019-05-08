@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -24,7 +23,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextPropertyStep{TValue}" />
     public sealed class PropertyMock<TValue> : MemberMock, ICanHaveNextPropertyStep<TValue>
     {
-        private IPropertyStep<TValue> _nextStep = MissingPropertyStep<TValue>.Instance;
+        private IPropertyStep<TValue> _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyMock{TValue}" /> class.
@@ -60,13 +59,51 @@ namespace Mocklis.Core
         }
 
         /// <summary>
+        ///     Restores the Mock to an unconfigured state.
+        /// </summary>
+        public override void Clear()
+        {
+            _nextStep = null;
+        }
+
+        /// <summary>
         ///     Gets or sets the <typeparamref name="TValue" /> on the mocked property.
         /// </summary>
         /// <value>The value being read or written.</value>
         public TValue Value
         {
-            get => _nextStep.Get(this);
-            set => _nextStep.Set(this, value);
+            get
+            {
+                if (_nextStep == null)
+                {
+                    IMockInfo mockInfo = this;
+
+                    if (mockInfo.Strictness == Strictness.Lenient)
+                    {
+                        return default;
+                    }
+
+                    throw new MockMissingException(MockType.PropertyGet, mockInfo);
+                }
+
+                return _nextStep.Get(this);
+            }
+            set
+            {
+                if (_nextStep == null)
+                {
+                    IMockInfo mockInfo = this;
+
+                    if (mockInfo.Strictness == Strictness.Lenient)
+                    {
+                        return;
+                    }
+
+                    throw new MockMissingException(MockType.PropertySet, mockInfo);
+                }
+
+                _nextStep.Set(this, value);
+            }
         }
     }
 }

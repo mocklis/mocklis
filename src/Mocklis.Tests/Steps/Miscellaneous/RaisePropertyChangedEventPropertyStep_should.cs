@@ -55,7 +55,7 @@ namespace Mocklis.Tests.Steps.Miscellaneous
         private void RaisePropertyChangedEventCorrectly()
         {
             // Arrange
-            _mockProperties.StringProperty.RaisePropertyChangedEvent(_npc).Dummy();
+            _mockProperties.StringProperty.RaisePropertyChangedEvent(_npc);
 
             // Act
             _properties.StringProperty = "Hello";

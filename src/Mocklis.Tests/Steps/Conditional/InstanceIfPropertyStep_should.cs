@@ -26,7 +26,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_get_conditions()
         {
             MockMembers.BoolProperty.Stored();
-            MockMembers.StringProperty.InstanceIf(inst => ((IProperties)inst).BoolProperty, null, s => s.Return("Name")).Dummy();
+            MockMembers.StringProperty.InstanceIf(inst => ((IProperties)inst).BoolProperty, null, s => s.Return("Name"));
 
             var v1 = Sut.StringProperty;
             Sut.BoolProperty = true;
@@ -42,7 +42,7 @@ namespace Mocklis.Tests.Steps.Conditional
             MockMembers.BoolProperty.Stored();
             IReadOnlyList<string> ledger = null;
             MockMembers.StringProperty
-                .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger).Dummy()).Dummy();
+                .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger));
 
             Sut.StringProperty = "off";
             Sut.BoolProperty = true;
@@ -57,7 +57,7 @@ namespace Mocklis.Tests.Steps.Conditional
             var vg = new VerificationGroup();
             MockMembers.StringProperty
                 .InstanceIf(inst => true, (inst, v) => true, s => s.ExpectedUsage(vg, "IfBranch", 1, 1).Join(s.ElseBranch))
-                .ExpectedUsage(vg, "ElseBranch", 1, 1).Dummy();
+                .ExpectedUsage(vg, "ElseBranch", 1, 1);
 
             Sut.StringProperty = "one";
             var _ = Sut.StringProperty;

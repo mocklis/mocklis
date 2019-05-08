@@ -30,24 +30,48 @@ namespace Mocklis.Tests.Core
         }
 
         [Fact]
-        public void default_to_missing_for_Get()
+        public void do_nothing_if_nextstep_missing_for_Get_lenient()
         {
-            Assert.Throws<MockMissingException>(() => IndexerStep.Get(MockInfo.Default, 1));
+            IndexerStep.Get(MockInfo.Lenient, 1);
         }
 
         [Fact]
-        public void default_to_missing_for_Set()
+        public void do_nothing_if_nextstep_missing_for_Get_strict()
         {
-            Assert.Throws<MockMissingException>(() => IndexerStep.Set(MockInfo.Default, 1, "one"));
+            IndexerStep.Get(MockInfo.Strict, 1);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Get_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => IndexerStep.Get(MockInfo.VeryStrict, 1));
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Set_lenient()
+        {
+            IndexerStep.Set(MockInfo.Lenient, 1, "one");
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Set_strict()
+        {
+            IndexerStep.Set(MockInfo.Strict, 1, "one");
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Set_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => IndexerStep.Set(MockInfo.VeryStrict, 1, "one"));
         }
 
         [Fact]
         public void forward_to_NextStep_for_Get()
         {
             var vg = new VerificationGroup();
-            IndexerStep.ExpectedUsage(vg, null, 1, 0).Dummy();
+            IndexerStep.ExpectedUsage(vg, null, 1, 0);
 
-            IndexerStep.Get(MockInfo.Default, 1);
+            IndexerStep.Get(MockInfo.Lenient, 1);
 
             vg.Assert();
         }
@@ -56,9 +80,9 @@ namespace Mocklis.Tests.Core
         public void forward_to_NextStep_for_Remove()
         {
             var vg = new VerificationGroup();
-            IndexerStep.ExpectedUsage(vg, null, 0, 1).Dummy();
+            IndexerStep.ExpectedUsage(vg, null, 0, 1);
 
-            IndexerStep.Set(MockInfo.Default, 1, "one");
+            IndexerStep.Set(MockInfo.Lenient, 1, "one");
 
             vg.Assert();
         }

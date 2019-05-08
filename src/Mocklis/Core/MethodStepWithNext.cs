@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -30,7 +29,7 @@ namespace Mocklis.Core
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IMethodStep<TParam, TResult> NextStep { get; private set; } = MissingMethodStep<TParam, TResult>.Instance;
+        protected IMethodStep<TParam, TResult> NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.
@@ -60,7 +59,7 @@ namespace Mocklis.Core
         /// <returns>The returned result.</returns>
         public virtual TResult Call(IMockInfo mockInfo, TParam param)
         {
-            return NextStep.Call(mockInfo, param);
+            return NextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
         }
     }
 }

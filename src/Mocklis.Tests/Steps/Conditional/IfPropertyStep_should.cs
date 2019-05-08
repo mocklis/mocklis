@@ -40,9 +40,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_set_conditions()
         {
             IReadOnlyList<string> ledger = null;
-            MockMembers.StringProperty
-                .If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger).Dummy())
-                .Dummy();
+            MockMembers.StringProperty.If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger));
 
             Sut.StringProperty = "Apple";
             Sut.StringProperty = "Banana";
@@ -59,7 +57,7 @@ namespace Mocklis.Tests.Steps.Conditional
             var vg = new VerificationGroup();
             MockMembers.StringProperty
                 .If(() => true, v => true, s => s.ExpectedUsage(vg, "IfBranch", 1, 1).Join(s.ElseBranch))
-                .ExpectedUsage(vg, "ElseBranch", 1, 1).Dummy();
+                .ExpectedUsage(vg, "ElseBranch", 1, 1);
 
             Sut.StringProperty = "one";
             var _ = Sut.StringProperty;

@@ -24,6 +24,11 @@ namespace Mocklis.Core.Tests.Core
             {
                 KeyString = keyString;
             }
+
+            public override void Clear()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public TypedMockProvider Sut { get; } = new TypedMockProvider();

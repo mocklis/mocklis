@@ -32,24 +32,48 @@ namespace Mocklis.Tests.Core
         }
 
         [Fact]
-        public void default_to_missing_for_Add()
+        public void do_nothing_if_nextstep_missing_for_Add_lenient()
         {
-            Assert.Throws<MockMissingException>(() => EventStep.Add(MockInfo.Default, _eventHandler));
+            EventStep.Add(MockInfo.Lenient, _eventHandler);
         }
 
         [Fact]
-        public void default_to_missing_for_Remove()
+        public void do_nothing_if_nextstep_missing_for_Add_strict()
         {
-            Assert.Throws<MockMissingException>(() => EventStep.Remove(MockInfo.Default, _eventHandler));
+            EventStep.Add(MockInfo.Strict, _eventHandler);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Add_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => EventStep.Add(MockInfo.VeryStrict, _eventHandler));
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Remove_lenient()
+        {
+            EventStep.Remove(MockInfo.Lenient, _eventHandler);
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Remove_strict()
+        {
+            EventStep.Remove(MockInfo.Strict, _eventHandler);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Remove_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => EventStep.Remove(MockInfo.VeryStrict, _eventHandler));
         }
 
         [Fact]
         public void forward_to_NextStep_for_Add()
         {
             var vg = new VerificationGroup();
-            EventStep.ExpectedUsage(vg, null, 1, 0).Dummy();
+            EventStep.ExpectedUsage(vg, null, 1, 0);
 
-            EventStep.Add(MockInfo.Default, _eventHandler);
+            EventStep.Add(MockInfo.Lenient, _eventHandler);
 
             vg.Assert();
         }
@@ -58,9 +82,9 @@ namespace Mocklis.Tests.Core
         public void forward_to_NextStep_for_Remove()
         {
             var vg = new VerificationGroup();
-            EventStep.ExpectedUsage(vg, null, 0, 1).Dummy();
+            EventStep.ExpectedUsage(vg, null, 0, 1);
 
-            EventStep.Remove(MockInfo.Default, _eventHandler);
+            EventStep.Remove(MockInfo.Lenient, _eventHandler);
 
             vg.Assert();
         }

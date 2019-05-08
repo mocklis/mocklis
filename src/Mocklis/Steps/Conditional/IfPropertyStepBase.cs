@@ -63,7 +63,7 @@ namespace Mocklis.Steps.Conditional
             /// <returns>The value being read.</returns>
             TValue IPropertyStep<TValue>.Get(IMockInfo mockInfo)
             {
-                return _nextStep.Get(mockInfo);
+                return _nextStep.GetWithStrictnessCheckIfNull(mockInfo);
             }
 
             /// <summary>
@@ -73,7 +73,7 @@ namespace Mocklis.Steps.Conditional
             /// <param name="value">The value being written.</param>
             void IPropertyStep<TValue>.Set(IMockInfo mockInfo, TValue value)
             {
-                _nextStep.Set(mockInfo, value);
+                _nextStep.SetWithStrictnessCheckIfNull(mockInfo, value);
             }
 
             /// <summary>
@@ -103,13 +103,13 @@ namespace Mocklis.Steps.Conditional
             public TValue Get(IMockInfo mockInfo)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifPropertyStep.NextStep.Get(mockInfo);
+                return _ifPropertyStep.NextStep.GetWithStrictnessCheckIfNull(mockInfo);
             }
 
             public void Set(IMockInfo mockInfo, TValue value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifPropertyStep.NextStep.Set(mockInfo, value);
+                _ifPropertyStep.NextStep.SetWithStrictnessCheckIfNull(mockInfo, value);
             }
         }
 

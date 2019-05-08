@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -24,7 +23,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextEventStep{THandler}" />
     public sealed class EventMock<THandler> : MemberMock, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
-        private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
+        private IEventStep<THandler> _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EventMock{THandler}" /> class.
@@ -59,6 +58,14 @@ namespace Mocklis.Core
         }
 
         /// <summary>
+        ///     Restores the Mock to an unconfigured state.
+        /// </summary>
+        public override void Clear()
+        {
+            _nextStep = null;
+        }
+
+        /// <summary>
         ///     Adds an event handler to the mocked event.
         /// </summary>
         /// <remarks>
@@ -68,6 +75,18 @@ namespace Mocklis.Core
         /// <param name="value">The event handler.</param>
         public void Add(THandler value)
         {
+            if (_nextStep == null)
+            {
+                IMockInfo mockInfo = this;
+
+                if (mockInfo.Strictness == Strictness.Lenient)
+                {
+                    return;
+                }
+
+                throw new MockMissingException(MockType.EventAdd, mockInfo);
+            }
+
             _nextStep.Add(this, value);
         }
 
@@ -81,6 +100,18 @@ namespace Mocklis.Core
         /// <param name="value">The event handler.</param>
         public void Remove(THandler value)
         {
+            if (_nextStep == null)
+            {
+                IMockInfo mockInfo = this;
+
+                if (mockInfo.Strictness == Strictness.Lenient)
+                {
+                    return;
+                }
+
+                throw new MockMissingException(MockType.EventRemove, mockInfo);
+            }
+
             _nextStep.Remove(this, value);
         }
     }

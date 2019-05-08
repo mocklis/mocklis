@@ -30,18 +30,30 @@ namespace Mocklis.Tests.Core
         }
 
         [Fact]
-        public void default_to_missing_for_Call()
+        public void do_nothing_if_nextstep_missing_for_Call_lenient()
         {
-            Assert.Throws<MockMissingException>(() => MethodStep.Call(MockInfo.Default, 1));
+            MethodStep.Call(MockInfo.Lenient, 1);
+        }
+
+        [Fact]
+        public void do_nothing_if_nextstep_missing_for_Call_strict()
+        {
+            MethodStep.Call(MockInfo.Strict, 1);
+        }
+
+        [Fact]
+        public void throw_if_nextstep_missing_for_Call_verystrict()
+        {
+            Assert.Throws<MockMissingException>(() => MethodStep.Call(MockInfo.VeryStrict, 1));
         }
 
         [Fact]
         public void Call()
         {
             var vg = new VerificationGroup();
-            MethodStep.ExpectedUsage(vg, null, 1).Dummy();
+            MethodStep.ExpectedUsage(vg, null, 1);
 
-            MethodStep.Call(MockInfo.Default, 1);
+            MethodStep.Call(MockInfo.Lenient, 1);
 
             vg.Assert();
         }

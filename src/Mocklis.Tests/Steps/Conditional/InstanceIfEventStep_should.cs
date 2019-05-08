@@ -35,7 +35,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_common_condition()
         {
             StoredEventStep<EventHandler> eventStore = null;
-            MockMembers.MyEvent.InstanceIf((instance, e) => ((IProperties)instance).StringProperty == "Go", i => i.Stored(out eventStore)).Dummy();
+            MockMembers.MyEvent.InstanceIf((instance, e) => ((IProperties)instance).StringProperty == "Go", i => i.Stored(out eventStore));
             MockMembers.StringProperty.Stored();
 
             MockMembers.StringProperty.Value = "Go";
@@ -55,7 +55,7 @@ namespace Mocklis.Tests.Steps.Conditional
             MockMembers.MyEvent.InstanceIf(
                 (instance, e) => ((IProperties)instance).StringProperty == "Go",
                 (instance, e) => ((IProperties)instance).IntProperty == 42,
-                i => i.Stored(out eventStore)).Dummy();
+                i => i.Stored(out eventStore));
             MockMembers.StringProperty.Stored();
             MockMembers.IntProperty.Stored();
 

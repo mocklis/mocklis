@@ -23,7 +23,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var eventMock = new MockCanHaveNextEventStep<EventHandler>();
-            eventMock.SetNextStep<DummyEventStep<EventHandler>>().RecordBeforeCall(out var ledger).Dummy();
+            eventMock.SetNextStep<DummyEventStep<EventHandler>>().RecordBeforeCall(out var ledger);
 
             // Act
             eventMock.Dummy();
@@ -38,7 +38,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var indexerMock = new MockCanHaveNextIndexerStep<int, string>();
-            indexerMock.SetNextStep<DummyIndexerStep<int, string>>().RecordBeforeCall(out var ledger).Dummy();
+            indexerMock.SetNextStep<DummyIndexerStep<int, string>>().RecordBeforeCall(out var ledger);
 
             // Act
             indexerMock.Dummy();
@@ -53,7 +53,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var eventMock = new MockCanHaveNextMethodStep<int, string>();
-            eventMock.SetNextStep<DummyMethodStep<int, string>>().RecordBeforeCall(out var ledger).Dummy();
+            eventMock.SetNextStep<DummyMethodStep<int, string>>().RecordBeforeCall(out var ledger);
 
             // Act
             eventMock.Dummy();
@@ -68,7 +68,7 @@ namespace Mocklis.Tests
         {
             // Arrange
             var indexerMock = new MockCanHaveNextPropertyStep<int>();
-            indexerMock.SetNextStep<DummyPropertyStep<int>>().RecordBeforeCall(out var ledger).Dummy();
+            indexerMock.SetNextStep<DummyPropertyStep<int>>().RecordBeforeCall(out var ledger);
 
             // Act
             indexerMock.Dummy();

@@ -35,8 +35,7 @@ namespace Mocklis.Tests.Steps.Conditional
                 .IfAdd(i => i
                     .RecordBeforeAdd(out _adds)
                     .RecordBeforeRemove(out _removes)
-                    .Join(i.ElseBranch))
-                .Dummy();
+                    .Join(i.ElseBranch));
 
             Sut = mockMembers;
         }

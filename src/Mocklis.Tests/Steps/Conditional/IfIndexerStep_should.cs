@@ -28,7 +28,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_get_conditions()
         {
             StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.If(i => i == 3, null, s => s.StoredAsDictionary(out indexerStore)).Dummy();
+            MockMembers.Item.If(i => i == 3, null, s => s.StoredAsDictionary(out indexerStore));
             indexerStore[1] = "one";
             indexerStore[3] = "three";
 
@@ -43,7 +43,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_set_conditions()
         {
             StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.If(null, (i, v) => i == 3 || v == "two", s => s.StoredAsDictionary(out indexerStore)).Dummy();
+            MockMembers.Item.If(null, (i, v) => i == 3 || v == "two", s => s.StoredAsDictionary(out indexerStore));
 
             Sut[1] = "one";
             Sut[2] = "two";
@@ -60,7 +60,7 @@ namespace Mocklis.Tests.Steps.Conditional
             var vg = new VerificationGroup();
             MockMembers.Item
                 .If(i => true, (i, v) => true, s => s.ExpectedUsage(vg, "IfBranch", 1, 1).Join(s.ElseBranch))
-                .ExpectedUsage(vg, "ElseBranch", 1, 1).Dummy();
+                .ExpectedUsage(vg, "ElseBranch", 1, 1);
 
             Sut[1] = "one";
             var _ = Sut[1];

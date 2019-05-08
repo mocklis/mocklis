@@ -40,7 +40,7 @@ namespace Mocklis.Tests.Steps.Conditional
             var vg = new VerificationGroup();
             MockMembers.FuncWithParameter
                 .If(_ => true, s => s.ExpectedUsage(vg, "IfBranch", 1).Join(s.ElseBranch))
-                .ExpectedUsage(vg, "ElseBranch", 1).Dummy();
+                .ExpectedUsage(vg, "ElseBranch", 1);
 
             Sut.FuncWithParameter(5);
 

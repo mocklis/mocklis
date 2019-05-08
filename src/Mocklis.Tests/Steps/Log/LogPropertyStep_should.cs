@@ -55,9 +55,9 @@ namespace Mocklis.Tests.Steps.Log
         public void LogBeforeAndAfterOnSet()
         {
             // Arrange
-            _mockMembers.StringProperty.Log(_logContext).Dummy();
-            _logContext.LogBeforePropertySet<string>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterPropertySet.RecordBeforeCall(out var after).Dummy();
+            _mockMembers.StringProperty.Log(_logContext);
+            _logContext.LogBeforePropertySet<string>().RecordBeforeCall(out var before);
+            _logContext.LogAfterPropertySet.RecordBeforeCall(out var after);
 
             // Act
             _properties.StringProperty = "Test";
@@ -75,8 +75,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.StringProperty.Log(_logContext).Throw(() => new Exception("Exception thrown!"));
-            _logContext.LogBeforePropertySet<string>().RecordBeforeCall(out var before).Dummy();
-            _logContext.LogPropertySetException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforePropertySet<string>().RecordBeforeCall(out var before);
+            _logContext.LogPropertySetException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _properties.StringProperty = "Test");
@@ -95,8 +95,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.StringProperty.Log(_logContext).Return("Test");
-            _logContext.LogBeforePropertyGet.RecordBeforeCall(out var before).Dummy();
-            _logContext.LogAfterPropertyGet<string>().RecordBeforeCall(out var after).Dummy();
+            _logContext.LogBeforePropertyGet.RecordBeforeCall(out var before);
+            _logContext.LogAfterPropertyGet<string>().RecordBeforeCall(out var after);
 
             // Act
             var _ = _properties.StringProperty;
@@ -114,8 +114,8 @@ namespace Mocklis.Tests.Steps.Log
         {
             // Arrange
             _mockMembers.StringProperty.Log(_logContext).Throw(() => new Exception("Exception thrown!"));
-            _logContext.LogBeforePropertyGet.RecordBeforeCall(out var before).Dummy();
-            _logContext.LogPropertyGetException.RecordBeforeCall(out var exceptions).Dummy();
+            _logContext.LogBeforePropertyGet.RecordBeforeCall(out var before);
+            _logContext.LogPropertyGetException.RecordBeforeCall(out var exceptions);
 
             // Act
             var ex = Assert.Throws<Exception>(() => _properties.StringProperty);

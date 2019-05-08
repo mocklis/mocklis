@@ -38,7 +38,6 @@ namespace Mocklis.Steps.Conditional
 
     using System;
     using Mocklis.Core;
-    using Mocklis.Steps.Missing;
 
     #endregion
 
@@ -60,7 +59,7 @@ namespace Mocklis.Steps.Conditional
         /// <seealso cref="ICanHaveNextEventStep{THandler}" />
         public sealed class IfBranchCaller : IEventStep<THandler>, ICanHaveNextEventStep<THandler>
         {
-            private IEventStep<THandler> _nextStep = MissingEventStep<THandler>.Instance;
+            private IEventStep<THandler> _nextStep;
 
             /// <summary>
             ///     Replaces the current 'next' step with a new step.
@@ -86,7 +85,7 @@ namespace Mocklis.Steps.Conditional
             /// <param name="value">The event handler that is being added.</param>
             void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value)
             {
-                _nextStep.Add(mockInfo, value);
+                _nextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
             }
 
             /// <summary>
@@ -96,7 +95,7 @@ namespace Mocklis.Steps.Conditional
             /// <param name="value">The event handler that is being removed.</param>
             void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value)
             {
-                _nextStep.Remove(mockInfo, value);
+                _nextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
             }
 
             /// <summary>
@@ -126,13 +125,13 @@ namespace Mocklis.Steps.Conditional
             public void Add(IMockInfo mockInfo, THandler value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifEventStep.NextStep.Add(mockInfo, value);
+                _ifEventStep.NextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
             }
 
             public void Remove(IMockInfo mockInfo, THandler value)
             {
                 // Call directly to next step thus bypassing the condition check.
-                _ifEventStep.NextStep.Remove(mockInfo, value);
+                _ifEventStep.NextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
             }
         }
 

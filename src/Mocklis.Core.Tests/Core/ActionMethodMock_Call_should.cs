@@ -10,54 +10,152 @@ namespace Mocklis.Core.Tests.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Core.Tests.Mocks;
+    using Mocklis.Core.Tests.Helpers;
     using Xunit;
 
     #endregion
 
     public class ActionMethodMock_Call_should
     {
-        private readonly ActionMethodMock _parameterLessActionMock;
-        private readonly ActionMethodMock<int> _actionMock;
-
-        public ActionMethodMock_Call_should()
+        private static FakeNextMethodStep<TParam, ValueTuple> NextStepFor<TParam>(ICanHaveNextMethodStep<TParam, ValueTuple> mock)
         {
-            _parameterLessActionMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
-            _actionMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            return new FakeNextMethodStep<TParam, ValueTuple>(mock, ValueTuple.Create());
         }
 
         [Fact]
         public void send_mock_information_to_step()
         {
-            IMockInfo sentMockInfo = null;
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            var nextStep = NextStepFor(methodMock);
 
-            var newStep = new MockMethodStep<ValueTuple, ValueTuple>();
-            newStep.Call.Action(p => { sentMockInfo = p.mockInfo; });
-            ((ICanHaveNextMethodStep<ValueTuple, ValueTuple>)_parameterLessActionMock).SetNextStep(newStep);
+            methodMock.Call();
 
-            _parameterLessActionMock.Call();
-
-            Assert.Same(_parameterLessActionMock, sentMockInfo);
+            Assert.Equal(1, nextStep.Count);
+            Assert.Same(methodMock, nextStep.LastMockInfo);
         }
+
+        [Fact]
+        public void do_nothing_if_no_step_in_lenient_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            methodMock.Call();
+        }
+
+        [Fact]
+        public void throw_if_no_step_in_strict_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
+            Assert.Equal(MockType.Method, ex.MemberType);
+        }
+
+        [Fact]
+        public void throw_if_no_step_in_very_strict_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
+            Assert.Equal(MockType.Method, ex.MemberType);
+        }
+
+        [Fact]
+        public void do_nothing_if_cleared_in_lenient_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            methodMock.Call();
+            Assert.Equal(0, nextStep.Count);
+        }
+
+        [Fact]
+        public void throw_if_cleared_in_strict_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
+            Assert.Equal(MockType.Method, ex.MemberType);
+            Assert.Equal(0, nextStep.Count);
+        }
+
+        [Fact]
+        public void throw_if_cleared_in_very_strict_mode()
+        {
+            var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
+            Assert.Equal(MockType.Method, ex.MemberType);
+            Assert.Equal(0, nextStep.Count);
+        }
+
 
         [Fact]
         public void send_mock_information_and_parameters_to_step()
         {
-            IMockInfo sentMockInfo = null;
-            int sentParam = 0;
+            var actionMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            var nextStep = NextStepFor(actionMock);
 
-            var newStep = new MockMethodStep<int, ValueTuple>();
-            newStep.Call.Action(p =>
-            {
-                sentMockInfo = p.mockInfo;
-                sentParam = p.param;
-            });
-            ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep(newStep);
+            actionMock.Call(5);
 
-            _actionMock.Call(5);
+            Assert.Equal(1, nextStep.Count);
+            Assert.Same(actionMock, nextStep.LastMockInfo);
+            Assert.Equal(5, nextStep.LastParam);
+        }
 
-            Assert.Same(_actionMock, sentMockInfo);
-            Assert.Equal(5, sentParam);
+        [Fact]
+        public void do_nothing_if_no_step_in_lenient_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            methodMock.Call(5);
+        }
+
+        [Fact]
+        public void throw_if_no_step_in_strict_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
+            Assert.Equal(MockType.Method, ex.MemberType);
+        }
+
+        [Fact]
+        public void throw_if_no_step_in_very_strict_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
+            Assert.Equal(MockType.Method, ex.MemberType);
+        }
+
+        [Fact]
+        public void do_nothing_if_cleared_in_lenient_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            methodMock.Call(5);
+            Assert.Equal(0, nextStep.Count);
+        }
+
+        [Fact]
+        public void throw_if_cleared_in_strict_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
+            Assert.Equal(MockType.Method, ex.MemberType);
+            Assert.Equal(0, nextStep.Count);
+        }
+
+        [Fact]
+        public void throw_if_cleared_in_very_strict_mode_parameter_case()
+        {
+            var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
+            var nextStep = NextStepFor(methodMock);
+            methodMock.Clear();
+            var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
+            Assert.Equal(MockType.Method, ex.MemberType);
+            Assert.Equal(0, nextStep.Count);
         }
     }
 }

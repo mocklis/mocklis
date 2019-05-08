@@ -13,10 +13,16 @@ namespace Mocklis.Tests.Helpers
 
     #endregion
 
-    public class MockInfo : IMockInfo
+    public sealed class MockInfo : IMockInfo
     {
-        public static MockInfo Default { get; } =
+        public static MockInfo Lenient { get; } =
             new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
+
+        public static MockInfo Strict { get; } =
+            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Strict);
+
+        public static MockInfo VeryStrict { get; } =
+            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.VeryStrict);
 
         public object MockInstance { get; }
         public string MocklisClassName { get; }

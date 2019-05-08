@@ -82,5 +82,10 @@ namespace Mocklis.Core
             _memberMockName = memberMockName ?? throw new ArgumentNullException(nameof(memberMockName));
             _strictness = strictness;
         }
+
+        /// <summary>
+        ///     Restores the Mock to an unconfigured state.
+        /// </summary>
+        public abstract void Clear();
     }
 }

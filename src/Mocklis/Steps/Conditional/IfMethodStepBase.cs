@@ -65,7 +65,7 @@ namespace Mocklis.Steps.Conditional
             /// <returns>The returned result.</returns>
             TResult IMethodStep<TParam, TResult>.Call(IMockInfo mockInfo, TParam param)
             {
-                return _nextStep.Call(mockInfo, param);
+                return _nextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
             }
 
             /// <summary>
@@ -95,7 +95,7 @@ namespace Mocklis.Steps.Conditional
             public TResult Call(IMockInfo mockInfo, TParam param)
             {
                 // Call directly to next step thus bypassing the condition check.
-                return _ifMethodStep.NextStep.Call(mockInfo, param);
+                return _ifMethodStep.NextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
             }
         }
 
