@@ -18,7 +18,7 @@ namespace Mocklis.Core.Tests.Core
     public class MockMissingException_should
     {
         private readonly IMockInfo _mockInfo =
-            new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
+            new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
 
         private static T RoundTrip<T>(T item)
         {

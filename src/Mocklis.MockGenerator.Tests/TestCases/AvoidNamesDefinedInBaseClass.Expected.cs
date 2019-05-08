@@ -25,8 +25,8 @@ namespace Test
 
         public TestClass()
         {
-            Test0 = new FuncMethodMock<int, string>(this, "TestClass", "ITestClass", "Test", "Test0");
-            AnotherTest0 = new PropertyMock<bool>(this, "TestClass", "ITestClass", "AnotherTest", "AnotherTest0");
+            Test0 = new FuncMethodMock<int, string>(this, "TestClass", "ITestClass", "Test", "Test0", Strictness.Lenient);
+            AnotherTest0 = new PropertyMock<bool>(this, "TestClass", "ITestClass", "AnotherTest", "AnotherTest0", Strictness.Lenient);
         }
 
         public FuncMethodMock<int, string> Test0 { get; }

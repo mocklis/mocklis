@@ -23,14 +23,14 @@ namespace Test
 
         public TestClass()
         {
-            ActionWithoutParameters = new ActionMethodMock(this, "TestClass", "ITestClass", "ActionWithoutParameters", "ActionWithoutParameters");
-            ActionWithOneParameter = new ActionMethodMock<int>(this, "TestClass", "ITestClass", "ActionWithOneParameter", "ActionWithOneParameter");
-            ActionWithTwoParameters = new ActionMethodMock<(int i1, int i2)>(this, "TestClass", "ITestClass", "ActionWithTwoParameters", "ActionWithTwoParameters");
-            ActionWithThreeParameters = new ActionMethodMock<(int i1, int i2, int i3)>(this, "TestClass", "ITestClass", "ActionWithThreeParameters", "ActionWithThreeParameters");
-            FuncWithoutParameters = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "FuncWithoutParameters", "FuncWithoutParameters");
-            FuncWithOneParameter = new FuncMethodMock<int, int>(this, "TestClass", "ITestClass", "FuncWithOneParameter", "FuncWithOneParameter");
-            FuncWithTwoParameters = new FuncMethodMock<(int i1, int i2), int>(this, "TestClass", "ITestClass", "FuncWithTwoParameters", "FuncWithTwoParameters");
-            FuncWithThreeParameters = new FuncMethodMock<(int i1, int i2, int i3), int>(this, "TestClass", "ITestClass", "FuncWithThreeParameters", "FuncWithThreeParameters");
+            ActionWithoutParameters = new ActionMethodMock(this, "TestClass", "ITestClass", "ActionWithoutParameters", "ActionWithoutParameters", Strictness.Lenient);
+            ActionWithOneParameter = new ActionMethodMock<int>(this, "TestClass", "ITestClass", "ActionWithOneParameter", "ActionWithOneParameter", Strictness.Lenient);
+            ActionWithTwoParameters = new ActionMethodMock<(int i1, int i2)>(this, "TestClass", "ITestClass", "ActionWithTwoParameters", "ActionWithTwoParameters", Strictness.Lenient);
+            ActionWithThreeParameters = new ActionMethodMock<(int i1, int i2, int i3)>(this, "TestClass", "ITestClass", "ActionWithThreeParameters", "ActionWithThreeParameters", Strictness.Lenient);
+            FuncWithoutParameters = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "FuncWithoutParameters", "FuncWithoutParameters", Strictness.Lenient);
+            FuncWithOneParameter = new FuncMethodMock<int, int>(this, "TestClass", "ITestClass", "FuncWithOneParameter", "FuncWithOneParameter", Strictness.Lenient);
+            FuncWithTwoParameters = new FuncMethodMock<(int i1, int i2), int>(this, "TestClass", "ITestClass", "FuncWithTwoParameters", "FuncWithTwoParameters", Strictness.Lenient);
+            FuncWithThreeParameters = new FuncMethodMock<(int i1, int i2, int i3), int>(this, "TestClass", "ITestClass", "FuncWithThreeParameters", "FuncWithThreeParameters", Strictness.Lenient);
         }
 
         public ActionMethodMock ActionWithoutParameters { get; }

@@ -12,8 +12,8 @@ namespace Test
 
         public TestClass()
         {
-            GetEnumerator = new FuncMethodMock<IEnumerator<T>>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator");
-            GetEnumerator0 = new FuncMethodMock<System.Collections.IEnumerator>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator0");
+            GetEnumerator = new FuncMethodMock<IEnumerator<T>>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator", Strictness.Lenient);
+            GetEnumerator0 = new FuncMethodMock<System.Collections.IEnumerator>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator0", Strictness.Lenient);
         }
 
         public FuncMethodMock<IEnumerator<T>> GetEnumerator { get; }

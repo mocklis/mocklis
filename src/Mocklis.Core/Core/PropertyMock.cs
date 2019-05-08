@@ -29,13 +29,15 @@ namespace Mocklis.Core
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyMock{TValue}" /> class.
         /// </summary>
-        /// <param name="mockInstance">The instance of the mocklis class through with the mocked member is accessed.</param>
+        /// <param name="mockInstance">The instance of the mocklis class through with the mock is accessed.</param>
         /// <param name="mocklisClassName">The name of the mocklis class.</param>
-        /// <param name="interfaceName">The name of the interface on which the mocked member is defined.</param>
-        /// <param name="memberName">The name of the mocked member.</param>
-        /// <param name="memberMockName">The name of the property or method used to provide the mocked member with behaviour.</param>
-        public PropertyMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
-            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName)
+        /// <param name="interfaceName">The name of the interface on which the mocked interface member is defined.</param>
+        /// <param name="memberName">The name of the mocked interface member.</param>
+        /// <param name="memberMockName">The name of the property or method used to provide the mock.</param>
+        /// <param name="strictness">The strictness of the mock.</param>
+        public PropertyMock(object mockInstance, string mocklisClassName, string interfaceName, string memberName,
+            string memberMockName, Strictness strictness)
+            : base(mockInstance, mocklisClassName, interfaceName, memberName, memberMockName, strictness)
         {
         }
 

@@ -43,13 +43,13 @@ namespace Test
 
         public TestClass()
         {
-            DataReceived = new EventMock<EventHandler<DuplexConnectionDataEventArgs>>(this, "TestClass", "IDuplexConnection", "DataReceived", "DataReceived");
-            TextReceived = new EventMock<EventHandler<DuplexConnectionTextEventArgs>>(this, "TestClass", "IDuplexConnection", "TextReceived", "TextReceived");
-            SendData = new ActionMethodMock<byte[]>(this, "TestClass", "IDuplexConnection", "SendData", "SendData");
-            SendText = new ActionMethodMock<string>(this, "TestClass", "IDuplexConnection", "SendText", "SendText");
-            Close = new FuncMethodMock<string, Task<string>>(this, "TestClass", "IDuplexConnection", "Close", "Close");
-            Run = new FuncMethodMock<Task>(this, "TestClass", "IDuplexConnection", "Run", "Run");
-            SubProtocol = new PropertyMock<string>(this, "TestClass", "IDuplexConnection", "SubProtocol", "SubProtocol");
+            DataReceived = new EventMock<EventHandler<DuplexConnectionDataEventArgs>>(this, "TestClass", "IDuplexConnection", "DataReceived", "DataReceived", Strictness.Lenient);
+            TextReceived = new EventMock<EventHandler<DuplexConnectionTextEventArgs>>(this, "TestClass", "IDuplexConnection", "TextReceived", "TextReceived", Strictness.Lenient);
+            SendData = new ActionMethodMock<byte[]>(this, "TestClass", "IDuplexConnection", "SendData", "SendData", Strictness.Lenient);
+            SendText = new ActionMethodMock<string>(this, "TestClass", "IDuplexConnection", "SendText", "SendText", Strictness.Lenient);
+            Close = new FuncMethodMock<string, Task<string>>(this, "TestClass", "IDuplexConnection", "Close", "Close", Strictness.Lenient);
+            Run = new FuncMethodMock<Task>(this, "TestClass", "IDuplexConnection", "Run", "Run", Strictness.Lenient);
+            SubProtocol = new PropertyMock<string>(this, "TestClass", "IDuplexConnection", "SubProtocol", "SubProtocol", Strictness.Lenient);
         }
 
         public EventMock<EventHandler<DuplexConnectionDataEventArgs>> DataReceived { get; }

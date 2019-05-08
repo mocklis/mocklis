@@ -170,6 +170,15 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax RuntimeArgumentHandle() => ParseTypeName(_mocklisSymbols.RuntimeArgumentHandle);
 
+        public MemberAccessExpressionSyntax StrictnessLenient() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            ParseTypeName(_mocklisSymbols.Strictness), F.IdentifierName("Lenient"));
+
+        public MemberAccessExpressionSyntax StrictnessStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            ParseTypeName(_mocklisSymbols.Strictness), F.IdentifierName("Strict"));
+
+        public MemberAccessExpressionSyntax StrictnessVeryStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            ParseTypeName(_mocklisSymbols.Strictness), F.IdentifierName("VeryStrict"));
+
         public ParameterSyntax AsParameterSyntax(IParameterSymbol p)
         {
             var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type));

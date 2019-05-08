@@ -27,6 +27,7 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol MockType { get; }
         public INamedTypeSymbol ByRef1 { get; }
         public INamedTypeSymbol TypedMockProvider { get; }
+        public INamedTypeSymbol Strictness { get; }
         public INamedTypeSymbol RuntimeArgumentHandle { get; }
 
         private INamedTypeSymbol Object { get; }
@@ -47,6 +48,7 @@ namespace Mocklis.CodeGeneration
             MockType = compilation.GetTypeByMetadataName("Mocklis.Core.MockType");
             ByRef1 = compilation.GetTypeByMetadataName("Mocklis.Core.ByRef`1");
             TypedMockProvider = compilation.GetTypeByMetadataName("Mocklis.Core.TypedMockProvider");
+            Strictness = compilation.GetTypeByMetadataName("Mocklis.Core.Strictness");
             RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
             Object = compilation.GetTypeByMetadataName("System.Object");
         }

@@ -17,9 +17,12 @@ namespace Mocklis.Tests.Mocks
     [MocklisClass]
     public class MockStoredProperty<TValue> : IStoredProperty<TValue>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public MockStoredProperty()
         {
-            Value = new PropertyMock<TValue>(this, "MockStoredProperty", "IStoredProperty", "Value", "Value");
+            Value = new PropertyMock<TValue>(this, "MockStoredProperty", "IStoredProperty", "Value", "Value", Strictness.Lenient);
         }
 
         public PropertyMock<TValue> Value { get; }

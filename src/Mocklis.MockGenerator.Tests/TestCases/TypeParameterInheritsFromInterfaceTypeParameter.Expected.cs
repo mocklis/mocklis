@@ -20,7 +20,7 @@ namespace Test
         public ActionMethodMock<TInner> Test<TInner>() where TInner : T
         {
             var key = new[] { typeof(TInner) };
-            return (ActionMethodMock<TInner>)_test.GetOrAdd(key, keyString => new ActionMethodMock<TInner>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()"));
+            return (ActionMethodMock<TInner>)_test.GetOrAdd(key, keyString => new ActionMethodMock<TInner>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()", Strictness.Lenient));
         }
 
         void ITestClass<T>.Test<TInner>(TInner parameter) => Test<TInner>().Call(parameter);

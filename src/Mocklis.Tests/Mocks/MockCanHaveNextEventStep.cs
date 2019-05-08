@@ -17,6 +17,9 @@ namespace Mocklis.Tests.Mocks
     [MocklisClass]
     public class MockCanHaveNextEventStep<THandler> : ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         private readonly TypedMockProvider _setNextStep = new TypedMockProvider();
 
         public FuncMethodMock<TStep, TStep> SetNextStep<TStep>() where TStep : IEventStep<THandler>
@@ -24,7 +27,7 @@ namespace Mocklis.Tests.Mocks
             var key = new[] { typeof(TStep) };
             return (FuncMethodMock<TStep, TStep>)_setNextStep.GetOrAdd(key,
                 keyString => new FuncMethodMock<TStep, TStep>(this, "MockCanHaveNextEventStep", "ICanHaveNextEventStep", "SetNextStep" + keyString,
-                    "SetNextStep" + keyString + "()"));
+                    "SetNextStep" + keyString + "()", Strictness.Lenient));
         }
 
         TStep ICanHaveNextEventStep<THandler>.SetNextStep<TStep>(TStep step) => SetNextStep<TStep>().Call(step);

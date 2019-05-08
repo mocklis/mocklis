@@ -21,7 +21,7 @@ namespace Mocklis.Core.Tests.Core
 
         public EventMock_SetNextStep_should()
         {
-            _eventMock = new EventMock<EventHandler>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
+            _eventMock = new EventMock<EventHandler>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]

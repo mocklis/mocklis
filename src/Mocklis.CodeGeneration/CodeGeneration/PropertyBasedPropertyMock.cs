@@ -24,8 +24,8 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedPropertyMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
-            string mockMemberName) : base(typesForSymbols,
-            classSymbol, interfaceSymbol, symbol, mockMemberName)
+            string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols,
+            classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
         {
             ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
             MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);

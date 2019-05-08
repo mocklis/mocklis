@@ -20,7 +20,7 @@ namespace Mocklis.Core.Tests.Core
 
         public PropertyMock_Value_should()
         {
-            _propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
+            _propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]

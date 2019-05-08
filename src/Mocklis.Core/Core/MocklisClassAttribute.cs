@@ -28,7 +28,36 @@ namespace Mocklis.Core
         {
             MockReturnsByRef = false;
             MockReturnsByRefReadonly = true;
+            Strict = false;
+            VeryStrict = false;
         }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether members that don't have any steps defined should silently return
+        ///     a default value (or do nothing) or throw a <see cref="MockMissingException" /> when accessed.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if a <see cref="MockMissingException" /> should be thrown.
+        ///     <c>false</c> if a default value should be returned (if there is a value to be returned). This is the default.
+        /// </value>
+        public bool Strict { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether defined step that don't have any subsequent steps defined should
+        ///     silently return a default value (or do nothing) or throw a <see cref="MockMissingException" /> when accessed.
+        ///     Note <see cref="Strict" /> is implicitly treated as <c>true</c> if <see cref="VeryStrict" /> is <c>true</c>.
+        /// </summary>
+        /// <remarks>
+        ///     The difference between <see cref="Strict" /> and <see cref="VeryStrict" /> is how a partially configured mock
+        ///     is treated. If you just add a Log step, and only <see cref="Strict" /> is <c>true</c> then no exception would
+        ///     be thrown even though Log cannot return a value on its own and requires subsequent steps to provide behaviour.
+        ///     If <see cref="VeryStrict" /> is <c>true</c> then this case would throw an exception.
+        /// </remarks>
+        /// <value>
+        ///     <c>true</c> if a <see cref="MockMissingException" /> should be thrown.
+        ///     <c>false</c> if a default value should be returned (if there is a value to be returned). This is the default.
+        /// </value>
+        public bool VeryStrict { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether members that return values by reference should be mocked using a mock

@@ -23,8 +23,8 @@ namespace Mocklis.CodeGeneration
         public string MockProviderName { get; }
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
-            INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName)
-            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName)
+            INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName, bool strict, bool veryStrict)
+            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
         {
             MockProviderName = mockProviderName;
         }
@@ -66,7 +66,8 @@ namespace Mocklis.CodeGeneration
                             F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MemberMockName)), F.IdentifierName("keyString")),
                         F.LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            F.Literal("()")))
+                            F.Literal("()"))),
+                    StrictnessExpression()
                 ));
 
             var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(

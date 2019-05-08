@@ -20,7 +20,7 @@ namespace Mocklis.Core.Tests.Core
         {
             public string KeyString { get; }
 
-            public FakeMemberMock(string keyString) : base(new object(), "Class", "Interface", "Member" + keyString, "Mock")
+            public FakeMemberMock(string keyString) : base(new object(), "Class", "Interface", "Member" + keyString, "Mock", Strictness.Lenient)
             {
                 KeyString = keyString;
             }

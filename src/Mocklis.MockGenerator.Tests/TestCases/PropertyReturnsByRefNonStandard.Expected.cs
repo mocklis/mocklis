@@ -17,7 +17,7 @@ namespace Test
 
         public TestClass()
         {
-            ReturnsByRef = new PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef");
+            ReturnsByRef = new PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef", Strictness.Lenient);
         }
 
         public PropertyMock<int> ReturnsByRef { get; }

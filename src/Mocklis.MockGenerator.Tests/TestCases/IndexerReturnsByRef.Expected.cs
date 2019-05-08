@@ -17,7 +17,7 @@ namespace Test
 
         public TestClass()
         {
-            Item0 = new IndexerMock<string, int>(this, "TestClass", "ITestClass", "this[]", "Item0");
+            Item0 = new IndexerMock<string, int>(this, "TestClass", "ITestClass", "this[]", "Item0", Strictness.Lenient);
         }
 
         protected virtual ref int Item(int i)

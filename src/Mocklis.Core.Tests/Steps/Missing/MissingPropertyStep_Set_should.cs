@@ -21,7 +21,7 @@ namespace Mocklis.Core.Tests.Steps.Missing
 
         public MissingPropertyStep_Set_should()
         {
-            _propertyMock = new PropertyMock<int>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1");
+            _propertyMock = new PropertyMock<int>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1", Strictness.Lenient);
             _missingPropertyStep = MissingPropertyStep<int>.Instance;
         }
 

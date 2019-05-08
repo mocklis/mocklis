@@ -17,8 +17,8 @@ namespace Test
 
         public TestClass()
         {
-            TryParse1 = new FuncMethodMock<string, (bool returnValue, int result)>(this, "TestClass", "ITestClass", "TryParse1", "TryParse1");
-            TryParse2 = new FuncMethodMock<string, (bool returnValue, int tmp)>(this, "TestClass", "ITestClass", "TryParse2", "TryParse2");
+            TryParse1 = new FuncMethodMock<string, (bool returnValue, int result)>(this, "TestClass", "ITestClass", "TryParse1", "TryParse1", Strictness.Lenient);
+            TryParse2 = new FuncMethodMock<string, (bool returnValue, int tmp)>(this, "TestClass", "ITestClass", "TryParse2", "TryParse2", Strictness.Lenient);
         }
 
         public FuncMethodMock<string, (bool returnValue, int result)> TryParse1 { get; }

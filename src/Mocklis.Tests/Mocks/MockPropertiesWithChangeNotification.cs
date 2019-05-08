@@ -18,14 +18,20 @@ namespace Mocklis.Tests.Mocks
     [MocklisClass]
     public class MockPropertiesWithChangeNotification : IProperties, INotifyPropertyChanged
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public MockPropertiesWithChangeNotification()
         {
             StringProperty =
-                new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty");
-            IntProperty = new PropertyMock<int>(this, "MockPropertiesWithChangeNotification", "IProperties", "IntProperty", "IntProperty");
-            BoolProperty = new PropertyMock<bool>(this, "MockPropertiesWithChangeNotification", "IProperties", "BoolProperty", "BoolProperty");
+                new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty",
+                    Strictness.Lenient);
+            IntProperty = new PropertyMock<int>(this, "MockPropertiesWithChangeNotification", "IProperties", "IntProperty", "IntProperty",
+                Strictness.Lenient);
+            BoolProperty = new PropertyMock<bool>(this, "MockPropertiesWithChangeNotification", "IProperties", "BoolProperty", "BoolProperty",
+                Strictness.Lenient);
             PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockPropertiesWithChangeNotification", "INotifyPropertyChanged",
-                "PropertyChanged", "PropertyChanged");
+                "PropertyChanged", "PropertyChanged", Strictness.Lenient);
         }
 
         public PropertyMock<string> StringProperty { get; }

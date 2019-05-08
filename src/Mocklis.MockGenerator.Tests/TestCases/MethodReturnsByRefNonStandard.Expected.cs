@@ -17,7 +17,7 @@ namespace Test
 
         public TestClass()
         {
-            ReturnsByRef = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef");
+            ReturnsByRef = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef", Strictness.Lenient);
         }
 
         public FuncMethodMock<int> ReturnsByRef { get; }

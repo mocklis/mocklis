@@ -14,10 +14,6 @@ namespace Mocklis.Verification
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
-#if !NETSTANDARD1_3
-    using System.Runtime.Serialization;
-    using System.Security.Permissions;
-#endif
 
     #endregion
 
@@ -25,11 +21,11 @@ namespace Mocklis.Verification
     /// <summary>
     ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
     ///     only on that check) or a branch node (and it's deemed successful only if all its child nodes are successful.)
-    ///     Implements the <see cref="ISerializable" /> interface.
+    ///     Implements the <see cref="System.Runtime.Serialization.ISerializable" /> interface.
     /// </summary>
-    /// <seealso cref="ISerializable" />
+    /// <seealso cref="System.Runtime.Serialization.ISerializable" />
     [Serializable]
-    public readonly struct VerificationResult : ISerializable
+    public readonly struct VerificationResult : System.Runtime.Serialization.ISerializable
 #else
     /// <summary>
     ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
@@ -135,7 +131,7 @@ namespace Mocklis.Verification
         }
 
 #if !NETSTANDARD1_3
-        private VerificationResult(SerializationInfo info, StreamingContext context)
+        private VerificationResult(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {
             Description = info.GetString(nameof(Description));
             SubResults = (IReadOnlyList<VerificationResult>)info.GetValue(nameof(SubResults), typeof(IReadOnlyList<VerificationResult>));
@@ -143,17 +139,19 @@ namespace Mocklis.Verification
         }
 
         /// <summary>
-        ///     Sets the <see cref="SerializationInfo" /> with information about the verification result.
+        ///     Sets the <see cref="System.Runtime.Serialization.SerializationInfo" /> with information about the verification
+        ///     result.
         /// </summary>
         /// <param name="info">
-        ///     The <see cref="SerializationInfo" /> that holds the serialized object data about the verification result.
+        ///     The <see cref="System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the
+        ///     verification result.
         /// </param>
         /// <param name="context">
-        ///     The <see cref="StreamingContext" /> that contains contextual information about the source or
-        ///     destination.
+        ///     The <see cref="System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the
+        ///     source or destination.
         /// </param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter = true)]
+        public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {
             info.AddValue(nameof(Description), Description);
             info.AddValue(nameof(SubResults), SubResults);

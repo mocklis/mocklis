@@ -27,7 +27,8 @@ namespace Mocklis.CodeGeneration
         protected TypeSyntax MockMemberType { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol, string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
+            IMethodSymbol symbol, string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
+            mockMemberName, strict, veryStrict)
         {
             var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
             var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);

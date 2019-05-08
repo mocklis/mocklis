@@ -16,7 +16,7 @@ namespace Test
 
         public TestClass()
         {
-            MyEvent = new EventMock<EventHandler>(this, "TestClass", "ITestClass", "MyEvent", "MyEvent");
+            MyEvent = new EventMock<EventHandler>(this, "TestClass", "ITestClass", "MyEvent", "MyEvent", Strictness.Lenient);
         }
 
         public EventMock<EventHandler> MyEvent { get; }

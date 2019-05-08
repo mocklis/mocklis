@@ -23,7 +23,7 @@ namespace Test
 
         public TestClass()
         {
-            Test = new FuncMethodMock<int, string>(this, "TestClass", "ITestClass", "Test", "Test");
+            Test = new FuncMethodMock<int, string>(this, "TestClass", "ITestClass", "Test", "Test", Strictness.Lenient);
         }
 
         public FuncMethodMock<int, string> Test { get; }

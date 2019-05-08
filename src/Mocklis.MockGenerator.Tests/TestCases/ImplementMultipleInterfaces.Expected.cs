@@ -21,8 +21,8 @@ namespace Test
 
         public TestClass()
         {
-            Property1 = new PropertyMock<int>(this, "TestClass", "ITest1", "Property1", "Property1");
-            DoSomething = new ActionMethodMock<string>(this, "TestClass", "ITest2", "DoSomething", "DoSomething");
+            Property1 = new PropertyMock<int>(this, "TestClass", "ITest1", "Property1", "Property1", Strictness.Lenient);
+            DoSomething = new ActionMethodMock<string>(this, "TestClass", "ITest2", "DoSomething", "DoSomething", Strictness.Lenient);
         }
 
         public PropertyMock<int> Property1 { get; }

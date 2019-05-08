@@ -23,15 +23,27 @@ namespace Mocklis.CodeGeneration
         protected INamedTypeSymbol InterfaceSymbol { get; }
         protected TSymbol Symbol { get; }
         protected string MemberMockName { get; }
+        protected bool Strict { get; }
+        protected bool VeryStrict { get; }
+
+        protected MemberAccessExpressionSyntax StrictnessExpression()
+        {
+            return
+                VeryStrict ? TypesForSymbols.StrictnessVeryStrict() :
+                Strict ? TypesForSymbols.StrictnessStrict() :
+                TypesForSymbols.StrictnessLenient();
+        }
 
         protected PropertyBasedMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            TSymbol symbol, string memberMockName)
+            TSymbol symbol, string memberMockName, bool strict, bool veryStrict)
         {
             TypesForSymbols = typesForSymbols;
             ClassSymbol = classSymbol;
             InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = memberMockName;
+            Strict = strict;
+            VeryStrict = veryStrict;
         }
 
         protected PropertyDeclarationSyntax MockProperty(TypeSyntax mockPropertyType)
@@ -51,7 +63,8 @@ namespace Mocklis.CodeGeneration
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(ClassSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MemberMockName))
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MemberMockName)),
+                        StrictnessExpression()
                     )));
         }
     }

@@ -16,7 +16,7 @@ namespace Test
 
         public TestClass()
         {
-            DoCalculation = new FuncMethodMock<T1, string>(this, "TestClass", "ITestClass", "DoCalculation", "DoCalculation");
+            DoCalculation = new FuncMethodMock<T1, string>(this, "TestClass", "ITestClass", "DoCalculation", "DoCalculation", Strictness.Lenient);
         }
 
         public FuncMethodMock<T1, string> DoCalculation { get; }

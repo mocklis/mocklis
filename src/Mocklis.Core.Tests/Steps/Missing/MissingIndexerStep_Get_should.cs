@@ -21,7 +21,7 @@ namespace Mocklis.Core.Tests.Steps.Missing
 
         public MissingIndexerStep_Get_should()
         {
-            _indexerMock = new IndexerMock<int, string>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1");
+            _indexerMock = new IndexerMock<int, string>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1", Strictness.Lenient);
             _missingIndexerStep = MissingIndexerStep<int, string>.Instance;
         }
 

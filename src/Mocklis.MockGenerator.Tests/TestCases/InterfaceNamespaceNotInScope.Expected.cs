@@ -19,7 +19,7 @@ namespace Test
 
         public TestClass()
         {
-            DoStuff = new ActionMethodMock<string>(this, "TestClass", "ITest", "DoStuff", "DoStuff");
+            DoStuff = new ActionMethodMock<string>(this, "TestClass", "ITest", "DoStuff", "DoStuff", Strictness.Lenient);
         }
 
         public ActionMethodMock<string> DoStuff { get; }

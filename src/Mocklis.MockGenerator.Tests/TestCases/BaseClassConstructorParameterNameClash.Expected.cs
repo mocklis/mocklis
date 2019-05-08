@@ -24,8 +24,8 @@ namespace Test
 
         public TestClass(int Test) : base(Test)
         {
-            this.Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test");
-            Test2 = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test2", "Test2");
+            this.Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test", Strictness.Lenient);
+            Test2 = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test2", "Test2", Strictness.Lenient);
         }
 
         public PropertyMock<int> Test { get; }

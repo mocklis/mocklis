@@ -17,8 +17,8 @@ namespace Test
 
         public TestClass()
         {
-            Item = new IndexerMock<(int Item0, int Item2, int Item02, int Item_, int ItemTest), int>(this, "TestClass", "ITestClass", "this[]", "Item");
-            Item0 = new IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "Item0");
+            Item = new IndexerMock<(int Item0, int Item2, int Item02, int Item_, int ItemTest), int>(this, "TestClass", "ITestClass", "this[]", "Item", Strictness.Lenient);
+            Item0 = new IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "Item0", Strictness.Lenient);
         }
 
         public IndexerMock<(int Item0, int Item2, int Item02, int Item_, int ItemTest), int> Item { get; }

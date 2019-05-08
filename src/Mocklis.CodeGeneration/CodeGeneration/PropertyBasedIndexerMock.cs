@@ -26,8 +26,8 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedIndexerMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
-            string mockMemberName) : base(typesForSymbols,
-            classSymbol, interfaceSymbol, symbol, mockMemberName)
+            string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols,
+            classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
         {
             var builder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
             foreach (var p in symbol.Parameters)

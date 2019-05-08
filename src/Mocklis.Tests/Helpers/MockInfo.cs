@@ -15,21 +15,25 @@ namespace Mocklis.Tests.Helpers
 
     public class MockInfo : IMockInfo
     {
-        public static MockInfo Default { get; } = new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName");
+        public static MockInfo Default { get; } =
+            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
 
         public object MockInstance { get; }
         public string MocklisClassName { get; }
         public string InterfaceName { get; }
         public string MemberName { get; }
         public string MemberMockName { get; }
+        public Strictness Strictness { get; }
 
-        public MockInfo(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName)
+        public MockInfo(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName,
+            Strictness strictness)
         {
             MockInstance = mockInstance;
             MocklisClassName = mocklisClassName;
             InterfaceName = interfaceName;
             MemberName = memberName;
             MemberMockName = memberMockName;
+            Strictness = strictness;
         }
     }
 }

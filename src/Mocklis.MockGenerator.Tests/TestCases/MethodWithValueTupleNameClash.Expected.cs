@@ -17,8 +17,8 @@ namespace Test
 
         public TestClass()
         {
-            Test = new ActionMethodMock<(int Item2_, int AnotherItem)>(this, "TestClass", "ITestClass", "Test", "Test");
-            Test2 = new FuncMethodMock<(int returnValue, int Item1_)>(this, "TestClass", "ITestClass", "Test2", "Test2");
+            Test = new ActionMethodMock<(int Item2_, int AnotherItem)>(this, "TestClass", "ITestClass", "Test", "Test", Strictness.Lenient);
+            Test2 = new FuncMethodMock<(int returnValue, int Item1_)>(this, "TestClass", "ITestClass", "Test2", "Test2", Strictness.Lenient);
         }
 
         public ActionMethodMock<(int Item2_, int AnotherItem)> Test { get; }

@@ -31,12 +31,12 @@ namespace Test
 
         public TestClass(int i) : base(i)
         {
-            Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test");
+            Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test", Strictness.Lenient);
         }
 
         public TestClass(string s) : base(s)
         {
-            Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test");
+            Test = new PropertyMock<int>(this, "TestClass", "ITestClass", "Test", "Test", Strictness.Lenient);
         }
 
         public PropertyMock<int> Test { get; }

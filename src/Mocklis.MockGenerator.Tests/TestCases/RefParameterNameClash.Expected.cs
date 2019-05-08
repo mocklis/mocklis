@@ -17,8 +17,8 @@ namespace Test
 
         public TestClass()
         {
-            UpdateScore = new FuncMethodMock<(int tmp, int score), int>(this, "TestClass", "ITestClass", "UpdateScore", "UpdateScore");
-            UpdateScore0 = new FuncMethodMock<(string action, int tmp), int>(this, "TestClass", "ITestClass", "UpdateScore", "UpdateScore0");
+            UpdateScore = new FuncMethodMock<(int tmp, int score), int>(this, "TestClass", "ITestClass", "UpdateScore", "UpdateScore", Strictness.Lenient);
+            UpdateScore0 = new FuncMethodMock<(string action, int tmp), int>(this, "TestClass", "ITestClass", "UpdateScore", "UpdateScore0", Strictness.Lenient);
         }
 
         public FuncMethodMock<(int tmp, int score), int> UpdateScore { get; }

@@ -16,6 +16,9 @@ namespace Mocklis.Tests.Mocks
     [MocklisClass]
     public class MockCanHaveNextPropertyStep<TValue> : ICanHaveNextPropertyStep<TValue>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         private readonly TypedMockProvider _setNextStep = new TypedMockProvider();
 
         public FuncMethodMock<TStep, TStep> SetNextStep<TStep>() where TStep : IPropertyStep<TValue>
@@ -23,7 +26,7 @@ namespace Mocklis.Tests.Mocks
             var key = new[] { typeof(TStep) };
             return (FuncMethodMock<TStep, TStep>)_setNextStep.GetOrAdd(key,
                 keyString => new FuncMethodMock<TStep, TStep>(this, "MockCanHaveNextPropertyStep", "ICanHaveNextPropertyStep",
-                    "SetNextStep" + keyString, "SetNextStep" + keyString + "()"));
+                    "SetNextStep" + keyString, "SetNextStep" + keyString + "()", Strictness.Lenient));
         }
 
         TStep ICanHaveNextPropertyStep<TValue>.SetNextStep<TStep>(TStep step) => SetNextStep<TStep>().Call(step);

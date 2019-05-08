@@ -18,7 +18,7 @@ namespace Test
 
         public TestClass()
         {
-            TheIndexerName = new IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "TheIndexerName");
+            TheIndexerName = new IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "TheIndexerName", Strictness.Lenient);
         }
 
         public IndexerMock<int, int> TheIndexerName { get; }

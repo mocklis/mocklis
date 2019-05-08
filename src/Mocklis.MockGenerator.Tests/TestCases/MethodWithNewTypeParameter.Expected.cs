@@ -20,7 +20,7 @@ namespace Test
         public FuncMethodMock<T> ReturnsNewType<T>()
         {
             var key = new[] { typeof(T) };
-            return (FuncMethodMock<T>)_returnsNewType.GetOrAdd(key, keyString => new FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType" + keyString, "ReturnsNewType" + keyString + "()"));
+            return (FuncMethodMock<T>)_returnsNewType.GetOrAdd(key, keyString => new FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType" + keyString, "ReturnsNewType" + keyString + "()", Strictness.Lenient));
         }
 
         T ITestClass.ReturnsNewType<T>() => ReturnsNewType<T>().Call();
@@ -30,7 +30,7 @@ namespace Test
         public ActionMethodMock<T> UsesNewType<T>()
         {
             var key = new[] { typeof(T) };
-            return (ActionMethodMock<T>)_usesNewType.GetOrAdd(key, keyString => new ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType" + keyString, "UsesNewType" + keyString + "()"));
+            return (ActionMethodMock<T>)_usesNewType.GetOrAdd(key, keyString => new ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType" + keyString, "UsesNewType" + keyString + "()", Strictness.Lenient));
         }
 
         void ITestClass.UsesNewType<T>(T parameter) => UsesNewType<T>().Call(parameter);

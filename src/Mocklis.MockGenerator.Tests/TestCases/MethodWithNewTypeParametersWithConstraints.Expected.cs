@@ -27,7 +27,7 @@ namespace Test
             where T4 : new()
         {
             var key = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
-            return (FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)_test.GetOrAdd(key, keyString => new FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()"));
+            return (FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)_test.GetOrAdd(key, keyString => new FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()", Strictness.Lenient));
         }
 
         T2 ITestClass.Test<T1, T2, T3, T4>(T1 parameter, T3 parameter2, T4 anotherParameter) => Test<T1, T2, T3, T4>().Call((parameter, parameter2, anotherParameter));

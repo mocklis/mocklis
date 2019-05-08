@@ -19,8 +19,8 @@ namespace Test
 
         public TestClass()
         {
-            Item2_ = new ActionMethodMock<(int Item2_, int anotherItem)>(this, "TestClass", "ITestClass", "Item2_", "Item2_");
-            Item3_ = new FuncMethodMock<string, (int returnValue, string Item3_)>(this, "TestClass", "ITestClass", "Item3_", "Item3_");
+            Item2_ = new ActionMethodMock<(int Item2_, int anotherItem)>(this, "TestClass", "ITestClass", "Item2_", "Item2_", Strictness.Lenient);
+            Item3_ = new FuncMethodMock<string, (int returnValue, string Item3_)>(this, "TestClass", "ITestClass", "Item3_", "Item3_", Strictness.Lenient);
         }
 
         public ActionMethodMock<(int Item2_, int anotherItem)> Item2_ { get; }
@@ -41,7 +41,7 @@ namespace Test
         public FuncMethodMock<T, (int returnValue, T Item4_)> Item4_<T>()
         {
             var key = new[] { typeof(T) };
-            return (FuncMethodMock<T, (int returnValue, T Item4_)>)_item4_.GetOrAdd(key, keyString => new FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_" + keyString, "Item4_" + keyString + "()"));
+            return (FuncMethodMock<T, (int returnValue, T Item4_)>)_item4_.GetOrAdd(key, keyString => new FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_" + keyString, "Item4_" + keyString + "()", Strictness.Lenient));
         }
 
         int ITestClass.Item4_<T>(ref T Item4)

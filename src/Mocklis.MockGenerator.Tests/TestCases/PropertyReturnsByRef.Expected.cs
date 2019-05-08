@@ -17,7 +17,7 @@ namespace Test
 
         public TestClass()
         {
-            ReturnsByRefReadonly = new PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly");
+            ReturnsByRefReadonly = new PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly", Strictness.Lenient);
         }
 
         protected virtual ref int ReturnsByRef()

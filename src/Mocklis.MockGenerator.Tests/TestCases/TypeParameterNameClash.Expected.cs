@@ -45,7 +45,7 @@ namespace Test
         public FuncMethodMock<T0> TestWithRef<T0>()
         {
             var key = new[] { typeof(T0) };
-            return (FuncMethodMock<T0>)_testWithRef.GetOrAdd(key, keyString => new FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef" + keyString, "TestWithRef" + keyString + "()"));
+            return (FuncMethodMock<T0>)_testWithRef.GetOrAdd(key, keyString => new FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef" + keyString, "TestWithRef" + keyString + "()", Strictness.Lenient));
         }
 
         ref readonly T0 ITestClass<T>.TestWithRef<T0>() => ref ByRef<T0>.Wrap(TestWithRef<T0>().Call());

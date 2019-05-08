@@ -18,8 +18,8 @@ namespace Test
 
         public TestClass()
         {
-            ReturnsByRefReadonly = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly");
-            ReturnsMoreStuffByRef = new FuncMethodMock<(int returnValue, int blah)>(this, "TestClass", "ITestClass", "ReturnsMoreStuffByRef", "ReturnsMoreStuffByRef");
+            ReturnsByRefReadonly = new FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly", Strictness.Lenient);
+            ReturnsMoreStuffByRef = new FuncMethodMock<(int returnValue, int blah)>(this, "TestClass", "ITestClass", "ReturnsMoreStuffByRef", "ReturnsMoreStuffByRef", Strictness.Lenient);
         }
 
         protected virtual ref int ReturnsByRef()

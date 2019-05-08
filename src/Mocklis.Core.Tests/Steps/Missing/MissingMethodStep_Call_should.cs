@@ -21,7 +21,7 @@ namespace Mocklis.Core.Tests.Steps.Missing
 
         public MissingMethodStep_Call_should()
         {
-            _methodMock = new FuncMethodMock<int, string>(new object(), "TestClass", "ITest", "Method", "Method_1");
+            _methodMock = new FuncMethodMock<int, string>(new object(), "TestClass", "ITest", "Method", "Method_1", Strictness.Lenient);
             _missingMethodStep = MissingMethodStep<int, string>.Instance;
         }
 

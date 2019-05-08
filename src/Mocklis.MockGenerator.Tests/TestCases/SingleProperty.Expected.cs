@@ -18,9 +18,9 @@ namespace Test
 
         public TestClass()
         {
-            GetAndSet = new PropertyMock<int>(this, "TestClass", "ITestClass", "GetAndSet", "GetAndSet");
-            SetOnly = new PropertyMock<int>(this, "TestClass", "ITestClass", "SetOnly", "SetOnly");
-            GetOnly = new PropertyMock<int>(this, "TestClass", "ITestClass", "GetOnly", "GetOnly");
+            GetAndSet = new PropertyMock<int>(this, "TestClass", "ITestClass", "GetAndSet", "GetAndSet", Strictness.Lenient);
+            SetOnly = new PropertyMock<int>(this, "TestClass", "ITestClass", "SetOnly", "SetOnly", Strictness.Lenient);
+            GetOnly = new PropertyMock<int>(this, "TestClass", "ITestClass", "GetOnly", "GetOnly", Strictness.Lenient);
         }
 
         public PropertyMock<int> GetAndSet { get; }

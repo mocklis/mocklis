@@ -23,8 +23,8 @@ namespace Mocklis.CodeGeneration
         private TypeSyntax MockPropertyType { get; }
 
         public PropertyBasedEventMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IEventSymbol symbol,
-            string memberMockName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, memberMockName)
+            IEventSymbol symbol, string memberMockName, bool strict, bool veryStrict) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
+            memberMockName, strict, veryStrict)
         {
             EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
             MockPropertyType = typesForSymbols.EventMock(EventHandlerTypeSyntax);

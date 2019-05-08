@@ -22,7 +22,7 @@ namespace Mocklis.Core.Tests.Steps.Missing
 
         public MissingEventStep_Remove_should()
         {
-            _eventMock = new EventMock<EventHandler>(new object(), "TestClass", "ITest", "Event", "Event_1");
+            _eventMock = new EventMock<EventHandler>(new object(), "TestClass", "ITest", "Event", "Event_1", Strictness.Lenient);
             _missingEventStep = MissingEventStep<EventHandler>.Instance;
         }
 

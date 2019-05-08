@@ -15,7 +15,7 @@ namespace Test
 
         public TestClass()
         {
-            DoStuff = new Mocklis.Core.ActionMethodMock<string>(this, "TestClass", "ITest", "DoStuff", "DoStuff");
+            DoStuff = new Mocklis.Core.ActionMethodMock<string>(this, "TestClass", "ITest", "DoStuff", "DoStuff", Mocklis.Core.Strictness.Lenient);
         }
 
         public Mocklis.Core.ActionMethodMock<string> DoStuff { get; }

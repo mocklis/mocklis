@@ -20,7 +20,7 @@ namespace Mocklis.Core.Tests.Core
 
         public IndexerMock_this_should()
         {
-            _indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
+            _indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]

@@ -17,7 +17,7 @@ namespace Mocklis.Core.Tests.Core
     public class MockMissingException_constructor_should
     {
         private readonly IMockInfo _mockInfo =
-            new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName");
+            new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
 
         [Fact(DisplayName = "require valid memberType (innerException)")]
         public void require_valid_memberType_X28innerExceptionX29()

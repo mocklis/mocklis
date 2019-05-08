@@ -23,8 +23,9 @@ namespace Mocklis.Core.Tests.Core
 
         public FuncMethodMock_SetNextStep_should()
         {
-            _parameterLessFuncMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
-            _funcMock = new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName");
+            _parameterLessFuncMock =
+                new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
+            _funcMock = new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]
