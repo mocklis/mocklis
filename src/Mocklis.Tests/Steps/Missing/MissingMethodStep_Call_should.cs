@@ -5,10 +5,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Steps.Missing
+namespace Mocklis.Tests.Steps.Missing
 {
     #region Using Directives
 
+    using Mocklis.Core;
     using Mocklis.Steps.Missing;
     using Xunit;
 

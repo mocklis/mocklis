@@ -1,35 +1,36 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MissingPropertyStep_Set_should.cs">
+// <copyright file="MissingIndexerStep_Set_should.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Steps.Missing
+namespace Mocklis.Tests.Steps.Missing
 {
     #region Using Directives
 
+    using Mocklis.Core;
     using Mocklis.Steps.Missing;
     using Xunit;
 
     #endregion
 
-    public class MissingPropertyStep_Set_should
+    public class MissingIndexerStep_Set_should
     {
-        private readonly PropertyMock<int> _propertyMock;
-        private readonly MissingPropertyStep<int> _missingPropertyStep;
+        private readonly IndexerMock<int, string> _indexerMock;
+        private readonly MissingIndexerStep<int, string> _missingIndexerStep;
 
-        public MissingPropertyStep_Set_should()
+        public MissingIndexerStep_Set_should()
         {
-            _propertyMock = new PropertyMock<int>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1", Strictness.Lenient);
-            _missingPropertyStep = MissingPropertyStep<int>.Instance;
+            _indexerMock = new IndexerMock<int, string>(new object(), "TestClass", "ITest", "Indexer", "Indexer_1", Strictness.Lenient);
+            _missingIndexerStep = MissingIndexerStep<int, string>.Instance;
         }
 
         [Fact]
         public void throw_exception()
         {
-            var exception = Assert.Throws<MockMissingException>(() => _missingPropertyStep.Set(_propertyMock, 0));
-            Assert.Equal(MockType.PropertySet, exception.MemberType);
+            var exception = Assert.Throws<MockMissingException>(() => _missingIndexerStep.Set(_indexerMock, 0, "newValue"));
+            Assert.Equal(MockType.IndexerSet, exception.MemberType);
             Assert.Equal("TestClass", exception.MocklisClassName);
             Assert.Equal("ITest", exception.InterfaceName);
             Assert.Equal("Indexer", exception.MemberName);
