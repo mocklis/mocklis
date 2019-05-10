@@ -120,13 +120,13 @@ namespace Mocklis.MockGenerator.Tests.Helpers
                                 var lines = codeLines.Skip(span.StartLinePosition.Line)
                                     .Take(span.EndLinePosition.Line - span.StartLinePosition.Line + 1).ToArray();
                                 errorList.Add(new MocklisClassUpdaterResult.Error(errorText, lines, span.StartLinePosition.Character,
-                                    span.EndLinePosition.Character));
+                                    span.EndLinePosition.Character, span.StartLinePosition.Line + 1));
                                 break;
                             }
 
                             default:
                             {
-                                errorList.Add(new MocklisClassUpdaterResult.Error(errorText, Array.Empty<string>(), 0, 0));
+                                errorList.Add(new MocklisClassUpdaterResult.Error(errorText, Array.Empty<string>(), 0, 0, 0));
                                 break;
                             }
                         }

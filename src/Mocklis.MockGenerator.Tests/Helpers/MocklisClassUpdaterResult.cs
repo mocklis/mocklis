@@ -22,13 +22,15 @@ namespace Mocklis.MockGenerator.Tests.Helpers
             public string[] CodeLines { get; }
             public int StartPosition { get; }
             public int EndPosition { get; }
+            public int FirstLineNumber { get; }
 
-            public Error(string errorText, string[] codeLines, int startPosition, int endPosition)
+            public Error(string errorText, string[] codeLines, int startPosition, int endPosition, int firstLineNumber)
             {
                 ErrorText = errorText ?? throw new ArgumentNullException(nameof(errorText));
                 CodeLines = codeLines ?? throw new ArgumentNullException(nameof(codeLines));
                 StartPosition = startPosition;
                 EndPosition = endPosition;
+                FirstLineNumber = firstLineNumber;
             }
 
             public IEnumerable<string> MarkedCodeLines()
@@ -36,12 +38,14 @@ namespace Mocklis.MockGenerator.Tests.Helpers
                 int count = CodeLines.Length;
                 for (int i = 0; i < count; i++)
                 {
+                    string lineNumber = $"{i + FirstLineNumber,5}: ";
                     bool isFirst = i == 0;
                     bool isLast = i == count - 1;
                     string line = CodeLines[i];
-                    yield return line;
-                    int start = isFirst ? StartPosition : 0;
-                    int end = isLast ? EndPosition : line.Length;
+                    yield return lineNumber + line;
+                    int start = (isFirst ? StartPosition : 0) + lineNumber.Length;
+                    int end = (isLast ? EndPosition : line.Length) + lineNumber.Length;
+
                     yield return new string(' ', start) + new string('^', end - start);
                 }
             }
