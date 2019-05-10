@@ -24,30 +24,31 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordMethodStepBase{TParam, TResult, TRecord}" />
     public class RecordBeforeCallMethodStep<TParam, TResult, TRecord> : RecordMethodStepBase<TParam, TResult, TRecord>
     {
-        private readonly Func<TParam, TRecord> _selection;
+        private readonly Func<TParam, TRecord> _selector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceRecordBeforeCallMethodStep{TParam, TResult, TRecord}" />
         ///     class.
         /// </summary>
-        /// <param name="selection">
-        ///     A Func that selects what we want to record. Takes the parameters sent to the call as parameter.
+        /// <param name="selector">
+        ///     A Func that constructs an entry for when a call is made.
+        ///     Takes the parameters sent as parameter.
         /// </param>
-        public RecordBeforeCallMethodStep(Func<TParam, TRecord> selection)
+        public RecordBeforeCallMethodStep(Func<TParam, TRecord> selector)
         {
-            _selection = selection ?? throw new ArgumentNullException(nameof(selection));
+            _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
         /// <summary>
         ///     Called when the mocked method is called.
-        ///     This implementation adds a record to the ledger when the method is about to be called.
+        ///     This implementation adds a record to the ledger when the method is called.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>
         /// <returns>The returned result.</returns>
         public override TResult Call(IMockInfo mockInfo, TParam param)
         {
-            Add(_selection(param));
+            Add(_selector(param));
             return base.Call(mockInfo, param);
         }
     }

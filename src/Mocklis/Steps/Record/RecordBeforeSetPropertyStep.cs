@@ -23,18 +23,18 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordPropertyStepBase{TValue, TRecord}" />
     public class RecordBeforeSetPropertyStep<TValue, TRecord> : RecordPropertyStepBase<TValue, TRecord>
     {
-        private readonly Func<TValue, TRecord> _selection;
-
+        private readonly Func<TValue, TRecord> _selector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RecordBeforeSetPropertyStep{TValue, TRecord}" /> class.
         /// </summary>
-        /// <param name="selection">
-        ///     A Func that selects what we want to record. Takes the value about to be written as parameter.
+        /// <param name="selector">
+        ///     A Func that constructs an entry for when a value is written.
+        ///     Takes the value as parameter.
         /// </param>
-        public RecordBeforeSetPropertyStep(Func<TValue, TRecord> selection)
+        public RecordBeforeSetPropertyStep(Func<TValue, TRecord> selector)
         {
-            _selection = selection ?? throw new ArgumentNullException(nameof(selection));
+            _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Mocklis.Steps.Record
         /// <param name="value">The value being written.</param>
         public override void Set(IMockInfo mockInfo, TValue value)
         {
-            Add(_selection(value));
+            Add(_selector(value));
             base.Set(mockInfo, value);
         }
     }

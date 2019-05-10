@@ -23,18 +23,18 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordEventStepBase{THandler, TRecord}" />
     public class InstanceRecordBeforeRemoveEventStep<THandler, TRecord> : RecordEventStepBase<THandler, TRecord> where THandler : Delegate
     {
-        private readonly Func<object, THandler, TRecord> _selection;
+        private readonly Func<object, THandler, TRecord> _selector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceRecordBeforeRemoveEventStep{THandler, TRecord}" /> class.
         /// </summary>
-        /// <param name="selection">
-        ///     A Func that selects what we want to record. Takes the entire state of the mock and the event as
-        ///     parameters.
+        /// <param name="selector">
+        ///     A Func that constructs an entry for when an event handler is removed.
+        ///     Takes the mocked instance and the event handler as parameters.
         /// </param>
-        public InstanceRecordBeforeRemoveEventStep(Func<object, THandler, TRecord> selection)
+        public InstanceRecordBeforeRemoveEventStep(Func<object, THandler, TRecord> selector)
         {
-            _selection = selection ?? throw new ArgumentNullException(nameof(selection));
+            _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Mocklis.Steps.Record
         /// <param name="value">The event handler that is being removed.</param>
         public override void Remove(IMockInfo mockInfo, THandler value)
         {
-            Add(_selection(mockInfo.MockInstance, value));
+            Add(_selector(mockInfo.MockInstance, value));
             base.Remove(mockInfo, value);
         }
     }

@@ -24,17 +24,18 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordIndexerStepBase{TKey, TValue, TRecord}" />
     public class RecordBeforeSetIndexerStep<TKey, TValue, TRecord> : RecordIndexerStepBase<TKey, TValue, TRecord>
     {
-        private readonly Func<TKey, TValue, TRecord> _selection;
+        private readonly Func<TKey, TValue, TRecord> _selector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RecordBeforeSetIndexerStep{TKey, TValue, TRecord}" /> class.
         /// </summary>
-        /// <param name="selection">
-        ///     A Func that selects what we want to record. Takes the key used and the value about to be written as parameters.
+        /// <param name="selector">
+        ///     A Func that constructs an entry for when a value is written.
+        ///     Takes the key used and the value as parameters.
         /// </param>
-        public RecordBeforeSetIndexerStep(Func<TKey, TValue, TRecord> selection)
+        public RecordBeforeSetIndexerStep(Func<TKey, TValue, TRecord> selector)
         {
-            _selection = selection ?? throw new ArgumentNullException(nameof(selection));
+            _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace Mocklis.Steps.Record
         /// <param name="value">The value being written.</param>
         public override void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            Add(_selection(key, value));
+            Add(_selector(key, value));
             base.Set(mockInfo, key, value);
         }
     }

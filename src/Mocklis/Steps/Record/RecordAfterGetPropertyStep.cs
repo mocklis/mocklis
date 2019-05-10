@@ -23,23 +23,29 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordPropertyStepBase{TValue, TRecord}" />
     public class RecordAfterGetPropertyStep<TValue, TRecord> : RecordPropertyStepBase<TValue, TRecord>
     {
-        private readonly Func<TValue, TRecord> _selection;
-        private readonly Func<Exception, TRecord> _onError;
+        private readonly Func<TValue, TRecord> _successSelector;
+        private readonly Func<Exception, TRecord> _failureSelector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RecordAfterGetPropertyStep{TValue, TRecord}" /> class.
         /// </summary>
-        /// <param name="selection">
-        ///     A Func that selects what we want to record. Takes the value returned as parameter.
+        /// <param name="successSelector">
+        ///     A Func that constructs an entry for when a value has been read.
+        ///     Takes the value as parameter.
         /// </param>
-        /// <param name="onError">
-        ///     An optional Func that selects what we want to record if the call threw an exception. Takes the exception as
-        ///     parameter.
+        /// <param name="failureSelector">
+        ///     An Func that constructs an entry for an exception thrown when reading a value.
+        ///     Takes the exception as parameter.
         /// </param>
-        public RecordAfterGetPropertyStep(Func<TValue, TRecord> selection, Func<Exception, TRecord> onError = null)
+        public RecordAfterGetPropertyStep(Func<TValue, TRecord> successSelector, Func<Exception, TRecord> failureSelector = null)
         {
-            _selection = selection ?? throw new ArgumentNullException(nameof(selection));
-            _onError = onError;
+            if (successSelector == null && failureSelector == null)
+            {
+                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null.", nameof(successSelector));
+            }
+
+            _successSelector = successSelector;
+            _failureSelector = failureSelector;
         }
 
         /// <summary>
@@ -59,15 +65,19 @@ namespace Mocklis.Steps.Record
             }
             catch (Exception exception)
             {
-                if (_onError != null)
+                if (_failureSelector != null)
                 {
-                    Add(_onError(exception));
+                    Add(_failureSelector(exception));
                 }
 
                 throw;
             }
 
-            Add(_selection(value));
+            if (_successSelector != null)
+            {
+                Add(_successSelector(value));
+            }
+
             return value;
         }
     }
