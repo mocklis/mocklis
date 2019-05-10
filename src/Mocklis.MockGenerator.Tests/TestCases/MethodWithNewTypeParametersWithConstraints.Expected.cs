@@ -5,9 +5,11 @@ namespace Test
 {
     public interface ITestClass
     {
-        T2 Test<T1, T2>(T1 parameter)
-            where T1: struct
-            where T2 : class, IDisposable, new();
+        T2 Test<T1, T2, T3, T4>(T1 parameter, T3 parameter2, T4 anotherParameter)
+            where T1 : unmanaged, ICloneable
+            where T2 : class, IDisposable, new()
+            where T3 : struct
+            where T4 : new();
     }
 
     [MocklisClass]
@@ -18,14 +20,16 @@ namespace Test
 
         private readonly TypedMockProvider _test = new TypedMockProvider();
 
-        public FuncMethodMock<T1, T2> Test<T1, T2>()
-            where T1 : struct
+        public FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2> Test<T1, T2, T3, T4>()
+            where T1 : unmanaged, ICloneable
             where T2 : class, IDisposable, new()
+            where T3 : struct
+            where T4 : new()
         {
-            var key = new[] { typeof(T1), typeof(T2) };
-            return (FuncMethodMock<T1, T2>)_test.GetOrAdd(key, keyString => new FuncMethodMock<T1, T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()"));
+            var key = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+            return (FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)_test.GetOrAdd(key, keyString => new FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString + "()"));
         }
 
-        T2 ITestClass.Test<T1, T2>(T1 parameter) => Test<T1, T2>().Call(parameter);
+        T2 ITestClass.Test<T1, T2, T3, T4>(T1 parameter, T3 parameter2, T4 anotherParameter) => Test<T1, T2, T3, T4>().Call((parameter, parameter2, anotherParameter));
     }
 }

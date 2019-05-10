@@ -207,14 +207,14 @@ namespace Mocklis.CodeGeneration
                 constraints.Add(F.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
             }
 
-            if (typeParameter.HasValueTypeConstraint)
-            {
-                constraints.Add(F.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-            }
-
+            // Note that 'unmanaged' is a type of valuetype constraint.
             if (typeParameter.HasUnmanagedTypeConstraint)
             {
                 constraints.Add(F.TypeConstraint(F.IdentifierName("unmanaged")));
+            }
+            else if (typeParameter.HasValueTypeConstraint)
+            {
+                constraints.Add(F.ClassOrStructConstraint(SyntaxKind.StructConstraint));
             }
 
             foreach (var type in typeParameter.ConstraintTypes)
