@@ -22,6 +22,8 @@ namespace Mocklis.Core.Tests.Core
 
             Assert.False(sut.MockReturnsByRef);
             Assert.True(sut.MockReturnsByRefReadonly);
+            Assert.False(sut.Strict);
+            Assert.False(sut.VeryStrict);
         }
     }
 }
