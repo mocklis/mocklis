@@ -10,6 +10,9 @@ namespace Mocklis.Core.Tests.Mocks
     [MocklisClass]
     public class MockIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public MockIndexerStep()
         {
             Get = new FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue>(this, "MockIndexerStep", "IIndexerStep", "Get", "Get",

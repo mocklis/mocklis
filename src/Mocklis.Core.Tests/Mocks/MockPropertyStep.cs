@@ -10,6 +10,9 @@ namespace Mocklis.Core.Tests.Mocks
     [MocklisClass]
     public class MockPropertyStep<TValue> : IPropertyStep<TValue>
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public MockPropertyStep()
         {
             Get = new FuncMethodMock<IMockInfo, TValue>(this, "MockPropertyStep", "IPropertyStep", "Get", "Get", Strictness.Lenient);

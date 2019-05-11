@@ -16,6 +16,9 @@ namespace Mocklis.Core.Tests.Mocks
     [MocklisClass]
     public class MockEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
+        // The contents of this class were created by the Mocklis code-generator.
+        // Any changes you make will be overwritten if the contents are re-generated.
+
         public MockEventStep()
         {
             Add = new ActionMethodMock<(IMockInfo mockInfo, THandler value)>(this, "MockEventStep", "IEventStep", "Add", "Add", Strictness.Lenient);
