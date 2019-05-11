@@ -7,9 +7,9 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>0.2.0-alpha</Version>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
+    <Version>99.0.0-do.not.deploy</Version>
+    <AssemblyVersion>99.0.0.0</AssemblyVersion>
+    <FileVersion>99.0.0.0</FileVersion>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <PackageIconUrl>https://mocklis.net/mocklis128.png</PackageIconUrl>
     <PackageProjectUrl>https://mocklis.net/</PackageProjectUrl>
