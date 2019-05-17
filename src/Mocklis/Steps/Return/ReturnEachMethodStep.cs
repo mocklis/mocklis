@@ -9,6 +9,7 @@ namespace Mocklis.Steps.Return
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using Mocklis.Core;
 
@@ -33,7 +34,7 @@ namespace Mocklis.Steps.Return
         /// <param name="results">The values to be returned one-by-one.</param>
         public ReturnEachMethodStep(IEnumerable<TResult> results)
         {
-            _results = results?.GetEnumerator();
+            _results = (results ?? throw new ArgumentNullException(nameof(results))).GetEnumerator();
         }
 
         /// <summary>
