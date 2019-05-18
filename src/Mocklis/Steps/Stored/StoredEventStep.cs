@@ -12,7 +12,6 @@ namespace Mocklis.Steps.Stored
     using System;
     using System.Threading;
     using Mocklis.Core;
-    using Mocklis.Verification;
 
     #endregion
 
@@ -39,7 +38,13 @@ namespace Mocklis.Steps.Stored
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value)
+        void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value) => Add(value);
+
+        /// <summary>
+        ///     Adds an event handler to the store.
+        /// </summary>
+        /// <param name="value">The event handler to add.</param>
+        public void Add(THandler value)
         {
             THandler previousHandler;
             THandler eventHandler = _eventHandler;
@@ -57,7 +62,13 @@ namespace Mocklis.Steps.Stored
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value)
+        void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value) => Remove(value);
+
+        /// <summary>
+        ///     Removes an event handler from the store.
+        /// </summary>
+        /// <param name="value">The event handler to remove.</param>
+        public void Remove(THandler value)
         {
             THandler previousHandler;
             THandler eventHandler = _eventHandler;
@@ -68,6 +79,14 @@ namespace Mocklis.Steps.Stored
                 eventHandler = Interlocked.CompareExchange(ref _eventHandler, newHandler, previousHandler);
             }
             while (eventHandler != previousHandler);
+        }
+
+        /// <summary>
+        ///     Removes all event handlers from the store.
+        /// </summary>
+        public void Clear()
+        {
+            _eventHandler = null;
         }
     }
 }

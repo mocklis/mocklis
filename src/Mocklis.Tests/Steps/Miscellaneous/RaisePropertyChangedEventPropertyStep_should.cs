@@ -12,10 +12,10 @@ namespace Mocklis.Tests.Steps.Miscellaneous
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using Mocklis.Core;
     using Mocklis.Steps.Miscellaneous;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
-    using Mocklis.Verification;
     using Xunit;
 
     #endregion

@@ -1,22 +1,27 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IEvents.cs">
+// <copyright file="SpecialEventArgs.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Tests.Interfaces
+namespace Mocklis.Tests.Helpers
 {
     #region Using Directives
 
     using System;
-    using Mocklis.Tests.Helpers;
 
     #endregion
 
-    public interface IEvents
+    public class SpecialEventArgs : EventArgs
     {
-        event EventHandler MyEvent;
-        event EventHandler<SpecialEventArgs> SpecialEvent;
+        public string Text { get; }
+        public int Number { get; }
+
+        public SpecialEventArgs(string text, int number)
+        {
+            Text = text;
+            Number = number;
+        }
     }
 }

@@ -12,7 +12,6 @@ namespace Mocklis
     using System.ComponentModel;
     using Mocklis.Core;
     using Mocklis.Steps.Miscellaneous;
-    using Mocklis.Verification;
 
     #endregion
 

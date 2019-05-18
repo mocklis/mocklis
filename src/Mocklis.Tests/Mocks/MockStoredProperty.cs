@@ -10,7 +10,6 @@ namespace Mocklis.Tests.Mocks
     #region Using Directives
 
     using Mocklis.Core;
-    using Mocklis.Verification;
 
     #endregion
 
@@ -27,10 +26,6 @@ namespace Mocklis.Tests.Mocks
 
         public PropertyMock<TValue> Value { get; }
 
-        TValue IStoredProperty<TValue>.Value
-        {
-            get => Value.Value;
-            set => Value.Value = value;
-        }
+        TValue IStoredProperty<TValue>.Value => Value.Value;
     }
 }

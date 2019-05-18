@@ -11,7 +11,6 @@ namespace Mocklis.Steps.Stored
 
     using System.Collections.Generic;
     using Mocklis.Core;
-    using Mocklis.Verification;
 
     #endregion
 
@@ -50,7 +49,7 @@ namespace Mocklis.Steps.Stored
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>
         /// <returns>The value being read.</returns>
-        public TValue Get(IMockInfo mockInfo, TKey key) => this[key];
+        TValue IIndexerStep<TKey, TValue>.Get(IMockInfo mockInfo, TKey key) => this[key];
 
         /// <summary>
         ///     Called when a value is written to the indexer.
@@ -58,7 +57,7 @@ namespace Mocklis.Steps.Stored
         /// <param name="mockInfo">Information about the mock through which the value is written.</param>
         /// <param name="key">The indexer key used.</param>
         /// <param name="value">The value being written.</param>
-        public void Set(IMockInfo mockInfo, TKey key, TValue value)
+        void IIndexerStep<TKey, TValue>.Set(IMockInfo mockInfo, TKey key, TValue value)
         {
             this[key] = value;
         }

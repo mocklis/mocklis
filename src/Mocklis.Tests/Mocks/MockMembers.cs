@@ -11,6 +11,7 @@ namespace Mocklis.Tests.Mocks
 
     using System;
     using Mocklis.Core;
+    using Mocklis.Tests.Helpers;
     using Mocklis.Tests.Interfaces;
 
     #endregion
@@ -24,6 +25,8 @@ namespace Mocklis.Tests.Mocks
         public MockMembers()
         {
             MyEvent = new EventMock<EventHandler>(this, "MockMembers", "IEvents", "MyEvent", "MyEvent", Strictness.Lenient);
+            SpecialEvent = new EventMock<EventHandler<SpecialEventArgs>>(this, "MockMembers", "IEvents", "SpecialEvent", "SpecialEvent",
+                Strictness.Lenient);
             SimpleAction = new ActionMethodMock(this, "MockMembers", "IMethods", "SimpleAction", "SimpleAction", Strictness.Lenient);
             ActionWithParameter = new ActionMethodMock<int>(this, "MockMembers", "IMethods", "ActionWithParameter", "ActionWithParameter",
                 Strictness.Lenient);
@@ -38,11 +41,11 @@ namespace Mocklis.Tests.Mocks
 
         public EventMock<EventHandler> MyEvent { get; }
 
-        event EventHandler IEvents.MyEvent
-        {
-            add => MyEvent.Add(value);
-            remove => MyEvent.Remove(value);
-        }
+        event EventHandler IEvents.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
+
+        public EventMock<EventHandler<SpecialEventArgs>> SpecialEvent { get; }
+
+        event EventHandler<SpecialEventArgs> IEvents.SpecialEvent { add => SpecialEvent.Add(value); remove => SpecialEvent.Remove(value); }
 
         public ActionMethodMock SimpleAction { get; }
 
@@ -61,35 +64,13 @@ namespace Mocklis.Tests.Mocks
         int IMethods.FuncWithParameter(int i) => FuncWithParameter.Call(i);
 
         public PropertyMock<string> StringProperty { get; }
-
-        string IProperties.StringProperty
-        {
-            get => StringProperty.Value;
-            set => StringProperty.Value = value;
-        }
-
+        string IProperties.StringProperty { get => StringProperty.Value; set => StringProperty.Value = value; }
         public PropertyMock<int> IntProperty { get; }
-
-        int IProperties.IntProperty
-        {
-            get => IntProperty.Value;
-            set => IntProperty.Value = value;
-        }
-
+        int IProperties.IntProperty { get => IntProperty.Value; set => IntProperty.Value = value; }
         public PropertyMock<bool> BoolProperty { get; }
-
-        bool IProperties.BoolProperty
-        {
-            get => BoolProperty.Value;
-            set => BoolProperty.Value = value;
-        }
-
+        bool IProperties.BoolProperty { get => BoolProperty.Value; set => BoolProperty.Value = value; }
         public IndexerMock<int, string> Item { get; }
 
-        string IIndexers.this[int index]
-        {
-            get => Item[index];
-            set => Item[index] = value;
-        }
+        string IIndexers.this[int index] { get => Item[index]; set => Item[index] = value; }
     }
 }

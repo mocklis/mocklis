@@ -10,7 +10,6 @@ namespace Mocklis.Steps.Stored
     #region Using Directives
 
     using Mocklis.Core;
-    using Mocklis.Verification;
 
     #endregion
 
@@ -43,7 +42,7 @@ namespace Mocklis.Steps.Stored
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <returns>The value being read.</returns>
-        public TValue Get(IMockInfo mockInfo)
+        TValue IPropertyStep<TValue>.Get(IMockInfo mockInfo)
         {
             return Value;
         }
@@ -53,7 +52,7 @@ namespace Mocklis.Steps.Stored
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the value is written.</param>
         /// <param name="value">The value being written.</param>
-        public void Set(IMockInfo mockInfo, TValue value)
+        void IPropertyStep<TValue>.Set(IMockInfo mockInfo, TValue value)
         {
             Value = value;
         }

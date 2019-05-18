@@ -10,6 +10,7 @@ namespace Mocklis.Verification
     #region Using Directives
 
     using System.Collections.Generic;
+    using Mocklis.Core;
     using Mocklis.Verification.Checks;
 
     #endregion
@@ -17,7 +18,7 @@ namespace Mocklis.Verification
     /// <summary>
     ///     A class with extension methods for adding checks to an existing indexer store.
     /// </summary>
-    public static class StoredIndexerExtensions6
+    public static class StoredIndexerExtensions
     {
         /// <summary>
         ///     Checks the current values in the indexer store. Adds the check to the verification group provided.

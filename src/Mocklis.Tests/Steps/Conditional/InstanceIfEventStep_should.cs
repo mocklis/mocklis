@@ -13,7 +13,6 @@ namespace Mocklis.Tests.Steps.Conditional
     using Mocklis.Steps.Stored;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
-    using Mocklis.Verification;
     using Xunit;
 
     #endregion

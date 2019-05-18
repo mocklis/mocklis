@@ -5,12 +5,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Verification
+namespace Mocklis
 {
     #region Using Directives
 
     using System;
     using System.ComponentModel;
+    using Mocklis.Core;
 
     #endregion
 
