@@ -36,7 +36,7 @@ namespace Mocklis.Steps.Times
         public TimesPropertyStep(int times, Action<ICanHaveNextPropertyStep<TValue>> branch)
         {
             _times = times;
-            branch(_branch);
+            branch?.Invoke(_branch);
         }
 
         private bool ShouldUseBranch()

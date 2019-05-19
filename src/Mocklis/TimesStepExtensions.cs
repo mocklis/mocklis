@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RepetitionStepExtensions.cs">
+// <copyright file="TimesStepExtensions.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -16,9 +16,9 @@ namespace Mocklis
     #endregion
 
     /// <summary>
-    ///     A class with extension methods for adding 'repetition' steps to an existing mock or step.
+    ///     A class with extension methods for adding 'times' steps to an existing mock or step.
     /// </summary>
-    public static class RepetitionStepExtensions
+    public static class TimesStepExtensions
     {
         /// <summary>
         ///     Introduces an alternative branch that is used in lieu of the normal branch for a given number of uses.

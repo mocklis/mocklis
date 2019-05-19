@@ -57,5 +57,44 @@ namespace Mocklis.Tests.Steps.Conditional
                 )
             );
         }
+
+        [Fact]
+        public void check_condition_in_no_parameter_case()
+        {
+            bool flag = false;
+
+            MockMembers.SimpleFunc
+                // ReSharper disable once AccessToModifiedClosure
+                .If(() => flag, s => s.Return(99))
+                .Return(10);
+
+            Assert.Equal(10, Sut.SimpleFunc());
+            flag = true;
+            Assert.Equal(99, Sut.SimpleFunc());
+        }
+
+        [Fact]
+        public void use_ElseBranch_if_asked_in_no_parameter_case()
+        {
+            var vg = new VerificationGroup();
+            MockMembers.SimpleFunc
+                .If(() => true, s => s.ExpectedUsage(vg, "IfBranch", 1).Join(s.ElseBranch))
+                .ExpectedUsage(vg, "ElseBranch", 1);
+
+            Sut.SimpleFunc();
+
+            vg.Assert();
+        }
+
+        [Fact]
+        public void throw_when_passed_null_as_NextStep_in_no_parameter_case()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                MockMembers.SimpleFunc.If(
+                    () => true,
+                    s => ((ICanHaveNextMethodStep<ValueTuple, int>)s).SetNextStep((IMethodStep<ValueTuple, int>)null)
+                )
+            );
+        }
     }
 }

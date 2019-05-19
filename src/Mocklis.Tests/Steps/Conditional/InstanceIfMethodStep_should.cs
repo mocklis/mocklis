@@ -48,5 +48,32 @@ namespace Mocklis.Tests.Steps.Conditional
 
             vg.Assert();
         }
+
+        [Fact]
+        public void check_condition_in_no_parameter_case()
+        {
+            MockMembers.BoolProperty.Stored();
+            MockMembers.SimpleFunc.InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, s => s.Return(99)).Return(10);
+
+            var v1 = Sut.SimpleFunc();
+            Props.BoolProperty = true;
+            var v2 = Sut.SimpleFunc();
+
+            Assert.Equal(10, v1);
+            Assert.Equal(99, v2);
+        }
+
+        [Fact]
+        public void use_ElseBranch_if_asked_in_no_parameter_case()
+        {
+            var vg = new VerificationGroup();
+            MockMembers.SimpleFunc
+                .InstanceIf(inst => true, s => s.ExpectedUsage(vg, "IfBranch", 1).Join(s.ElseBranch))
+                .ExpectedUsage(vg, "ElseBranch", 1);
+
+            Sut.SimpleFunc();
+
+            vg.Assert();
+        }
     }
 }
