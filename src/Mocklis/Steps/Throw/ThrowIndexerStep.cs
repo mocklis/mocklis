@@ -24,13 +24,16 @@ namespace Mocklis.Steps.Throw
     /// <seealso cref="IIndexerStep{TKey, TValue}" />
     public class ThrowIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
-        private readonly Func<TKey, Exception> _exceptionFactory;
+        private readonly Func<object, TKey, Exception> _exceptionFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThrowIndexerStep{TKey, TValue}" /> class.
         /// </summary>
-        /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the indexer key as parameter.</param>
-        public ThrowIndexerStep(Func<TKey, Exception> exceptionFactory)
+        /// <param name="exceptionFactory">
+        ///     A Func that creates the exception to be thrown. Takes the mocked instance and indexer
+        ///     key as parameters.
+        /// </param>
+        public ThrowIndexerStep(Func<object, TKey, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
@@ -43,7 +46,7 @@ namespace Mocklis.Steps.Throw
         /// <returns>The value being read.</returns>
         public TValue Get(IMockInfo mockInfo, TKey key)
         {
-            throw _exceptionFactory(key);
+            throw _exceptionFactory(mockInfo.MockInstance, key);
         }
 
         /// <summary>
@@ -54,7 +57,7 @@ namespace Mocklis.Steps.Throw
         /// <param name="value">The value being written.</param>
         public void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            throw _exceptionFactory(key);
+            throw _exceptionFactory(mockInfo.MockInstance, key);
         }
     }
 }

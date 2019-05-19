@@ -22,13 +22,13 @@ namespace Mocklis.Steps.Throw
     /// <seealso cref="IMethodStep{ValueTuple, TResult}" />
     public class ThrowMethodStep<TResult> : IMethodStep<ValueTuple, TResult>
     {
-        private readonly Func<Exception> _exceptionFactory;
+        private readonly Func<object, Exception> _exceptionFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThrowMethodStep{TResult}" /> class.
         /// </summary>
-        /// <param name="exceptionFactory">A Func that creates the exception to be thrown.</param>
-        public ThrowMethodStep(Func<Exception> exceptionFactory)
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the mocked instance as parameter.</param>
+        public ThrowMethodStep(Func<object, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
@@ -41,7 +41,7 @@ namespace Mocklis.Steps.Throw
         /// <returns>The returned result.</returns>
         public TResult Call(IMockInfo mockInfo, ValueTuple param)
         {
-            throw _exceptionFactory();
+            throw _exceptionFactory(mockInfo.MockInstance);
         }
     }
 
@@ -54,16 +54,16 @@ namespace Mocklis.Steps.Throw
     /// <seealso cref="IMethodStep{TParam, TResult}" />
     public class ThrowMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
-        private readonly Func<TParam, Exception> _exceptionFactory;
+        private readonly Func<object, TParam, Exception> _exceptionFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThrowMethodStep{TParam, TResult}" /> class.
         /// </summary>
         /// <param name="exceptionFactory">
-        ///     A Func that creates the exception to be thrown. Takes the parameters sent to the method
-        ///     as parameter.
+        ///     A Func that creates the exception to be thrown. Takes the mocked instance and parameters sent to the method
+        ///     as parameters.
         /// </param>
-        public ThrowMethodStep(Func<TParam, Exception> exceptionFactory)
+        public ThrowMethodStep(Func<object, TParam, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
@@ -76,7 +76,7 @@ namespace Mocklis.Steps.Throw
         /// <returns>The returned result.</returns>
         public TResult Call(IMockInfo mockInfo, TParam param)
         {
-            throw _exceptionFactory(param);
+            throw _exceptionFactory(mockInfo.MockInstance, param);
         }
     }
 }

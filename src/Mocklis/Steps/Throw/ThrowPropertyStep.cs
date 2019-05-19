@@ -23,13 +23,13 @@ namespace Mocklis.Steps.Throw
     /// <seealso cref="IPropertyStep{TValue}" />
     public class ThrowPropertyStep<TValue> : IPropertyStep<TValue>
     {
-        private readonly Func<Exception> _exceptionFactory;
+        private readonly Func<object, Exception> _exceptionFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThrowPropertyStep{TValue}" /> class.
         /// </summary>
-        /// <param name="exceptionFactory">A Func that creates the exception to be thrown.</param>
-        public ThrowPropertyStep(Func<Exception> exceptionFactory)
+        /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the mocked instance as parameter.</param>
+        public ThrowPropertyStep(Func<object, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
@@ -41,7 +41,7 @@ namespace Mocklis.Steps.Throw
         /// <returns>The value being read.</returns>
         public TValue Get(IMockInfo mockInfo)
         {
-            throw _exceptionFactory();
+            throw _exceptionFactory(mockInfo.MockInstance);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Mocklis.Steps.Throw
         /// <param name="value">The value being written.</param>
         public void Set(IMockInfo mockInfo, TValue value)
         {
-            throw _exceptionFactory();
+            throw _exceptionFactory(mockInfo.MockInstance);
         }
     }
 }
