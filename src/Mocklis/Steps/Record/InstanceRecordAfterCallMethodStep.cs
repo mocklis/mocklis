@@ -54,7 +54,6 @@ namespace Mocklis.Steps.Record
         ///     Called when the mocked method is called.
         ///     This implementation records the result of the call (be it value or exception) in the ledger once the call returns.
         /// </summary>
-        /// <remarks>Exceptions are only recorded if the step was given an 'onError' Func.</remarks>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>
         /// <returns>The returned result.</returns>

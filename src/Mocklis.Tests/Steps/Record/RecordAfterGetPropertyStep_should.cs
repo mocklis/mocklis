@@ -34,7 +34,7 @@ namespace Mocklis.Tests.Steps.Record
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
             {
-                _mockMembers.Item.RecordAfterGet(out IReadOnlyList<int> _, null);
+                _mockMembers.IntProperty.RecordAfterGet(out IReadOnlyList<int> _, null);
             });
 
             // Assert

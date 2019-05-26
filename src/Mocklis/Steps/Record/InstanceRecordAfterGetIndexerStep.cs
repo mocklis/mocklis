@@ -55,7 +55,6 @@ namespace Mocklis.Steps.Record
         ///     This implementation records the result of the read (be it value or exception) in the ledger once the read has been
         ///     done.
         /// </summary>
-        /// <remarks>Exceptions are only recorded if the step was given an 'onError' Func.</remarks>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>
         /// <returns>The value being read.</returns>
