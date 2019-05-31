@@ -10,6 +10,7 @@ namespace Mocklis.Verification
     #region Using Directives
 
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -19,9 +20,11 @@ namespace Mocklis.Verification
     /// <summary>
     ///     Class that represents a group of verifications.
     ///     Implements the <see cref="IVerifiable" /> interface.
+    ///     Implements the <see cref="IEnumerable{T}" /> interface.
     /// </summary>
     /// <seealso cref="IVerifiable" />
-    public sealed class VerificationGroup : IVerifiable
+    /// <seealso cref="IEnumerable{T}" />
+    public sealed class VerificationGroup : IVerifiable, IEnumerable<IVerifiable>
     {
         private readonly List<IVerifiable> _verifiables = new List<IVerifiable>();
 
@@ -48,6 +51,8 @@ namespace Mocklis.Verification
         /// <returns>A single <see cref="VerificationResult" /> representing the success of the entire group.</returns>
         private VerificationResult VerifyGroup(IFormatProvider provider)
         {
+            provider = provider ?? CultureInfo.CurrentCulture;
+
             string description = string.IsNullOrEmpty(Name) ? "Verification Group:" : $"Verification Group '{Name}':";
             return new VerificationResult(description, _verifiables.SelectMany(a => a.Verify(provider)));
         }
@@ -64,9 +69,9 @@ namespace Mocklis.Verification
         /// </returns>
         IEnumerable<VerificationResult> IVerifiable.Verify(IFormatProvider provider)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
-
-            yield return VerifyGroup(provider);
+            // Return the single value as an IEnumerable. Note that we want to verify right away, which is why
+            // 'yield return' is not used.
+            return Enumerable.Repeat(VerifyGroup(provider), 1);
         }
 
         /// <summary>
@@ -88,14 +93,23 @@ namespace Mocklis.Verification
         /// <param name="includeSuccessfulVerifications">Whether to include successful verifications in the exception if thrown.</param>
         public void Assert(bool includeSuccessfulVerifications = false, IFormatProvider provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
-
             VerificationResult result = VerifyGroup(provider);
+
             if (!result.Success)
             {
                 var message = "Verification failed." + Environment.NewLine + Environment.NewLine + result.ToString(includeSuccessfulVerifications);
                 throw new VerificationFailedException(result, message);
             }
         }
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through the verifications in the group.
+        /// </summary>
+        public IEnumerator<IVerifiable> GetEnumerator() => _verifiables.GetEnumerator();
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through the verifications in the group.
+        /// </summary>
+        IEnumerator IEnumerable.GetEnumerator() => _verifiables.GetEnumerator();
     }
 }

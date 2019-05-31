@@ -76,15 +76,16 @@ namespace Mocklis.Verification
         public VerificationResult(string description, IEnumerable<VerificationResult> subResults)
         {
             Description = description;
-            if (subResults is ReadOnlyCollection<VerificationResult> readOnlyCollection)
+
+            VerificationResult[] array = subResults?.ToArray() ?? EmptyVerificationResultArray;
+
+            if (array.Length == 0)
             {
-                SubResults = readOnlyCollection;
+                SubResults = EmptyVerificationResultArray;
             }
             else
             {
-                SubResults =
-                    new ReadOnlyCollection<VerificationResult>(
-                        subResults?.ToArray() ?? EmptyVerificationResultArray);
+                SubResults = new ReadOnlyCollection<VerificationResult>(array);
             }
 
             Success = SubResults.All(sr => sr.Success);
@@ -99,7 +100,7 @@ namespace Mocklis.Verification
         }
 
         /// <summary>
-        ///     Returns a <see cref="string" /> that represents this instance, recursing over any sub-verification nodes..
+        ///     Returns a <see cref="string" /> that represents this instance, recursing over any sub-verification nodes.
         /// </summary>
         /// <param name="includeSuccessfulVerifications">
         ///     A value indicating whether to include successful verifications in the
@@ -119,7 +120,12 @@ namespace Mocklis.Verification
             if (!Success || includeSuccessfulVerifications)
             {
                 string line = (Success ? "Passed: " : "FAILED: ") + new string(' ', indentationLevel * 2) + Description;
-                sb.AppendLine(line);
+                if (indentationLevel > 0)
+                {
+                    sb.AppendLine(string.Empty);
+                }
+
+                sb.Append(line);
                 if (SubResults != null)
                 {
                     foreach (var subResult in SubResults)
@@ -151,7 +157,8 @@ namespace Mocklis.Verification
         ///     source or destination.
         /// </param>
         [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter = true)]
-        public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
         {
             info.AddValue(nameof(Description), Description);
             info.AddValue(nameof(SubResults), SubResults);
