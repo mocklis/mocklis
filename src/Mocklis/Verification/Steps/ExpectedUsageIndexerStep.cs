@@ -11,7 +11,6 @@ namespace Mocklis.Verification.Steps
 
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -44,6 +43,18 @@ namespace Mocklis.Verification.Steps
         public ExpectedUsageIndexerStep(string name, int? expectedNumberOfGets,
             int? expectedNumberOfSets)
         {
+            if (expectedNumberOfGets < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expectedNumberOfGets),
+                    "Expected number of gets must not be negative. Pass 'null' to remove check.");
+            }
+
+            if (expectedNumberOfSets < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expectedNumberOfSets),
+                    "Expected number of sets must not be negative. Pass 'null' to remove check.");
+            }
+
             _name = name;
             _expectedNumberOfGets = expectedNumberOfGets;
             _expectedNumberOfSets = expectedNumberOfSets;
@@ -80,7 +91,8 @@ namespace Mocklis.Verification.Steps
         ///     the verifications.
         /// </summary>
         /// <param name="provider">
-        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        ///     An object that supplies culture-specific formatting information. Not used for this implementation since
+        ///     we'd only be formatting non-negative <see cref="int" /> values.
         /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
@@ -88,22 +100,20 @@ namespace Mocklis.Verification.Steps
         /// </returns>
         public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
-
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 
             if (_expectedNumberOfGets is int expectedGets)
             {
-                string expectedGetsString = expectedGets.ToString(provider);
-                string currentGetsString = _currentNumberOfGets.ToString(provider);
+                string expectedGetsString = expectedGets.ToString();
+                string currentGetsString = _currentNumberOfGets.ToString();
                 yield return new VerificationResult($"{prefix}: Expected {expectedGetsString} get(s); received {currentGetsString} get(s).",
                     expectedGets == _currentNumberOfGets);
             }
 
             if (_expectedNumberOfSets is int expectedSets)
             {
-                string expectedSetsString = expectedSets.ToString(provider);
-                string currentSetsString = expectedSets.ToString(provider);
+                string expectedSetsString = expectedSets.ToString();
+                string currentSetsString = _currentNumberOfSets.ToString();
 
                 yield return new VerificationResult($"{prefix}: Expected {expectedSetsString} set(s); received {currentSetsString} set(s).",
                     expectedSets == _currentNumberOfSets);

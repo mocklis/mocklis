@@ -18,35 +18,14 @@ namespace Mocklis.Tests.Helpers
     {
         public static void AssertEquals(this VerificationResult actual, VerificationResult expected)
         {
-            bool ContainSameData(VerificationResult v1, VerificationResult v2)
+            Assert.Equal(expected.Description, actual.Description);
+            Assert.Equal(expected.Success, actual.Success);
+            Assert.Equal(expected.SubResults.Count, actual.SubResults.Count);
+
+            for (var i = 0; i < expected.SubResults.Count; i++)
             {
-                if (v1.Description != v2.Description)
-                {
-                    return false;
-                }
-
-                if (v1.Success != v2.Success)
-                {
-                    return false;
-                }
-
-                if (v1.SubResults.Count != v2.SubResults.Count)
-                {
-                    return false;
-                }
-
-                for (var i = 0; i < v1.SubResults.Count; i++)
-                {
-                    if (!ContainSameData(v1.SubResults[i], v2.SubResults[i]))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                AssertEquals(expected.SubResults[i], actual.SubResults[i]);
             }
-
-            Assert.True(ContainSameData(actual, expected));
         }
     }
 }

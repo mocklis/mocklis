@@ -11,7 +11,6 @@ namespace Mocklis.Verification.Steps
 
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -30,7 +29,7 @@ namespace Mocklis.Verification.Steps
     public sealed class ExpectedUsageMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>, IVerifiable
     {
         private readonly string _name;
-        private readonly int _expectedNumberOfCalls;
+        private readonly int? _expectedNumberOfCalls;
         private int _currentNumberOfCalls;
 
         /// <summary>
@@ -38,8 +37,14 @@ namespace Mocklis.Verification.Steps
         /// </summary>
         /// <param name="name">The name of the verification.</param>
         /// <param name="expectedNumberOfCalls">The expected number of calls.</param>
-        public ExpectedUsageMethodStep(string name, int expectedNumberOfCalls)
+        public ExpectedUsageMethodStep(string name, int? expectedNumberOfCalls)
         {
+            if (expectedNumberOfCalls < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expectedNumberOfCalls),
+                    "Expected number of gets must not be negative. Pass 'null' to remove check.");
+            }
+
             _name = name;
             _expectedNumberOfCalls = expectedNumberOfCalls;
         }
@@ -61,7 +66,8 @@ namespace Mocklis.Verification.Steps
         ///     Verifies that the method has been called the expected number of times.
         /// </summary>
         /// <param name="provider">
-        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        ///     An object that supplies culture-specific formatting information. Not used for this implementation since
+        ///     we'd only be formatting non-negative <see cref="int" /> values.
         /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and
@@ -69,15 +75,16 @@ namespace Mocklis.Verification.Steps
         /// </returns>
         public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
-
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
-            int expectedCalls = _expectedNumberOfCalls;
-            string expectedCallsString = expectedCalls.ToString(provider);
-            string currentCallsString = _currentNumberOfCalls.ToString(provider);
 
-            yield return new VerificationResult($"{prefix}: Expected {expectedCallsString} call(s); received {currentCallsString} call(s).",
-                expectedCalls == _currentNumberOfCalls);
+            if (_expectedNumberOfCalls is int expectedCalls)
+            {
+                string expectedCallsString = expectedCalls.ToString();
+                string currentCallsString = _currentNumberOfCalls.ToString();
+
+                yield return new VerificationResult($"{prefix}: Expected {expectedCallsString} call(s); received {currentCallsString} call(s).",
+                    expectedCalls == _currentNumberOfCalls);
+            }
         }
     }
 }

@@ -36,7 +36,10 @@ namespace Mocklis.Tests.Mocks
             StringProperty = new PropertyMock<string>(this, "MockMembers", "IProperties", "StringProperty", "StringProperty", Strictness.Lenient);
             IntProperty = new PropertyMock<int>(this, "MockMembers", "IProperties", "IntProperty", "IntProperty", Strictness.Lenient);
             BoolProperty = new PropertyMock<bool>(this, "MockMembers", "IProperties", "BoolProperty", "BoolProperty", Strictness.Lenient);
+            DateTimeProperty =
+                new PropertyMock<DateTime>(this, "MockMembers", "IProperties", "DateTimeProperty", "DateTimeProperty", Strictness.Lenient);
             Item = new IndexerMock<int, string>(this, "MockMembers", "IIndexers", "this[]", "Item", Strictness.Lenient);
+            Item0 = new IndexerMock<bool, DateTime>(this, "MockMembers", "IIndexers", "this[]", "Item0", Strictness.Lenient);
         }
 
         public EventMock<EventHandler> MyEvent { get; }
@@ -69,8 +72,14 @@ namespace Mocklis.Tests.Mocks
         int IProperties.IntProperty { get => IntProperty.Value; set => IntProperty.Value = value; }
         public PropertyMock<bool> BoolProperty { get; }
         bool IProperties.BoolProperty { get => BoolProperty.Value; set => BoolProperty.Value = value; }
+        public PropertyMock<DateTime> DateTimeProperty { get; }
+        DateTime IProperties.DateTimeProperty { get => DateTimeProperty.Value; set => DateTimeProperty.Value = value; }
         public IndexerMock<int, string> Item { get; }
 
         string IIndexers.this[int index] { get => Item[index]; set => Item[index] = value; }
+
+        public IndexerMock<bool, DateTime> Item0 { get; }
+
+        DateTime IIndexers.this[bool index] { get => Item0[index]; set => Item0[index] = value; }
     }
 }

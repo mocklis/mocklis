@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockPropertiesWithChangeNotification.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
@@ -23,13 +23,14 @@ namespace Mocklis.Tests.Mocks
 
         public MockPropertiesWithChangeNotification()
         {
-            StringProperty =
-                new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty",
-                    Strictness.Lenient);
+            StringProperty = new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty",
+                Strictness.Lenient);
             IntProperty = new PropertyMock<int>(this, "MockPropertiesWithChangeNotification", "IProperties", "IntProperty", "IntProperty",
                 Strictness.Lenient);
             BoolProperty = new PropertyMock<bool>(this, "MockPropertiesWithChangeNotification", "IProperties", "BoolProperty", "BoolProperty",
                 Strictness.Lenient);
+            DateTimeProperty = new PropertyMock<System.DateTime>(this, "MockPropertiesWithChangeNotification", "IProperties", "DateTimeProperty",
+                "DateTimeProperty", Strictness.Lenient);
             PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockPropertiesWithChangeNotification", "INotifyPropertyChanged",
                 "PropertyChanged", "PropertyChanged", Strictness.Lenient);
         }
@@ -40,6 +41,8 @@ namespace Mocklis.Tests.Mocks
         int IProperties.IntProperty { get => IntProperty.Value; set => IntProperty.Value = value; }
         public PropertyMock<bool> BoolProperty { get; }
         bool IProperties.BoolProperty { get => BoolProperty.Value; set => BoolProperty.Value = value; }
+        public PropertyMock<System.DateTime> DateTimeProperty { get; }
+        System.DateTime IProperties.DateTimeProperty { get => DateTimeProperty.Value; set => DateTimeProperty.Value = value; }
         public EventMock<PropertyChangedEventHandler> PropertyChanged { get; }
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged

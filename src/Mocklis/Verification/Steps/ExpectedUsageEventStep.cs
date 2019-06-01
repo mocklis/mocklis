@@ -11,7 +11,6 @@ namespace Mocklis.Verification.Steps
 
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading;
     using Mocklis.Core;
 
@@ -43,9 +42,21 @@ namespace Mocklis.Verification.Steps
         public ExpectedUsageEventStep(string name, int? expectedNumberOfAdds,
             int? expectedNumberOfRemoves)
         {
+            if (expectedNumberOfAdds < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expectedNumberOfAdds),
+                    "Expected number of adds must not be negative. Pass 'null' to remove check.");
+            }
+
+            if (expectedNumberOfRemoves < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(expectedNumberOfRemoves),
+                    "Expected number of removes must not be negative. Pass 'null' to remove check.");
+            }
+
+            _name = name;
             _expectedNumberOfAdds = expectedNumberOfAdds;
             _expectedNumberOfRemoves = expectedNumberOfRemoves;
-            _name = name;
         }
 
         /// <summary>
@@ -77,7 +88,8 @@ namespace Mocklis.Verification.Steps
         ///     verifications.
         /// </summary>
         /// <param name="provider">
-        ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
+        ///     An object that supplies culture-specific formatting information. Not used for this implementation since
+        ///     we'd only be formatting non-negative <see cref="int" /> values.
         /// </param>
         /// <returns>
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
@@ -85,22 +97,20 @@ namespace Mocklis.Verification.Steps
         /// </returns>
         public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
-
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 
             if (_expectedNumberOfAdds is int expectedAdds)
             {
-                string expectedAddsString = expectedAdds.ToString(provider);
-                string currentAddsString = _currentNumberOfAdds.ToString(provider);
+                string expectedAddsString = expectedAdds.ToString();
+                string currentAddsString = _currentNumberOfAdds.ToString();
                 yield return new VerificationResult($"{prefix}: Expected {expectedAddsString} add(s); received {currentAddsString} add(s).",
                     expectedAdds == _currentNumberOfAdds);
             }
 
             if (_expectedNumberOfRemoves is int expectedRemoves)
             {
-                string expectedRemovesString = expectedRemoves.ToString(provider);
-                string currentRemovesString = _currentNumberOfRemoves.ToString(provider);
+                string expectedRemovesString = expectedRemoves.ToString();
+                string currentRemovesString = _currentNumberOfRemoves.ToString();
 
                 yield return new VerificationResult(
                     $"{prefix}: Expected {expectedRemovesString} remove(s); received {currentRemovesString} remove(s).",

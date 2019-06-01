@@ -7,10 +7,17 @@
 
 namespace Mocklis.Tests.Interfaces
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public interface IProperties
     {
         string StringProperty { get; set; }
         int IntProperty { get; set; }
         bool BoolProperty { get; set; }
+        DateTime DateTimeProperty { get; set; }
     }
 }

@@ -7,8 +7,15 @@
 
 namespace Mocklis.Tests.Interfaces
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public interface IIndexers
     {
         string this[int index] { get; set; }
+        DateTime this[bool index] { get; set; }
     }
 }
