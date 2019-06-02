@@ -19,9 +19,7 @@ namespace Mocklis.Tests.Steps.Conditional
 
     public class IfAddEventStep_should
     {
-        private void MyEventHandler(object sender, EventArgs e)
-        {
-        }
+        private readonly EventHandler _handler = (sender, args) => { };
 
         private IEvents Sut { get; }
         private IReadOnlyList<EventHandler> _adds;
@@ -43,14 +41,14 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void forward_Add()
         {
-            Sut.MyEvent += MyEventHandler;
+            Sut.MyEvent += _handler;
             Assert.Equal(1, _adds.Count);
         }
 
         [Fact]
         public void not_forward_Remove()
         {
-            Sut.MyEvent -= MyEventHandler;
+            Sut.MyEvent -= _handler;
             Assert.Equal(0, _removes.Count);
         }
     }

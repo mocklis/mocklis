@@ -10,6 +10,7 @@ namespace Mocklis.Tests.Steps.Lambda
     #region Using Directives
 
     using System;
+    using System.Linq;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
     using Xunit;
@@ -45,6 +46,7 @@ namespace Mocklis.Tests.Steps.Lambda
             Sut.StringProperty = "Test";
 
             Assert.Equal(new[] { "Test" }, ledger);
+            Assert.Equal(new[] { "Test" }, ledger.ToArray());
         }
     }
 }

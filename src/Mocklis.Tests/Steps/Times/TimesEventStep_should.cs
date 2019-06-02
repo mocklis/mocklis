@@ -11,6 +11,7 @@ namespace Mocklis.Tests.Steps.Times
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
     using Xunit;
@@ -42,7 +43,9 @@ namespace Mocklis.Tests.Steps.Times
 
 
             Assert.Equal(new[] { _handler, _handler }, collectedAdds);
+            Assert.Equal(new[] { _handler, _handler }, collectedAdds.ToArray());
             Assert.Equal(new[] { _handler, _handler }, collectedRemoves);
+            Assert.Equal(new[] { _handler, _handler }, collectedRemoves.ToArray());
         }
     }
 }

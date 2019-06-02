@@ -21,6 +21,7 @@ namespace Mocklis.Tests.Steps.Log
 
     public class LogMethodStep_should
     {
+        private readonly MockLogContextProvider _logContextProvider = new MockLogContextProvider();
         private readonly MockLogContext _logContext = new MockLogContext();
         private readonly MockMembers _mockMembers;
         private readonly IMethods _methods;
@@ -28,6 +29,7 @@ namespace Mocklis.Tests.Steps.Log
         public LogMethodStep_should()
         {
             _methods = _mockMembers = new MockMembers();
+            _logContextProvider.LogContext.Return(_logContext);
         }
 
         [Fact]
@@ -118,6 +120,20 @@ namespace Mocklis.Tests.Steps.Log
             Assert.Equal(1, exceptions.Count);
             Assert.Same(ex, exceptions[0].exception);
             AssertMockInfoIsCorrectForFunc(exceptions[0].mockInfo);
+        }
+
+        [Fact]
+        public void UseLogContextProvider()
+        {
+            // Arrange
+            _mockMembers.FuncWithParameter.Log(_logContextProvider);
+            _logContext.LogBeforeMethodCallWithParameters<int>().RecordBeforeCall(out var before);
+
+            // Act
+            _methods.FuncWithParameter(9);
+
+            // Assert
+            Assert.Equal(1, before.Count);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Mocklis.Tests.Steps.Log
 
     public class LogEventStep_should
     {
+        private readonly MockLogContextProvider _logContextProvider = new MockLogContextProvider();
         private readonly MockLogContext _logContext = new MockLogContext();
         private readonly MockMembers _mockMembers;
         private readonly IEvents _events;
@@ -29,6 +30,7 @@ namespace Mocklis.Tests.Steps.Log
         public LogEventStep_should()
         {
             _events = _mockMembers = new MockMembers();
+            _logContextProvider.LogContext.Return(_logContext);
         }
 
         [Fact]
@@ -128,6 +130,20 @@ namespace Mocklis.Tests.Steps.Log
             Assert.Equal(1, exceptions.Count);
             Assert.Same(ex, exceptions[0].exception);
             AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+        }
+
+        [Fact]
+        public void UseLogContextProvider()
+        {
+            // Arrange
+            _mockMembers.MyEvent.Log(_logContextProvider);
+            _logContext.LogBeforeEventAdd<EventHandler>().RecordBeforeCall(out var before);
+
+            // Act
+            _events.MyEvent += _sampleEventHandler;
+
+            // Assert
+            Assert.Equal(1, before.Count);
         }
     }
 }

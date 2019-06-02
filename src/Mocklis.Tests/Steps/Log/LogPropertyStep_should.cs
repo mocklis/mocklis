@@ -21,6 +21,7 @@ namespace Mocklis.Tests.Steps.Log
 
     public class LogPropertyStep_should
     {
+        private readonly MockLogContextProvider _logContextProvider = new MockLogContextProvider();
         private readonly MockLogContext _logContext = new MockLogContext();
         private readonly MockMembers _mockMembers;
         private readonly IProperties _properties;
@@ -28,6 +29,7 @@ namespace Mocklis.Tests.Steps.Log
         public LogPropertyStep_should()
         {
             _properties = _mockMembers = new MockMembers();
+            _logContextProvider.LogContext.Return(_logContext);
         }
 
         [Fact]
@@ -126,6 +128,20 @@ namespace Mocklis.Tests.Steps.Log
             Assert.Equal(1, exceptions.Count);
             Assert.Same(ex, exceptions[0].exception);
             AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+        }
+
+        [Fact]
+        public void UseLogContextProvider()
+        {
+            // Arrange
+            _mockMembers.StringProperty.Log(_logContextProvider);
+            _logContext.LogBeforePropertySet<string>().RecordBeforeCall(out var before);
+
+            // Act
+            _properties.StringProperty = "Test";
+
+            // Assert
+            Assert.Equal(1, before.Count);
         }
     }
 }

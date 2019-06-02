@@ -74,6 +74,42 @@ namespace Mocklis.Tests.Steps.Conditional
         }
 
         [Fact]
+        public void check_condition_in_no_parameter_or_return_value_case()
+        {
+            bool flag = false;
+
+            var group = new VerificationGroup();
+
+            MockMembers.SimpleAction
+                // ReSharper disable once AccessToModifiedClosure
+                .If(() => flag, s => s.ExpectedUsage(group, null, 1))
+                .ExpectedUsage(group, null, 2);
+
+            Sut.SimpleAction();
+            Sut.SimpleAction();
+            flag = true;
+            Sut.SimpleAction();
+
+            group.Assert();
+        }
+
+        [Fact]
+        public void check_condition_in_no_return_value_case()
+        {
+            var group = new VerificationGroup();
+
+            MockMembers.ActionWithParameter
+                .If(a => a > 5, s => s.ExpectedUsage(group, null, 1))
+                .ExpectedUsage(group, null, 2);
+
+            Sut.ActionWithParameter(1);
+            Sut.ActionWithParameter(6);
+            Sut.ActionWithParameter(-3);
+
+            group.Assert();
+        }
+
+        [Fact]
         public void use_ElseBranch_if_asked_in_no_parameter_case()
         {
             var vg = new VerificationGroup();

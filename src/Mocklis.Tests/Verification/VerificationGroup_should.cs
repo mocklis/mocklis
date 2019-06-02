@@ -106,6 +106,7 @@ namespace Mocklis.Tests.Verification
             group.Verify(french);
             group.Verify(japanese);
 
+            Assert.Equal(new IFormatProvider[] { french, japanese }, ledger);
             Assert.Equal(new IFormatProvider[] { french, japanese }, ledger.ToArray());
         }
 

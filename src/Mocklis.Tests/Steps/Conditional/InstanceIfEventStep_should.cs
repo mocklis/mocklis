@@ -13,6 +13,7 @@ namespace Mocklis.Tests.Steps.Conditional
     using Mocklis.Steps.Stored;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
+    using Mocklis.Verification;
     using Xunit;
 
     #endregion
@@ -58,7 +59,6 @@ namespace Mocklis.Tests.Steps.Conditional
             MockMembers.StringProperty.Stored();
             MockMembers.IntProperty.Stored();
 
-
             MockMembers.StringProperty.Value = "Go";
             MockMembers.IntProperty.Value = 99;
             Sut.MyEvent += MyFirstEventHandler;
@@ -70,6 +70,20 @@ namespace Mocklis.Tests.Steps.Conditional
             eventStore.Raise(this, EventArgs.Empty);
 
             Assert.Equal(1, _firstEventHandlerCallCount);
+        }
+
+        [Fact]
+        public void CallBaseIfConditionsAreNotMet()
+        {
+            var group = new VerificationGroup();
+            MockMembers.MyEvent
+                .InstanceIf((i, h) => false, (i, h) => false, b => b.ExpectedUsage(group, null, 0, 0))
+                .ExpectedUsage(group, null, 1, 1);
+
+            Sut.MyEvent += MyFirstEventHandler;
+            Sut.MyEvent -= MyFirstEventHandler;
+
+            group.Assert();
         }
     }
 }

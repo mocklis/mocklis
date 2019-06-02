@@ -291,7 +291,7 @@ namespace Mocklis
         ///     branch.
         /// </param>
         /// <returns>
-        ///     An <see cref="ICanHaveNextMethodStep{ValueTuple, TResult}" /> that can be used to add further steps on the
+        ///     An <see cref="ICanHaveNextMethodStep{ValueTuple, ValueTuple}" /> that can be used to add further steps on the
         ///     normal branch.
         /// </returns>
         public static ICanHaveNextMethodStep<ValueTuple, ValueTuple> If(

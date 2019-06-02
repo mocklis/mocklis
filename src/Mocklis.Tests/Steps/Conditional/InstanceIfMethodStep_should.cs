@@ -9,6 +9,7 @@ namespace Mocklis.Tests.Steps.Conditional
 {
     #region Using Directives
 
+    using System.Collections.Generic;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
     using Mocklis.Verification;
@@ -64,6 +65,25 @@ namespace Mocklis.Tests.Steps.Conditional
         }
 
         [Fact]
+        public void check_condition_in_no_return_value_case()
+        {
+            MockMembers.BoolProperty.Stored();
+            IReadOnlyList<int> ifBranchLedger = null;
+
+            MockMembers.ActionWithParameter
+                .InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeCall(out ifBranchLedger))
+                .RecordBeforeCall(out var elseBranchLedger);
+
+            Sut.ActionWithParameter(1);
+            Sut.ActionWithParameter(6);
+            Props.BoolProperty = true;
+            Sut.ActionWithParameter(-3);
+
+            Assert.Equal(new[] { 1, 6 }, elseBranchLedger);
+            Assert.Equal(new[] { -3 }, ifBranchLedger);
+        }
+
+        [Fact]
         public void use_ElseBranch_if_asked_in_no_parameter_case()
         {
             var vg = new VerificationGroup();
@@ -74,6 +94,19 @@ namespace Mocklis.Tests.Steps.Conditional
             Sut.SimpleFunc();
 
             vg.Assert();
+        }
+
+        [Fact]
+        public void CallBaseIfConditionsAreNotMet()
+        {
+            var group = new VerificationGroup();
+            MockMembers.SimpleAction
+                .InstanceIf(i => false, b => b.ExpectedUsage(group, null, 0))
+                .ExpectedUsage(group, null, 1);
+
+            Sut.SimpleAction();
+
+            group.Assert();
         }
     }
 }

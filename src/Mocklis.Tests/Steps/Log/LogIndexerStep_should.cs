@@ -21,6 +21,7 @@ namespace Mocklis.Tests.Steps.Log
 
     public class LogIndexerStep_should
     {
+        private readonly MockLogContextProvider _logContextProvider = new MockLogContextProvider();
         private readonly MockLogContext _logContext = new MockLogContext();
         private readonly MockMembers _mockMembers;
         private readonly IIndexers _indexers;
@@ -28,6 +29,7 @@ namespace Mocklis.Tests.Steps.Log
         public LogIndexerStep_should()
         {
             _indexers = _mockMembers = new MockMembers();
+            _logContextProvider.LogContext.Return(_logContext);
         }
 
         [Fact]
@@ -130,6 +132,20 @@ namespace Mocklis.Tests.Steps.Log
             Assert.Equal(1, exceptions.Count);
             Assert.Same(ex, exceptions[0].exception);
             AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+        }
+
+        [Fact]
+        public void UseLogContextProvider()
+        {
+            // Arrange
+            _mockMembers.Item.Log(_logContextProvider);
+            _logContext.LogBeforeIndexerSet<int, string>().RecordBeforeCall(out var before);
+
+            // Act
+            _indexers[5] = "Test";
+
+            // Assert
+            Assert.Equal(1, before.Count);
         }
     }
 }
