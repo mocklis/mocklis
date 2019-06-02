@@ -55,7 +55,7 @@ namespace Mocklis.Steps.Gate
             try
             {
                 var result = base.Call(mockInfo, param);
-                _taskCompletionSource.TrySetResult(default);
+                _taskCompletionSource.TrySetResult(result);
                 return result;
             }
             catch (Exception e)
