@@ -160,7 +160,7 @@ namespace Mocklis.Tests.Steps.Log
             // Assert
             AssertLogLines(
                 "Getting value from '[MockMembers] IIndexers.this[]' using key '5'",
-                "Done getting value 'Test' from '[MockMembers] IIndexers.this[]'");
+                "Received 'Test' from '[MockMembers] IIndexers.this[]'");
         }
 
         [Fact]
@@ -265,7 +265,7 @@ namespace Mocklis.Tests.Steps.Log
             // Assert
             AssertLogLines(
                 "Getting value from '[MockMembers] IProperties.StringProperty'",
-                "Done getting value 'Test' from '[MockMembers] IProperties.StringProperty'");
+                "Received 'Test' from '[MockMembers] IProperties.StringProperty'");
         }
 
         [Fact]

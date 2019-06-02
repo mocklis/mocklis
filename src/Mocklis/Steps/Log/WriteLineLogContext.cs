@@ -125,7 +125,7 @@ namespace Mocklis.Steps.Log
         /// ram&gt;
         public void LogAfterIndexerGet<TValue>(IMockInfo mockInfo, TValue value)
         {
-            _writeLine($"Done getting value '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'");
+            _writeLine($"Received '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'");
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Mocklis.Steps.Log
         /// ram&gt;
         public void LogAfterPropertyGet<TValue>(IMockInfo mockInfo, TValue value)
         {
-            _writeLine($"Done getting value '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'");
+            _writeLine($"Received '{value}' from '[{mockInfo.MocklisClassName}] {mockInfo.InterfaceName}.{mockInfo.MemberName}'");
         }
 
         /// <summary>
