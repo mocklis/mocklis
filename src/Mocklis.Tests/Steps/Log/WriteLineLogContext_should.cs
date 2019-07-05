@@ -42,6 +42,12 @@ namespace Mocklis.Tests.Steps.Log
         }
 
         [Fact]
+        public void ExposeConsoleInstance()
+        {
+            Assert.NotNull(WriteLineLogContext.Console);
+        }
+
+        [Fact]
         public void RequireWriteLineAction()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>

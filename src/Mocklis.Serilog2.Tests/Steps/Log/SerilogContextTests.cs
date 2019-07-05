@@ -47,10 +47,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void AddEventHandlerCreatesLogEvents()
         {
-            MockMembers.MyEvent.Log(this).Times(1, _ => { }).Throw(h => new ApplicationException("Aha!"));
+            MockMembers.MyEvent.Log(this).Times(1, _ => { }).Throw(h => new Exception("Aha!"));
 
             Members.MyEvent += _handler;
-            var ex = Assert.Throws<ApplicationException>(() => Members.MyEvent += _handler);
+            var ex = Assert.Throws<Exception>(() => Members.MyEvent += _handler);
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -68,10 +68,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void RemoveEventHandlerCreatesLogEvents()
         {
-            MockMembers.MyEvent.Log(this).Times(1, _ => { }).Throw(h => new ApplicationException("Aha!"));
+            MockMembers.MyEvent.Log(this).Times(1, _ => { }).Throw(h => new Exception("Aha!"));
 
             Members.MyEvent -= _handler;
-            var ex = Assert.Throws<ApplicationException>(() => Members.MyEvent -= _handler);
+            var ex = Assert.Throws<Exception>(() => Members.MyEvent -= _handler);
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -89,10 +89,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void IndexerGetCreatesLogEvents()
         {
-            MockMembers.Item.Log(this).ReturnOnce("Hello").Throw(k => new ApplicationException("Goodbye"));
+            MockMembers.Item.Log(this).ReturnOnce("Hello").Throw(k => new Exception("Goodbye"));
 
             var _ = Members[5];
-            var ex = Assert.Throws<ApplicationException>(() => Members[8]);
+            var ex = Assert.Throws<Exception>(() => Members[8]);
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -109,10 +109,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void IndexerSetCreatesLogEvents()
         {
-            MockMembers.Item.Log(this).Times(1, _ => { }).Throw(k => new ApplicationException("Goodbye"));
+            MockMembers.Item.Log(this).Times(1, _ => { }).Throw(k => new Exception("Goodbye"));
 
             Members[5] = "Hello";
-            var ex = Assert.Throws<ApplicationException>(() => Members[8] = "Hello Again");
+            var ex = Assert.Throws<Exception>(() => Members[8] = "Hello Again");
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -130,10 +130,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void ParameterlessActionCreatesLogEvents()
         {
-            MockMembers.DoStuff.Log(this).Times(1, _ => { }).Throw(() => new ApplicationException("Goodbye"));
+            MockMembers.DoStuff.Log(this).Times(1, _ => { }).Throw(() => new Exception("Goodbye"));
 
             Members.DoStuff();
-            var ex = Assert.Throws<ApplicationException>(() => Members.DoStuff());
+            var ex = Assert.Throws<Exception>(() => Members.DoStuff());
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -153,10 +153,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
             MockMembers.Calculate
                 .Log(this)
                 .ReturnOnce(15)
-                .Throw(p => new ApplicationException("Beep - wrong!"));
+                .Throw(p => new Exception("Beep - wrong!"));
 
             var _ = Members.Calculate(13, 21);
-            var ex = Assert.Throws<ApplicationException>(() => Members.Calculate(14, 22));
+            var ex = Assert.Throws<Exception>(() => Members.Calculate(14, 22));
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -173,10 +173,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void PropertyGetCreatesLogEvents()
         {
-            MockMembers.StringProperty.Log(this).ReturnOnce("Hello").Throw(() => new ApplicationException("Goodbye"));
+            MockMembers.StringProperty.Log(this).ReturnOnce("Hello").Throw(() => new Exception("Goodbye"));
 
             var _ = Members.StringProperty;
-            var ex = Assert.Throws<ApplicationException>(() => Members.StringProperty);
+            var ex = Assert.Throws<Exception>(() => Members.StringProperty);
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -194,10 +194,10 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         [Fact]
         public void PropertySetCreatesLogEvents()
         {
-            MockMembers.StringProperty.Log(this).Times(1, _ => { }).Throw(() => new ApplicationException("Goodbye"));
+            MockMembers.StringProperty.Log(this).Times(1, _ => { }).Throw(() => new Exception("Goodbye"));
 
             Members.StringProperty = "Hello";
-            var ex = Assert.Throws<ApplicationException>(() => Members.StringProperty = "Hello Again");
+            var ex = Assert.Throws<Exception>(() => Members.StringProperty = "Hello Again");
 
             Assert.Equal(4, LogEvents.Count);
             Assert.Equal(LogEventLevel.Debug, LogEvents[0].Level);
@@ -217,9 +217,9 @@ namespace Mocklis.Serilog2.Tests.Steps.Log
         {
             MockMembers.StringProperty
                 .Log(new SerilogContext(Logger, LogEventLevel.Information, LogEventLevel.Warning))
-                .Throw(() => new ApplicationException("Ex"));
+                .Throw(() => new Exception("Ex"));
 
-            Assert.Throws<ApplicationException>(() => Members.StringProperty);
+            Assert.Throws<Exception>(() => Members.StringProperty);
 
             Assert.Equal(2, LogEvents.Count);
             Assert.Equal(LogEventLevel.Information, LogEvents[0].Level);

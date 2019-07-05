@@ -5,6 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+#if !NETCOREAPP1_1
 namespace Mocklis.Tests.Helpers
 {
     #region Using Directives
@@ -29,3 +30,5 @@ namespace Mocklis.Tests.Helpers
         }
     }
 }
+
+#endif

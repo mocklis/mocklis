@@ -79,7 +79,7 @@ namespace Mocklis.Tests.Verification.Checks
             Indexers[false] = 20190308.AtUtc(120931);
 
             // Act
-            var groupResult = ((IVerifiable)Group).Verify(CultureInfo.GetCultureInfo("en-GB"));
+            var groupResult = ((IVerifiable)Group).Verify(new CultureInfo("en-GB"));
 
             // Assert
             var result = Assert.Single(groupResult);
@@ -103,7 +103,7 @@ namespace Mocklis.Tests.Verification.Checks
             Indexers[false] = 20190308.AtUtc(120931);
 
             // Act
-            var groupResult = ((IVerifiable)Group).Verify(CultureInfo.GetCultureInfo("de-DE"));
+            var groupResult = ((IVerifiable)Group).Verify(new CultureInfo("de-DE"));
 
             // Assert
             var result = Assert.Single(groupResult);

@@ -27,12 +27,7 @@ namespace Mocklis.Steps.Log
         /// <summary>
         ///     WriteLineLogContext singleton that writes log lines to the console.
         /// </summary>
-        public static readonly WriteLineLogContext Console;
-
-        static WriteLineLogContext()
-        {
-            Console = new WriteLineLogContext(s => System.Console.Out.WriteLine(s));
-        }
+        public static WriteLineLogContext Console { get; } = new WriteLineLogContext(System.Console.Out.WriteLine);
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WriteLineLogContext" /> class.

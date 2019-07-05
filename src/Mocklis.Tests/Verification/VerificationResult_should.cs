@@ -9,9 +9,11 @@ namespace Mocklis.Tests.Verification
 {
     #region Using Directives
 
-    using Mocklis.Tests.Helpers;
     using Mocklis.Verification;
     using Xunit;
+#if !NETCOREAPP1_1
+    using Mocklis.Tests.Helpers;
+#endif
 
     #endregion
 
@@ -132,11 +134,14 @@ FAILED:   Failed Leaf", _sut.ToString(false));
             Assert.Equal(_sut.ToString(true), _sut.ToString());
         }
 
+#if !NETCOREAPP1_1
         [Fact]
         public void be_serializable()
         {
             var roundtripped = _sut.RoundTripWithBinaryFormatter();
             roundtripped.AssertEquals(_sut);
         }
+
+#endif
     }
 }

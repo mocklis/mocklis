@@ -44,13 +44,13 @@ namespace Mocklis.Experimental.Tests.Steps
         [Fact]
         public async Task GateTaskCanFail()
         {
-            MockCalculator.Calculate.Gate(out var task).Throw(a => new ApplicationException("Failed miserably with input " + a));
+            MockCalculator.Calculate.Gate(out var task).Throw(a => new Exception("Failed miserably with input " + a));
 
             Assert.Equal(TaskStatus.WaitingForActivation, task.Status);
-            Assert.Throws<ApplicationException>(() => Calculator.Calculate(5));
+            Assert.Throws<Exception>(() => Calculator.Calculate(5));
             Assert.Equal(TaskStatus.Faulted, task.Status);
 
-            var ex = await Assert.ThrowsAsync<ApplicationException>(async () => await task);
+            var ex = await Assert.ThrowsAsync<Exception>(async () => await task);
             Assert.Equal("Failed miserably with input 5", ex.Message);
         }
 

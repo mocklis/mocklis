@@ -63,7 +63,7 @@ namespace Mocklis.Tests.Verification.Checks
             MockMembers.DateTimeProperty.Stored(20190308.AtUtc(120931)).CurrentValueCheck(Group, "TestName", 20190308.AtUtc(120931));
 
             // Act
-            var groupResult = ((IVerifiable)Group).Verify(CultureInfo.GetCultureInfo("en-GB")).FirstOrDefault();
+            var groupResult = ((IVerifiable)Group).Verify(new CultureInfo("en-GB")).FirstOrDefault();
 
             // Assert
             var result = Assert.Single(groupResult.SubResults);
@@ -78,7 +78,7 @@ namespace Mocklis.Tests.Verification.Checks
             MockMembers.DateTimeProperty.Stored(20190308.AtUtc(120931)).CurrentValueCheck(Group, "TestName", 20190308.AtUtc(145512));
 
             // Act
-            var groupResult = ((IVerifiable)Group).Verify(CultureInfo.GetCultureInfo("de-DE")).FirstOrDefault();
+            var groupResult = ((IVerifiable)Group).Verify(new CultureInfo("de-DE")).FirstOrDefault();
 
             // Assert
             var result = Assert.Single(groupResult.SubResults);

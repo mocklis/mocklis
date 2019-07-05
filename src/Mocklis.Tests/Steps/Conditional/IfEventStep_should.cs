@@ -10,6 +10,7 @@ namespace Mocklis.Tests.Steps.Conditional
     #region Using Directives
 
     using System;
+    using System.Reflection;
     using Mocklis.Core;
     using Mocklis.Steps.Stored;
     using Mocklis.Tests.Interfaces;
@@ -40,7 +41,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_common_condition()
         {
             StoredEventStep<EventHandler> eventStore = null;
-            MockMembers.MyEvent.If(e => e.Method.Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
+            MockMembers.MyEvent.If(e => e.GetMethodInfo().Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
 
             Sut.MyEvent += MyFirstEventHandler;
             Sut.MyEvent += MySecondEventHandler;
@@ -58,8 +59,8 @@ namespace Mocklis.Tests.Steps.Conditional
         {
             StoredEventStep<EventHandler> eventStore = null;
             MockMembers.MyEvent.If(
-                e => e.Method.Name == nameof(MyFirstEventHandler),
-                e => e.Method.Name == nameof(MySecondEventHandler),
+                e => e.GetMethodInfo().Name == nameof(MyFirstEventHandler),
+                e => e.GetMethodInfo().Name == nameof(MySecondEventHandler),
                 i => i.Stored(out eventStore));
 
             // This only adds first event handler

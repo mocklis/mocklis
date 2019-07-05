@@ -11,7 +11,9 @@ namespace Mocklis.Tests.Helpers
 
     using System;
     using System.Globalization;
+#if !NETCOREAPP1_1
     using System.Threading;
+#endif
 
     #endregion
 
@@ -28,13 +30,22 @@ namespace Mocklis.Tests.Helpers
 
             public CultureScope(CultureInfo cultureInfo)
             {
+#if NETCOREAPP1_1
+                _savedCulture = CultureInfo.CurrentCulture;
+                CultureInfo.CurrentCulture = cultureInfo;
+#else
                 _savedCulture = Thread.CurrentThread.CurrentCulture;
                 Thread.CurrentThread.CurrentCulture = cultureInfo;
+#endif
             }
 
             public void Dispose()
             {
+#if NETCOREAPP1_1
+                CultureInfo.CurrentCulture = _savedCulture;
+#else
                 Thread.CurrentThread.CurrentCulture = _savedCulture;
+#endif
             }
         }
     }

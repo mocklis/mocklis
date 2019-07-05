@@ -100,8 +100,8 @@ namespace Mocklis.Tests.Verification
                 verifiable
             };
 
-            var french = CultureInfo.GetCultureInfo("fr-FR");
-            var japanese = CultureInfo.GetCultureInfo("ja-JP");
+            var french = new CultureInfo("fr-FR");
+            var japanese = new CultureInfo("ja-JP");
 
             group.Verify(french);
             group.Verify(japanese);

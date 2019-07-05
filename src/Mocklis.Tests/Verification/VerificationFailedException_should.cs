@@ -43,7 +43,7 @@ namespace Mocklis.Tests.Verification
         [Fact]
         public void AcceptVerificationResultMessageAndInnerException()
         {
-            var innerException = new ApplicationException();
+            var innerException = new Exception();
             var verificationResult = new VerificationResult("Aha", false);
             var sut = new VerificationFailedException(verificationResult, "This is a message!", innerException);
 
@@ -52,6 +52,7 @@ namespace Mocklis.Tests.Verification
             Assert.Same(innerException, sut.InnerException);
         }
 
+#if !NETCOREAPP1_1
         [Fact]
         public void BeSerialisable()
         {
@@ -62,5 +63,7 @@ namespace Mocklis.Tests.Verification
             Assert.Equal("This is a special message!", sut.Message);
             Assert.Null(sut.InnerException);
         }
+
+#endif
     }
 }
