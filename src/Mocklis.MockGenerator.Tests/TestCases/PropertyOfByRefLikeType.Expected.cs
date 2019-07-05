@@ -27,7 +27,7 @@ namespace Test
             throw new MockMissingException(MockType.VirtualPropertyGet, "TestClass", "ITestClass", "RefStructProperty", "RefStructProperty");
         }
 
-        protected virtual void RefStructProperty(RefStruct Value)
+        protected virtual void RefStructProperty(RefStruct value)
         {
             throw new MockMissingException(MockType.VirtualPropertySet, "TestClass", "ITestClass", "RefStructProperty", "RefStructProperty");
         }
@@ -41,7 +41,7 @@ namespace Test
 
         RefStruct ITestClass.ReadOnlyProperty => ReadOnlyProperty();
 
-        protected virtual void WriteOnlyProperty(RefStruct Value)
+        protected virtual void WriteOnlyProperty(RefStruct value)
         {
             throw new MockMissingException(MockType.VirtualPropertySet, "TestClass", "ITestClass", "WriteOnlyProperty", "WriteOnlyProperty");
         }

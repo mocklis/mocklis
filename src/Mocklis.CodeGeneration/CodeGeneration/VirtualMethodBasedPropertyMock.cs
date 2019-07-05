@@ -72,7 +72,7 @@ namespace Mocklis.CodeGeneration
             return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(MemberMockName))
                 .WithParameterList(F.ParameterList(F.SeparatedList(new[]
                 {
-                    F.Parameter(F.Identifier("Value")).WithType(ValueTypeSyntax)
+                    F.Parameter(F.Identifier("value")).WithType(ValueTypeSyntax)
                 })))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                 .WithBody(F.Block(ThrowMockMissingStatement("VirtualPropertySet")));
