@@ -20,7 +20,7 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mocklis.MockGenerator" Version="0.2.0-alpha" PrivateAssets="contentfiles;build" />
+    <PackageReference Include="Mocklis.MockGenerator" Version="1.0.0" PrivateAssets="contentfiles;build" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
   </ItemGroup>
