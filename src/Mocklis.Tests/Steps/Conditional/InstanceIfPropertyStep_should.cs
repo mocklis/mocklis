@@ -40,7 +40,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_set_conditions()
         {
             MockMembers.BoolProperty.Stored();
-            IReadOnlyList<string> ledger = null;
+            IReadOnlyList<string>? ledger = null;
             MockMembers.StringProperty
                 .InstanceIf(null, (inst, v) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeSet(out ledger));
 

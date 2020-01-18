@@ -23,7 +23,7 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordEventStepBase{THandler, TRecord}" />
     public class InstanceRecordBeforeAddEventStep<THandler, TRecord> : RecordEventStepBase<THandler, TRecord> where THandler : Delegate
     {
-        private readonly Func<object, THandler, TRecord> _selector;
+        private readonly Func<object, THandler?, TRecord> _selector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceRecordBeforeAddEventStep{THandler, TRecord}" /> class.
@@ -32,7 +32,7 @@ namespace Mocklis.Steps.Record
         ///     A Func that constructs an entry for when an event handler is added.
         ///     Takes the mocked instance and the event handler as parameters.
         /// </param>
-        public InstanceRecordBeforeAddEventStep(Func<object, THandler, TRecord> selector)
+        public InstanceRecordBeforeAddEventStep(Func<object, THandler?, TRecord> selector)
         {
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
@@ -43,7 +43,7 @@ namespace Mocklis.Steps.Record
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             Add(_selector(mockInfo.MockInstance, value));
             base.Add(mockInfo, value);

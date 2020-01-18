@@ -52,7 +52,7 @@ namespace Mocklis.Tests.Steps.Log
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
             {
-                var _ = new WriteLineLogContext(null);
+                var _ = new WriteLineLogContext(null!);
             });
 
             Assert.Equal("writeLine", exception.ParamName);

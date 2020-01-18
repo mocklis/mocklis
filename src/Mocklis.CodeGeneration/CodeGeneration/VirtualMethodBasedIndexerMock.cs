@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -28,7 +29,7 @@ namespace Mocklis.CodeGeneration
             IPropertySymbol symbol,
             string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
+            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
             ValueWithReadonlyTypeSyntax = ValueTypeSyntax;
 
             if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
@@ -67,7 +68,7 @@ namespace Mocklis.CodeGeneration
             return F.MethodDeclaration(ValueTypeSyntax, F.Identifier(MemberMockName))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                 .WithParameterList(F.ParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type))))))
+                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
                 .WithBody(F.Block(ThrowMockMissingStatement("VirtualIndexerGet")));
         }
 
@@ -76,7 +77,7 @@ namespace Mocklis.CodeGeneration
             var uniquifier = new Uniquifier(Symbol.Parameters.Select(p => p.Name));
 
             var parameterList = F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type))))
+                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))
                 .Add(F.Parameter(F.Identifier(uniquifier.GetUniqueName("value"))).WithType(ValueTypeSyntax));
 
             return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(MemberMockName))
@@ -89,7 +90,7 @@ namespace Mocklis.CodeGeneration
         {
             var mockedIndexer = F.IndexerDeclaration(ValueWithReadonlyTypeSyntax)
                 .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type))))))
+                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
                 .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.IsReadOnly)

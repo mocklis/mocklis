@@ -33,7 +33,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> Log<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            ILogContext logContext = null) where THandler : Delegate
+            ILogContext? logContext = null) where THandler : Delegate
         {
             return caller.SetNextStep(new LogEventStep<THandler>(logContext ?? WriteLineLogContext.Console));
         }
@@ -72,7 +72,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextIndexerStep<TKey, TValue> Log<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
-            ILogContext logContext = null)
+            ILogContext? logContext = null)
         {
             return caller.SetNextStep(new LogIndexerStep<TKey, TValue>(logContext ?? WriteLineLogContext.Console));
         }
@@ -111,7 +111,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextMethodStep{TParam, TResult}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextMethodStep<TParam, TResult> Log<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
-            ILogContext logContext = null)
+            ILogContext? logContext = null)
         {
             return caller.SetNextStep(new LogMethodStep<TParam, TResult>(logContext ?? WriteLineLogContext.Console));
         }
@@ -150,7 +150,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextPropertyStep<TValue> Log<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
-            ILogContext logContext = null)
+            ILogContext? logContext = null)
         {
             return caller.SetNextStep(new LogPropertyStep<TValue>(logContext ?? WriteLineLogContext.Console));
         }

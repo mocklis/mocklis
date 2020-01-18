@@ -24,8 +24,8 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordIndexerStepBase{TKey, TValue, TRecord}" />
     public class InstanceRecordAfterGetIndexerStep<TKey, TValue, TRecord> : RecordIndexerStepBase<TKey, TValue, TRecord>
     {
-        private readonly Func<object, TKey, TValue, TRecord> _successSelector;
-        private readonly Func<object, TKey, Exception, TRecord> _failureSelector;
+        private readonly Func<object, TKey, TValue, TRecord>? _successSelector;
+        private readonly Func<object, TKey, Exception, TRecord>? _failureSelector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceRecordAfterGetIndexerStep{TKey, TValue, TRecord}" /> class.
@@ -38,12 +38,12 @@ namespace Mocklis.Steps.Record
         ///     An Func that constructs an entry for an exception thrown when reading a value.
         ///     Takes the mocked instance, the key used and the exception as parameters.
         /// </param>
-        public InstanceRecordAfterGetIndexerStep(Func<object, TKey, TValue, TRecord> successSelector,
-            Func<object, TKey, Exception, TRecord> failureSelector = null)
+        public InstanceRecordAfterGetIndexerStep(Func<object, TKey, TValue, TRecord>? successSelector,
+            Func<object, TKey, Exception, TRecord>? failureSelector = null)
         {
             if (successSelector == null && failureSelector == null)
             {
-                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null.", nameof(successSelector));
+                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null or missing.", nameof(successSelector));
             }
 
             _successSelector = successSelector;

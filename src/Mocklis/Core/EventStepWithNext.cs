@@ -29,7 +29,7 @@ namespace Mocklis.Core
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IEventStep<THandler> NextStep { get; private set; }
+        protected IEventStep<THandler>? NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.
@@ -55,7 +55,7 @@ namespace Mocklis.Core
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public virtual void Add(IMockInfo mockInfo, THandler value)
+        public virtual void Add(IMockInfo mockInfo, THandler? value)
         {
             NextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
         }
@@ -67,7 +67,7 @@ namespace Mocklis.Core
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public virtual void Remove(IMockInfo mockInfo, THandler value)
+        public virtual void Remove(IMockInfo mockInfo, THandler? value)
         {
             NextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
         }

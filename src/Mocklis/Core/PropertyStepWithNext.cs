@@ -28,7 +28,7 @@ namespace Mocklis.Core
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IPropertyStep<TValue> NextStep { get; private set; }
+        protected IPropertyStep<TValue>? NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.

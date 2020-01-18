@@ -34,7 +34,7 @@ namespace Mocklis.Verification
         public static ICanHaveNextEventStep<THandler> ExpectedUsage<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
             VerificationGroup verificationGroup,
-            string name,
+            string? name,
             int? expectedNumberOfAdds = null,
             int? expectedNumberOfRemoves = null) where THandler : Delegate
         {
@@ -63,7 +63,7 @@ namespace Mocklis.Verification
         public static ICanHaveNextIndexerStep<TKey, TValue> ExpectedUsage<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
             VerificationGroup verificationGroup,
-            string name,
+            string? name,
             int? expectedNumberOfGets = null,
             int? expectedNumberOfSets = null)
         {
@@ -91,7 +91,7 @@ namespace Mocklis.Verification
         public static ICanHaveNextMethodStep<TParam, TResult> ExpectedUsage<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             VerificationGroup verificationGroup,
-            string name,
+            string? name,
             int? expectedNumberOfCalls = null)
         {
             if (verificationGroup == null)
@@ -118,7 +118,7 @@ namespace Mocklis.Verification
         public static ICanHaveNextPropertyStep<TValue> ExpectedUsage<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
             VerificationGroup verificationGroup,
-            string name,
+            string? name,
             int? expectedNumberOfGets = null,
             int? expectedNumberOfSets = null)
         {

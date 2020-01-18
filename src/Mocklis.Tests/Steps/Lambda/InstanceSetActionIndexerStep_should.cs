@@ -24,14 +24,14 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.InstanceSetAction(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.InstanceSetAction(null!));
         }
 
         [Fact]
         public void invokeAction_on_sets()
         {
-            object callInstance = null;
-            string setValue = null;
+            object? callInstance = null;
+            string? setValue = null;
 
             MockMembers.Item.InstanceSetAction((obj, i, v) =>
             {
@@ -52,7 +52,7 @@ namespace Mocklis.Tests.Steps.Lambda
 
             var _ = Sut[5];
 
-            Assert.Equal(new[] { (5, (string)null) }, ledger);
+            Assert.Equal(new[] { (5, (string)null!) }, ledger);
         }
     }
 }

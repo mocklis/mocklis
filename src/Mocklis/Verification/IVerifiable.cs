@@ -30,6 +30,6 @@ namespace Mocklis.Verification
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        IEnumerable<VerificationResult> Verify(IFormatProvider provider = null);
+        IEnumerable<VerificationResult> Verify(IFormatProvider? provider = null);
     }
 }

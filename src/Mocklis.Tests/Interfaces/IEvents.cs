@@ -16,7 +16,7 @@ namespace Mocklis.Tests.Interfaces
 
     public interface IEvents
     {
-        event EventHandler MyEvent;
-        event EventHandler<SpecialEventArgs> SpecialEvent;
+        event EventHandler? MyEvent;
+        event EventHandler<SpecialEventArgs>? SpecialEvent;
     }
 }

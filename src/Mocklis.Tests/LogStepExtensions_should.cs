@@ -23,28 +23,28 @@ namespace Mocklis.Tests
         [Fact]
         public void RequireLogContextProviderForEvents()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.Log((ILogContextProvider)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.Log((ILogContextProvider)null!));
             Assert.Equal("logContextProvider", ex.ParamName);
         }
 
         [Fact]
         public void RequireLogContextProviderForIndexers()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.Item.Log((ILogContextProvider)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.Item.Log((ILogContextProvider)null!));
             Assert.Equal("logContextProvider", ex.ParamName);
         }
 
         [Fact]
         public void RequireLogContextProviderForMethods()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Log((ILogContextProvider)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Log((ILogContextProvider)null!));
             Assert.Equal("logContextProvider", ex.ParamName);
         }
 
         [Fact]
         public void RequireLogContextProviderForProperties()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.Log((ILogContextProvider)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.Log((ILogContextProvider)null!));
             Assert.Equal("logContextProvider", ex.ParamName);
         }
     }

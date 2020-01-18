@@ -13,6 +13,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -27,7 +28,7 @@ namespace Mocklis.CodeGeneration
             string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols,
             classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
         {
-            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
+            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
             MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);
         }
 

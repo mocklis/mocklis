@@ -27,7 +27,7 @@ namespace Mocklis.Core
         /// <param name="eventStep">The event step (can be null) through which the event handler is being added.</param>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public static void AddWithStrictnessCheckIfNull<THandler>(this IEventStep<THandler> eventStep, IMockInfo mockInfo, THandler value)
+        public static void AddWithStrictnessCheckIfNull<THandler>(this IEventStep<THandler>? eventStep, IMockInfo mockInfo, THandler? value)
             where THandler : Delegate
         {
             if (eventStep == null)
@@ -52,7 +52,7 @@ namespace Mocklis.Core
         /// <param name="eventStep">The event step (can be null) through which the event handler is being added.</param>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public static void RemoveWithStrictnessCheckIfNull<THandler>(this IEventStep<THandler> eventStep, IMockInfo mockInfo, THandler value)
+        public static void RemoveWithStrictnessCheckIfNull<THandler>(this IEventStep<THandler>? eventStep, IMockInfo mockInfo, THandler? value)
             where THandler : Delegate
         {
             if (eventStep == null)

@@ -25,7 +25,7 @@ namespace Mocklis.Tests.Core
         public void throw_when_null_passed_to_SetNextStep()
         {
             ICanHaveNextIndexerStep<int, string> step = IndexerStep;
-            var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IIndexerStep<int, string>)null));
+            var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IIndexerStep<int, string>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

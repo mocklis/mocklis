@@ -30,9 +30,11 @@ namespace Mocklis.Cli
                 {
                     var project = solution.GetProject(projectId);
 
-                    project = await ProjectInspector.GenerateMocklisClassContents(project);
-
-                    solution = project.Solution;
+                    if (project != null)
+                    {
+                        project = await ProjectInspector.GenerateMocklisClassContents(project);
+                        solution = project.Solution;
+                    }
                 }
 
                 if (!workspace.TryApplyChanges(solution))

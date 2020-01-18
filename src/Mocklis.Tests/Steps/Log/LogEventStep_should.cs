@@ -38,7 +38,7 @@ namespace Mocklis.Tests.Steps.Log
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
             {
-                var _ = new LogEventStep<EventHandler>(null);
+                var _ = new LogEventStep<EventHandler>(null!);
             });
 
             Assert.Equal("logContext", exception.ParamName);

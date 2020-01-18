@@ -26,7 +26,7 @@ namespace Mocklis.Steps.Return
     public class ReturnEachMethodStep<TParam, TResult> : MethodStepWithNext<TParam, TResult>
     {
         private readonly object _lockObject = new object();
-        private IEnumerator<TResult> _results;
+        private IEnumerator<TResult>? _results;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ReturnEachMethodStep{TParam, TResult}" /> class.

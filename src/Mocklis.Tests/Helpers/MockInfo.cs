@@ -16,13 +16,13 @@ namespace Mocklis.Tests.Helpers
     public sealed class MockInfo : IMockInfo
     {
         public static MockInfo Lenient { get; } =
-            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
+            new MockInfo(new object(), "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
 
         public static MockInfo Strict { get; } =
-            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Strict);
+            new MockInfo(new object(), "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Strict);
 
         public static MockInfo VeryStrict { get; } =
-            new MockInfo(null, "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.VeryStrict);
+            new MockInfo(new object(), "ClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.VeryStrict);
 
         public object MockInstance { get; }
         public string MocklisClassName { get; }

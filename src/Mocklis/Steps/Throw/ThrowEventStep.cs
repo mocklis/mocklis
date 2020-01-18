@@ -23,7 +23,7 @@ namespace Mocklis.Steps.Throw
     /// <seealso cref="IEventStep{THandler}" />
     public class ThrowEventStep<THandler> : IEventStep<THandler> where THandler : Delegate
     {
-        private readonly Func<object, THandler, Exception> _exceptionFactory;
+        private readonly Func<object, THandler?, Exception> _exceptionFactory;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThrowEventStep{THandler}" /> class.
@@ -32,7 +32,7 @@ namespace Mocklis.Steps.Throw
         ///     A Func that creates the exception to be thrown. Takes the mocked instance and event
         ///     handler as parameters.
         /// </param>
-        public ThrowEventStep(Func<object, THandler, Exception> exceptionFactory)
+        public ThrowEventStep(Func<object, THandler?, Exception> exceptionFactory)
         {
             _exceptionFactory = exceptionFactory ?? throw new ArgumentNullException(nameof(exceptionFactory));
         }
@@ -43,7 +43,7 @@ namespace Mocklis.Steps.Throw
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public void Add(IMockInfo mockInfo, THandler value)
+        public void Add(IMockInfo mockInfo, THandler? value)
         {
             throw _exceptionFactory(mockInfo.MockInstance, value);
         }
@@ -54,7 +54,7 @@ namespace Mocklis.Steps.Throw
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public void Remove(IMockInfo mockInfo, THandler value)
+        public void Remove(IMockInfo mockInfo, THandler? value)
         {
             throw _exceptionFactory(mockInfo.MockInstance, value);
         }

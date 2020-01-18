@@ -38,7 +38,7 @@ namespace Mocklis.Steps.Conditional
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public override void Remove(IMockInfo mockInfo, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler? value)
         {
             IfBranch.Remove(mockInfo, value);
         }

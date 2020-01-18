@@ -24,13 +24,13 @@ namespace Mocklis.Core
         /// <param name="key">The indexer key used.</param>
         /// <returns>The value being read.</returns>
         /// <seealso cref="IIndexerStep{TKey, TValue}" />
-        public static TValue GetWithStrictnessCheckIfNull<TKey, TValue>(this IIndexerStep<TKey, TValue> indexerStep, IMockInfo mockInfo, TKey key)
+        public static TValue GetWithStrictnessCheckIfNull<TKey, TValue>(this IIndexerStep<TKey, TValue>? indexerStep, IMockInfo mockInfo, TKey key)
         {
             if (indexerStep == null)
             {
                 if (mockInfo.Strictness != Strictness.VeryStrict)
                 {
-                    return default;
+                    return default!;
                 }
 
                 throw new MockMissingException(MockType.IndexerGet, mockInfo);
@@ -50,7 +50,7 @@ namespace Mocklis.Core
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="key">The indexer key used.</param>
         /// <param name="value">The value being written.</param>
-        public static void SetWithStrictnessCheckIfNull<TKey, TValue>(this IIndexerStep<TKey, TValue> indexerStep, IMockInfo mockInfo, TKey key,
+        public static void SetWithStrictnessCheckIfNull<TKey, TValue>(this IIndexerStep<TKey, TValue>? indexerStep, IMockInfo mockInfo, TKey key,
             TValue value)
         {
             if (indexerStep == null)

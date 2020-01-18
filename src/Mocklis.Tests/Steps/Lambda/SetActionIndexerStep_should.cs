@@ -25,13 +25,13 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.SetAction(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.SetAction(null!));
         }
 
         [Fact]
         public void invokeAction_on_sets()
         {
-            string setValue = null;
+            string? setValue = null;
 
             MockMembers.Item.SetAction((i, v) => setValue = v);
 
@@ -47,8 +47,8 @@ namespace Mocklis.Tests.Steps.Lambda
 
             var _ = Sut[5];
 
-            Assert.Equal(new[] { (5, (string)null) }, ledger);
-            Assert.Equal(new[] { (5, (string)null) }, ledger.ToArray());
+            Assert.Equal(new[] { (5, (string)null!) }, ledger);
+            Assert.Equal(new[] { (5, (string)null!) }, ledger.ToArray());
         }
     }
 }

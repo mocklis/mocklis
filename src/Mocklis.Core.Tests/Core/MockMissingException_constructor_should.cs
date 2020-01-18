@@ -36,14 +36,14 @@ namespace Mocklis.Core.Tests.Core
         [Fact(DisplayName = "require memberMock (innerException)")]
         public void require_memberMock_X28innerExceptionX29()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new MockMissingException(MockType.PropertyGet, null, new Exception()));
+            var exception = Assert.Throws<ArgumentNullException>(() => new MockMissingException(MockType.PropertyGet, null!, new Exception()));
             Assert.Equal("memberMock", exception.ParamName);
         }
 
         [Fact]
         public void require_memberMock()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new MockMissingException(MockType.PropertyGet, null));
+            var exception = Assert.Throws<ArgumentNullException>(() => new MockMissingException(MockType.PropertyGet, null!));
             Assert.Equal("memberMock", exception.ParamName);
         }
 

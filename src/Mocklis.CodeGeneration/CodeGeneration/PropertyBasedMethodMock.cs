@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -35,7 +36,7 @@ namespace Mocklis.CodeGeneration
 
             if (!symbol.ReturnsVoid)
             {
-                returnValuesBuilder.AddReturnValue(symbol.ReturnType);
+                returnValuesBuilder.AddReturnValue(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious());
             }
 
             foreach (var parameter in symbol.Parameters)
@@ -105,7 +106,7 @@ namespace Mocklis.CodeGeneration
         {
             var baseReturnType = Symbol.ReturnsVoid
                 ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                : TypesForSymbols.ParseTypeName(Symbol.ReturnType);
+                : TypesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious());
             var returnType = baseReturnType;
 
             if (Symbol.ReturnsByRef)

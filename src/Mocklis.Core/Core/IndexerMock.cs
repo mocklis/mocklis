@@ -24,7 +24,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextIndexerStep{TKey, TValue}" />
     public sealed class IndexerMock<TKey, TValue> : MemberMock, ICanHaveNextIndexerStep<TKey, TValue>
     {
-        private IIndexerStep<TKey, TValue> _nextStep;
+        private IIndexerStep<TKey, TValue>? _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IndexerMock{TKey, TValue}" /> class.
@@ -81,7 +81,7 @@ namespace Mocklis.Core
 
                     if (mockInfo.Strictness == Strictness.Lenient)
                     {
-                        return default;
+                        return default!;
                     }
 
                     throw new MockMissingException(MockType.IndexerGet, mockInfo);

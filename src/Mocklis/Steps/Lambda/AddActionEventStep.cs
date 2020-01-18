@@ -22,13 +22,13 @@ namespace Mocklis.Steps.Lambda
     /// <seealso cref="EventStepWithNext{THandler}" />
     public class AddActionEventStep<THandler> : EventStepWithNext<THandler> where THandler : Delegate
     {
-        private readonly Action<THandler> _action;
+        private readonly Action<THandler?> _action;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AddActionEventStep{THandler}" /> class.
         /// </summary>
         /// <param name="action">An action to be invoked when an event handler is added.</param>
-        public AddActionEventStep(Action<THandler> action)
+        public AddActionEventStep(Action<THandler?> action)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
         }
@@ -39,7 +39,7 @@ namespace Mocklis.Steps.Lambda
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             _action(value);
         }

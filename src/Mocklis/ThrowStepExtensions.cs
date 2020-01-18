@@ -24,7 +24,7 @@ namespace Mocklis
         {
             if (exceptionFactory == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(exceptionFactory));
             }
 
             return _ => exceptionFactory();
@@ -34,7 +34,7 @@ namespace Mocklis
         {
             if (exceptionFactory == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(exceptionFactory));
             }
 
             return (_, t) => exceptionFactory(t);
@@ -48,7 +48,7 @@ namespace Mocklis
         /// <param name="exceptionFactory">A Func that creates the exception to be thrown. Takes the event handler as parameter.</param>
         public static void Throw<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<THandler, Exception> exceptionFactory) where THandler : Delegate
+            Func<THandler?, Exception> exceptionFactory) where THandler : Delegate
         {
             caller.InstanceThrow(AddInstanceParameter(exceptionFactory));
         }
@@ -64,7 +64,7 @@ namespace Mocklis
         /// </param>
         public static void InstanceThrow<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<object, THandler, Exception> exceptionFactory) where THandler : Delegate
+            Func<object, THandler?, Exception> exceptionFactory) where THandler : Delegate
         {
             caller.SetNextStep(new ThrowEventStep<THandler>(exceptionFactory));
         }

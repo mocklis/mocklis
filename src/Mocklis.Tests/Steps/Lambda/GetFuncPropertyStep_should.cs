@@ -25,7 +25,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.GetFunc(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.GetFunc(null!));
         }
 
         [Fact]

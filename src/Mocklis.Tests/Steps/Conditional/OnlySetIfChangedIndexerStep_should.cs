@@ -50,5 +50,12 @@ namespace Mocklis.Tests.Steps.Conditional
 
             Assert.Equal(new[] { "One", "Three", "Four", "Six" }, ledger);
         }
+
+        [Fact]
+        public void not_throw_if_next_step_missing()
+        {
+            MockMembers.Item.OnlySetIfChanged();
+            Sut[0] = "Aha";
+        }
     }
 }

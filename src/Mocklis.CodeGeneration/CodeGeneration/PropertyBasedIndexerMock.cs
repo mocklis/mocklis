@@ -9,10 +9,12 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -37,9 +39,11 @@ namespace Mocklis.CodeGeneration
 
             KeyType = builder.Build(mockMemberName);
 
-            KeyTypeSyntax = KeyType.BuildTypeSyntax();
+            var keyTypeSyntax = KeyType.BuildTypeSyntax();
 
-            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
+            KeyTypeSyntax = keyTypeSyntax ?? throw new ArgumentException("Property symbol must have at least one parameter", nameof(symbol));
+
+            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
 
             MockPropertyType = typesForSymbols.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
         }

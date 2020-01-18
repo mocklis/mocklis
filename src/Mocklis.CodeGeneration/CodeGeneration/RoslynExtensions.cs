@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -30,7 +31,7 @@ namespace Mocklis.CodeGeneration
 
         public static InvocationExpressionSyntax WithExpressionsAsArgumentList(
             this InvocationExpressionSyntax invocationExpression,
-            params ExpressionSyntax[] expressions)
+            params ExpressionSyntax?[] expressions)
         {
             return invocationExpression.WithArgumentList(
                 F.ArgumentList(F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
@@ -38,7 +39,7 @@ namespace Mocklis.CodeGeneration
 
         public static ElementAccessExpressionSyntax WithExpressionsAsArgumentList(
             this ElementAccessExpressionSyntax elementAccessExpression,
-            params ExpressionSyntax[] expressions)
+            params ExpressionSyntax?[] expressions)
         {
             return elementAccessExpression.WithArgumentList(
                 F.BracketedArgumentList(
@@ -92,7 +93,7 @@ namespace Mocklis.CodeGeneration
         {
             var args = parameters.Select(p =>
             {
-                var syntax = F.Parameter(F.Identifier(p.Name)).WithType(typesForSymbols.ParseTypeName(p.Type));
+                var syntax = F.Parameter(F.Identifier(p.Name)).WithType(typesForSymbols.ParseTypeName(p.Type, p.NullableOrOblivious()));
 
                 switch (p.RefKind)
                 {

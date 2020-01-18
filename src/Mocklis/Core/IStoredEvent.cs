@@ -22,6 +22,6 @@ namespace Mocklis.Core
         /// <summary>
         ///     Gets the currently stored event handler.
         /// </summary>
-        THandler EventHandler { get; }
+        THandler? EventHandler { get; }
     }
 }

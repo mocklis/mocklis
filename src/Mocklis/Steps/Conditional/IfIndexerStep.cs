@@ -23,8 +23,8 @@ namespace Mocklis.Steps.Conditional
     /// <seealso cref="IfIndexerStepBase{TKey, TValue}" />
     public class IfIndexerStep<TKey, TValue> : IfIndexerStepBase<TKey, TValue>
     {
-        private readonly Func<TKey, bool> _getCondition;
-        private readonly Func<TKey, TValue, bool> _setCondition;
+        private readonly Func<TKey, bool>? _getCondition;
+        private readonly Func<TKey, TValue, bool>? _setCondition;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IfIndexerStep{TKey, TValue}" /> class.
@@ -38,7 +38,7 @@ namespace Mocklis.Steps.Conditional
         ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
         ///     branch.
         /// </param>
-        public IfIndexerStep(Func<TKey, bool> getCondition, Func<TKey, TValue, bool> setCondition,
+        public IfIndexerStep(Func<TKey, bool>? getCondition, Func<TKey, TValue, bool>? setCondition,
             Action<IfBranchCaller> branch) : base(branch)
         {
             _getCondition = getCondition;

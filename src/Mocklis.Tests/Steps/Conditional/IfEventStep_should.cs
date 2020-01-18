@@ -24,12 +24,12 @@ namespace Mocklis.Tests.Steps.Conditional
         private int _firstEventHandlerCallCount;
         private int _secondEventHandlerCallCount;
 
-        private void MyFirstEventHandler(object sender, EventArgs e)
+        private void MyFirstEventHandler(object? sender, EventArgs e)
         {
             _firstEventHandlerCallCount++;
         }
 
-        private void MySecondEventHandler(object sender, EventArgs e)
+        private void MySecondEventHandler(object? sender, EventArgs e)
         {
             _secondEventHandlerCallCount++;
         }
@@ -38,17 +38,23 @@ namespace Mocklis.Tests.Steps.Conditional
         public IEvents Sut => MockMembers;
 
         [Fact]
+        public void require_branch()
+        {
+            Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.If(_ => true, null, null!));
+        }
+
+        [Fact]
         public void check_common_condition()
         {
-            StoredEventStep<EventHandler> eventStore = null;
-            MockMembers.MyEvent.If(e => e.GetMethodInfo().Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
+            StoredEventStep<EventHandler>? eventStore = null;
+            MockMembers.MyEvent.If(e => e?.GetMethodInfo()?.Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
 
             Sut.MyEvent += MyFirstEventHandler;
             Sut.MyEvent += MySecondEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
             Sut.MyEvent -= MyFirstEventHandler;
             Sut.MyEvent -= MySecondEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
 
             Assert.Equal(1, _firstEventHandlerCallCount);
             Assert.Equal(0, _secondEventHandlerCallCount);
@@ -57,21 +63,21 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_separate_conditions()
         {
-            StoredEventStep<EventHandler> eventStore = null;
+            StoredEventStep<EventHandler>? eventStore = null;
             MockMembers.MyEvent.If(
-                e => e.GetMethodInfo().Name == nameof(MyFirstEventHandler),
-                e => e.GetMethodInfo().Name == nameof(MySecondEventHandler),
+                e => e?.GetMethodInfo()?.Name == nameof(MyFirstEventHandler),
+                e => e?.GetMethodInfo()?.Name == nameof(MySecondEventHandler),
                 i => i.Stored(out eventStore));
 
             // This only adds first event handler
             Sut.MyEvent += MyFirstEventHandler;
             Sut.MyEvent += MySecondEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore?.Raise(this, EventArgs.Empty);
 
             // This tries to remove second handler; as it's not there the store remains unchanged.
             Sut.MyEvent -= MyFirstEventHandler;
             Sut.MyEvent -= MySecondEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore?.Raise(this, EventArgs.Empty);
 
             Assert.Equal(2, _firstEventHandlerCallCount);
             Assert.Equal(0, _secondEventHandlerCallCount);
@@ -84,7 +90,7 @@ namespace Mocklis.Tests.Steps.Conditional
                 MockMembers.MyEvent.If(
                     e => true,
                     e => true,
-                    s => ((ICanHaveNextEventStep<EventHandler>)s).SetNextStep((IEventStep<EventHandler>)null)
+                    s => ((ICanHaveNextEventStep<EventHandler>)s).SetNextStep((IEventStep<EventHandler>)null!)
                 )
             );
         }

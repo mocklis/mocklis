@@ -27,7 +27,7 @@ namespace Mocklis.Verification.Steps
     /// <seealso cref="IVerifiable" />
     public sealed class ExpectedUsageEventStep<THandler> : EventStepWithNext<THandler>, IVerifiable where THandler : Delegate
     {
-        private readonly string _name;
+        private readonly string? _name;
         private readonly int? _expectedNumberOfAdds;
         private int _currentNumberOfAdds;
         private readonly int? _expectedNumberOfRemoves;
@@ -39,7 +39,7 @@ namespace Mocklis.Verification.Steps
         /// <param name="name">The name of the verification.</param>
         /// <param name="expectedNumberOfAdds">The expected number of event handler adds.</param>
         /// <param name="expectedNumberOfRemoves">The expected number of event handler removes.</param>
-        public ExpectedUsageEventStep(string name, int? expectedNumberOfAdds,
+        public ExpectedUsageEventStep(string? name, int? expectedNumberOfAdds,
             int? expectedNumberOfRemoves)
         {
             if (expectedNumberOfAdds < 0)
@@ -65,7 +65,7 @@ namespace Mocklis.Verification.Steps
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             Interlocked.Increment(ref _currentNumberOfAdds);
             base.Add(mockInfo, value);
@@ -77,7 +77,7 @@ namespace Mocklis.Verification.Steps
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public override void Remove(IMockInfo mockInfo, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler? value)
         {
             Interlocked.Increment(ref _currentNumberOfRemoves);
             base.Remove(mockInfo, value);
@@ -95,7 +95,7 @@ namespace Mocklis.Verification.Steps
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
+        public IEnumerable<VerificationResult> Verify(IFormatProvider? provider = null)
         {
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 

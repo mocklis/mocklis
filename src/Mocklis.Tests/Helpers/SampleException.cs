@@ -15,9 +15,9 @@ namespace Mocklis.Tests.Helpers
 
     public class SampleException : Exception
     {
-        public object Instance { get; }
+        public object? Instance { get; }
 
-        public SampleException(object instance = null)
+        public SampleException(object? instance = null)
         {
             Instance = instance;
         }
@@ -27,7 +27,7 @@ namespace Mocklis.Tests.Helpers
     {
         public TPayload Payload { get; }
 
-        public SampleException(TPayload payload, object instance = null) : base(instance)
+        public SampleException(TPayload payload, object? instance = null) : base(instance)
         {
             Payload = payload;
         }

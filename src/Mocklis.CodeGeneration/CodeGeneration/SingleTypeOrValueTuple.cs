@@ -53,7 +53,7 @@ namespace Mocklis.CodeGeneration
 
         public bool IsMultiDimensional => Count > 1;
 
-        public TypeSyntax BuildTypeSyntax()
+        public TypeSyntax? BuildTypeSyntax()
         {
             if (Count == 0)
             {
@@ -65,7 +65,7 @@ namespace Mocklis.CodeGeneration
                 : this[0].Type;
         }
 
-        public BracketedParameterListSyntax BuildParameterList()
+        public BracketedParameterListSyntax? BuildParameterList()
         {
             if (Count == 0)
             {
@@ -75,7 +75,7 @@ namespace Mocklis.CodeGeneration
             return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.Type))));
         }
 
-        public ExpressionSyntax BuildArgumentList()
+        public ExpressionSyntax? BuildArgumentList()
         {
             if (Count == 0)
             {
@@ -87,7 +87,7 @@ namespace Mocklis.CodeGeneration
                 : F.IdentifierName(this[0].TupleSafeName);
         }
 
-        public ExpressionSyntax BuildArgumentListWithOriginalNames()
+        public ExpressionSyntax? BuildArgumentListWithOriginalNames()
         {
             if (Count == 0)
             {

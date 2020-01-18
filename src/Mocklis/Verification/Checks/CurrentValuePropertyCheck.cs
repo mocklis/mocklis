@@ -24,7 +24,7 @@ namespace Mocklis.Verification.Checks
     /// <seealso cref="IVerifiable" />
     public class CurrentValuePropertyCheck<TValue> : IVerifiable
     {
-        private readonly string _name;
+        private readonly string? _name;
         private readonly IStoredProperty<TValue> _property;
         private readonly TValue _expectedValue;
         private readonly IEqualityComparer<TValue> _comparer;
@@ -36,8 +36,8 @@ namespace Mocklis.Verification.Checks
         /// <param name="name">A name that can be used to identify the check in its verification group.</param>
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="comparer">Optional parameter with a comparer used to verify that the values are equal.</param>
-        public CurrentValuePropertyCheck(IStoredProperty<TValue> property, string name, TValue expectedValue,
-            IEqualityComparer<TValue> comparer = null)
+        public CurrentValuePropertyCheck(IStoredProperty<TValue> property, string? name, TValue expectedValue,
+            IEqualityComparer<TValue>? comparer = null)
         {
             _name = name;
             _property = property ?? throw new ArgumentNullException(nameof(property));
@@ -55,9 +55,9 @@ namespace Mocklis.Verification.Checks
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
+        public IEnumerable<VerificationResult> Verify(IFormatProvider? provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
+            provider ??= CultureInfo.CurrentCulture;
 
             string prefix = string.IsNullOrEmpty(_name) ? "Value check" : $"Value check '{_name}'";
 

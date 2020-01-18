@@ -12,6 +12,7 @@ namespace Mocklis.Tests.Steps.Conditional
     using System;
     using Mocklis.Core;
     using Mocklis.Steps.Stored;
+    using Mocklis.Tests.Helpers;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
     using Mocklis.Verification;
@@ -25,11 +26,18 @@ namespace Mocklis.Tests.Steps.Conditional
         public IIndexers Sut => MockMembers;
 
         [Fact]
+        public void require_branch()
+        {
+            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.If(_ => true, null, null!));
+        }
+
+        [Fact]
         public void check_get_conditions()
         {
-            StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
+            StoredAsDictionaryIndexerStep<int, string>? indexerStore = null;
             MockMembers.Item.If(i => i == 3, null, s => s.StoredAsDictionary(out indexerStore));
-            indexerStore[1] = "one";
+
+            indexerStore![1] = "one";
             indexerStore[3] = "three";
 
             var v1 = Sut[1];
@@ -42,8 +50,10 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_set_conditions()
         {
-            StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.If(null, (i, v) => i == 3 || v == "two", s => s.StoredAsDictionary(out indexerStore));
+            StoredAsDictionaryIndexerStep<int, string>? tmpIndexerStore = null;
+            MockMembers.Item.If(null, (i, v) => i == 3 || v == "two", s => s.StoredAsDictionary(out tmpIndexerStore));
+
+            var indexerStore = tmpIndexerStore.AssertNotNull();
 
             Sut[1] = "one";
             Sut[2] = "two";
@@ -75,7 +85,7 @@ namespace Mocklis.Tests.Steps.Conditional
                 MockMembers.Item.If(
                     i => true,
                     (i, v) => true,
-                    s => ((ICanHaveNextIndexerStep<int, string>)s).SetNextStep((IIndexerStep<int, string>)null)
+                    s => ((ICanHaveNextIndexerStep<int, string>)s).SetNextStep((IIndexerStep<int, string>)null!)
                 )
             );
         }

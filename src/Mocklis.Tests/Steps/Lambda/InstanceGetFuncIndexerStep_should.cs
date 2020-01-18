@@ -24,13 +24,13 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.InstanceGetFunc(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.InstanceGetFunc(null!));
         }
 
         [Fact]
         public void evaluate_func_on_gets()
         {
-            object callInstance = null;
+            object? callInstance = null;
             int usedIndex = 0;
 
             MockMembers.Item.InstanceGetFunc((obj, i) =>

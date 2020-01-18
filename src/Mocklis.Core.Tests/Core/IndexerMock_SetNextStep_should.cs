@@ -28,7 +28,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((ICanHaveNextIndexerStep<int, string>)_indexerMock).SetNextStep((IIndexerStep<int, string>)null));
+                ((ICanHaveNextIndexerStep<int, string>)_indexerMock).SetNextStep((IIndexerStep<int, string>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

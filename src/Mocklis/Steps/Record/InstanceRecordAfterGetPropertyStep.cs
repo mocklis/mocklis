@@ -23,8 +23,8 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordPropertyStepBase{TValue, TRecord}" />
     public class InstanceRecordAfterGetPropertyStep<TValue, TRecord> : RecordPropertyStepBase<TValue, TRecord>
     {
-        private readonly Func<object, TValue, TRecord> _successSelector;
-        private readonly Func<object, Exception, TRecord> _failureSelector;
+        private readonly Func<object, TValue, TRecord>? _successSelector;
+        private readonly Func<object, Exception, TRecord>? _failureSelector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceRecordAfterGetPropertyStep{TValue, TRecord}" /> class.
@@ -37,12 +37,12 @@ namespace Mocklis.Steps.Record
         ///     An Func that constructs an entry for an exception thrown when reading a value.
         ///     Takes the mocked instance and the exception as parameters.
         /// </param>
-        public InstanceRecordAfterGetPropertyStep(Func<object, TValue, TRecord> successSelector,
-            Func<object, Exception, TRecord> failureSelector = null)
+        public InstanceRecordAfterGetPropertyStep(Func<object, TValue, TRecord>? successSelector,
+            Func<object, Exception, TRecord>? failureSelector = null)
         {
             if (successSelector == null && failureSelector == null)
             {
-                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null.", nameof(successSelector));
+                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null or missing.", nameof(successSelector));
             }
 
             _successSelector = successSelector;

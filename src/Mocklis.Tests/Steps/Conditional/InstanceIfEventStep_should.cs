@@ -22,7 +22,7 @@ namespace Mocklis.Tests.Steps.Conditional
     {
         private int _firstEventHandlerCallCount;
 
-        private void MyFirstEventHandler(object sender, EventArgs e)
+        private void MyFirstEventHandler(object? sender, EventArgs e)
         {
             _firstEventHandlerCallCount++;
         }
@@ -34,16 +34,16 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_common_condition()
         {
-            StoredEventStep<EventHandler> eventStore = null;
+            StoredEventStep<EventHandler>? eventStore = null;
             MockMembers.MyEvent.InstanceIf((instance, e) => ((IProperties)instance).StringProperty == "Go", i => i.Stored(out eventStore));
-            MockMembers.StringProperty.Stored();
+            MockMembers.StringProperty.Stored("");
 
             MockMembers.StringProperty.Value = "Go";
             Sut.MyEvent += MyFirstEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
             MockMembers.StringProperty.Value = "Don't go";
             Sut.MyEvent -= MyFirstEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
 
             Assert.Equal(2, _firstEventHandlerCallCount);
         }
@@ -51,23 +51,23 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_separate_conditions()
         {
-            StoredEventStep<EventHandler> eventStore = null;
+            StoredEventStep<EventHandler>? eventStore = null;
             MockMembers.MyEvent.InstanceIf(
                 (instance, e) => ((IProperties)instance).StringProperty == "Go",
                 (instance, e) => ((IProperties)instance).IntProperty == 42,
                 i => i.Stored(out eventStore));
-            MockMembers.StringProperty.Stored();
+            MockMembers.StringProperty.Stored("");
             MockMembers.IntProperty.Stored();
 
             MockMembers.StringProperty.Value = "Go";
             MockMembers.IntProperty.Value = 99;
             Sut.MyEvent += MyFirstEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
 
             MockMembers.StringProperty.Value = "Don't go";
             MockMembers.IntProperty.Value = 42;
             Sut.MyEvent -= MyFirstEventHandler;
-            eventStore.Raise(this, EventArgs.Empty);
+            eventStore!.Raise(this, EventArgs.Empty);
 
             Assert.Equal(1, _firstEventHandlerCallCount);
         }

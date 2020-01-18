@@ -27,7 +27,7 @@ namespace Mocklis.Steps.Log
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler.</param>
-        void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate;
+        void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler? value) where THandler : Delegate;
 
         /// <summary>
         ///     Logs the fact that an event handler has been added.
@@ -48,7 +48,7 @@ namespace Mocklis.Steps.Log
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler.</param>
-        void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate;
+        void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler? value) where THandler : Delegate;
 
         /// <summary>
         ///     Logs the fact that av event handler has been removed.

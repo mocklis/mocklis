@@ -24,6 +24,12 @@ namespace Mocklis.Tests.Steps.Conditional
         public MockMembers MockMembers { get; } = new MockMembers();
         public IProperties Sut => MockMembers;
 
+        [Fact]
+        public void require_branch()
+        {
+            Assert.Throws<ArgumentNullException>(() => MockMembers.BoolProperty.If(() => true, null, null!));
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
@@ -39,7 +45,7 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void check_set_conditions()
         {
-            IReadOnlyList<string> ledger = null;
+            IReadOnlyList<string>? ledger = null;
             MockMembers.StringProperty.If(null, v => v.StartsWith("A"), s => s.RecordBeforeSet(out ledger));
 
             Sut.StringProperty = "Apple";
@@ -72,7 +78,7 @@ namespace Mocklis.Tests.Steps.Conditional
                 MockMembers.StringProperty.If(
                     () => true,
                     v => true,
-                    s => ((ICanHaveNextPropertyStep<string>)s).SetNextStep((IPropertyStep<string>)null)
+                    s => ((ICanHaveNextPropertyStep<string>)s).SetNextStep((IPropertyStep<string>)null!)
                 )
             );
         }

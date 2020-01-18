@@ -25,14 +25,14 @@ namespace Mocklis.Tests.Steps.Stored
         [Fact]
         public void BeBothResultAndOutParameter()
         {
-            var step = MockMembers.StringProperty.Stored(out var store);
+            var step = MockMembers.StringProperty.Stored(out var store, "");
             Assert.Same(step, store);
         }
 
         [Fact]
         public void ReturnStoredValues()
         {
-            MockMembers.StringProperty.Stored();
+            MockMembers.StringProperty.Stored("");
             Sut.StringProperty = "Hello";
 
             Assert.Equal("Hello", Sut.StringProperty);
@@ -41,15 +41,15 @@ namespace Mocklis.Tests.Steps.Stored
         [Fact]
         public void ReturnDefaultForMissingValues()
         {
-            var step = MockMembers.StringProperty.Stored();
+            var step = MockMembers.IntProperty.Stored();
             Assert.Null(Sut.StringProperty);
-            Assert.Null(step.Value);
+            Assert.Equal(0, step.Value);
         }
 
         [Fact]
         public void AllowExternalModification()
         {
-            MockMembers.StringProperty.Stored(out var store);
+            MockMembers.StringProperty.Stored(out var store, "");
 
             Sut.StringProperty = "Hello";
             var value1 = store.Value;

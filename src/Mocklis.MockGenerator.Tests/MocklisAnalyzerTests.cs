@@ -13,6 +13,7 @@ namespace Mocklis.MockGenerator.Tests
     using System.IO;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Microsoft.CodeAnalysis.CSharp;
     using Mocklis.MockGenerator.Tests.Helpers;
     using Xunit;
     using Xunit.Abstractions;
@@ -30,53 +31,83 @@ namespace Mocklis.MockGenerator.Tests
             _mocklisClassUpdater = mocklisClassUpdater;
         }
 
-        // ReSharper disable once AssignNullToNotNullAttribute
-        private static string TestCaseFolder => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestCases");
-
-        public static TheoryData<string> EnumerateTestCases()
+        public static TheoryData<string, string> GetTestCasesFromFolder(string testCaseFolder)
         {
-            var data = new TheoryData<string>();
+            var pathToTestCases = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testCaseFolder);
 
-            foreach (var file in Directory.EnumerateFiles(TestCaseFolder, "*.cs"))
+            var data = new TheoryData<string, string>();
+
+            foreach (var file in Directory.EnumerateFiles(pathToTestCases, "*.cs"))
             {
                 if (!file.EndsWith(".Expected.cs"))
                 {
-                    data.Add(Path.GetFileNameWithoutExtension(file));
+                    data.Add(testCaseFolder, Path.GetFileNameWithoutExtension(file));
                 }
             }
 
             return data;
         }
 
+        public static TheoryData<string, string> EnumerateTestCases() => GetTestCasesFromFolder("TestCases");
+
+        public static TheoryData<string, string> EnumerateTestCases8() => GetTestCasesFromFolder("TestCases8");
+
         [Theory]
         [MemberData(nameof(EnumerateTestCases))]
-        public async Task TestMocklisClassUpdater(string testCase)
+        public async Task TestMocklisClassUpdaterForCSharp7_3(string testCaseFolder, string testCase)
         {
-            string source = File.ReadAllText(Path.Combine(TestCaseFolder, testCase + ".cs"));
-            string expectedFileName = Path.Combine(TestCaseFolder, testCase + ".Expected.cs");
-            string expected = null;
+            await TestCodeGenerationCase(testCaseFolder, testCase, LanguageVersion.CSharp7_3);
+        }
+
+        [Theory]
+        [MemberData(nameof(EnumerateTestCases))]
+        [MemberData(nameof(EnumerateTestCases8))]
+        public async Task TestMocklisClassUpdaterForCSharp8(string testCaseFolder, string testCase)
+        {
+            await TestCodeGenerationCase(testCaseFolder, testCase, LanguageVersion.CSharp8);
+        }
+
+        private async Task TestCodeGenerationCase(string testCaseFolder, string testCase, LanguageVersion languageVersion)
+        {
+            var pathToTestCases = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testCaseFolder);
+            string source = File.ReadAllText(Path.Combine(pathToTestCases, testCase + ".cs"));
+            string expectedFileName = Path.Combine(pathToTestCases, testCase + ".Expected.cs");
+            string? expected = null;
             if (File.Exists(expectedFileName))
             {
                 expected = File.ReadAllText(expectedFileName);
             }
 
-            var result = await _mocklisClassUpdater.UpdateMocklisClass(source);
+            var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion);
 
-            // Uncomment to create expected value for regression purposes
 #if !NCRUNCH
-            //if (expected == null || expected != result.Code)
-            //{
-            //    string newPath = Path.Combine(TestCaseFolder, "..", "..", "..", "..", "TestCases", testCase + ".Expected.cs");
-            //    File.WriteAllText(newPath, result.Code);
-            //    expected = result.Code;
-            //}
+            // Create the 'expected' file if it isn't there. Empty out to recreate.
+            if (string.IsNullOrWhiteSpace(expected))
+            {
+                string newPath = Path.Combine(pathToTestCases, "..", "..", "..", "..", testCaseFolder, testCase + ".Expected.cs");
+                File.WriteAllText(newPath, result.Code);
+                expected = result.Code;
+            }
 #endif
 
-            if (result.IsSuccess)
+            try
             {
                 Assert.Equal(expected, result.Code);
             }
-            else
+            catch (Xunit.Sdk.EqualException ex)
+            {
+                if (!result.IsSuccess)
+                {
+                    _testOutputHelper.WriteLine(ex.Message);
+                    _testOutputHelper.WriteLine(string.Empty);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            if (!result.IsSuccess)
             {
                 foreach (var error in result.Errors)
                 {

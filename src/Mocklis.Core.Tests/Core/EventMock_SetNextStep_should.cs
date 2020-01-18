@@ -28,7 +28,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep((IEventStep<EventHandler>)null));
+                ((ICanHaveNextEventStep<EventHandler>)_eventMock).SetNextStep((IEventStep<EventHandler>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

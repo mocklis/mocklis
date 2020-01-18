@@ -25,14 +25,14 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactory()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.Throw(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.Throw(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
         [Fact]
         public void RequireExceptionFactoryInNoParameterCase()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Throw((Func<Exception>)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Throw((Func<Exception>)null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
@@ -54,14 +54,14 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactoryWithInstance()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.InstanceThrow(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.InstanceThrow(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
         [Fact]
         public void RequireExceptionFactoryInNoParameterCaseWithInstance()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.InstanceThrow((Func<object, Exception>)null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.InstanceThrow((Func<object, Exception>)null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 

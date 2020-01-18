@@ -21,17 +21,16 @@ namespace Mocklis.Core.Tests.Mocks
 
         public MockEventStep()
         {
-            Add = new ActionMethodMock<(IMockInfo mockInfo, THandler value)>(this, "MockEventStep", "IEventStep", "Add", "Add", Strictness.Lenient);
-            Remove = new ActionMethodMock<(IMockInfo mockInfo, THandler value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove",
-                Strictness.Lenient);
+            Add = new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockEventStep", "IEventStep", "Add", "Add", Strictness.Lenient);
+            Remove = new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove", Strictness.Lenient);
         }
 
-        public ActionMethodMock<(IMockInfo mockInfo, THandler value)> Add { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, THandler? value)> Add { get; }
 
-        void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value) => Add.Call((mockInfo, value));
+        void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler? value) => Add.Call((mockInfo, value));
 
-        public ActionMethodMock<(IMockInfo mockInfo, THandler value)> Remove { get; }
+        public ActionMethodMock<(IMockInfo mockInfo, THandler? value)> Remove { get; }
 
-        void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value) => Remove.Call((mockInfo, value));
+        void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler? value) => Remove.Call((mockInfo, value));
     }
 }

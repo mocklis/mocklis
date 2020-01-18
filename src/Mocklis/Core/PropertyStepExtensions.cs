@@ -22,13 +22,13 @@ namespace Mocklis.Core
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <returns>The value being read.</returns>
         /// <seealso cref="IPropertyStep{TValue}" />
-        public static TValue GetWithStrictnessCheckIfNull<TValue>(this IPropertyStep<TValue> propertyStep, IMockInfo mockInfo)
+        public static TValue GetWithStrictnessCheckIfNull<TValue>(this IPropertyStep<TValue>? propertyStep, IMockInfo mockInfo)
         {
             if (propertyStep == null)
             {
                 if (mockInfo.Strictness != Strictness.VeryStrict)
                 {
-                    return default;
+                    return default!;
                 }
 
                 throw new MockMissingException(MockType.PropertyGet, mockInfo);
@@ -46,7 +46,7 @@ namespace Mocklis.Core
         /// <param name="propertyStep">The property step (can be null) through which the value is read.</param>
         /// <param name="mockInfo">Information about the mock through which the value is read.</param>
         /// <param name="value">The value being written.</param>
-        public static void SetWithStrictnessCheckIfNull<TValue>(this IPropertyStep<TValue> propertyStep, IMockInfo mockInfo, TValue value)
+        public static void SetWithStrictnessCheckIfNull<TValue>(this IPropertyStep<TValue>? propertyStep, IMockInfo mockInfo, TValue value)
         {
             if (propertyStep == null)
             {

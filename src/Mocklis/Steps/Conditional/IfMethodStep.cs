@@ -22,7 +22,7 @@ namespace Mocklis.Steps.Conditional
     /// <seealso cref="IfMethodStepBase{ValueTuple, TResult}" />
     public class IfMethodStep<TResult> : IfMethodStepBase<ValueTuple, TResult>
     {
-        private readonly Func<bool> _condition;
+        private readonly Func<bool>? _condition;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IfMethodStep{TResult}" /> class.
@@ -35,7 +35,7 @@ namespace Mocklis.Steps.Conditional
         ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
         ///     branch.
         /// </param>
-        public IfMethodStep(Func<bool> condition, Action<IfBranchCaller> branch) : base(branch)
+        public IfMethodStep(Func<bool>? condition, Action<IfBranchCaller> branch) : base(branch)
         {
             _condition = condition;
         }
@@ -67,7 +67,7 @@ namespace Mocklis.Steps.Conditional
     /// <seealso cref="IfMethodStepBase{ValueTuple, TResult}" />
     public class IfMethodStep<TParam, TResult> : IfMethodStepBase<TParam, TResult>
     {
-        private readonly Func<TParam, bool> _condition;
+        private readonly Func<TParam, bool>? _condition;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IfMethodStep{TParam, TResult}" /> class.
@@ -80,7 +80,7 @@ namespace Mocklis.Steps.Conditional
         ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
         ///     branch.
         /// </param>
-        public IfMethodStep(Func<TParam, bool> condition, Action<IfBranchCaller> branch) : base(branch)
+        public IfMethodStep(Func<TParam, bool>? condition, Action<IfBranchCaller> branch) : base(branch)
         {
             _condition = condition;
         }

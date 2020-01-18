@@ -24,13 +24,13 @@ namespace Mocklis.Core
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        void Add(IMockInfo mockInfo, THandler value);
+        void Add(IMockInfo mockInfo, THandler? value);
 
         /// <summary>
         ///     Called when an event handler is being removed to the mocked event.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        void Remove(IMockInfo mockInfo, THandler value);
+        void Remove(IMockInfo mockInfo, THandler? value);
     }
 }

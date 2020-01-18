@@ -30,7 +30,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep((IMethodStep<int, ValueTuple>)null));
+                ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep((IMethodStep<int, ValueTuple>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

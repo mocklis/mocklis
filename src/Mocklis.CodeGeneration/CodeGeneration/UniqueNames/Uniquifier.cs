@@ -20,10 +20,6 @@ namespace Mocklis.CodeGeneration.UniqueNames
         private readonly HashSet<string> _reservedNames = new HashSet<string>();
         private readonly HashSet<string> _usedNames = new HashSet<string>();
 
-        public Uniquifier()
-        {
-        }
-
         public Uniquifier(IEnumerable<string> usedNames)
         {
             var usedNamesArray = usedNames.ToArray();

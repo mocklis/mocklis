@@ -24,14 +24,14 @@ namespace Mocklis.Core
         /// <param name="param">The parameters used.</param>
         /// <returns>The returned result.</returns>
         /// <seealso cref="IMethodStep{TParam, TResult}" />
-        public static TResult CallWithStrictnessCheckIfNull<TParam, TResult>(this IMethodStep<TParam, TResult> methodStep, IMockInfo mockInfo,
+        public static TResult CallWithStrictnessCheckIfNull<TParam, TResult>(this IMethodStep<TParam, TResult>? methodStep, IMockInfo mockInfo,
             TParam param)
         {
             if (methodStep == null)
             {
                 if (mockInfo.Strictness != Strictness.VeryStrict)
                 {
-                    return default;
+                    return default!;
                 }
 
                 throw new MockMissingException(MockType.Method, mockInfo);

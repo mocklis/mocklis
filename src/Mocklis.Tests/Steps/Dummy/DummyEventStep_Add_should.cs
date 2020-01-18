@@ -18,7 +18,7 @@ namespace Mocklis.Tests.Steps.Dummy
 
     public class DummyEventStep_Add_should
     {
-        private void MyEventHandler(object sender, EventArgs e)
+        private void MyEventHandler(object? sender, EventArgs e)
         {
         }
 

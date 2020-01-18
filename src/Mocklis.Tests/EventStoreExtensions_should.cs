@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="EventStoreExtensions_should.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019 Esbjörn Redmo and contributors. All rights reserved.
@@ -28,8 +28,8 @@ namespace Mocklis.Tests
         public void RaiseEventHandlerCorrectly()
         {
             MockEvents.MyEvent.Stored(out var stored);
-            object sender = null;
-            EventArgs eventArgs = null;
+            object? sender = null;
+            EventArgs? eventArgs = null;
             Evs.MyEvent += (s, e) =>
             {
                 sender = s;
@@ -47,8 +47,8 @@ namespace Mocklis.Tests
         public void RaiseGenericEventHandlerCorrectly()
         {
             MockEvents.SpecialEvent.Stored(out var stored);
-            object sender = null;
-            SpecialEventArgs eventArgs = null;
+            object? sender = null;
+            SpecialEventArgs? eventArgs = null;
             Evs.SpecialEvent += (s, e) =>
             {
                 sender = s;
@@ -58,16 +58,16 @@ namespace Mocklis.Tests
             stored.Raise(this, new SpecialEventArgs("Hello", 42));
 
             Assert.Same(this, sender);
-            Assert.Equal("Hello", eventArgs.Text);
-            Assert.Equal(42, eventArgs.Number);
+            Assert.Equal("Hello", eventArgs?.Text);
+            Assert.Equal(42, eventArgs?.Number);
         }
 
         [Fact]
         public void RaiseNotifyPropertyCHangedCorrectly()
         {
             MockEvents.PropertyChanged.Stored(out var stored);
-            object sender = null;
-            PropertyChangedEventArgs eventArgs = null;
+            object? sender = null;
+            PropertyChangedEventArgs? eventArgs = null;
             Npc.PropertyChanged += (s, e) =>
             {
                 sender = s;
@@ -77,7 +77,7 @@ namespace Mocklis.Tests
             stored.Raise(this, new PropertyChangedEventArgs("MyProperty"));
 
             Assert.Same(this, sender);
-            Assert.Equal("MyProperty", eventArgs.PropertyName);
+            Assert.Equal("MyProperty", eventArgs?.PropertyName);
         }
     }
 }

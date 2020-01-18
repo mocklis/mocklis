@@ -28,7 +28,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep((IPropertyStep<int>)null));
+                ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep((IPropertyStep<int>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

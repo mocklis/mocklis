@@ -22,8 +22,8 @@ namespace Mocklis.Steps.Conditional
     /// <seealso cref="IfEventStepBase{THandler}" />
     public class IfEventStep<THandler> : IfEventStepBase<THandler> where THandler : Delegate
     {
-        private readonly Func<THandler, bool> _addCondition;
-        private readonly Func<THandler, bool> _removeCondition;
+        private readonly Func<THandler?, bool>? _addCondition;
+        private readonly Func<THandler?, bool>? _removeCondition;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IfEventStep{THandler}" /> class.
@@ -40,7 +40,7 @@ namespace Mocklis.Steps.Conditional
         ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
         ///     branch.
         /// </param>
-        public IfEventStep(Func<THandler, bool> addCondition, Func<THandler, bool> removeCondition,
+        public IfEventStep(Func<THandler?, bool>? addCondition, Func<THandler?, bool>? removeCondition,
             Action<IfBranchCaller> branch) :
             base(branch)
         {
@@ -54,7 +54,7 @@ namespace Mocklis.Steps.Conditional
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             if (_addCondition?.Invoke(value) ?? false)
             {
@@ -72,7 +72,7 @@ namespace Mocklis.Steps.Conditional
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public override void Remove(IMockInfo mockInfo, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler? value)
         {
             if (_removeCondition?.Invoke(value) ?? false)
             {

@@ -29,7 +29,7 @@ namespace Mocklis.Core
         ///     Gets the current next step.
         /// </summary>
         /// <value>The current next step.</value>
-        protected IMethodStep<TParam, TResult> NextStep { get; private set; }
+        protected IMethodStep<TParam, TResult>? NextStep { get; private set; }
 
         /// <summary>
         ///     Replaces the current 'next' step with a new step.

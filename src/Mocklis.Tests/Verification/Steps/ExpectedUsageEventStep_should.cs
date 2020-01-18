@@ -35,7 +35,7 @@ namespace Mocklis.Tests.Verification.Steps
         [Fact]
         public void RequireVerificationGroup()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.ExpectedUsage(null, "test"));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.ExpectedUsage(null!, "test"));
         }
 
         [Fact]

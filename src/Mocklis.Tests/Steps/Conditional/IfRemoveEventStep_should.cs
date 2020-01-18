@@ -19,24 +19,29 @@ namespace Mocklis.Tests.Steps.Conditional
 
     public class IfRemoveEventStep_should
     {
-        private void MyEventHandler(object sender, EventArgs e)
+        private void MyEventHandler(object? sender, EventArgs e)
         {
         }
 
         private IEvents Sut { get; }
-        private IReadOnlyList<EventHandler> _adds;
-        private IReadOnlyList<EventHandler> _removes;
+        private IReadOnlyList<EventHandler?> Adds { get; }
+        private IReadOnlyList<EventHandler?> Removes { get; }
 
         public IfRemoveEventStep_should()
         {
             var mockMembers = new MockMembers();
 
+            IReadOnlyList<EventHandler?>? adds = null;
+            IReadOnlyList<EventHandler?>? removes = null;
+
             mockMembers.MyEvent
                 .IfRemove(i => i
-                    .RecordBeforeAdd(out _adds)
-                    .RecordBeforeRemove(out _removes)
+                    .RecordBeforeAdd(out adds)
+                    .RecordBeforeRemove(out removes)
                     .Join(i.ElseBranch));
 
+            Adds = adds!;
+            Removes = removes!;
             Sut = mockMembers;
         }
 
@@ -44,14 +49,14 @@ namespace Mocklis.Tests.Steps.Conditional
         public void not_forward_Add()
         {
             Sut.MyEvent += MyEventHandler;
-            Assert.Equal(0, _adds.Count);
+            Assert.Equal(0, Adds.Count);
         }
 
         [Fact]
         public void forward_Remove()
         {
             Sut.MyEvent -= MyEventHandler;
-            Assert.Equal(1, _removes.Count);
+            Assert.Equal(1, Removes.Count);
         }
     }
 }

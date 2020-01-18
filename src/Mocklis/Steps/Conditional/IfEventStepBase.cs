@@ -59,7 +59,7 @@ namespace Mocklis.Steps.Conditional
         /// <seealso cref="ICanHaveNextEventStep{THandler}" />
         public sealed class IfBranchCaller : IEventStep<THandler>, ICanHaveNextEventStep<THandler>
         {
-            private IEventStep<THandler> _nextStep;
+            private IEventStep<THandler>? _nextStep;
 
             /// <summary>
             ///     Replaces the current 'next' step with a new step.
@@ -83,7 +83,7 @@ namespace Mocklis.Steps.Conditional
             /// </summary>
             /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
             /// <param name="value">The event handler that is being added.</param>
-            void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler value)
+            void IEventStep<THandler>.Add(IMockInfo mockInfo, THandler? value)
             {
                 _nextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
             }
@@ -93,7 +93,7 @@ namespace Mocklis.Steps.Conditional
             /// </summary>
             /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
             /// <param name="value">The event handler that is being removed.</param>
-            void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler value)
+            void IEventStep<THandler>.Remove(IMockInfo mockInfo, THandler? value)
             {
                 _nextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
             }
@@ -122,13 +122,13 @@ namespace Mocklis.Steps.Conditional
                 _ifEventStep = ifEventStep;
             }
 
-            public void Add(IMockInfo mockInfo, THandler value)
+            public void Add(IMockInfo mockInfo, THandler? value)
             {
                 // Call directly to next step thus bypassing the condition check.
                 _ifEventStep.NextStep.AddWithStrictnessCheckIfNull(mockInfo, value);
             }
 
-            public void Remove(IMockInfo mockInfo, THandler value)
+            public void Remove(IMockInfo mockInfo, THandler? value)
             {
                 // Call directly to next step thus bypassing the condition check.
                 _ifEventStep.NextStep.RemoveWithStrictnessCheckIfNull(mockInfo, value);
@@ -149,9 +149,14 @@ namespace Mocklis.Steps.Conditional
         /// </param>
         protected IfEventStepBase(Action<IfBranchCaller> branch)
         {
+            if (branch == null)
+            {
+                throw new ArgumentNullException(nameof(branch));
+            }
+
             var ifBranch = new IfBranchCaller(this);
             IfBranch = ifBranch;
-            branch?.Invoke(ifBranch);
+            branch.Invoke(ifBranch);
         }
     }
 }

@@ -41,8 +41,8 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextEventStep<THandler> If<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<THandler, bool> addCondition,
-            Func<THandler, bool> removeCondition,
+            Func<THandler?, bool>? addCondition,
+            Func<THandler?, bool>? removeCondition,
             Action<IfEventStepBase<THandler>.IfBranchCaller> branch) where THandler : Delegate
         {
             return caller.SetNextStep(new IfEventStep<THandler>(addCondition, removeCondition, branch));
@@ -64,7 +64,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextEventStep<THandler> If<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<THandler, bool> condition,
+            Func<THandler?, bool>? condition,
             Action<IfEventStepBase<THandler>.IfBranchCaller> branch) where THandler : Delegate
         {
             return caller.SetNextStep(new IfEventStep<THandler>(condition, condition, branch));
@@ -91,8 +91,8 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextEventStep<THandler> InstanceIf<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<object, THandler, bool> addCondition,
-            Func<object, THandler, bool> removeCondition,
+            Func<object, THandler?, bool>? addCondition,
+            Func<object, THandler?, bool>? removeCondition,
             Action<IfEventStepBase<THandler>.IfBranchCaller> branch) where THandler : Delegate
         {
             return caller.SetNextStep(new InstanceIfEventStep<THandler>(addCondition, removeCondition, branch));
@@ -115,7 +115,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextEventStep<THandler> InstanceIf<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Func<object, THandler, bool> condition,
+            Func<object, THandler?, bool>? condition,
             Action<IfEventStepBase<THandler>.IfBranchCaller> branch) where THandler : Delegate
         {
             return caller.SetNextStep(new InstanceIfEventStep<THandler>(condition, condition, branch));
@@ -179,8 +179,8 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextIndexerStep<TKey, TValue> If<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
-            Func<TKey, bool> getCondition,
-            Func<TKey, TValue, bool> setCondition,
+            Func<TKey, bool>? getCondition,
+            Func<TKey, TValue, bool>? setCondition,
             Action<IfIndexerStepBase<TKey, TValue>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfIndexerStep<TKey, TValue>(getCondition, setCondition, branch));
@@ -211,8 +211,8 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextIndexerStep<TKey, TValue> InstanceIf<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
-            Func<object, TKey, bool> getCondition,
-            Func<object, TKey, TValue, bool> setCondition,
+            Func<object, TKey, bool>? getCondition,
+            Func<object, TKey, TValue, bool>? setCondition,
             Action<IfIndexerStepBase<TKey, TValue>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfIndexerStep<TKey, TValue>(getCondition, setCondition, branch));
@@ -273,7 +273,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextIndexerStep{TKey, TValue}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextIndexerStep<TKey, TValue> OnlySetIfChanged<TKey, TValue>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
-            IEqualityComparer<TValue> comparer = null)
+            IEqualityComparer<TValue>? comparer = null)
         {
             return caller.SetNextStep(new OnlySetIfChangedIndexerStep<TKey, TValue>(comparer));
         }
@@ -296,7 +296,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<ValueTuple, ValueTuple> If(
             this ICanHaveNextMethodStep<ValueTuple, ValueTuple> caller,
-            Func<bool> condition,
+            Func<bool>? condition,
             Action<IfMethodStepBase<ValueTuple, ValueTuple>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfMethodStep<ValueTuple>(condition, branch));
@@ -321,7 +321,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<ValueTuple, TResult> If<TResult>(
             this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
-            Func<bool> condition,
+            Func<bool>? condition,
             Action<IfMethodStepBase<ValueTuple, TResult>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfMethodStep<TResult>(condition, branch));
@@ -346,7 +346,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<TParam, ValueTuple> If<TParam>(
             this ICanHaveNextMethodStep<TParam, ValueTuple> caller,
-            Func<TParam, bool> condition,
+            Func<TParam, bool>? condition,
             Action<IfMethodStepBase<TParam, ValueTuple>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfMethodStep<TParam, ValueTuple>(condition, branch));
@@ -372,7 +372,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<TParam, TResult> If<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
-            Func<TParam, bool> condition,
+            Func<TParam, bool>? condition,
             Action<IfMethodStepBase<TParam, TResult>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfMethodStep<TParam, TResult>(condition, branch));
@@ -397,7 +397,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<ValueTuple, ValueTuple> InstanceIf(
             this ICanHaveNextMethodStep<ValueTuple, ValueTuple> caller,
-            Func<object, bool> condition,
+            Func<object, bool>? condition,
             Action<IfMethodStepBase<ValueTuple, ValueTuple>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfMethodStep<ValueTuple>(condition, branch));
@@ -423,7 +423,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<ValueTuple, TResult> InstanceIf<TResult>(
             this ICanHaveNextMethodStep<ValueTuple, TResult> caller,
-            Func<object, bool> condition,
+            Func<object, bool>? condition,
             Action<IfMethodStepBase<ValueTuple, TResult>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfMethodStep<TResult>(condition, branch));
@@ -449,7 +449,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<TParam, ValueTuple> InstanceIf<TParam>(
             this ICanHaveNextMethodStep<TParam, ValueTuple> caller,
-            Func<object, TParam, bool> condition,
+            Func<object, TParam, bool>? condition,
             Action<IfMethodStepBase<TParam, ValueTuple>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfMethodStep<TParam, ValueTuple>(condition, branch));
@@ -476,7 +476,7 @@ namespace Mocklis
         /// </returns>
         public static ICanHaveNextMethodStep<TParam, TResult> InstanceIf<TParam, TResult>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
-            Func<object, TParam, bool> condition,
+            Func<object, TParam, bool>? condition,
             Action<IfMethodStepBase<TParam, TResult>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfMethodStep<TParam, TResult>(condition, branch));
@@ -502,8 +502,8 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextPropertyStep<TValue> If<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
-            Func<bool> getCondition,
-            Func<TValue, bool> setCondition,
+            Func<bool>? getCondition,
+            Func<TValue, bool>? setCondition,
             Action<IfPropertyStepBase<TValue>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new IfPropertyStep<TValue>(getCondition, setCondition, branch));
@@ -530,8 +530,8 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextPropertyStep<TValue> InstanceIf<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
-            Func<object, bool> getCondition,
-            Func<object, TValue, bool> setCondition,
+            Func<object, bool>? getCondition,
+            Func<object, TValue, bool>? setCondition,
             Action<IfPropertyStepBase<TValue>.IfBranchCaller> branch)
         {
             return caller.SetNextStep(new InstanceIfPropertyStep<TValue>(getCondition, setCondition, branch));
@@ -583,7 +583,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps on the normal branch.</returns>
         public static ICanHaveNextPropertyStep<TValue> OnlySetIfChanged<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
-            IEqualityComparer<TValue> comparer = null)
+            IEqualityComparer<TValue>? comparer = null)
         {
             return caller.SetNextStep(new OnlySetIfChangedPropertyStep<TValue>(comparer));
         }

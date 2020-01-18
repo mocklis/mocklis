@@ -42,7 +42,7 @@ namespace Mocklis.Steps.Dummy
         /// <returns>The returned result.</returns>
         public TResult Call(IMockInfo mockInfo, TParam param)
         {
-            return default;
+            return default!;
         }
     }
 }

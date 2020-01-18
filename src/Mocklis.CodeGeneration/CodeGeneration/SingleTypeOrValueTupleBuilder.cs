@@ -15,6 +15,7 @@ namespace Mocklis.CodeGeneration
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
 
     #endregion
@@ -23,7 +24,7 @@ namespace Mocklis.CodeGeneration
     {
         private struct BuilderEntry
         {
-            public BuilderEntry(string originalName, TypeSyntax type, bool isReturnValue = false)
+            public BuilderEntry(string originalName, TypeSyntax type, bool isReturnValue)
             {
                 OriginalName = originalName;
                 Type = type;
@@ -46,17 +47,18 @@ namespace Mocklis.CodeGeneration
 
         public void AddParameter(IParameterSymbol parameter)
         {
-            Items.Add(new BuilderEntry(parameter.Name, TypesForSymbols.ParseTypeName(parameter.Type)));
+            var x = TypesForSymbols.ParseTypeName(parameter.Type, parameter.NullableOrOblivious());
+            Items.Add(new BuilderEntry(parameter.Name, x, false));
         }
 
-        public void AddReturnValue(ITypeSymbol returnType)
+        public void AddReturnValue(ITypeSymbol returnType, bool nullable)
         {
-            Items.Add(new BuilderEntry("returnValue", TypesForSymbols.ParseTypeName(returnType), true));
+            Items.Add(new BuilderEntry("returnValue", TypesForSymbols.ParseTypeName(returnType, nullable), true));
         }
 
-        public SingleTypeOrValueTuple Build(string mockMemberName = null)
+        public SingleTypeOrValueTuple Build(string? mockMemberName = null)
         {
-            mockMemberName = mockMemberName ?? string.Empty;
+            mockMemberName ??= string.Empty;
 
             int count = Items.Count;
 

@@ -23,16 +23,11 @@ namespace Mocklis.Tests.Mocks
 
         public MockPropertiesWithChangeNotification()
         {
-            StringProperty = new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty",
-                Strictness.Lenient);
-            IntProperty = new PropertyMock<int>(this, "MockPropertiesWithChangeNotification", "IProperties", "IntProperty", "IntProperty",
-                Strictness.Lenient);
-            BoolProperty = new PropertyMock<bool>(this, "MockPropertiesWithChangeNotification", "IProperties", "BoolProperty", "BoolProperty",
-                Strictness.Lenient);
-            DateTimeProperty = new PropertyMock<System.DateTime>(this, "MockPropertiesWithChangeNotification", "IProperties", "DateTimeProperty",
-                "DateTimeProperty", Strictness.Lenient);
-            PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockPropertiesWithChangeNotification", "INotifyPropertyChanged",
-                "PropertyChanged", "PropertyChanged", Strictness.Lenient);
+            StringProperty = new PropertyMock<string>(this, "MockPropertiesWithChangeNotification", "IProperties", "StringProperty", "StringProperty", Strictness.Lenient);
+            IntProperty = new PropertyMock<int>(this, "MockPropertiesWithChangeNotification", "IProperties", "IntProperty", "IntProperty", Strictness.Lenient);
+            BoolProperty = new PropertyMock<bool>(this, "MockPropertiesWithChangeNotification", "IProperties", "BoolProperty", "BoolProperty", Strictness.Lenient);
+            DateTimeProperty = new PropertyMock<System.DateTime>(this, "MockPropertiesWithChangeNotification", "IProperties", "DateTimeProperty", "DateTimeProperty", Strictness.Lenient);
+            PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockPropertiesWithChangeNotification", "INotifyPropertyChanged", "PropertyChanged", "PropertyChanged", Strictness.Lenient);
         }
 
         public PropertyMock<string> StringProperty { get; }
@@ -45,10 +40,6 @@ namespace Mocklis.Tests.Mocks
         System.DateTime IProperties.DateTimeProperty { get => DateTimeProperty.Value; set => DateTimeProperty.Value = value; }
         public EventMock<PropertyChangedEventHandler> PropertyChanged { get; }
 
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
-        {
-            add => PropertyChanged.Add(value);
-            remove => PropertyChanged.Remove(value);
-        }
+        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged { add => PropertyChanged.Add(value); remove => PropertyChanged.Remove(value); }
     }
 }

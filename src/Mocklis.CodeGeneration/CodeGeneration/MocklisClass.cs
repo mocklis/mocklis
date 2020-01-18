@@ -40,9 +40,9 @@ namespace Mocklis.CodeGeneration
         }
 
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
-            MocklisSymbols mocklisSymbols)
+            MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
         {
-            var populator = new MocklisClassPopulator(semanticModel, classDecl, mocklisSymbols);
+            var populator = new MocklisClassPopulator(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
             return classDecl.WithMembers(F.List(populator.GenerateMembers()))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
@@ -55,15 +55,15 @@ namespace Mocklis.CodeGeneration
             private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
-            public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
+            public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-                _typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols);
+                _typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols, nullableContextEnabled);
                 bool mockReturnsByRef = false;
                 bool mockReturnsByRefReadonly = true;
                 bool strict = false;
                 bool veryStrict = false;
-                var attribute = _classSymbol.GetAttributes().Single(a => a.AttributeClass == mocklisSymbols.MocklisClassAttribute);
+                var attribute = _classSymbol.GetAttributes().Single(a => a.AttributeClass.Equals(mocklisSymbols.MocklisClassAttribute));
 
                 var attributeArguments = classDeclaration.FindNode(attribute.ApplicationSyntaxReference.Span).DescendantNodes()
                     .OfType<AttributeArgumentSyntax>().ToList();
@@ -123,9 +123,9 @@ namespace Mocklis.CodeGeneration
                 var uniquifier = new Uniquifier(namesToReserveAndUse);
 
                 // Then reserve all names used by new members
-                foreach (var member in members)
+                foreach (var (_, memberSymbol) in members)
                 {
-                    uniquifier.ReserveName(member.memberSymbol.MetadataName);
+                    uniquifier.ReserveName(memberSymbol.MetadataName);
                 }
 
                 return members.Select(m =>
@@ -227,7 +227,7 @@ namespace Mocklis.CodeGeneration
                     }
 
                     default:
-                        return null;
+                        return NullMemberMock.Instance;
                 }
             }
 
@@ -252,7 +252,7 @@ namespace Mocklis.CodeGeneration
 
             private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList)
             {
-                bool CanAccessConstructor(IMethodSymbol constructor)
+                static bool CanAccessConstructor(IMethodSymbol constructor)
                 {
                     switch (constructor.DeclaredAccessibility)
                     {

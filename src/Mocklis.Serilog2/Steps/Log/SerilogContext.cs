@@ -52,7 +52,7 @@ namespace Mocklis.Steps.Log
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler.</param>
-        public void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate
+        public void LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler? value) where THandler : Delegate
         {
             _logger.Write(_normalLogLevel, "Adding event handler to [{MocklisClassName:l}] {InterfaceName:l}.{MemberName:l}",
                 mockInfo.MocklisClassName, mockInfo.InterfaceName, mockInfo.MemberName);
@@ -86,7 +86,7 @@ namespace Mocklis.Steps.Log
         /// <typeparam name="THandler">The event handler type for the event.</typeparam>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler.</param>
-        public void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler value) where THandler : Delegate
+        public void LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler? value) where THandler : Delegate
         {
             _logger.Write(_normalLogLevel,
                 "Removing event handler from [{MocklisClassName:l}] {InterfaceName:l}.{MemberName:l}", mockInfo.MocklisClassName,

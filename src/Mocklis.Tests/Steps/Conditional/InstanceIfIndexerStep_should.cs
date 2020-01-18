@@ -10,6 +10,7 @@ namespace Mocklis.Tests.Steps.Conditional
     #region Using Directives
 
     using Mocklis.Steps.Stored;
+    using Mocklis.Tests.Helpers;
     using Mocklis.Tests.Interfaces;
     using Mocklis.Tests.Mocks;
     using Mocklis.Verification;
@@ -27,10 +28,12 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_get_conditions()
         {
             MockMembers.BoolProperty.Stored();
-            StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, null, s => s.StoredAsDictionary(out indexerStore));
+            StoredAsDictionaryIndexerStep<int, string>? tmpIndexerStore = null;
+            MockMembers.Item.InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, null, s => s.StoredAsDictionary(out tmpIndexerStore));
 
-            indexerStore[1] = "one";
+            var indexerStore = tmpIndexerStore.AssertNotNull();
+
+            indexerStore![1] = "one"; 
             indexerStore[3] = "three";
 
             var v1 = Sut[1];
@@ -45,8 +48,10 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_set_conditions()
         {
             MockMembers.BoolProperty.Stored();
-            StoredAsDictionaryIndexerStep<int, string> indexerStore = null;
-            MockMembers.Item.InstanceIf(null, (inst, i, v) => ((IProperties)inst).BoolProperty, s => s.StoredAsDictionary(out indexerStore));
+            StoredAsDictionaryIndexerStep<int, string>? tmpIndexerStore = null;
+            MockMembers.Item.InstanceIf(null, (inst, i, v) => ((IProperties)inst).BoolProperty, s => s.StoredAsDictionary(out tmpIndexerStore));
+
+            var indexerStore = tmpIndexerStore.AssertNotNull();
 
             Sut[1] = "one";
             Props.BoolProperty = true;

@@ -15,8 +15,7 @@ namespace Mocklis.Core.Tests.Mocks
 
         public MockMethodStep()
         {
-            Call = new FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call",
-                Strictness.Lenient);
+            Call = new FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call", Strictness.Lenient);
         }
 
         public FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult> Call { get; }

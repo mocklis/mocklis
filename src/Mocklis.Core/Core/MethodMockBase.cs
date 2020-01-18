@@ -24,7 +24,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextMethodStep{TParam, TResult}" />
     public abstract class MethodMockBase<TParam, TResult> : MemberMock, ICanHaveNextMethodStep<TParam, TResult>
     {
-        private IMethodStep<TParam, TResult> _nextStep;
+        private IMethodStep<TParam, TResult>? _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MethodMockBase{TParam, TResult}" /> class.
@@ -84,7 +84,7 @@ namespace Mocklis.Core
 
                 if (mockInfo.Strictness == Strictness.Lenient)
                 {
-                    return default;
+                    return default!;
                 }
 
                 throw new MockMissingException(MockType.Method, mockInfo);

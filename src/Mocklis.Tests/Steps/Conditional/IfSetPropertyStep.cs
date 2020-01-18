@@ -18,19 +18,25 @@ namespace Mocklis.Tests.Steps.Conditional
 
     public class IfSetPropertyStep_should
     {
-        private IReadOnlyList<string> _gets;
-        private IReadOnlyList<string> _sets;
+        private IReadOnlyList<string> Gets { get; }
+        private IReadOnlyList<string> Sets { get; }
         private IProperties Sut { get; }
 
         public IfSetPropertyStep_should()
         {
             var mockMembers = new MockMembers();
 
+            IReadOnlyList<string>? gets = null;
+            IReadOnlyList<string>? sets = null;
+
             mockMembers.StringProperty
                 .IfSet(i => i
-                    .RecordAfterGet(out _gets)
-                    .RecordBeforeSet(out _sets)
+                    .RecordAfterGet(out gets)
+                    .RecordBeforeSet(out sets)
                     .Join(i.ElseBranch));
+
+            Gets = gets!;
+            Sets = sets!;
 
             Sut = mockMembers;
         }
@@ -39,14 +45,14 @@ namespace Mocklis.Tests.Steps.Conditional
         public void not_forward_Get()
         {
             var _ = Sut.StringProperty;
-            Assert.Equal(0, _gets.Count);
+            Assert.Equal(0, Gets.Count);
         }
 
         [Fact]
         public void forward_Set()
         {
             Sut.StringProperty = "one";
-            Assert.Equal(1, _sets.Count);
+            Assert.Equal(1, Sets.Count);
         }
     }
 }

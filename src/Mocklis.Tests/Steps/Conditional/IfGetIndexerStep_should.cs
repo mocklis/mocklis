@@ -18,19 +18,25 @@ namespace Mocklis.Tests.Steps.Conditional
 
     public class IfGetIndexerStep_should
     {
-        private IReadOnlyList<int> _gets;
-        private IReadOnlyList<int> _sets;
+        private IReadOnlyList<int> Gets { get; }
+        private IReadOnlyList<int> Sets { get; }
         private IIndexers Sut { get; }
 
         public IfGetIndexerStep_should()
         {
             var mockMembers = new MockMembers();
 
+            IReadOnlyList<int>? gets = null;
+            IReadOnlyList<int>? sets = null;
+
             mockMembers.Item
                 .IfGet(i => i
-                    .RecordAfterGet(out _gets, (a, _) => a)
-                    .RecordBeforeSet(out _sets, (a, _) => a)
+                    .RecordAfterGet(out gets, (a, _) => a)
+                    .RecordBeforeSet(out sets, (a, _) => a)
                     .Join(i.ElseBranch));
+
+            Gets = gets!;
+            Sets = sets!;
 
             Sut = mockMembers;
         }
@@ -39,14 +45,14 @@ namespace Mocklis.Tests.Steps.Conditional
         public void forward_Get()
         {
             var _ = Sut[1];
-            Assert.Equal(1, _gets.Count);
+            Assert.Equal(1, Gets.Count);
         }
 
         [Fact]
         public void not_forward_Set()
         {
             Sut[1] = "one";
-            Assert.Equal(0, _sets.Count);
+            Assert.Equal(0, Sets.Count);
         }
     }
 }

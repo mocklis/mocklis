@@ -136,7 +136,7 @@ namespace Mocklis
             this ICanHaveNextPropertyStep<TValue> caller,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,
-            IEqualityComparer<TValue> comparer = null)
+            IEqualityComparer<TValue>? comparer = null)
         {
             return caller
                 .OnlySetIfChanged(comparer)
@@ -165,7 +165,7 @@ namespace Mocklis
             out StoredPropertyStep<TValue> storedPropertyStep,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
             TValue initialValue = default,
-            IEqualityComparer<TValue> comparer = null)
+            IEqualityComparer<TValue>? comparer = null)
         {
             return caller
                 .OnlySetIfChanged(comparer)

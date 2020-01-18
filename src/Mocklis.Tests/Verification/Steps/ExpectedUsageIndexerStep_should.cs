@@ -34,7 +34,7 @@ namespace Mocklis.Tests.Verification.Steps
         [Fact]
         public void RequireVerificationGroup()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.ExpectedUsage(null, "test"));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.Item.ExpectedUsage(null!, "test"));
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace Mocklis.Tests.Verification.Steps
         {
             MockMembers.Item.ExpectedUsage(Group, "Indexer", 1, 2);
             Indexers[0] = "Hello";
-            var x = Indexers[4];
+            var _ = Indexers[4];
 
             var ex = Assert.Throws<VerificationFailedException>(() => Group.Assert());
             ex.VerificationResult.AssertEquals(
@@ -119,7 +119,7 @@ namespace Mocklis.Tests.Verification.Steps
         {
             MockMembers.Item.ExpectedUsage(Group, "Indexer", 2, 1);
             Indexers[0] = "Hello";
-            var x = Indexers[4];
+            var _ = Indexers[4];
 
             var ex = Assert.Throws<VerificationFailedException>(() => Group.Assert());
             ex.VerificationResult.AssertEquals(

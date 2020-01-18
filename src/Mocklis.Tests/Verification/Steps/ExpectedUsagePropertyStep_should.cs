@@ -34,7 +34,7 @@ namespace Mocklis.Tests.Verification.Steps
         [Fact]
         public void RequireVerificationGroup()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.ExpectedUsage(null, "test"));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.StringProperty.ExpectedUsage(null!, "test"));
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Mocklis.Tests.Verification.Steps
         {
             MockMembers.StringProperty.ExpectedUsage(Group, "Property", 1, 2);
             Properties.StringProperty = "Hello";
-            var x = Properties.StringProperty;
+            var _ = Properties.StringProperty;
 
             var ex = Assert.Throws<VerificationFailedException>(() => Group.Assert());
             ex.VerificationResult.AssertEquals(
@@ -120,7 +120,7 @@ namespace Mocklis.Tests.Verification.Steps
         {
             MockMembers.StringProperty.ExpectedUsage(Group, "Property", 2, 1);
             Properties.StringProperty = "Hello";
-            var x = Properties.StringProperty;
+            var _ = Properties.StringProperty;
 
             var ex = Assert.Throws<VerificationFailedException>(() => Group.Assert());
             ex.VerificationResult.AssertEquals(

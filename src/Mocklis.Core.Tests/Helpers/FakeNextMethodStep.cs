@@ -12,8 +12,8 @@ namespace Mocklis.Core.Tests.Helpers
         private readonly TResult _result;
         private readonly object _lockObject = new object();
         public int Count { get; private set; }
-        public IMockInfo LastMockInfo { get; private set; }
-        public TParam LastParam { get; private set; }
+        public IMockInfo? LastMockInfo { get; private set; }
+        public TParam LastParam { get; private set; } = default!;
 
         public FakeNextMethodStep(ICanHaveNextMethodStep<TParam, TResult> mock, TResult result)
         {

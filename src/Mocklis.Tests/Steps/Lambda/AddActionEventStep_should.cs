@@ -26,13 +26,13 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.AddAction(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.AddAction(null!));
         }
 
         [Fact]
         public void invoke_action_on_add()
         {
-            EventHandler addedInstance = null;
+            EventHandler? addedInstance = null;
 
             MockMembers.MyEvent.AddAction(i => addedInstance = i);
 

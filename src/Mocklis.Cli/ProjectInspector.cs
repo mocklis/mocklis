@@ -17,6 +17,7 @@ namespace Mocklis.Cli
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
     using Mocklis.CodeGeneration;
+    using Mocklis.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -37,7 +38,7 @@ namespace Mocklis.Cli
             {
                 bool hasMocklisAttribute = node.AttributeLists.Any(
                     al => al.Attributes.Any(
-                        a => ModelExtensions.GetSymbolInfo(Model, a).Symbol.ContainingType == MocklisSymbols.MocklisClassAttribute));
+                        a => ModelExtensions.GetSymbolInfo(Model, a).Symbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute)));
 
                 if (!hasMocklisAttribute)
                 {
@@ -80,7 +81,7 @@ namespace Mocklis.Cli
             {
                 if (ShouldRewriteClass(node))
                 {
-                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols);
+                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols, Model.ClassIsInNullableContext(node));
                 }
 
                 return base.VisitClassDeclaration(node);
@@ -90,6 +91,11 @@ namespace Mocklis.Cli
         public static async Task<Project> GenerateMocklisClassContents(Project project, CancellationToken cancellationToken = default)
         {
             var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+            if (compilation == null)
+            {
+                return project;
+            }
+
             var symbols = new MocklisSymbols(compilation);
 
             // If we don't reference the right assembly, we could bail early.
@@ -103,7 +109,7 @@ namespace Mocklis.Cli
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var document = project.GetDocument(documentId);
-                if (document.SourceCodeKind != SourceCodeKind.Regular)
+                if (document == null || document.SourceCodeKind != SourceCodeKind.Regular)
                 {
                     continue;
                 }

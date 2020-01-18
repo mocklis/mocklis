@@ -12,12 +12,12 @@ namespace Mocklis.Core.Tests.Helpers
         private readonly TValue _value;
         private readonly object _lockObject = new object();
         public int GetCount { get; private set; }
-        public IMockInfo LastGetMockInfo { get; private set; }
-        public TKey LastGetKey { get; private set; }
+        public IMockInfo? LastGetMockInfo { get; private set; }
+        public TKey LastGetKey { get; private set; } = default!;
         public int SetCount { get; private set; }
-        public IMockInfo LastSetMockInfo { get; private set; }
-        public TKey LastSetKey { get; private set; }
-        public TValue LastSetValue { get; private set; }
+        public IMockInfo? LastSetMockInfo { get; private set; }
+        public TKey LastSetKey { get; private set; } = default!;
+        public TValue LastSetValue { get; private set; } = default!;
 
         public FakeNextIndexerStep(ICanHaveNextIndexerStep<TKey, TValue> mock, TValue value)
         {

@@ -14,6 +14,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -23,7 +24,7 @@ namespace Mocklis.CodeGeneration
     {
         private TypeSyntax ReturnTypeWithoutReadonly { get; }
         private TypeSyntax ReturnType { get; }
-        private string ArglistParameterName { get; }
+        private string? ArglistParameterName { get; }
 
         public VirtualMethodBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IMethodSymbol symbol,
@@ -32,13 +33,13 @@ namespace Mocklis.CodeGeneration
         {
             if (symbol.ReturnsByRef)
             {
-                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType));
+                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious()));
                 ReturnType = tmp;
                 ReturnTypeWithoutReadonly = tmp;
             }
             else if (symbol.ReturnsByRefReadonly)
             {
-                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType));
+                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious()));
                 ReturnType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                 ReturnTypeWithoutReadonly = tmp;
             }
@@ -49,14 +50,14 @@ namespace Mocklis.CodeGeneration
             }
             else
             {
-                ReturnType = typesForSymbols.ParseTypeName(symbol.ReturnType);
+                ReturnType = typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious());
                 ReturnTypeWithoutReadonly = ReturnType;
             }
 
             ArglistParameterName = FindArglistParameterName(symbol);
         }
 
-        private static string FindArglistParameterName(IMethodSymbol symbol)
+        private static string? FindArglistParameterName(IMethodSymbol symbol)
         {
             if (symbol.IsVararg)
             {
@@ -133,7 +134,7 @@ namespace Mocklis.CodeGeneration
                 ? (ExpressionSyntax)F.GenericName(MemberMockName)
                     .WithTypeArgumentList(F.TypeArgumentList(
                         F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
-                            TypesForSymbols.ParseTypeName(typeParameter)))))
+                            TypesForSymbols.ParseTypeName(typeParameter, false)))))
                 : F.IdentifierName(MemberMockName);
 
             invocation = F.InvocationExpression(invocation, F.ArgumentList(arguments));

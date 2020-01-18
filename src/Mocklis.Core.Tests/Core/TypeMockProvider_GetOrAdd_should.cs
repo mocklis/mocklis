@@ -68,14 +68,14 @@ namespace Mocklis.Core.Tests.Core
         [Fact]
         public void require_type_array()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(null, a => new FakeMemberMock(string.Empty)));
+            var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(null!, a => new FakeMemberMock(string.Empty)));
             Assert.Equal("types", ex.ParamName);
         }
 
         [Fact]
         public void require_factory()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(new[] { typeof(int) }, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(new[] { typeof(int) }, null!));
             Assert.Equal("factory", ex.ParamName);
         }
     }

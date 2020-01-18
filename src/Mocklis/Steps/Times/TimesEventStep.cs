@@ -60,7 +60,7 @@ namespace Mocklis.Steps.Times
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             if (ShouldUseBranch())
             {
@@ -79,7 +79,7 @@ namespace Mocklis.Steps.Times
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public override void Remove(IMockInfo mockInfo, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler? value)
         {
             if (ShouldUseBranch())
             {

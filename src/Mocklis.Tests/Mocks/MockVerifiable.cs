@@ -22,12 +22,11 @@ namespace Mocklis.Tests.Mocks
 
         public MockVerifiable()
         {
-            Verify = new FuncMethodMock<System.IFormatProvider, System.Collections.Generic.IEnumerable<VerificationResult>>(this, "MockVerifiable",
-                "IVerifiable", "Verify", "Verify", Strictness.Lenient);
+            Verify = new FuncMethodMock<System.IFormatProvider?, System.Collections.Generic.IEnumerable<VerificationResult>>(this, "MockVerifiable", "IVerifiable", "Verify", "Verify", Strictness.Lenient);
         }
 
-        public FuncMethodMock<System.IFormatProvider, System.Collections.Generic.IEnumerable<VerificationResult>> Verify { get; }
+        public FuncMethodMock<System.IFormatProvider?, System.Collections.Generic.IEnumerable<VerificationResult>> Verify { get; }
 
-        System.Collections.Generic.IEnumerable<VerificationResult> IVerifiable.Verify(System.IFormatProvider provider) => Verify.Call(provider);
+        System.Collections.Generic.IEnumerable<VerificationResult> IVerifiable.Verify(System.IFormatProvider? provider) => Verify.Call(provider);
     }
 }

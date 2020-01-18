@@ -37,7 +37,7 @@ namespace Mocklis.Tests.Verification.Checks
         [Fact]
         public void RequireStoredProperty()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => new CurrentValuesIndexerCheck<string, string>(null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new CurrentValuesIndexerCheck<string, string>(null!, null, null));
             Assert.Equal("indexer", ex.ParamName);
         }
 

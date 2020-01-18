@@ -25,12 +25,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D6A5B215-51E9-4A8A-858E-CBA238EDCFCD}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		mocklis128.png = mocklis128.png
 		NuGet.msbuild = NuGet.msbuild
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.Experimental.Tests", "Mocklis.Experimental.Tests\Mocklis.Experimental.Tests.csproj", "{79BE1D2B-3924-44AE-B1DA-1A970DCC0F95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Experimental.Tests", "Mocklis.Experimental.Tests\Mocklis.Experimental.Tests.csproj", "{79BE1D2B-3924-44AE-B1DA-1A970DCC0F95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.Serilog2.Tests", "Mocklis.Serilog2.Tests\Mocklis.Serilog2.Tests.csproj", "{2585F3E6-FBB6-4D54-B16F-C794029FB217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Serilog2.Tests", "Mocklis.Serilog2.Tests\Mocklis.Serilog2.Tests.csproj", "{2585F3E6-FBB6-4D54-B16F-C794029FB217}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

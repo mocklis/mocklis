@@ -130,9 +130,14 @@ namespace Mocklis.Steps.Conditional
         /// </param>
         protected IfIndexerStepBase(Action<IfBranchCaller> branch)
         {
+            if (branch == null)
+            {
+                throw new ArgumentNullException(nameof(branch));
+            }
+
             var ifBranch = new IfBranchCaller(this);
             IfBranch = ifBranch;
-            branch?.Invoke(ifBranch);
+            branch.Invoke(ifBranch);
         }
     }
 }

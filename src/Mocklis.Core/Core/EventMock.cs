@@ -23,7 +23,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextEventStep{THandler}" />
     public sealed class EventMock<THandler> : MemberMock, ICanHaveNextEventStep<THandler> where THandler : Delegate
     {
-        private IEventStep<THandler> _nextStep;
+        private IEventStep<THandler>? _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EventMock{THandler}" /> class.
@@ -73,7 +73,7 @@ namespace Mocklis.Core
         ///     the mock directly.
         /// </remarks>
         /// <param name="value">The event handler.</param>
-        public void Add(THandler value)
+        public void Add(THandler? value)
         {
             if (_nextStep == null)
             {
@@ -98,7 +98,7 @@ namespace Mocklis.Core
         ///     the mock directly.
         /// </remarks>
         /// <param name="value">The event handler.</param>
-        public void Remove(THandler value)
+        public void Remove(THandler? value)
         {
             if (_nextStep == null)
             {

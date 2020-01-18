@@ -24,6 +24,12 @@ namespace Mocklis.Tests.Steps.Conditional
         public IMethods Sut => MockMembers;
 
         [Fact]
+        public void require_branch()
+        {
+            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleFunc.If(_ => true, null!));
+        }
+
+        [Fact]
         public void check_condition()
         {
             MockMembers.FuncWithParameter
@@ -53,7 +59,7 @@ namespace Mocklis.Tests.Steps.Conditional
             Assert.Throws<ArgumentNullException>(() =>
                 MockMembers.FuncWithParameter.If(
                     v => true,
-                    s => ((ICanHaveNextMethodStep<int, int>)s).SetNextStep((IMethodStep<int, int>)null)
+                    s => ((ICanHaveNextMethodStep<int, int>)s).SetNextStep((IMethodStep<int, int>)null!)
                 )
             );
         }
@@ -128,7 +134,7 @@ namespace Mocklis.Tests.Steps.Conditional
             Assert.Throws<ArgumentNullException>(() =>
                 MockMembers.SimpleFunc.If(
                     () => true,
-                    s => ((ICanHaveNextMethodStep<ValueTuple, int>)s).SetNextStep((IMethodStep<ValueTuple, int>)null)
+                    s => ((ICanHaveNextMethodStep<ValueTuple, int>)s).SetNextStep((IMethodStep<ValueTuple, int>)null!)
                 )
             );
         }

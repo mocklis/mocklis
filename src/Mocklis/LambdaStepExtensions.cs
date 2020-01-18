@@ -30,7 +30,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> AddAction<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Action<THandler> action) where THandler : Delegate
+            Action<THandler?> action) where THandler : Delegate
         {
             return caller.SetNextStep(new AddActionEventStep<THandler>(action));
         }
@@ -45,7 +45,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> RemoveAction<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Action<THandler> action) where THandler : Delegate
+            Action<THandler?> action) where THandler : Delegate
         {
             return caller.SetNextStep(new RemoveActionEventStep<THandler>(action));
         }
@@ -60,7 +60,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> InstanceAddAction<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Action<object, THandler> action) where THandler : Delegate
+            Action<object, THandler?> action) where THandler : Delegate
         {
             return caller.SetNextStep(new InstanceAddActionEventStep<THandler>(action));
         }
@@ -75,7 +75,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> InstanceRemoveAction<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            Action<object, THandler> action) where THandler : Delegate
+            Action<object, THandler?> action) where THandler : Delegate
         {
             return caller.SetNextStep(new InstanceRemoveActionEventStep<THandler>(action));
         }

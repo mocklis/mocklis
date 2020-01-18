@@ -47,7 +47,7 @@ namespace Mocklis.MockGenerator.Tests.Helpers
             NetStandardReference = MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location);
         }
 
-        private static Document CreateDocument(string source)
+        private static Document CreateDocument(string source, LanguageVersion languageVersion)
         {
             string projectName = "TestProject";
             var projectId = ProjectId.CreateNewId(debugName: projectName);
@@ -57,7 +57,7 @@ namespace Mocklis.MockGenerator.Tests.Helpers
 
             var projectInfo = ProjectInfo.Create(projectId, VersionStamp.Default, projectName, projectName, LanguageNames.CSharp,
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                parseOptions: new CSharpParseOptions(LanguageVersion.CSharp7_3),
+                parseOptions: new CSharpParseOptions(languageVersion),
                 metadataReferences: new[] { CorlibReference, SystemCoreReference, MocklisCoreReference, RuntimeReference, NetStandardReference });
 
             var solution = new AdhocWorkspace()
@@ -65,7 +65,8 @@ namespace Mocklis.MockGenerator.Tests.Helpers
                 .AddProject(projectInfo)
                 .AddDocument(documentId, documentFileName, SourceText.From(source));
 
-            return solution.GetProject(projectId).GetDocument(documentId);
+            // We know that projects and documents exist since we've just added them.
+            return solution.GetProject(projectId)!.GetDocument(documentId)!;
         }
 
         #endregion
@@ -79,21 +80,22 @@ namespace Mocklis.MockGenerator.Tests.Helpers
             _mocklisCodeFixProvider = new MocklisCodeFixProvider();
         }
 
-        public async Task<MocklisClassUpdaterResult> UpdateMocklisClass(string source)
+        public async Task<MocklisClassUpdaterResult> UpdateMocklisClass(string source, LanguageVersion languageVersion)
         {
-            var document = CreateDocument(source);
+            var document = CreateDocument(source, languageVersion);
 
             var compilation = await document.Project.GetCompilationAsync();
             var compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(_mocklisAnalyzer));
             var diagnostics = (await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync()).Single();
 
-            CodeAction action = null;
+            CodeAction? action = null;
             var context = new CodeFixContext(document, diagnostics, (a, d) => action = a, CancellationToken.None);
             await _mocklisCodeFixProvider.RegisterCodeFixesAsync(context);
 
-            var operations = await action.GetOperationsAsync(CancellationToken.None);
+            // Action will have been created by the call to CodeFixContext
+            var operations = await action!.GetOperationsAsync(CancellationToken.None);
             var solution = operations.OfType<ApplyChangesOperation>().Single().ChangedSolution;
-            var updatedDocument = solution.GetDocument(document.Id);
+            var updatedDocument = solution.GetDocument(document.Id)!;
             var root = await updatedDocument.GetSyntaxRootAsync();
             var code = root.GetText().ToString();
 
@@ -101,7 +103,7 @@ namespace Mocklis.MockGenerator.Tests.Helpers
             var newCompilation = await project.GetCompilationAsync();
             using (var ms = new MemoryStream())
             {
-                EmitResult emitResult = newCompilation.Emit(ms);
+                EmitResult emitResult = newCompilation!.Emit(ms);
                 if (!emitResult.Success)
                 {
                     var codeLines = code.Split(Environment.NewLine);

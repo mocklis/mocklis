@@ -38,7 +38,7 @@ namespace Mocklis
         public static ICanHaveNextEventStep<THandler> InstanceRecordBeforeAdd<THandler, TRecord>(
             this ICanHaveNextEventStep<THandler> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<object, THandler, TRecord> selector) where THandler : Delegate
+            Func<object, THandler?, TRecord> selector) where THandler : Delegate
         {
             var newStep = new InstanceRecordBeforeAddEventStep<THandler, TRecord>(selector);
             ledger = newStep;
@@ -60,7 +60,7 @@ namespace Mocklis
         public static ICanHaveNextEventStep<THandler> InstanceRecordBeforeRemove<THandler, TRecord>(
             this ICanHaveNextEventStep<THandler> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<object, THandler, TRecord> selector) where THandler : Delegate
+            Func<object, THandler?, TRecord> selector) where THandler : Delegate
         {
             var newStep = new InstanceRecordBeforeRemoveEventStep<THandler, TRecord>(selector);
             ledger = newStep;
@@ -76,9 +76,9 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> RecordBeforeAdd<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            out IReadOnlyList<THandler> ledger) where THandler : Delegate
+            out IReadOnlyList<THandler?> ledger) where THandler : Delegate
         {
-            var newStep = new RecordBeforeAddEventStep<THandler, THandler>(h => h);
+            var newStep = new RecordBeforeAddEventStep<THandler, THandler?>(h => h);
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }
@@ -98,7 +98,7 @@ namespace Mocklis
         public static ICanHaveNextEventStep<THandler> RecordBeforeAdd<THandler, TRecord>(
             this ICanHaveNextEventStep<THandler> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<THandler, TRecord> selector) where THandler : Delegate
+            Func<THandler?, TRecord> selector) where THandler : Delegate
         {
             var newStep = new RecordBeforeAddEventStep<THandler, TRecord>(selector);
             ledger = newStep;
@@ -114,9 +114,9 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> RecordBeforeRemove<THandler>(
             this ICanHaveNextEventStep<THandler> caller,
-            out IReadOnlyList<THandler> ledger) where THandler : Delegate
+            out IReadOnlyList<THandler?> ledger) where THandler : Delegate
         {
-            var newStep = new RecordBeforeRemoveEventStep<THandler, THandler>(h => h);
+            var newStep = new RecordBeforeRemoveEventStep<THandler, THandler?>(h => h);
             ledger = newStep;
             return caller.SetNextStep(newStep);
         }
@@ -135,7 +135,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextEventStep{THandler}" /> that can be used to add further steps.</returns>
         public static ICanHaveNextEventStep<THandler> RecordBeforeRemove<THandler, TRecord>(
             this ICanHaveNextEventStep<THandler> caller,
-            out IReadOnlyList<TRecord> ledger, Func<THandler, TRecord> selector) where THandler : Delegate
+            out IReadOnlyList<TRecord> ledger, Func<THandler?, TRecord> selector) where THandler : Delegate
         {
             var newStep = new RecordBeforeRemoveEventStep<THandler, TRecord>(selector);
             ledger = newStep;
@@ -167,8 +167,8 @@ namespace Mocklis
         public static ICanHaveNextIndexerStep<TKey, TValue> InstanceRecordAfterGet<TKey, TValue, TRecord>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<object, TKey, TValue, TRecord> successSelector,
-            Func<object, TKey, Exception, TRecord> failureSelector = null)
+            Func<object, TKey, TValue, TRecord>? successSelector,
+            Func<object, TKey, Exception, TRecord>? failureSelector = null)
         {
             var newStep = new InstanceRecordAfterGetIndexerStep<TKey, TValue, TRecord>(successSelector, failureSelector);
             ledger = newStep;
@@ -236,8 +236,8 @@ namespace Mocklis
         public static ICanHaveNextIndexerStep<TKey, TValue> RecordAfterGet<TKey, TValue, TRecord>(
             this ICanHaveNextIndexerStep<TKey, TValue> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<TKey, TValue, TRecord> successSelector,
-            Func<TKey, Exception, TRecord> failureSelector = null)
+            Func<TKey, TValue, TRecord>? successSelector,
+            Func<TKey, Exception, TRecord>? failureSelector = null)
         {
             var newStep = new RecordAfterGetIndexerStep<TKey, TValue, TRecord>(successSelector, failureSelector);
             ledger = newStep;
@@ -308,8 +308,8 @@ namespace Mocklis
         public static ICanHaveNextMethodStep<TParam, TResult> InstanceRecordAfterCall<TParam, TResult, TRecord>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<object, TParam, TResult, TRecord> successSelector,
-            Func<object, TParam, Exception, TRecord> failureSelector = null)
+            Func<object, TParam, TResult, TRecord>? successSelector,
+            Func<object, TParam, Exception, TRecord>? failureSelector = null)
         {
             var newStep = new InstanceRecordAfterCallMethodStep<TParam, TResult, TRecord>(successSelector, failureSelector);
             ledger = newStep;
@@ -376,8 +376,8 @@ namespace Mocklis
         public static ICanHaveNextMethodStep<TParam, TResult> RecordAfterCall<TParam, TResult, TRecord>(
             this ICanHaveNextMethodStep<TParam, TResult> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<TParam, TResult, TRecord> successSelector,
-            Func<TParam, Exception, TRecord> failureSelector = null)
+            Func<TParam, TResult, TRecord>? successSelector,
+            Func<TParam, Exception, TRecord>? failureSelector = null)
         {
             var newStep = new RecordAfterCallMethodStep<TParam, TResult, TRecord>(successSelector, failureSelector);
             ledger = newStep;
@@ -448,8 +448,8 @@ namespace Mocklis
         public static ICanHaveNextPropertyStep<TValue> InstanceRecordAfterGet<TValue, TRecord>(
             this ICanHaveNextPropertyStep<TValue> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<object, TValue, TRecord> successSelector,
-            Func<object, Exception, TRecord> failureSelector = null)
+            Func<object, TValue, TRecord>? successSelector,
+            Func<object, Exception, TRecord>? failureSelector = null)
         {
             var newStep = new InstanceRecordAfterGetPropertyStep<TValue, TRecord>(successSelector, failureSelector);
             ledger = newStep;
@@ -514,8 +514,8 @@ namespace Mocklis
         public static ICanHaveNextPropertyStep<TValue> RecordAfterGet<TValue, TRecord>(
             this ICanHaveNextPropertyStep<TValue> caller,
             out IReadOnlyList<TRecord> ledger,
-            Func<TValue, TRecord> successSelector,
-            Func<Exception, TRecord> failureSelector = null)
+            Func<TValue, TRecord>? successSelector,
+            Func<Exception, TRecord>? failureSelector = null)
         {
             var newStep = new RecordAfterGetPropertyStep<TValue, TRecord>(successSelector, failureSelector);
             ledger = newStep;

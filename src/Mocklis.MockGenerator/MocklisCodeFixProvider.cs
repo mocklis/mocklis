@@ -18,8 +18,10 @@ namespace Mocklis.MockGenerator
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Symbols;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration;
+    using Mocklis.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -33,7 +35,7 @@ namespace Mocklis.MockGenerator
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MocklisAnalyzer.DiagnosticId);
 
-        public sealed override FixAllProvider GetFixAllProvider() => null;
+        public sealed override FixAllProvider? GetFixAllProvider() => null;
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
@@ -65,12 +67,14 @@ namespace Mocklis.MockGenerator
             MocklisSymbols mocklisSymbols = new MocklisSymbols(semanticModel.Compilation);
 
             bool isMocklisClass = classDecl.AttributeLists.SelectMany(al => al.Attributes)
-                .Any(a => semanticModel.GetSymbolInfo(a).Symbol.ContainingType == mocklisSymbols.MocklisClassAttribute);
+                .Any(a => semanticModel.GetSymbolInfo(a).Symbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute));
 
             if (!isMocklisClass)
             {
                 return document.Project.Solution;
             }
+
+            var classIsInNullableContext = semanticModel.ClassIsInNullableContext(classDecl);
 
             var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
@@ -90,7 +94,7 @@ namespace Mocklis.MockGenerator
                 return document.Project.Solution;
             }
 
-            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols);
+            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols, classIsInNullableContext);
 
             var newRoot = emptyRoot.ReplaceNode(emptyClassDecl, newClassDecl);
             return emptyDoc.WithSyntaxRoot(newRoot).Project.Solution;

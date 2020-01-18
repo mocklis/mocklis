@@ -13,6 +13,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Mocklis.CodeGeneration.Compatibility;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -26,8 +27,8 @@ namespace Mocklis.CodeGeneration
             IEventSymbol symbol, string memberMockName, bool strict, bool veryStrict) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
             memberMockName, strict, veryStrict)
         {
-            EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type);
-            MockPropertyType = typesForSymbols.EventMock(EventHandlerTypeSyntax);
+            EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
+            MockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(symbol.Type, false));
         }
 
         public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)

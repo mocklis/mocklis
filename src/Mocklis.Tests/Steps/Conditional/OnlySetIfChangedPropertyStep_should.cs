@@ -24,7 +24,7 @@ namespace Mocklis.Tests.Steps.Conditional
         [Fact]
         public void only_forward_values_if_changed()
         {
-            MockMembers.StringProperty.OnlySetIfChanged().RecordBeforeSet(out var ledger).Stored();
+            MockMembers.StringProperty.OnlySetIfChanged().RecordBeforeSet(out var ledger).Stored("");
 
             Sut.StringProperty = "Alpha";
             Sut.StringProperty = "Beta";
@@ -49,6 +49,13 @@ namespace Mocklis.Tests.Steps.Conditional
             Sut.IntProperty = 2;
 
             Assert.Equal(new[] { 6, 20, 2 }, ledger);
+        }
+
+        [Fact]
+        public void not_throw_if_next_step_missing()
+        {
+            MockMembers.IntProperty.OnlySetIfChanged();
+            Sut.IntProperty = 7;
         }
     }
 }

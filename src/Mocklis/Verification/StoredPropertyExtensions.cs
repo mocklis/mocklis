@@ -31,7 +31,7 @@ namespace Mocklis.Verification
         /// <param name="comparer">Optional parameter with a comparer used to verify that the values are equal.</param>
         /// <returns>The <see cref="IStoredProperty{TValue}" /> instance that can be used to add further checks.</returns>
         public static IStoredProperty<TValue> CurrentValueCheck<TValue>(this IStoredProperty<TValue> property, VerificationGroup collector,
-            string name, TValue expectedValue, IEqualityComparer<TValue> comparer = null)
+            string? name, TValue expectedValue, IEqualityComparer<TValue>? comparer = null)
         {
             collector.Add(new CurrentValuePropertyCheck<TValue>(property, name, expectedValue, comparer));
             return property;

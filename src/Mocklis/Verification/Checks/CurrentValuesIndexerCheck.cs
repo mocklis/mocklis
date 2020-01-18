@@ -27,7 +27,7 @@ namespace Mocklis.Verification.Checks
     public class CurrentValuesIndexerCheck<TKey, TValue> : IVerifiable
     {
         private readonly IStoredIndexer<TKey, TValue> _indexer;
-        private readonly string _name;
+        private readonly string? _name;
         private readonly IEnumerable<KeyValuePair<TKey, TValue>> _expectations;
         private readonly IEqualityComparer<TValue> _comparer;
 
@@ -41,8 +41,8 @@ namespace Mocklis.Verification.Checks
         ///     in the list and compare it to the value in the list.
         /// </param>
         /// <param name="comparer">Optional parameter with a comparer used to verify that the values are equal.</param>
-        public CurrentValuesIndexerCheck(IStoredIndexer<TKey, TValue> indexer, string name, IEnumerable<KeyValuePair<TKey, TValue>> expectations,
-            IEqualityComparer<TValue> comparer = null)
+        public CurrentValuesIndexerCheck(IStoredIndexer<TKey, TValue> indexer, string? name, IEnumerable<KeyValuePair<TKey, TValue>>? expectations,
+            IEqualityComparer<TValue>? comparer = null)
         {
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
             _name = name;
@@ -61,9 +61,9 @@ namespace Mocklis.Verification.Checks
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
+        public IEnumerable<VerificationResult> Verify(IFormatProvider? provider = null)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
+            provider ??= CultureInfo.CurrentCulture;
 
             VerificationResult SubResult(KeyValuePair<TKey, TValue> expectation)
             {

@@ -24,8 +24,8 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Action((Action)null));
-            Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.Action(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.Action((Action)null!));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.Action(null!));
         }
 
         [Fact]

@@ -17,18 +17,18 @@ namespace Mocklis.Core.Tests.Helpers
     {
         private readonly object _lockObject = new object();
         public int AddCount { get; private set; }
-        public IMockInfo LastAddMockInfo { get; private set; }
-        public THandler LastAddValue { get; private set; }
+        public IMockInfo? LastAddMockInfo { get; private set; }
+        public THandler? LastAddValue { get; private set; }
         public int RemoveCount { get; private set; }
-        public IMockInfo LastRemoveMockInfo { get; private set; }
-        public THandler LastRemoveValue { get; private set; }
+        public IMockInfo? LastRemoveMockInfo { get; private set; }
+        public THandler? LastRemoveValue { get; private set; }
 
         public FakeNextEventStep(ICanHaveNextEventStep<THandler> mock)
         {
             mock.SetNextStep(this);
         }
 
-        public void Add(IMockInfo mockInfo, THandler value)
+        public void Add(IMockInfo mockInfo, THandler? value)
         {
             lock (_lockObject)
             {
@@ -38,7 +38,7 @@ namespace Mocklis.Core.Tests.Helpers
             }
         }
 
-        public void Remove(IMockInfo mockInfo, THandler value)
+        public void Remove(IMockInfo mockInfo, THandler? value)
         {
             lock (_lockObject)
             {

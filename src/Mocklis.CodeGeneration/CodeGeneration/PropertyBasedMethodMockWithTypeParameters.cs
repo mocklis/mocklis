@@ -101,7 +101,15 @@ namespace Mocklis.CodeGeneration
 
         protected override MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
         {
-            return base.ExplicitInterfaceMemberMethodDeclaration(returnType).WithTypeParameterList(TypeParameterList());
+            var m = base.ExplicitInterfaceMemberMethodDeclaration(returnType).WithTypeParameterList(TypeParameterList());
+
+            var constraints = TypesForSymbols.AsClassConstraintClausesForReferenceTypes(Symbol.TypeParameters);
+            if (constraints.Any())
+            {
+                m = m.AddConstraintClauses(constraints);
+            }
+
+            return m;
         }
 
         protected override ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()

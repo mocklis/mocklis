@@ -20,7 +20,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_mockInstance()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new EventMock<EventHandler>(null, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
+                new EventMock<EventHandler>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mockInstance", exception.ParamName);
         }
 
@@ -28,7 +28,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_mocklisClassName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new EventMock<EventHandler>(new object(), null, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
+                new EventMock<EventHandler>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mocklisClassName", exception.ParamName);
         }
 
@@ -36,7 +36,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_interfaceName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new EventMock<EventHandler>(new object(), "MocklisClassName", null, "MemberName", "MemberMockName", Strictness.Lenient));
+                new EventMock<EventHandler>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("interfaceName", exception.ParamName);
         }
 
@@ -44,7 +44,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_memberName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", null, "MemberMockName", Strictness.Lenient));
+                new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
             Assert.Equal("memberName", exception.ParamName);
         }
 
@@ -52,7 +52,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_memberMockName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null, Strictness.Lenient));
+                new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
             Assert.Equal("memberMockName", exception.ParamName);
         }
 

@@ -26,14 +26,13 @@ namespace Mocklis.Serilog2.Tests.Mocks
             MyEvent = new EventMock<EventHandler>(this, "MockMembers", "IMembers", "MyEvent", "MyEvent", Strictness.Lenient);
             Item = new IndexerMock<int, string>(this, "MockMembers", "IMembers", "this[]", "Item", Strictness.Lenient);
             DoStuff = new ActionMethodMock(this, "MockMembers", "IMembers", "DoStuff", "DoStuff", Strictness.Lenient);
-            Calculate = new FuncMethodMock<(int value1, int value2), int>(this, "MockMembers", "IMembers", "Calculate", "Calculate",
-                Strictness.Lenient);
+            Calculate = new FuncMethodMock<(int value1, int value2), int>(this, "MockMembers", "IMembers", "Calculate", "Calculate", Strictness.Lenient);
             StringProperty = new PropertyMock<string>(this, "MockMembers", "IMembers", "StringProperty", "StringProperty", Strictness.Lenient);
         }
 
         public EventMock<EventHandler> MyEvent { get; }
 
-        event EventHandler IMembers.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
+        event EventHandler? IMembers.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
 
         public IndexerMock<int, string> Item { get; }
 

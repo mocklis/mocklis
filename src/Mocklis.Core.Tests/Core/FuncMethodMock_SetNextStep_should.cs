@@ -32,7 +32,7 @@ namespace Mocklis.Core.Tests.Core
         public void require_step()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                ((ICanHaveNextMethodStep<int, string>)_funcMock).SetNextStep((IMethodStep<int, string>)null));
+                ((ICanHaveNextMethodStep<int, string>)_funcMock).SetNextStep((IMethodStep<int, string>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

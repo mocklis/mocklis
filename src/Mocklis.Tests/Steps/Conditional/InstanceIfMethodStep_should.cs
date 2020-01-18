@@ -68,7 +68,7 @@ namespace Mocklis.Tests.Steps.Conditional
         public void check_condition_in_no_return_value_case()
         {
             MockMembers.BoolProperty.Stored();
-            IReadOnlyList<int> ifBranchLedger = null;
+            IReadOnlyList<int>? ifBranchLedger = null;
 
             MockMembers.ActionWithParameter
                 .InstanceIf((inst, i) => ((IProperties)inst).BoolProperty, s => s.RecordBeforeCall(out ifBranchLedger))

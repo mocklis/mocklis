@@ -24,14 +24,14 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleFunc.InstanceFunc((Func<object, int>)null));
-            Assert.Throws<ArgumentNullException>(() => MockMembers.FuncWithParameter.InstanceFunc(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleFunc.InstanceFunc((Func<object, int>)null!));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.FuncWithParameter.InstanceFunc(null!));
         }
 
         [Fact]
         public void CallFuncWithNoParameters()
         {
-            object callInstance = null;
+            object? callInstance = null;
             MockMembers.SimpleFunc.InstanceFunc(obj =>
             {
                 callInstance = obj;
@@ -47,7 +47,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void CallFuncWithParameters()
         {
-            object callInstance = null;
+            object? callInstance = null;
             int callParameter = 0;
             MockMembers.FuncWithParameter.InstanceFunc((obj, i) =>
             {

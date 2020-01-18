@@ -24,14 +24,14 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void RequireNonNullAction()
         {
-            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.InstanceAction((Action<object>)null));
-            Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.InstanceAction(null));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.SimpleAction.InstanceAction((Action<object>)null!));
+            Assert.Throws<ArgumentNullException>(() => MockMembers.ActionWithParameter.InstanceAction(null!));
         }
 
         [Fact]
         public void CallActionWithNoParameters()
         {
-            object callInstance = null;
+            object? callInstance = null;
             MockMembers.SimpleAction.InstanceAction(obj => { callInstance = obj; });
 
             Sut.SimpleAction();
@@ -42,7 +42,7 @@ namespace Mocklis.Tests.Steps.Lambda
         [Fact]
         public void CallActionWithParameters()
         {
-            object callInstance = null;
+            object? callInstance = null;
             int callParameter = 0;
             MockMembers.ActionWithParameter.InstanceAction((obj, i) =>
             {

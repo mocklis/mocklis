@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Conditional
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public override void Add(IMockInfo mockInfo, THandler value)
+        public override void Add(IMockInfo mockInfo, THandler? value)
         {
             IfBranch.Add(mockInfo, value);
         }

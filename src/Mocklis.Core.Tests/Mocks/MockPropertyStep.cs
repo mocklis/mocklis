@@ -16,8 +16,7 @@ namespace Mocklis.Core.Tests.Mocks
         public MockPropertyStep()
         {
             Get = new FuncMethodMock<IMockInfo, TValue>(this, "MockPropertyStep", "IPropertyStep", "Get", "Get", Strictness.Lenient);
-            Set = new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockPropertyStep", "IPropertyStep", "Set", "Set",
-                Strictness.Lenient);
+            Set = new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockPropertyStep", "IPropertyStep", "Set", "Set", Strictness.Lenient);
         }
 
         public FuncMethodMock<IMockInfo, TValue> Get { get; }

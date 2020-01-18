@@ -27,7 +27,7 @@ namespace Mocklis.Tests.Core
         public void throw_when_null_passed_to_SetNextStep()
         {
             ICanHaveNextEventStep<EventHandler> step = EventStep;
-            var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IEventStep<EventHandler>)null));
+            var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IEventStep<EventHandler>)null!));
             Assert.Equal("step", exception.ParamName);
         }
 

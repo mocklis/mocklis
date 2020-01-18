@@ -35,7 +35,7 @@ namespace Mocklis.Tests.Steps.Record
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() =>
             {
-                _mockMembers.MyEvent.InstanceRecordBeforeAdd(out IReadOnlyList<int> _, null);
+                _mockMembers.MyEvent.InstanceRecordBeforeAdd(out IReadOnlyList<int> _, null!);
             });
 
             // Assert
@@ -47,7 +47,7 @@ namespace Mocklis.Tests.Steps.Record
         {
             // Arrange
             _mockMembers.MyEvent
-                .InstanceRecordBeforeAdd(out var ledger, GenericRecord<EventHandler>.One)
+                .InstanceRecordBeforeAdd(out var ledger, GenericRecord<EventHandler?>.One)
                 .Times(1, a => a.Dummy())
                 .Throw(_ => new Exception("Exception thrown!"));
 

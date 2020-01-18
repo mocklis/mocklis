@@ -15,12 +15,12 @@ namespace Mocklis.Tests.Helpers
 
     public struct GenericRecord<TData>
     {
-        public object Instance { get; }
+        public object? Instance { get; }
         public bool IsSuccess { get; }
         public TData Data { get; }
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
-        private GenericRecord(object instance, TData data)
+        private GenericRecord(object? instance, TData data)
         {
             Instance = instance;
             IsSuccess = true;
@@ -28,11 +28,11 @@ namespace Mocklis.Tests.Helpers
             Exception = null;
         }
 
-        private GenericRecord(object instance, Exception exception)
+        private GenericRecord(object? instance, Exception exception)
         {
             Instance = instance;
             IsSuccess = false;
-            Data = default;
+            Data = default!;
             Exception = exception;
         }
 
@@ -51,13 +51,13 @@ namespace Mocklis.Tests.Helpers
 
     public struct GenericRecord<TData1, TData2>
     {
-        public object Instance { get; }
+        public object? Instance { get; }
         public bool IsSuccess { get; }
         public TData1 Data1 { get; }
         public TData2 Data2 { get; }
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
-        private GenericRecord(object instance, TData1 data1, TData2 data2)
+        private GenericRecord(object? instance, TData1 data1, TData2 data2)
         {
             Instance = instance;
             IsSuccess = true;
@@ -66,20 +66,20 @@ namespace Mocklis.Tests.Helpers
             Exception = null;
         }
 
-        private GenericRecord(object instance, TData1 data1, Exception exception)
+        private GenericRecord(object? instance, TData1 data1, Exception exception)
         {
             Instance = instance;
             IsSuccess = false;
             Data1 = data1;
-            Data2 = default;
+            Data2 = default!;
             Exception = exception;
         }
 
         public static GenericRecord<TData1, TData2> One(TData1 data1)
-            => new GenericRecord<TData1, TData2>(null, data1, default(TData2));
+            => new GenericRecord<TData1, TData2>(null, data1, default(TData2)!);
 
         public static GenericRecord<TData1, TData2> One(object instance, TData1 data1)
-            => new GenericRecord<TData1, TData2>(instance, data1, default(TData2));
+            => new GenericRecord<TData1, TData2>(instance, data1, default(TData2)!);
 
         public static GenericRecord<TData1, TData2> Two(TData1 data1, TData2 data2)
             => new GenericRecord<TData1, TData2>(null, data1, data2);

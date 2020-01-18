@@ -26,7 +26,7 @@ namespace Mocklis.Steps.Return
     public class ReturnEachPropertyStep<TValue> : PropertyStepWithNext<TValue>
     {
         private readonly object _lockObject = new object();
-        private IEnumerator<TValue> _values;
+        private IEnumerator<TValue>? _values;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ReturnEachPropertyStep{TValue}" /> class.

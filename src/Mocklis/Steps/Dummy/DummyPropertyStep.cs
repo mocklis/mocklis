@@ -40,7 +40,7 @@ namespace Mocklis.Steps.Dummy
         /// <returns>The value being read.</returns>
         public TValue Get(IMockInfo mockInfo)
         {
-            return default;
+            return default!;
         }
 
         /// <summary>

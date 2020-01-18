@@ -43,7 +43,7 @@ namespace Mocklis.Steps.Dummy
         /// <returns>The value being read.</returns>
         public TValue Get(IMockInfo mockInfo, TKey key)
         {
-            return default;
+            return default!;
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace Mocklis.Tests.Verification.Checks
         [Fact]
         public void RequireStoredProperty()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => new CurrentValuePropertyCheck<string>(null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new CurrentValuePropertyCheck<string>(null!, null, ""));
             Assert.Equal("property", ex.ParamName);
         }
 

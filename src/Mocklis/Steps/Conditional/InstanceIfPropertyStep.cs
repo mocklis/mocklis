@@ -22,8 +22,8 @@ namespace Mocklis.Steps.Conditional
     /// <seealso cref="IfPropertyStepBase{TValue}" />
     public class InstanceIfPropertyStep<TValue> : IfPropertyStepBase<TValue>
     {
-        private readonly Func<object, bool> _getCondition;
-        private readonly Func<object, TValue, bool> _setCondition;
+        private readonly Func<object, bool>? _getCondition;
+        private readonly Func<object, TValue, bool>? _setCondition;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="InstanceIfPropertyStep{TValue}" /> class.
@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Conditional
         ///     An action to set up the alternative branch; it also provides a means of re-joining the normal
         ///     branch.
         /// </param>
-        public InstanceIfPropertyStep(Func<object, bool> getCondition, Func<object, TValue, bool> setCondition,
+        public InstanceIfPropertyStep(Func<object, bool>? getCondition, Func<object, TValue, bool>? setCondition,
             Action<IfBranchCaller> branch) : base(branch)
         {
             _getCondition = getCondition;

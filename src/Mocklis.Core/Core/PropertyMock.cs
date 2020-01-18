@@ -23,7 +23,7 @@ namespace Mocklis.Core
     /// <seealso cref="ICanHaveNextPropertyStep{TValue}" />
     public sealed class PropertyMock<TValue> : MemberMock, ICanHaveNextPropertyStep<TValue>
     {
-        private IPropertyStep<TValue> _nextStep;
+        private IPropertyStep<TValue>? _nextStep;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyMock{TValue}" /> class.
@@ -80,7 +80,8 @@ namespace Mocklis.Core
 
                     if (mockInfo.Strictness == Strictness.Lenient)
                     {
-                        return default;
+                        // Well yes - in lenient mode even non-nullable reference types will get a null value.
+                        return default!;
                     }
 
                     throw new MockMissingException(MockType.PropertyGet, mockInfo);

@@ -40,7 +40,7 @@ namespace Mocklis.Steps.Missing
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being added.</param>
         /// <param name="value">The event handler that is being added.</param>
-        public void Add(IMockInfo mockInfo, THandler value)
+        public void Add(IMockInfo mockInfo, THandler? value)
         {
             throw new MockMissingException(MockType.EventAdd, mockInfo);
         }
@@ -52,7 +52,7 @@ namespace Mocklis.Steps.Missing
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
         /// <exception cref="MockMissingException"></exception>
-        public void Remove(IMockInfo mockInfo, THandler value)
+        public void Remove(IMockInfo mockInfo, THandler? value)
         {
             throw new MockMissingException(MockType.EventRemove, mockInfo);
         }

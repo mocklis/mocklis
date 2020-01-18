@@ -22,13 +22,13 @@ namespace Mocklis.Steps.Lambda
     /// <seealso cref="EventStepWithNext{THandler}" />
     public class InstanceRemoveActionEventStep<THandler> : EventStepWithNext<THandler> where THandler : Delegate
     {
-        private readonly Action<object, THandler> _action;
+        private readonly Action<object, THandler?> _action;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RemoveActionEventStep{THandler}" /> class.
         /// </summary>
         /// <param name="action">An action to be invoked when an event handler is removed.</param>
-        public InstanceRemoveActionEventStep(Action<object, THandler> action)
+        public InstanceRemoveActionEventStep(Action<object, THandler?> action)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
         }
@@ -39,7 +39,7 @@ namespace Mocklis.Steps.Lambda
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the event handler is being removed.</param>
         /// <param name="value">The event handler that is being removed.</param>
-        public override void Remove(IMockInfo mockInfo, THandler value)
+        public override void Remove(IMockInfo mockInfo, THandler? value)
         {
             _action(mockInfo.MockInstance, value);
         }

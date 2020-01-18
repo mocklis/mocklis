@@ -36,7 +36,7 @@ namespace Mocklis.Verification
         /// <returns>The <see cref="IStoredIndexer{TKey,TValue}" /> instance that can be used to add further checks.</returns>
         public static IStoredIndexer<TKey, TValue> CurrentValuesCheck<TKey, TValue>(this IStoredIndexer<TKey, TValue> indexer,
             VerificationGroup collector,
-            string name, IEnumerable<KeyValuePair<TKey, TValue>> expectedValues, IEqualityComparer<TValue> comparer = null)
+            string? name, IEnumerable<KeyValuePair<TKey, TValue>>? expectedValues, IEqualityComparer<TValue>? comparer = null)
         {
             collector.Add(new CurrentValuesIndexerCheck<TKey, TValue>(indexer, name, expectedValues, comparer));
             return indexer;

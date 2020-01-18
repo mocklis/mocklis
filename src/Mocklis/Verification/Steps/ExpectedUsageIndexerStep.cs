@@ -28,7 +28,7 @@ namespace Mocklis.Verification.Steps
     /// <seealso cref="IVerifiable" />
     public sealed class ExpectedUsageIndexerStep<TKey, TValue> : IndexerStepWithNext<TKey, TValue>, IVerifiable
     {
-        private readonly string _name;
+        private readonly string? _name;
         private readonly int? _expectedNumberOfGets;
         private int _currentNumberOfGets;
         private readonly int? _expectedNumberOfSets;
@@ -40,7 +40,7 @@ namespace Mocklis.Verification.Steps
         /// <param name="name">The name of the verification.</param>
         /// <param name="expectedNumberOfGets">The expected number of reads from the indexer.</param>
         /// <param name="expectedNumberOfSets">The expected number of writes to the indexer.</param>
-        public ExpectedUsageIndexerStep(string name, int? expectedNumberOfGets,
+        public ExpectedUsageIndexerStep(string? name, int? expectedNumberOfGets,
             int? expectedNumberOfSets)
         {
             if (expectedNumberOfGets < 0)
@@ -98,7 +98,7 @@ namespace Mocklis.Verification.Steps
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        public IEnumerable<VerificationResult> Verify(IFormatProvider provider = null)
+        public IEnumerable<VerificationResult> Verify(IFormatProvider? provider = null)
         {
             string prefix = string.IsNullOrEmpty(_name) ? "Usage Count" : $"Usage Count '{_name}'";
 

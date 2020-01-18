@@ -45,7 +45,7 @@ namespace Mocklis.Tests.Steps.Miscellaneous
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
             {
-                var _ = new RaisePropertyChangedEventPropertyStep<EventHandler>(null);
+                var _ = new RaisePropertyChangedEventPropertyStep<EventHandler>(null!);
             });
 
             Assert.Equal("propertyChangedEvent", exception.ParamName);

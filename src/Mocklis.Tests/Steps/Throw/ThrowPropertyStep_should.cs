@@ -25,7 +25,7 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactory()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.IntProperty.Throw(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.IntProperty.Throw(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
@@ -46,7 +46,7 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactoryWithInstance()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.IntProperty.InstanceThrow(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.IntProperty.InstanceThrow(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 

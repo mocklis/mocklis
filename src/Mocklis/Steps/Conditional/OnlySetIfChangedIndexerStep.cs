@@ -33,7 +33,7 @@ namespace Mocklis.Steps.Conditional
         ///     An optional <see cref="IEqualityComparer{TValue}" /> that is used to determine whether the new
         ///     value is different from the current one.
         /// </param>
-        public OnlySetIfChangedIndexerStep(IEqualityComparer<TValue> comparer = null)
+        public OnlySetIfChangedIndexerStep(IEqualityComparer<TValue>? comparer = null)
         {
             Comparer = comparer ?? EqualityComparer<TValue>.Default;
         }
@@ -47,7 +47,7 @@ namespace Mocklis.Steps.Conditional
         /// <param name="value">The value being written.</param>
         public override void Set(IMockInfo mockInfo, TKey key, TValue value)
         {
-            if (!Comparer.Equals(NextStep.Get(mockInfo, key), value))
+            if (!Comparer.Equals(Get(mockInfo, key), value))
             {
                 base.Set(mockInfo, key, value);
             }

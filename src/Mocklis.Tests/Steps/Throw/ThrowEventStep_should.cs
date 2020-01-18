@@ -26,14 +26,14 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactory()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.Throw(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.Throw(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
         [Fact]
         public void ThrowOnAdd()
         {
-            MockMembers.MyEvent.Throw(handler => new SampleException<EventHandler>(handler));
+            MockMembers.MyEvent.Throw(handler => new SampleException<EventHandler?>(handler));
             var ex = Assert.Throws<SampleException<EventHandler>>(() => Sut.MyEvent += _eventHandler);
             Assert.Equal(_eventHandler, ex.Payload);
         }
@@ -41,7 +41,7 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void ThrowOnRemove()
         {
-            MockMembers.MyEvent.Throw(handler => new SampleException<EventHandler>(handler));
+            MockMembers.MyEvent.Throw(handler => new SampleException<EventHandler?>(handler));
             var ex = Assert.Throws<SampleException<EventHandler>>(() => Sut.MyEvent -= _eventHandler);
             Assert.Equal(_eventHandler, ex.Payload);
         }
@@ -49,14 +49,14 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void RequireExceptionFactoryWithInstance()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.InstanceThrow(null));
+            var ex = Assert.Throws<ArgumentNullException>(() => MockMembers.MyEvent.InstanceThrow(null!));
             Assert.Equal("exceptionFactory", ex.ParamName);
         }
 
         [Fact]
         public void ThrowOnAddWithInstance()
         {
-            MockMembers.MyEvent.InstanceThrow((i, handler) => new SampleException<EventHandler>(handler, i));
+            MockMembers.MyEvent.InstanceThrow((i, handler) => new SampleException<EventHandler?>(handler, i));
             var ex = Assert.Throws<SampleException<EventHandler>>(() => Sut.MyEvent += _eventHandler);
             Assert.Equal(_eventHandler, ex.Payload);
             Assert.Same(MockMembers, ex.Instance);
@@ -65,7 +65,7 @@ namespace Mocklis.Tests.Steps.Throw
         [Fact]
         public void ThrowOnRemoveWithInstance()
         {
-            MockMembers.MyEvent.InstanceThrow((i, handler) => new SampleException<EventHandler>(handler, i));
+            MockMembers.MyEvent.InstanceThrow((i, handler) => new SampleException<EventHandler?>(handler, i));
             var ex = Assert.Throws<SampleException<EventHandler>>(() => Sut.MyEvent -= _eventHandler);
             Assert.Equal(_eventHandler, ex.Payload);
             Assert.Same(MockMembers, ex.Instance);

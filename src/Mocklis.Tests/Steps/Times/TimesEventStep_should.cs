@@ -27,8 +27,8 @@ namespace Mocklis.Tests.Steps.Times
         [Fact]
         public void UseSameCounterForAddsAndRemoves()
         {
-            IReadOnlyList<EventHandler> collectedAdds = null;
-            IReadOnlyList<EventHandler> collectedRemoves = null;
+            IReadOnlyList<EventHandler?>? collectedAdds = null;
+            IReadOnlyList<EventHandler?>? collectedRemoves = null;
             MockMembers.MyEvent
                 .Times(4, step => step
                     .RecordBeforeAdd(out collectedAdds)
@@ -43,9 +43,9 @@ namespace Mocklis.Tests.Steps.Times
 
 
             Assert.Equal(new[] { _handler, _handler }, collectedAdds);
-            Assert.Equal(new[] { _handler, _handler }, collectedAdds.ToArray());
+            Assert.Equal(new[] { _handler, _handler }, collectedAdds?.ToArray());
             Assert.Equal(new[] { _handler, _handler }, collectedRemoves);
-            Assert.Equal(new[] { _handler, _handler }, collectedRemoves.ToArray());
+            Assert.Equal(new[] { _handler, _handler }, collectedRemoves?.ToArray());
         }
     }
 }

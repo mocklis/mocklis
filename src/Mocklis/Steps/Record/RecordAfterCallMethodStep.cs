@@ -24,8 +24,8 @@ namespace Mocklis.Steps.Record
     /// <seealso cref="RecordMethodStepBase{TParam, TResult, TRecord}" />
     public class RecordAfterCallMethodStep<TParam, TResult, TRecord> : RecordMethodStepBase<TParam, TResult, TRecord>
     {
-        private readonly Func<TParam, TResult, TRecord> _successSelector;
-        private readonly Func<TParam, Exception, TRecord> _failureSelector;
+        private readonly Func<TParam, TResult, TRecord>? _successSelector;
+        private readonly Func<TParam, Exception, TRecord>? _failureSelector;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RecordAfterCallMethodStep{TParam, TResult, TRecord}" /> class.
@@ -38,11 +38,11 @@ namespace Mocklis.Steps.Record
         ///     A Func that constructs an entry for an exception thrown by a call.
         ///     Takes the parameters sent and the exception as parameters.
         /// </param>
-        public RecordAfterCallMethodStep(Func<TParam, TResult, TRecord> successSelector, Func<TParam, Exception, TRecord> failureSelector)
+        public RecordAfterCallMethodStep(Func<TParam, TResult, TRecord>? successSelector, Func<TParam, Exception, TRecord>? failureSelector)
         {
             if (successSelector == null && failureSelector == null)
             {
-                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null.", nameof(successSelector));
+                throw new ArgumentException(@"The successSelector is mandatory if the FailureSelector is null or missing.", nameof(successSelector));
             }
 
             _successSelector = successSelector;

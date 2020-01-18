@@ -15,7 +15,7 @@ namespace Mocklis.Serilog2.Tests.Interfaces
 
     public interface IMembers
     {
-        event EventHandler MyEvent;
+        event EventHandler? MyEvent;
         string this[int index] { get; set; }
         void DoStuff();
         int Calculate(int value1, int value2);

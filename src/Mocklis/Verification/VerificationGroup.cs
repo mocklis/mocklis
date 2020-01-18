@@ -31,13 +31,13 @@ namespace Mocklis.Verification
         /// <summary>
         ///     Gets the name of the verification group.
         /// </summary>
-        public string Name { get; }
+        public string? Name { get; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="VerificationGroup" /> class.
         /// </summary>
         /// <param name="name">Optional parameter with the name of the verification group.</param>
-        public VerificationGroup(string name = null)
+        public VerificationGroup(string? name = null)
         {
             Name = name;
         }
@@ -49,9 +49,9 @@ namespace Mocklis.Verification
         ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
         /// </param>
         /// <returns>A single <see cref="VerificationResult" /> representing the success of the entire group.</returns>
-        private VerificationResult VerifyGroup(IFormatProvider provider)
+        private VerificationResult VerifyGroup(IFormatProvider? provider)
         {
-            provider = provider ?? CultureInfo.CurrentCulture;
+            provider ??= CultureInfo.CurrentCulture;
 
             string description = string.IsNullOrEmpty(Name) ? "Verification Group:" : $"Verification Group '{Name}':";
             return new VerificationResult(description, _verifiables.SelectMany(a => a.Verify(provider)));
@@ -67,7 +67,7 @@ namespace Mocklis.Verification
         ///     An <see cref="IEnumerable{VerificationResult}" /> with information about the verifications and whether they
         ///     were successful.
         /// </returns>
-        IEnumerable<VerificationResult> IVerifiable.Verify(IFormatProvider provider)
+        IEnumerable<VerificationResult> IVerifiable.Verify(IFormatProvider? provider)
         {
             // Return the single value as an IEnumerable. Note that we want to verify right away, which is why
             // 'yield return' is not used.
@@ -91,7 +91,7 @@ namespace Mocklis.Verification
         ///     An object that supplies culture-specific formatting information. Defaults to the current culture.
         /// </param>
         /// <param name="includeSuccessfulVerifications">Whether to include successful verifications in the exception if thrown.</param>
-        public void Assert(bool includeSuccessfulVerifications = false, IFormatProvider provider = null)
+        public void Assert(bool includeSuccessfulVerifications = false, IFormatProvider? provider = null)
         {
             VerificationResult result = VerifyGroup(provider);
 
