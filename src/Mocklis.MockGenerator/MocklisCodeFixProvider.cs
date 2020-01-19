@@ -18,7 +18,6 @@ namespace Mocklis.MockGenerator
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Symbols;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration;
     using Mocklis.CodeGeneration.Compatibility;
@@ -33,7 +32,7 @@ namespace Mocklis.MockGenerator
 
         private const string Title = "Update Mocklis Class";
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MocklisAnalyzer.DiagnosticId);
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MocklisAnalyzer.CreateDiagnosticId, MocklisAnalyzer.UpdateDiagnosticId);
 
         public sealed override FixAllProvider? GetFixAllProvider() => null;
 

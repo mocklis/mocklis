@@ -21,18 +21,30 @@ namespace Mocklis.MockGenerator
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MocklisAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "MocklisAnalyzer";
+        public const string CreateDiagnosticId = "MocklisAnalyzerCreate";
 
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
-            DiagnosticId,
+        public const string UpdateDiagnosticId = "MocklisAnalyzerUpdate";
+
+        private static readonly DiagnosticDescriptor CreateRule = new DiagnosticDescriptor(
+            CreateDiagnosticId,
+            title: "Generate mocklis code",
+            messageFormat: "Mocklis code can be generated",
+            category: "Code Generation",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: "Mocklis code can be generated");
+
+
+        private static readonly DiagnosticDescriptor UpdateRule = new DiagnosticDescriptor(
+            UpdateDiagnosticId,
             title: "Regenerate mocklis code",
             messageFormat: "Mocklis code can be regenerated",
-            category: "Code Updating",
+            category: "Code Generation",
             DiagnosticSeverity.Info,
             isEnabledByDefault: true,
             description: "Mocklis code can be regenerated");
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(CreateRule, UpdateRule);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -43,21 +55,25 @@ namespace Mocklis.MockGenerator
 
         private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node is ClassDeclarationSyntax classDecl && MightBeMocklisClass(classDecl))
+            if (context.Node is ClassDeclarationSyntax classDecl && MightBeMocklisClass(classDecl, out var mocklisAttribute))
             {
-                var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation());
+                var regenerate = classDecl.Members.Any()
+                    || classDecl.OpenBraceToken.TrailingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()))
+                    || classDecl.CloseBraceToken.LeadingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()));
+
+                var diagnostic = Diagnostic.Create(regenerate ? UpdateRule : CreateRule, mocklisAttribute.GetLocation());
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl)
+        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl, out AttributeSyntax mocklisAttribute)
         {
-            var hasMocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).Any(a =>
+            mocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).FirstOrDefault(a =>
                 a.Name.DescendantTokens().Any(t => t.Text == "MocklisClass" || t.Text == "MocklisClassAttribute"));
 
             var isPartial = classDecl.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
 
-            return hasMocklisAttribute && !isPartial;
+            return mocklisAttribute != null && !isPartial;
         }
     }
 }
