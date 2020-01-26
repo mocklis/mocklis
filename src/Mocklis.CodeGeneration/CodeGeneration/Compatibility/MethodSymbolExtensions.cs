@@ -20,6 +20,11 @@ namespace Mocklis.CodeGeneration.Compatibility
 
         public static bool ReturnTypeIsNullableOrOblivious(this IMethodSymbol methodSymbol)
         {
+            if (ReturnNullableAnnotationPropertyInfo == null)
+            {
+                return true;
+            }
+
             var result = (byte)ReturnNullableAnnotationPropertyInfo.GetValue(methodSymbol);
             return result != 1;
         }

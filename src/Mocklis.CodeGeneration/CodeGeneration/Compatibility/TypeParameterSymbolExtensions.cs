@@ -20,6 +20,11 @@ namespace Mocklis.CodeGeneration.Compatibility
 
         public static bool HasNotNullConstraint(this ITypeParameterSymbol typeParameterSymbol)
         {
+            if (HasNotNullConstraintPropertyInfo == null)
+            {
+                return false;
+            }
+
             return (bool)HasNotNullConstraintPropertyInfo.GetValue(typeParameterSymbol);
         }
     }

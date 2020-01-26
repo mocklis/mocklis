@@ -21,6 +21,11 @@ namespace Mocklis.CodeGeneration.Compatibility
 
         public static bool ClassIsInNullableContext(this SemanticModel semanticModel, ClassDeclarationSyntax classDecl)
         {
+            if (GetNullableContextMethodInfo == null)
+            {
+                return false;
+            }
+
             var result = (int)GetNullableContextMethodInfo.Invoke(semanticModel, new object[] { classDecl.Span.Start });
             return (result & 2) != 0;
         }

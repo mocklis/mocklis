@@ -20,6 +20,11 @@ namespace Mocklis.CodeGeneration.Compatibility
 
         public static bool NullableOrOblivious(this IParameterSymbol parameterSymbol)
         {
+            if (NullableAnnotationPropertyInfo == null)
+            {
+                return true;
+            }
+
             var result = (byte)NullableAnnotationPropertyInfo.GetValue(parameterSymbol);
             return result != 1;
         }

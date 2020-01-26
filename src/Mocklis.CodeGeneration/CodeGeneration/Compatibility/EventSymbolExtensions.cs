@@ -20,6 +20,11 @@ namespace Mocklis.CodeGeneration.Compatibility
 
         public static bool NullableOrOblivious(this IEventSymbol eventSymbol)
         {
+            if (NullableAnnotationPropertyInfo == null)
+            {
+                return true;
+            }
+
             var result = (byte)NullableAnnotationPropertyInfo.GetValue(eventSymbol);
             return result != 1;
         }
