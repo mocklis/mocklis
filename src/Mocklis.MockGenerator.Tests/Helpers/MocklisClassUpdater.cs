@@ -44,7 +44,7 @@ namespace Mocklis.MockGenerator.Tests.Helpers
             SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
             MocklisCoreReference = MetadataReference.CreateFromFile(typeof(MocklisClassAttribute).Assembly.Location);
             RuntimeReference = MetadataReference.CreateFromFile(Assembly.Load("System.Runtime, Version=0.0.0.0").Location);
-            NetStandardReference = MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location);
+            NetStandardReference = MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.1.0.0").Location);
         }
 
         private static Document CreateDocument(string source, LanguageVersion languageVersion)

@@ -140,6 +140,11 @@ namespace Mocklis.CodeGeneration
                 {
                     foreach (var memberSymbol in interfaceSymbol.GetMembers())
                     {
+                        if (!memberSymbol.IsAbstract)
+                        {
+                            continue;
+                        }
+
                         if (memberSymbol is IMethodSymbol && !memberSymbol.CanBeReferencedByName)
                         {
                             continue;

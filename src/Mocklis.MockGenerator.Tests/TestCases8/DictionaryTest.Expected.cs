@@ -19,17 +19,17 @@ namespace Test
             Remove = new FuncMethodMock<TKey, bool>(this, "TestClass", "IDictionary", "Remove", "Remove", Strictness.Lenient);
             TryGetValue = new FuncMethodMock<TKey, (bool returnValue, TValue value)>(this, "TestClass", "IDictionary", "TryGetValue", "TryGetValue", Strictness.Lenient);
             Item = new IndexerMock<TKey, TValue>(this, "TestClass", "IDictionary", "this[]", "Item", Strictness.Lenient);
-            Keys = new PropertyMock<ICollection<TKey>?>(this, "TestClass", "IDictionary", "Keys", "Keys", Strictness.Lenient);
-            Values = new PropertyMock<ICollection<TValue>?>(this, "TestClass", "IDictionary", "Values", "Values", Strictness.Lenient);
+            Keys = new PropertyMock<ICollection<TKey>>(this, "TestClass", "IDictionary", "Keys", "Keys", Strictness.Lenient);
+            Values = new PropertyMock<ICollection<TValue>>(this, "TestClass", "IDictionary", "Values", "Values", Strictness.Lenient);
             Add0 = new ActionMethodMock<KeyValuePair<TKey, TValue>>(this, "TestClass", "ICollection", "Add", "Add0", Strictness.Lenient);
             Clear = new ActionMethodMock(this, "TestClass", "ICollection", "Clear", "Clear", Strictness.Lenient);
             Contains = new FuncMethodMock<KeyValuePair<TKey, TValue>, bool>(this, "TestClass", "ICollection", "Contains", "Contains", Strictness.Lenient);
-            CopyTo = new ActionMethodMock<(KeyValuePair<TKey, TValue>[]? array, int arrayIndex)>(this, "TestClass", "ICollection", "CopyTo", "CopyTo", Strictness.Lenient);
+            CopyTo = new ActionMethodMock<(KeyValuePair<TKey, TValue>[] array, int arrayIndex)>(this, "TestClass", "ICollection", "CopyTo", "CopyTo", Strictness.Lenient);
             Remove0 = new FuncMethodMock<KeyValuePair<TKey, TValue>, bool>(this, "TestClass", "ICollection", "Remove", "Remove0", Strictness.Lenient);
             Count = new PropertyMock<int>(this, "TestClass", "ICollection", "Count", "Count", Strictness.Lenient);
             IsReadOnly = new PropertyMock<bool>(this, "TestClass", "ICollection", "IsReadOnly", "IsReadOnly", Strictness.Lenient);
-            GetEnumerator = new FuncMethodMock<IEnumerator<KeyValuePair<TKey, TValue>>?>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator", Strictness.Lenient);
-            GetEnumerator0 = new FuncMethodMock<System.Collections.IEnumerator?>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator0", Strictness.Lenient);
+            GetEnumerator = new FuncMethodMock<IEnumerator<KeyValuePair<TKey, TValue>>>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator", Strictness.Lenient);
+            GetEnumerator0 = new FuncMethodMock<System.Collections.IEnumerator>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator0", Strictness.Lenient);
         }
 
         public FuncMethodMock<TKey, bool> ContainsKey { get; }
@@ -57,13 +57,13 @@ namespace Test
 
         TValue IDictionary<TKey, TValue>.this[TKey key] { get => Item[key]; set => Item[key] = value; }
 
-        public PropertyMock<ICollection<TKey>?> Keys { get; }
+        public PropertyMock<ICollection<TKey>> Keys { get; }
 
-        ICollection<TKey>? IDictionary<TKey, TValue>.Keys => Keys.Value;
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys.Value;
 
-        public PropertyMock<ICollection<TValue>?> Values { get; }
+        public PropertyMock<ICollection<TValue>> Values { get; }
 
-        ICollection<TValue>? IDictionary<TKey, TValue>.Values => Values.Value;
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.Value;
 
         public ActionMethodMock<KeyValuePair<TKey, TValue>> Add0 { get; }
 
@@ -77,9 +77,9 @@ namespace Test
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item) => Contains.Call(item);
 
-        public ActionMethodMock<(KeyValuePair<TKey, TValue>[]? array, int arrayIndex)> CopyTo { get; }
+        public ActionMethodMock<(KeyValuePair<TKey, TValue>[] array, int arrayIndex)> CopyTo { get; }
 
-        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[]? array, int arrayIndex) => CopyTo.Call((array, arrayIndex));
+        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyTo.Call((array, arrayIndex));
 
         public FuncMethodMock<KeyValuePair<TKey, TValue>, bool> Remove0 { get; }
 
@@ -93,12 +93,12 @@ namespace Test
 
         bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => IsReadOnly.Value;
 
-        public FuncMethodMock<IEnumerator<KeyValuePair<TKey, TValue>>?> GetEnumerator { get; }
+        public FuncMethodMock<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumerator { get; }
 
-        IEnumerator<KeyValuePair<TKey, TValue>>? IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator.Call();
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator.Call();
 
-        public FuncMethodMock<System.Collections.IEnumerator?> GetEnumerator0 { get; }
+        public FuncMethodMock<System.Collections.IEnumerator> GetEnumerator0 { get; }
 
-        System.Collections.IEnumerator? System.Collections.IEnumerable.GetEnumerator() => GetEnumerator0.Call();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator0.Call();
     }
 }
