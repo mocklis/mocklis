@@ -259,7 +259,10 @@ namespace Mocklis.CodeGeneration
 
             foreach (var type in typeParameter.ConstraintTypes)
             {
-                constraints.Add(F.TypeConstraint(ParseTypeName(type, false)));
+                if (!type.IsValueType)
+                {
+                    constraints.Add(F.TypeConstraint(ParseTypeName(type, false)));
+                }
             }
 
             if (typeParameter.HasConstructorConstraint)
