@@ -21,7 +21,6 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mocklis.MockGenerator" Version="1.1.0-beta.1" PrivateAssets="contentfiles;build" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
