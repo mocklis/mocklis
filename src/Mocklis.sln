@@ -35,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Serilog2.Tests", "M
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{05839517-8929-47e0-a8e5-3c015dcc3fe5}*SharedItemsImports = 5
 		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{640710a2-756b-496c-976a-1656690795a7}*SharedItemsImports = 13
+		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{f5d8c9ac-02d4-4164-b965-c528e9cef06d}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

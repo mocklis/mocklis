@@ -97,6 +97,14 @@ namespace Mocklis.CodeGeneration
                 }
             }
 
+            // Fix for GitHub issue #17. There are cases when the ToMinimalDisplayParts incorrectly adds a SymbolDisplayPartKind.Punctuation
+            // containing a "?" at the end of the type name for a reference type. If so we just remove it from the type name.
+            // Note that these punctuations are perfectly valid as part of the type name, such as "List<int?>".
+            if (s.EndsWith("?") && typeSymbol.IsReferenceType)
+            {
+                s = s.Substring(0, s.Length - 1);
+            }
+
             var parsedTypeName = F.ParseTypeName(s);
             if (makeNullableIfPossible && _nullableContextEnabled && typeSymbol.IsReferenceType)
             {
