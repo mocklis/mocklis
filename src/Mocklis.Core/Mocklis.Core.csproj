@@ -11,6 +11,7 @@
     <RootNamespace>Mocklis</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <Nullable>enable</Nullable>
+    <Configurations>Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="**\*.ncrunchproject" />

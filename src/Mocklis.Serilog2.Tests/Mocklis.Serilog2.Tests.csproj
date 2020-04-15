@@ -4,6 +4,7 @@
     <TargetFrameworks>net452;netcoreapp1.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <Configurations>Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
