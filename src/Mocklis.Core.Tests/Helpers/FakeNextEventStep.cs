@@ -5,11 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Helpers
+namespace Mocklis.Helpers
 {
     #region Using Directives
 
     using System;
+    using Mocklis.Core;
 
     #endregion
 

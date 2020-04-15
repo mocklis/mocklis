@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <RootNamespace>Mocklis.MockGenerator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

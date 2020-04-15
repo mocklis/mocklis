@@ -5,6 +5,7 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <Configurations>Debug</Configurations>
+    <RootNamespace>Mocklis</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mocklis\Mocklis.csproj" />
+    <ProjectReference Include="..\Mocklis.BaseApi\Mocklis.BaseApi.csproj" />
+    <ProjectReference Include="..\Mocklis.Core\Mocklis.Core.csproj" />
   </ItemGroup>
 
 </Project>

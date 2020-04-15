@@ -1,0 +1,58 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IfGetPropertyStep_should.cs">
+//   SPDX-License-Identifier: MIT
+//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Mocklis.Steps.Conditional
+{
+    #region Using Directives
+
+    using System.Collections.Generic;
+    using Mocklis.Interfaces;
+    using Mocklis.Mocks;
+    using Xunit;
+
+    #endregion
+
+    public class IfGetPropertyStep_should
+    {
+        private IReadOnlyList<string> Gets { get; }
+        private IReadOnlyList<string> Sets { get; }
+        private IProperties Sut { get; }
+
+        public IfGetPropertyStep_should()
+        {
+            var mockMembers = new MockMembers();
+
+            IReadOnlyList<string>? gets = null;
+            IReadOnlyList<string>? sets = null;
+
+            mockMembers.StringProperty
+                .IfGet(i => i
+                    .RecordAfterGet(out gets)
+                    .RecordBeforeSet(out sets)
+                    .Join(i.ElseBranch));
+
+            Gets = gets!;
+            Sets = sets!;
+
+            Sut = mockMembers;
+        }
+
+        [Fact]
+        public void forward_Get()
+        {
+            var _ = Sut.StringProperty;
+            Assert.Equal(1, Gets.Count);
+        }
+
+        [Fact]
+        public void not_forward_Set()
+        {
+            Sut.StringProperty = "one";
+            Assert.Equal(0, Sets.Count);
+        }
+    }
+}

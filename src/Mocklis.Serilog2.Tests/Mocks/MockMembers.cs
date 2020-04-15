@@ -5,13 +5,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Serilog2.Tests.Mocks
+namespace Mocklis.Mocks
 {
     #region Using Directives
 
     using System;
     using Mocklis.Core;
-    using Mocklis.Serilog2.Tests.Interfaces;
+    using Mocklis.Interfaces;
 
     #endregion
 

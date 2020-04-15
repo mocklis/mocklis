@@ -5,12 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Experimental.Tests.Mocks
+namespace Mocklis.Mocks
 {
     #region Using Directives
 
     using Mocklis.Core;
-    using Mocklis.Experimental.Tests.Interfaces;
+    using Mocklis.Interfaces;
 
     #endregion
 

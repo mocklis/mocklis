@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Serilog2.Tests.Interfaces
+namespace Mocklis.Interfaces
 {
     #region Using Directives
 

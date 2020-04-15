@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mocklis\Mocklis.csproj" />
+    <ProjectReference Include="..\Mocklis.BaseApi\Mocklis.BaseApi.csproj" />
   </ItemGroup>
 
 </Project>

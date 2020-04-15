@@ -7,7 +7,7 @@
 
 #if !NETCOREAPP1_1
 
-namespace Mocklis.Core.Tests.Core
+namespace Mocklis.Core
 {
     #region Using Directives
 

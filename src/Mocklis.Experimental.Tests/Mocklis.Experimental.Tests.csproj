@@ -5,6 +5,7 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <Configurations>Debug</Configurations>
+    <RootNamespace>Mocklis</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

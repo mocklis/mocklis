@@ -5,8 +5,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Mocks
+namespace Mocklis.Mocks
 {
+    #region Using Directives
+
+    using Mocklis.Core;
+
+    #endregion
+
     [MocklisClass]
     public class MockMethodStep<TParam, TResult> : IMethodStep<TParam, TResult>
     {
@@ -15,7 +21,8 @@ namespace Mocklis.Core.Tests.Mocks
 
         public MockMethodStep()
         {
-            Call = new FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call", Strictness.Lenient);
+            Call = new FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult>(this, "MockMethodStep", "IMethodStep", "Call", "Call",
+                Strictness.Lenient);
         }
 
         public FuncMethodMock<(IMockInfo mockInfo, TParam param), TResult> Call { get; }

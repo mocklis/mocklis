@@ -5,8 +5,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Helpers
+namespace Mocklis.Helpers
 {
+    #region Using Directives
+
+    using Mocklis.Core;
+
+    #endregion
+
     public class FakeNextPropertyStep<TValue> : IPropertyStep<TValue>
     {
         private readonly TValue _value;

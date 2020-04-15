@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Serilog2.Tests.Helpers
+namespace Mocklis.Helpers
 {
     #region Using Directives
 

@@ -5,15 +5,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Serilog2.Tests.Steps.Log
+namespace Mocklis.Steps.Log
 {
     #region Using Directives
 
     using System;
-    using Mocklis.Serilog2.Tests.Helpers;
-    using Mocklis.Serilog2.Tests.Interfaces;
-    using Mocklis.Serilog2.Tests.Mocks;
-    using Mocklis.Steps.Log;
+    using Mocklis.Helpers;
+    using Mocklis.Interfaces;
+    using Mocklis.Mocks;
     using Serilog;
     using Serilog.Events;
     using Xunit;

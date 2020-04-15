@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\NuGet.msbuild" />
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\MocklisDefault.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>8.0</LangVersion>
+    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This package contains tools for writing tests using the generated code.</Description>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug</Configurations>
+    <RootNamespace>Mocklis</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="**\*.ncrunchproject" />
+    <None Remove="**\*.DotSettings" />
+    <Compile Remove="publish\**" />
+    <Content Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mocklis.Core\Mocklis.Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -5,8 +5,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Core.Tests.Mocks
+namespace Mocklis.Mocks
 {
+    #region Using Directives
+
+    using Mocklis.Core;
+
+    #endregion
+
     [MocklisClass]
     public class MockIndexerStep<TKey, TValue> : IIndexerStep<TKey, TValue>
     {
@@ -15,8 +21,10 @@ namespace Mocklis.Core.Tests.Mocks
 
         public MockIndexerStep()
         {
-            Get = new FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue>(this, "MockIndexerStep", "IIndexerStep", "Get", "Get", Strictness.Lenient);
-            Set = new ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>(this, "MockIndexerStep", "IIndexerStep", "Set", "Set", Strictness.Lenient);
+            Get = new FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue>(this, "MockIndexerStep", "IIndexerStep", "Get", "Get",
+                Strictness.Lenient);
+            Set = new ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>(this, "MockIndexerStep", "IIndexerStep", "Set", "Set",
+                Strictness.Lenient);
         }
 
         public FuncMethodMock<(IMockInfo mockInfo, TKey key), TValue> Get { get; }

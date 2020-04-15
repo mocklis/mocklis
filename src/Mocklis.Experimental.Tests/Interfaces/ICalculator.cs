@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Experimental.Tests.Interfaces
+namespace Mocklis.Interfaces
 {
     public interface ICalculator
     {

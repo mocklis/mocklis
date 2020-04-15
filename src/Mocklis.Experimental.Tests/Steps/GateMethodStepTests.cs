@@ -5,15 +5,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.Experimental.Tests.Steps
+namespace Mocklis.Steps
 {
     #region Using Directives
 
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Mocklis.Experimental.Tests.Interfaces;
-    using Mocklis.Experimental.Tests.Mocks;
+    using Mocklis.Interfaces;
+    using Mocklis.Mocks;
     using Xunit;
 
     #endregion
