@@ -31,64 +31,79 @@ namespace Mocklis.MockGenerator
             _mocklisClassUpdater = mocklisClassUpdater;
         }
 
-        public static TheoryData<string, string> GetTestCasesFromFolder(string testCaseFolder)
+        public static TheoryData<ClassUpdateTestCase> GetTestCasesFromFolder(string testCaseFolder)
         {
-            var pathToTestCases = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testCaseFolder);
+            var pathToTestCases = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException("Could not find executing assembly folder");
 
-            var data = new TheoryData<string, string>();
+            var result = new TheoryData<ClassUpdateTestCase>();
 
-            foreach (var file in Directory.EnumerateFiles(pathToTestCases, "*.cs"))
+            foreach (var file in Directory.EnumerateFiles(Path.Combine(pathToTestCases, testCaseFolder), "*.cs"))
             {
                 if (!file.EndsWith(".Expected.cs"))
                 {
-                    data.Add(testCaseFolder, Path.GetFileNameWithoutExtension(file));
+                    result.Add(new ClassUpdateTestCase
+                    {
+                        PathToTestCases = pathToTestCases,
+                        TestCaseFolder = testCaseFolder,
+                        TestCase = Path.GetFileNameWithoutExtension(file)
+                    });
                 }
             }
 
-            return data;
+            return result;
         }
 
-        public static TheoryData<string, string> EnumerateTestCases() => GetTestCasesFromFolder("TestCases");
+        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases() => GetTestCasesFromFolder("TestCases");
 
-        public static TheoryData<string, string> EnumerateTestCases8() => GetTestCasesFromFolder("TestCases8");
+        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases8() => GetTestCasesFromFolder("TestCases8");
 
         [Theory]
         [MemberData(nameof(EnumerateTestCases))]
-        public async Task TestMocklisClassUpdaterForCSharp7_3(string testCaseFolder, string testCase)
+        public async Task TestMocklisClassUpdaterForCSharp7_3(ClassUpdateTestCase test)
         {
-            await TestCodeGenerationCase(testCaseFolder, testCase, LanguageVersion.CSharp7_3);
+            await TestCodeGenerationCase(test, LanguageVersion.CSharp7_3);
         }
 
         [Theory]
         [MemberData(nameof(EnumerateTestCases))]
         [MemberData(nameof(EnumerateTestCases8))]
-        public async Task TestMocklisClassUpdaterForCSharp8(string testCaseFolder, string testCase)
+        public async Task TestMocklisClassUpdaterForCSharp8(ClassUpdateTestCase test)
         {
-            await TestCodeGenerationCase(testCaseFolder, testCase, LanguageVersion.CSharp8);
+            await TestCodeGenerationCase(test, LanguageVersion.CSharp8);
         }
 
-        private async Task TestCodeGenerationCase(string testCaseFolder, string testCase, LanguageVersion languageVersion)
+        private async Task TestCodeGenerationCase(ClassUpdateTestCase test, LanguageVersion languageVersion)
         {
-            var pathToTestCases = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testCaseFolder);
-            string source = File.ReadAllText(Path.Combine(pathToTestCases, testCase + ".cs"));
-            string expectedFileName = Path.Combine(pathToTestCases, testCase + ".Expected.cs");
-            string? expected = null;
-            if (File.Exists(expectedFileName))
+            Task<string> sourceTask = File.ReadAllTextAsync(test.SourceFileName);
+
+            Task<string?> expectedTask = Task.FromResult<string?>(null);
+            if (File.Exists(test.ExpectedFileName))
             {
-                expected = File.ReadAllText(expectedFileName);
+                expectedTask = File.ReadAllTextAsync(test.ExpectedFileName);
             }
 
-            var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion);
+            string source = await sourceTask.ConfigureAwait(false);
 
-#if !NCRUNCH
+            var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion).ConfigureAwait(false);
+
+            string? expected = await expectedTask.ConfigureAwait(false);
+
             // Create the 'expected' file if it isn't there. Empty out to recreate.
             if (string.IsNullOrWhiteSpace(expected))
             {
-                string newPath = Path.Combine(pathToTestCases, "..", "..", "..", "..", testCaseFolder, testCase + ".Expected.cs");
-                File.WriteAllText(newPath, result.Code);
-                expected = result.Code;
-            }
+#if NCRUNCH
+                var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
+                string expectedFilePathInSourceCode = folder == null ? null : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
+#else
+                string expectedFilePathInSourceCode = Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #endif
+
+                if (expectedFilePathInSourceCode != null)
+                {
+                    await File.WriteAllTextAsync(expectedFilePathInSourceCode, result.Code).ConfigureAwait(false);
+                    expected = result.Code;
+                }
+            }
 
             try
             {
