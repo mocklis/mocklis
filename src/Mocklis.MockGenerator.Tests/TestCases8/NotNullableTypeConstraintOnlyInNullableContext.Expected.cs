@@ -13,6 +13,7 @@ namespace Test
         T Test<U>(U item) where U : notnull;
     }
 
+#nullable disable
     [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public abstract class TestClass<T> : ITestClass<T>
     {

@@ -92,6 +92,22 @@ namespace Mocklis.CodeGeneration
                     }
                 }
 
+                if (found)
+                {
+                    var newAttributeList = F.AttributeList(F.SeparatedList(attributes));
+                    if (originalAttributeList.HasLeadingTrivia)
+                    {
+                        newAttributeList = newAttributeList.WithLeadingTrivia(originalAttributeList.GetLeadingTrivia());
+                    }
+
+                    if (originalAttributeList.HasTrailingTrivia)
+                    {
+                        newAttributeList = newAttributeList.WithTrailingTrivia(originalAttributeList.GetTrailingTrivia());
+                    }
+
+                    return newAttributeList;
+                }
+
                 return found ? F.AttributeList(F.SeparatedList(attributes)) : originalAttributeList;
             }
 

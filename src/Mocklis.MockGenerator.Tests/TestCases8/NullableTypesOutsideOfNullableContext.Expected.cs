@@ -20,6 +20,8 @@ namespace Test
         string Method3(string p1, string? p2);
     }
 
+#nullable disable
+
     [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public abstract class TestClass : ITestClass
     {

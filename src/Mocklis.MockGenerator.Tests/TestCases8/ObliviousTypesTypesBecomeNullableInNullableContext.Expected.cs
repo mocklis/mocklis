@@ -17,6 +17,8 @@ namespace Test
         int? NullableValueTypeProperty { get; }
     }
 
+#nullable enable
+
     [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public abstract class TestClass : ITestClass
     {
