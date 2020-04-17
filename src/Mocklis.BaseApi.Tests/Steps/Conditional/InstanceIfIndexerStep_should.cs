@@ -33,7 +33,7 @@ namespace Mocklis.Steps.Conditional
 
             var indexerStore = tmpIndexerStore.AssertNotNull();
 
-            indexerStore![1] = "one"; 
+            indexerStore![1] = "one";
             indexerStore[3] = "three";
 
             var v1 = Sut[1];

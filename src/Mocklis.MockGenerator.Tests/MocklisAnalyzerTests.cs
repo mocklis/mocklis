@@ -37,7 +37,8 @@ namespace Mocklis.MockGenerator
 
         public static TheoryData<ClassUpdateTestCase> GetTestCasesFromFolder(string testCaseFolder)
         {
-            var pathToTestCases = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException("Could not find executing assembly folder");
+            var pathToTestCases = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+                                  throw new InvalidOperationException("Could not find executing assembly folder");
 
             var result = new TheoryData<ClassUpdateTestCase>();
 
@@ -97,9 +98,11 @@ namespace Mocklis.MockGenerator
             {
 #if NCRUNCH
                 var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
-                string expectedFilePathInSourceCode = folder == null ? null : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
+                string expectedFilePathInSourceCode =
+ folder == null ? null : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #else
-                string expectedFilePathInSourceCode = Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
+                string expectedFilePathInSourceCode =
+                    Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #endif
 
                 if (expectedFilePathInSourceCode != null)

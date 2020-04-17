@@ -10,13 +10,14 @@ namespace Mocklis.Mocks
     #region Using Directives
 
     using System;
+    using System.CodeDom.Compiler;
     using System.ComponentModel;
     using Mocklis.Core;
     using Mocklis.Interfaces;
 
     #endregion
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "1.2.0")]
     public class MockEvents : IEvents, INotifyPropertyChanged
     {
         // The contents of this class were created by the Mocklis code-generator.

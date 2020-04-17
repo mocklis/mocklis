@@ -9,11 +9,12 @@ namespace Mocklis.Mocks
 {
     #region Using Directives
 
+    using System.CodeDom.Compiler;
     using Mocklis.Core;
 
     #endregion
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "1.2.0")]
     public class MockCanHaveNextMethodStep<TParam, TResult> : ICanHaveNextMethodStep<TParam, TResult>
     {
         // The contents of this class were created by the Mocklis code-generator.

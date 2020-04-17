@@ -52,7 +52,8 @@ namespace Mocklis.CodeGeneration
                 .WithAttributeLists(AddOrUpdateCodeGeneratedAttribute(typesForSymbols, semanticModel, mocklisSymbols, classDecl.AttributeLists));
         }
 
-        private static SyntaxList<AttributeListSyntax> AddOrUpdateCodeGeneratedAttribute(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, MocklisSymbols mocklisSymbols, in SyntaxList<AttributeListSyntax> classDeclAttributeLists)
+        private static SyntaxList<AttributeListSyntax> AddOrUpdateCodeGeneratedAttribute(MocklisTypesForSymbols typesForSymbols,
+            SemanticModel semanticModel, MocklisSymbols mocklisSymbols, in SyntaxList<AttributeListSyntax> classDeclAttributeLists)
         {
             bool found = false;
 
@@ -63,6 +64,7 @@ namespace Mocklis.CodeGeneration
                 {
                     return originalAttributeList;
                 }
+
                 List<AttributeSyntax> attributes = new List<AttributeSyntax>();
                 foreach (var attribute in originalAttributeList.Attributes)
                 {
@@ -122,7 +124,8 @@ namespace Mocklis.CodeGeneration
             private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
-            public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
+            public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration,
+                MocklisSymbols mocklisSymbols)
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
                 _typesForSymbols = typesForSymbols;

@@ -12,6 +12,7 @@ namespace Mocklis.Verification
     using System;
 #if !NETSTANDARD1_3
     using System.Runtime.Serialization;
+
 #endif
 
     #endregion

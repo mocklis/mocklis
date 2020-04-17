@@ -29,9 +29,11 @@ namespace Mocklis.Steps.Missing
         [Fact]
         public void throw_exception()
         {
-            EventHandler newHandler = (sender, e) => { };
+            static void NewHandler(object? sender, EventArgs e)
+            {
+            }
 
-            var exception = Assert.Throws<MockMissingException>(() => _missingEventStep.Remove(_eventMock, newHandler));
+            var exception = Assert.Throws<MockMissingException>(() => _missingEventStep.Remove(_eventMock, NewHandler));
             Assert.Equal(MockType.EventRemove, exception.MemberType);
             Assert.Equal("TestClass", exception.MocklisClassName);
             Assert.Equal("ITest", exception.InterfaceName);

@@ -26,12 +26,10 @@ namespace Mocklis.Core
         {
             var formatter = new BinaryFormatter();
 
-            using (var m = new MemoryStream())
-            {
-                formatter.Serialize(m, item);
-                m.Seek(0, SeekOrigin.Begin);
-                return (T)formatter.Deserialize(m);
-            }
+            using var m = new MemoryStream();
+            formatter.Serialize(m, item);
+            m.Seek(0, SeekOrigin.Begin);
+            return (T)formatter.Deserialize(m);
         }
 
         [Fact]

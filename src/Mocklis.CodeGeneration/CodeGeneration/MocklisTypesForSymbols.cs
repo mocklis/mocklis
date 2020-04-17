@@ -28,11 +28,15 @@ namespace Mocklis.CodeGeneration
         private readonly MocklisSymbols _mocklisSymbols;
         private readonly bool _nullableContextEnabled;
         private readonly Dictionary<string, string>? _typeParameterNameSubstitutions;
+
         private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
-        private static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-        public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
+        private static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
+
+        public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
+            bool nullableContextEnabled)
         {
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
@@ -333,6 +337,5 @@ namespace Mocklis.CodeGeneration
                     F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Version)))
                 })));
         }
-
     }
 }

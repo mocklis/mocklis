@@ -51,7 +51,7 @@ namespace Mocklis.Steps.Miscellaneous
         }
 
         [Fact]
-        private void RaisePropertyChangedEventCorrectly()
+        public void RaisePropertyChangedEventCorrectly()
         {
             // Arrange
             _mockProperties.StringProperty.RaisePropertyChangedEvent(_npc);

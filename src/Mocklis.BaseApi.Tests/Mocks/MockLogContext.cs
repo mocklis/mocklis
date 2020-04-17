@@ -10,12 +10,13 @@ namespace Mocklis.Mocks
     #region Using Directives
 
     using System;
+    using System.CodeDom.Compiler;
     using Mocklis.Core;
     using Mocklis.Steps.Log;
 
     #endregion
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "1.2.0")]
     public class MockLogContext : ILogContext
     {
         // The contents of this class were created by the Mocklis code-generator.

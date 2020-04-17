@@ -7,9 +7,13 @@
 
 namespace Mocklis.MockGenerator
 {
+    #region Using Directives
+
     using System;
     using System.IO;
     using Xunit.Abstractions;
+
+    #endregion
 
     [Serializable]
     public class ClassUpdateTestCase : IXunitSerializable

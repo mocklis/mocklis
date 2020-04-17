@@ -32,7 +32,8 @@ namespace Mocklis.MockGenerator
 
         private const string Title = "Update Mocklis Class";
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MocklisAnalyzer.CreateDiagnosticId, MocklisAnalyzer.UpdateDiagnosticId);
+        public sealed override ImmutableArray<string> FixableDiagnosticIds =>
+            ImmutableArray.Create(MocklisAnalyzer.CreateDiagnosticId, MocklisAnalyzer.UpdateDiagnosticId);
 
         public sealed override FixAllProvider? GetFixAllProvider() => null;
 

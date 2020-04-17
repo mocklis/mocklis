@@ -58,8 +58,8 @@ namespace Mocklis.MockGenerator
             if (context.Node is ClassDeclarationSyntax classDecl && MightBeMocklisClass(classDecl, out var mocklisAttribute))
             {
                 var regenerate = classDecl.Members.Any()
-                    || classDecl.OpenBraceToken.TrailingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()))
-                    || classDecl.CloseBraceToken.LeadingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()));
+                                 || classDecl.OpenBraceToken.TrailingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()))
+                                 || classDecl.CloseBraceToken.LeadingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()));
 
                 var diagnostic = Diagnostic.Create(regenerate ? UpdateRule : CreateRule, mocklisAttribute.GetLocation());
                 context.ReportDiagnostic(diagnostic);

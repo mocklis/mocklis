@@ -61,7 +61,10 @@ namespace Mocklis.MockGenerator.Helpers
             var projectInfo = ProjectInfo.Create(projectId, VersionStamp.Default, projectName, projectName, LanguageNames.CSharp,
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 parseOptions: new CSharpParseOptions(languageVersion),
-                metadataReferences: new[] { CorlibReference, SystemLinqReference, SystemDiagnosticsReference, MocklisCoreReference, RuntimeReference, NetStandardReference });
+                metadataReferences: new[]
+                {
+                    CorlibReference, SystemLinqReference, SystemDiagnosticsReference, MocklisCoreReference, RuntimeReference, NetStandardReference
+                });
 
             var solution = new AdhocWorkspace()
                 .CurrentSolution

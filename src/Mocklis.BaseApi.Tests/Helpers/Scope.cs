@@ -12,9 +12,6 @@ namespace Mocklis.Helpers
     using System;
     using System.Globalization;
     using System.Threading;
-#if !NETCOREAPP1_1
-
-#endif
 
     #endregion
 

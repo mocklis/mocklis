@@ -9,7 +9,6 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System.CodeDom.Compiler;
     using Microsoft.CodeAnalysis;
 
     #endregion

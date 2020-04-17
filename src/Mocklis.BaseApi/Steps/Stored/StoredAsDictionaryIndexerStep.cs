@@ -34,7 +34,7 @@ namespace Mocklis.Steps.Stored
         /// <returns>the <typeparamref name="TValue" /> read or written.</returns>
         public TValue this[TKey key]
         {
-            get => _dictionary.ContainsKey(key) ? _dictionary[key] : default;
+            get => _dictionary.ContainsKey(key) ? _dictionary[key] : default!;
             set => _dictionary[key] = value;
         }
 

@@ -12,6 +12,9 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <Nullable>enable</Nullable>
     <Configurations>Debug</Configurations>
+    <Version>1.2.0-alpha</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
    <ItemGroup>
     <None Remove="**\*.ncrunchproject" />

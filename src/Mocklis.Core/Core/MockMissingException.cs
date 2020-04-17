@@ -13,6 +13,7 @@ namespace Mocklis.Core
     using Mocklis.Properties;
 #if !NETSTANDARD1_3
     using System.Runtime.Serialization;
+
 #endif
 
     #endregion
@@ -61,49 +62,22 @@ namespace Mocklis.Core
         private static string CreateMessage(MockType memberType, string mocklisClassName, string interfaceName, string memberName,
             string memberMockName)
         {
-            string rawMessage;
-            switch (memberType)
+            var rawMessage = memberType switch
             {
-                case MockType.Method:
-                    rawMessage = Resources.MockMissingExceptionMessageForMethod;
-                    break;
-                case MockType.PropertyGet:
-                    rawMessage = Resources.MockMissingExceptionMessageForPropertyGet;
-                    break;
-                case MockType.PropertySet:
-                    rawMessage = Resources.MockMissingExceptionMessageForPropertySet;
-                    break;
-                case MockType.EventAdd:
-                    rawMessage = Resources.MockMissingExceptionMessageForEventAdd;
-                    break;
-                case MockType.EventRemove:
-                    rawMessage = Resources.MockMissingExceptionMessageForEventRemove;
-                    break;
-                case MockType.IndexerGet:
-                    rawMessage = Resources.MockMissingExceptionMessageForIndexerGet;
-                    break;
-                case MockType.IndexerSet:
-                    rawMessage = Resources.MockMissingExceptionMessageForIndexerSet;
-                    break;
-                case MockType.VirtualMethod:
-                    rawMessage = Resources.MockMissingExceptionMessageForVirtualMethod;
-                    break;
-                case MockType.VirtualPropertyGet:
-                    rawMessage = Resources.MockMissingExceptionMessageForVirtualPropertyGet;
-                    break;
-                case MockType.VirtualPropertySet:
-                    rawMessage = Resources.MockMissingExceptionMessageForVirtualPropertySet;
-                    break;
-                case MockType.VirtualIndexerGet:
-                    rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerGet;
-                    break;
-                case MockType.VirtualIndexerSet:
-                    rawMessage = Resources.MockMissingExceptionMessageForVirtualIndexerSet;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(memberType));
-            }
-
+                MockType.Method => Resources.MockMissingExceptionMessageForMethod,
+                MockType.PropertyGet => Resources.MockMissingExceptionMessageForPropertyGet,
+                MockType.PropertySet => Resources.MockMissingExceptionMessageForPropertySet,
+                MockType.EventAdd => Resources.MockMissingExceptionMessageForEventAdd,
+                MockType.EventRemove => Resources.MockMissingExceptionMessageForEventRemove,
+                MockType.IndexerGet => Resources.MockMissingExceptionMessageForIndexerGet,
+                MockType.IndexerSet => Resources.MockMissingExceptionMessageForIndexerSet,
+                MockType.VirtualMethod => Resources.MockMissingExceptionMessageForVirtualMethod,
+                MockType.VirtualPropertyGet => Resources.MockMissingExceptionMessageForVirtualPropertyGet,
+                MockType.VirtualPropertySet => Resources.MockMissingExceptionMessageForVirtualPropertySet,
+                MockType.VirtualIndexerGet => Resources.MockMissingExceptionMessageForVirtualIndexerGet,
+                MockType.VirtualIndexerSet => Resources.MockMissingExceptionMessageForVirtualIndexerSet,
+                _ => throw new ArgumentOutOfRangeException(nameof(memberType)),
+            };
             return string.Format(
                 rawMessage,
                 mocklisClassName ?? throw new ArgumentNullException(nameof(mocklisClassName)),

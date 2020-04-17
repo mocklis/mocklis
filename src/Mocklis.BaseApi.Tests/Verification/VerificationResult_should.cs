@@ -8,11 +8,11 @@
 namespace Mocklis.Verification
 {
     #region Using Directives
-    
-    using Xunit;
 
+    using Xunit;
 #if !NETCOREAPP1_1
     using Mocklis.Helpers;
+
 #endif
 
     #endregion
