@@ -9,6 +9,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System.CodeDom.Compiler;
     using Microsoft.CodeAnalysis;
 
     #endregion
@@ -29,6 +30,7 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol TypedMockProvider { get; }
         public INamedTypeSymbol Strictness { get; }
         public INamedTypeSymbol RuntimeArgumentHandle { get; }
+        public INamedTypeSymbol GeneratedCodeAttribute { get; }
 
         private INamedTypeSymbol Object { get; }
         private Compilation Compilation { get; }
@@ -51,6 +53,7 @@ namespace Mocklis.CodeGeneration
             Strictness = compilation.GetTypeByMetadataName("Mocklis.Core.Strictness");
             RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
             Object = compilation.GetTypeByMetadataName("System.Object");
+            GeneratedCodeAttribute = compilation.GetTypeByMetadataName("System.CodeDom.Compiler.GeneratedCodeAttribute");
         }
 
         public bool HasImplicitConversionToObject(ITypeSymbol symbol)

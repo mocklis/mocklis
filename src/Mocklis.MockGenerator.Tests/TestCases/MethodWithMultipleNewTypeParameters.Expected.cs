@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -10,7 +11,7 @@ namespace Test
         string Combine<T1, T2, T3, T4>(T1 param1, T2 param2, T3 param3, T4 param4);
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITestClass
     {
         // The contents of this class were created by the Mocklis code-generator.

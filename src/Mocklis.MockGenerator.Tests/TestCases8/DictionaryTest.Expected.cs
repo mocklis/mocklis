@@ -1,12 +1,13 @@
 #nullable enable
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
 {
     using System.Collections.Generic;
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public abstract class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
     {
         // The contents of this class were created by the Mocklis code-generator.

@@ -42,11 +42,78 @@ namespace Mocklis.CodeGeneration
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
             MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
         {
-            var populator = new MocklisClassPopulator(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
+            var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
+
+            var populator = new MocklisClassPopulator(typesForSymbols, semanticModel, classDecl, mocklisSymbols);
             return classDecl.WithMembers(F.List(populator.GenerateMembers()))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
-                .WithAdditionalAnnotations(Formatter.Annotation);
+                .WithAdditionalAnnotations(Formatter.Annotation)
+                .WithAttributeLists(AddOrUpdateCodeGeneratedAttribute(typesForSymbols, semanticModel, mocklisSymbols, classDecl.AttributeLists));
+        }
+
+        private static SyntaxList<AttributeListSyntax> AddOrUpdateCodeGeneratedAttribute(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, MocklisSymbols mocklisSymbols, in SyntaxList<AttributeListSyntax> classDeclAttributeLists)
+        {
+            bool found = false;
+
+
+            AttributeListSyntax FindInList(AttributeListSyntax originalAttributeList, bool add)
+            {
+                if (found)
+                {
+                    return originalAttributeList;
+                }
+                List<AttributeSyntax> attributes = new List<AttributeSyntax>();
+                foreach (var attribute in originalAttributeList.Attributes)
+                {
+                    if (found)
+                    {
+                        attributes.Add(attribute);
+                        continue;
+                    }
+
+                    var p = semanticModel.GetSymbolInfo(attribute);
+                    if (p.Symbol.ContainingType.Equals(mocklisSymbols.GeneratedCodeAttribute))
+                    {
+                        found = true;
+                        attributes.Add(typesForSymbols.GeneratedCodeAttribute());
+                    }
+                    else if (add && p.Symbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute))
+                    {
+                        found = true;
+                        attributes.Add(attribute);
+                        attributes.Add(typesForSymbols.GeneratedCodeAttribute());
+                    }
+                    else
+                    {
+                        attributes.Add(attribute);
+                    }
+                }
+
+                return found ? F.AttributeList(F.SeparatedList(attributes)) : originalAttributeList;
+            }
+
+            if (mocklisSymbols.GeneratedCodeAttribute == null)
+            {
+                return classDeclAttributeLists;
+            }
+
+            var result = new List<AttributeListSyntax>();
+            foreach (var l in classDeclAttributeLists)
+            {
+                result.Add(FindInList(l, false));
+            }
+
+            if (!found)
+            {
+                result = new List<AttributeListSyntax>();
+                foreach (var l in classDeclAttributeLists)
+                {
+                    result.Add(FindInList(l, true));
+                }
+            }
+
+            return F.List(result);
         }
 
         private class MocklisClassPopulator
@@ -55,10 +122,10 @@ namespace Mocklis.CodeGeneration
             private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
-            public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
+            public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols)
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-                _typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDeclaration, mocklisSymbols, nullableContextEnabled);
+                _typesForSymbols = typesForSymbols;
                 bool mockReturnsByRef = false;
                 bool mockReturnsByRefReadonly = true;
                 bool strict = false;

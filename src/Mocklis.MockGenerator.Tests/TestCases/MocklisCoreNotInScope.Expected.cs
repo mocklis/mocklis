@@ -7,7 +7,7 @@ namespace Test
         void DoStuff(string stuff);
     }
 
-    [Mocklis.Core.MocklisClass]
+    [Mocklis.Core.MocklisClass, System.CodeDom.Compiler.GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITest
     {
         // The contents of this class were created by the Mocklis code-generator.

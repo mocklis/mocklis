@@ -24,11 +24,15 @@ namespace Mocklis.MockGenerator
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly MocklisClassUpdater _mocklisClassUpdater;
+        private readonly string _version;
 
         public MocklisAnalyzerTests(ITestOutputHelper testOutputHelper, MocklisClassUpdater mocklisClassUpdater)
         {
             _testOutputHelper = testOutputHelper;
             _mocklisClassUpdater = mocklisClassUpdater;
+            _version = Assembly.GetAssembly(typeof(MocklisAnalyzer))
+                ?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion ?? string.Empty;
         }
 
         public static TheoryData<ClassUpdateTestCase> GetTestCasesFromFolder(string testCaseFolder)
@@ -86,7 +90,7 @@ namespace Mocklis.MockGenerator
 
             var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion).ConfigureAwait(false);
 
-            string? expected = await expectedTask.ConfigureAwait(false);
+            string? expected = (await expectedTask.ConfigureAwait(false))?.Replace("[VERSION]", _version);
 
             // Create the 'expected' file if it isn't there. Empty out to recreate.
             if (string.IsNullOrWhiteSpace(expected))
@@ -100,7 +104,7 @@ namespace Mocklis.MockGenerator
 
                 if (expectedFilePathInSourceCode != null)
                 {
-                    await File.WriteAllTextAsync(expectedFilePathInSourceCode, result.Code).ConfigureAwait(false);
+                    await File.WriteAllTextAsync(expectedFilePathInSourceCode, result.Code.Replace(_version, "[VERSION]")).ConfigureAwait(false);
                     expected = result.Code;
                 }
             }

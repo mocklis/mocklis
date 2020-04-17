@@ -1,10 +1,11 @@
 using System;
-using Mocklis.Core;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using Mocklis.Core;
 
 namespace Test
 {
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass<T> : IEnumerable<T>
     {
         // The contents of this class were created by the Mocklis code-generator.

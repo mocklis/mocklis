@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -11,7 +12,7 @@ namespace Test
         IDictionary<int?, List<(byte, string?)>?> Test { get; }
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public abstract class TestClass : ITestClass
     {
         // The contents of this class were created by the Mocklis code-generator.

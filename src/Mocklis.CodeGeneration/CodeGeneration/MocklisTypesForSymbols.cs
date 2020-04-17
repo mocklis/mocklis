@@ -11,6 +11,7 @@ namespace Mocklis.CodeGeneration
 
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,6 +28,9 @@ namespace Mocklis.CodeGeneration
         private readonly MocklisSymbols _mocklisSymbols;
         private readonly bool _nullableContextEnabled;
         private readonly Dictionary<string, string>? _typeParameterNameSubstitutions;
+        private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
+            SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
+        private static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
         public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
         {
@@ -68,7 +72,7 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible)
         {
-            var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart);
+            var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat);
 
             string s = string.Empty;
             foreach (var part in x)
@@ -116,7 +120,7 @@ namespace Mocklis.CodeGeneration
 
         public NameSyntax ParseName(ITypeSymbol symbol)
         {
-            return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart));
+            return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat));
         }
 
         private TypeSyntax ParseGenericType(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
@@ -317,5 +321,18 @@ namespace Mocklis.CodeGeneration
                 .WithExpressionsAsArgumentList(invocation);
             return F.RefExpression(wrap);
         }
+
+        public AttributeSyntax GeneratedCodeAttribute()
+        {
+            var p = ParseName(_mocklisSymbols.GeneratedCodeAttribute);
+
+            return F.Attribute(p).WithArgumentList(F.AttributeArgumentList(
+                F.SeparatedList(new[]
+                {
+                    F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal("Mocklis"))),
+                    F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Version)))
+                })));
+        }
+
     }
 }

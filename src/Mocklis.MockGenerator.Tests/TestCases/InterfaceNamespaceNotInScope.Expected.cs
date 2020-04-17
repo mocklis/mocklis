@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace InterfaceyStuff
@@ -11,7 +12,7 @@ namespace InterfaceyStuff
 
 namespace Test
 {
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : InterfaceyStuff.ITest
     {
         // The contents of this class were created by the Mocklis code-generator.

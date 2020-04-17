@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -15,7 +16,7 @@ namespace Test
         int FuncWithThreeParameters(int i1, int i2, int i3);
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITestClass
     {
         // The contents of this class were created by the Mocklis code-generator.

@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -13,7 +14,7 @@ namespace Test
         T TakesRefStructParameter<T>(RefStruct parameter);
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITestClass
     {
         // The contents of this class were created by the Mocklis code-generator.

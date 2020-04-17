@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -13,7 +14,7 @@ namespace Test
         void DoSomething(string task);
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITest1, ITest2
     {
         // The contents of this class were created by the Mocklis code-generator.

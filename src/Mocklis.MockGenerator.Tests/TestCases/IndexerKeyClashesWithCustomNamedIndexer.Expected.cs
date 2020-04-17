@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Runtime.CompilerServices;
 using Mocklis.Core;
 
@@ -13,7 +14,7 @@ namespace Test
         int this[int TheIndexerName, int OtherItem] { get; set; }
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass : ITestClass
     {
         // The contents of this class were created by the Mocklis code-generator.

@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using Mocklis.Core;
 
 namespace Test
@@ -8,7 +9,7 @@ namespace Test
         event EventHandler<T> MyEvent;
     }
 
-    [MocklisClass]
+    [MocklisClass, GeneratedCode("Mocklis", "[VERSION]")]
     public class TestClass<T> : ITestClass<T> where T : EventArgs
     {
         // The contents of this class were created by the Mocklis code-generator.
