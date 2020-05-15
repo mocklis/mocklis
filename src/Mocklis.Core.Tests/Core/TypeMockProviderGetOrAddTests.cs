@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TypeMockProvider_GetOrAdd_should.cs">
+// <copyright file="TypeMockProviderGetOrAddTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class TypeMockProvider_GetOrAdd_should
+    public class TypeMockProviderGetOrAddTests
     {
         private class FakeMemberMock : MemberMock
         {
@@ -34,7 +34,7 @@ namespace Mocklis.Core
         public TypedMockProvider Sut { get; } = new TypedMockProvider();
 
         [Fact]
-        public void call_factory_method_with_keystring()
+        public void CallFactoryMethodWithKeystring()
         {
             var x = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(string), typeof(bool) }, ks => new FakeMemberMock(ks));
 
@@ -42,7 +42,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_same_mock_if_called_with_same_types()
+        public void ReturnSameMockIfCalledWithSameTypes()
         {
             var x1 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(string), typeof(bool) }, ks => new FakeMemberMock(ks));
             var x2 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(string), typeof(bool) }, ks => new FakeMemberMock(ks));
@@ -50,7 +50,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_different_mocks_if_called_with_different_types()
+        public void ReturnDifferentMocksIfCalledWithDifferentTypes()
         {
             var x1 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(string), typeof(bool) }, ks => new FakeMemberMock(ks));
             var x2 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(int), typeof(bool) }, ks => new FakeMemberMock(ks));
@@ -58,7 +58,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_different_mocks_if_called_with_same_types_in_different_order()
+        public void ReturnDifferentMocksIfCalledWithSameTypesInDifferentOrder()
         {
             var x1 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(string), typeof(bool) }, ks => new FakeMemberMock(ks));
             var x2 = (FakeMemberMock)Sut.GetOrAdd(new[] { typeof(bool), typeof(string) }, ks => new FakeMemberMock(ks));
@@ -66,14 +66,14 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_type_array()
+        public void RequireTypeArray()
         {
             var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(null!, a => new FakeMemberMock(string.Empty)));
             Assert.Equal("types", ex.ParamName);
         }
 
         [Fact]
-        public void require_factory()
+        public void RequireFactory()
         {
             var ex = Assert.Throws<ArgumentNullException>(() => Sut.GetOrAdd(new[] { typeof(int) }, null!));
             Assert.Equal("factory", ex.ParamName);

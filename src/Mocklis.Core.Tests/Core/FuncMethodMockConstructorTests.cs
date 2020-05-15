@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FuncMethodMock_constructor_should.cs">
+// <copyright file="FuncMethodMockConstructorTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,10 +14,10 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class FuncMethodMock_constructor_should
+    public class FuncMethodMockConstructorTests
     {
-        [Fact(DisplayName = "require mockInstance (parameterLess)")]
-        public void require_mockInstance_X28parameterLessX29()
+        [Fact]
+        public void RequireMockInstance()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<string>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
@@ -25,15 +25,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_mockInstance()
+        public void RequireMockInstanceForParameterCase()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<int, string>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mockInstance", exception.ParamName);
         }
 
-        [Fact(DisplayName = "require mocklisClassName (parameterLess)")]
-        public void require_mocklisClassName_X28parameterLessX29()
+        [Fact]
+        public void RequireMocklisClassName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<string>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
@@ -41,15 +41,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_mocklisClassName()
+        public void RequireMocklisClassNameForParameterCase()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<int, string>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mocklisClassName", exception.ParamName);
         }
 
-        [Fact(DisplayName = "require interfaceName (parameterLess)")]
-        public void require_interfaceName_X28parameterLessX29()
+        [Fact]
+        public void RequireInterfaceName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<string>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
@@ -57,15 +57,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_interfaceName()
+        public void RequireInterfaceNameForParameterCase()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<int, string>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("interfaceName", exception.ParamName);
         }
 
-        [Fact(DisplayName = "require memberName (parameterLess)")]
-        public void require_memberName_X28parameterLessX29()
+        [Fact]
+        public void RequireMemberName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<string>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
@@ -73,15 +73,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_memberName()
+        public void RequireMemberNameForParameterCase()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<int, string>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
             Assert.Equal("memberName", exception.ParamName);
         }
 
-        [Fact(DisplayName = "require MemberMockName (parameterLess)")]
-        public void require_MemberMockName_X28parameterLessX29()
+        [Fact]
+        public void RequireMemberMockName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<string>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
@@ -89,20 +89,20 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_MemberMockName()
+        public void RequireMemberMockNameForParameterCase()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new FuncMethodMock<int, string>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
             Assert.Equal("memberMockName", exception.ParamName);
         }
 
-        [Fact(DisplayName = "set properties (parameterLess)")]
-        public void set_IMockInfo_properties_X28parameterLessX29()
+        [Fact]
+        public void SetIMockInfoProperties()
         {
             var mockInstance = new object();
             var mockInfo = (IMockInfo)new FuncMethodMock<string>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName",
                 Strictness.Lenient);
-            Assert.Equal(mockInstance, mockInfo.MockInstance);
+            Assert.Same(mockInstance, mockInfo.MockInstance);
             Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
             Assert.Equal("InterfaceName", mockInfo.InterfaceName);
             Assert.Equal("MemberName", mockInfo.MemberName);
@@ -111,12 +111,13 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_IMockInfo_properties()
+        public void SetIMockInfoPropertiesForParameterCase()
         {
             var mockInstance = new object();
             var mockInfo = (IMockInfo)new FuncMethodMock<int, string>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName",
                 "MemberMockName", Strictness.Lenient);
-            Assert.Equal(mockInstance, mockInfo.MockInstance);
+            // TODO: Assert Same for all these files
+            Assert.Same(mockInstance, mockInfo.MockInstance);
             Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
             Assert.Equal("InterfaceName", mockInfo.InterfaceName);
             Assert.Equal("MemberName", mockInfo.MemberName);

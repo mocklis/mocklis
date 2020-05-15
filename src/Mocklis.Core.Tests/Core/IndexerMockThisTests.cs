@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IndexerMock_this_should.cs">
+// <copyright file="IndexerMockThisTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class IndexerMock_this_should
+    public class IndexerMockThisTests
     {
         private static FakeNextIndexerStep<TKey, TValue> NextStepFor<TKey, TValue>(ICanHaveNextIndexerStep<TKey, TValue> mock, TValue value)
         {
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_and_key_to_step_and_get_value_on_getting()
+        public void SendMockInformationAndKeyToStepAndGetValueOnGetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -37,7 +37,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_no_step_in_lenient_mode_on_getting()
+        public void ReturnDefaultIfNoStepInLenientModeOnGetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             string result = indexerMock[5];
@@ -45,7 +45,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_on_getting()
+        public void ThrowIfNoStepInStrictModeOnGetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => indexerMock[5]);
@@ -53,7 +53,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_on_getting()
+        public void ThrowIfNoStepInVeryStrictModeOnGetting()
         {
             var indexerMock =
                 new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
@@ -62,7 +62,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_cleared_in_lenient_mode_on_getting()
+        public void ReturnDefaultIfClearedInLenientModeOnGetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -74,7 +74,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_on_getting()
+        public void ThrowIfClearedInStrictModeOnGetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -86,7 +86,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_on_getting()
+        public void ThrowIfClearedInVeryStrictModeOnGetting()
         {
             var indexerMock =
                 new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
@@ -99,7 +99,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_key_and_value_to_step_on_setting()
+        public void SendMockInformationKeyAndValueToStepOnSetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -115,14 +115,14 @@ namespace Mocklis.Core
 
 
         [Fact]
-        public void do_nothing_if_no_step_in_lenient_mode_on_setting()
+        public void DoNothingIfNoStepInLenientModeOnSetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             indexerMock[5] = "5";
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_on_setting()
+        public void ThrowIfNoStepInStrictModeOnSetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => indexerMock[5] = "5");
@@ -130,7 +130,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_on_setting()
+        public void ThrowIfNoStepInVeryStrictModeOnSetting()
         {
             var indexerMock =
                 new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
@@ -139,7 +139,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_cleared_in_lenient_mode_on_setting()
+        public void DoNothingIfClearedInLenientModeOnSetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -150,7 +150,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_on_setting()
+        public void ThrowIfClearedInStrictModeOnSetting()
         {
             var indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(indexerMock, "5");
@@ -162,7 +162,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_on_setting()
+        public void ThrowIfClearedInVeryStrictModeOnSetting()
         {
             var indexerMock =
                 new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EventMock_constructor_should.cs">
+// <copyright file="EventMockConstructorTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,10 +14,10 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class EventMock_constructor_should
+    public class EventMockConstructorTests
     {
         [Fact]
-        public void require_mockInstance()
+        public void RequireMockInstance()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new EventMock<EventHandler>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
@@ -25,7 +25,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_mocklisClassName()
+        public void RequireMocklisClassName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new EventMock<EventHandler>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
@@ -33,7 +33,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_interfaceName()
+        public void RequireInterfaceName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new EventMock<EventHandler>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
@@ -41,7 +41,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_memberName()
+        public void RequireMemberName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
@@ -49,7 +49,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_memberMockName()
+        public void RequireMemberMockName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new EventMock<EventHandler>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
@@ -57,7 +57,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_IMockInfo_properties()
+        public void SetIMockInfoProperties()
         {
             var mockInstance = new object();
             var mockInfo = (IMockInfo)new EventMock<EventHandler>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName",

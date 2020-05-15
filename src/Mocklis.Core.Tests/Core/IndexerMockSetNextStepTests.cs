@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IndexerMock_SetNextStep_should.cs">
+// <copyright file="IndexerMockSetNextStepTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -15,17 +15,17 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class IndexerMock_SetNextStep_should
+    public class IndexerMockSetNextStepTests
     {
         private readonly IndexerMock<int, string> _indexerMock;
 
-        public IndexerMock_SetNextStep_should()
+        public IndexerMockSetNextStepTests()
         {
             _indexerMock = new IndexerMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]
-        public void require_step()
+        public void RequireStep()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 ((ICanHaveNextIndexerStep<int, string>)_indexerMock).SetNextStep((IIndexerStep<int, string>)null!));
@@ -33,15 +33,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_new_step()
+        public void ReturnNewStep()
         {
             var newStep = new MockIndexerStep<int, string>();
             var returnedStep = ((ICanHaveNextIndexerStep<int, string>)_indexerMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
-        [Fact(DisplayName = "set step used by this[] getter")]
-        public void set_step_used_by_thisX5BX5D_getter()
+        [Fact]
+        public void SetStepUsedByGetter()
         {
             bool called = false;
             var newStep = new MockIndexerStep<int, string>();
@@ -56,8 +56,8 @@ namespace Mocklis.Core
             Assert.True(called);
         }
 
-        [Fact(DisplayName = "set step used by this[] setter")]
-        public void set_step_used_by_thisX5BX5D_setter()
+        [Fact]
+        public void SetStepUsedBySetter()
         {
             bool called = false;
             var newStep = new MockIndexerStep<int, string>();

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ActionMethodMock_SetNextStep_should.cs">
+// <copyright file="ActionMethodMockSetNextStepTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -15,19 +15,19 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class ActionMethodMock_SetNextStep_should
+    public class ActionMethodMockSetNextStepTests
     {
         private readonly ActionMethodMock _parameterLessActionMock;
         private readonly ActionMethodMock<int> _actionMock;
 
-        public ActionMethodMock_SetNextStep_should()
+        public ActionMethodMockSetNextStepTests()
         {
             _parameterLessActionMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             _actionMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]
-        public void require_step()
+        public void RequireStep()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep((IMethodStep<int, ValueTuple>)null!));
@@ -35,15 +35,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_new_step()
+        public void ReturnNewStep()
         {
             var newStep = new MockMethodStep<int, ValueTuple>();
             var returnedStep = ((ICanHaveNextMethodStep<int, ValueTuple>)_actionMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
-        [Fact(DisplayName = "set step used by call (parameterless)")]
-        public void set_step_used_by_call_X28parameterlessX29()
+        [Fact]
+        public void SetStepUsedByCall()
         {
             bool called = false;
             var newStep = new MockMethodStep<ValueTuple, ValueTuple>();
@@ -55,7 +55,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_step_used_by_call()
+        public void SetStepUsedByCallForParameterCase()
         {
             bool called = false;
             var newStep = new MockMethodStep<int, ValueTuple>();

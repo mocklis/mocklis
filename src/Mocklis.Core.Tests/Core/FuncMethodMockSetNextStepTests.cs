@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FuncMethodMock_SetNextStep_should.cs">
+// <copyright file="FuncMethodMockSetNextStepTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -15,13 +15,13 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class FuncMethodMock_SetNextStep_should
+    public class FuncMethodMockSetNextStepTests
     {
         private readonly FuncMethodMock<string> _parameterLessFuncMock;
         private readonly FuncMethodMock<int, string> _funcMock;
 
 
-        public FuncMethodMock_SetNextStep_should()
+        public FuncMethodMockSetNextStepTests()
         {
             _parameterLessFuncMock =
                 new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
@@ -29,7 +29,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void require_step()
+        public void RequireStep()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 ((ICanHaveNextMethodStep<int, string>)_funcMock).SetNextStep((IMethodStep<int, string>)null!));
@@ -37,15 +37,15 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_new_step()
+        public void ReturnNewStep()
         {
             var newStep = new MockMethodStep<int, string>();
             var returnedStep = ((ICanHaveNextMethodStep<int, string>)_funcMock).SetNextStep(newStep);
             Assert.Same(newStep, returnedStep);
         }
 
-        [Fact(DisplayName = "set step used by call (parameterless)")]
-        public void set_step_used_by_call_X28parameterlessX29()
+        [Fact]
+        public void SetStepUsedByCall()
         {
             bool called = false;
             var newStep = new MockMethodStep<ValueTuple, string>();
@@ -61,7 +61,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_step_used_by_call()
+        public void SetStepUsedByCallForParameterCase()
         {
             bool called = false;
             var newStep = new MockMethodStep<int, string>();

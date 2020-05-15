@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ByRef_Wrap_should.cs">
+// <copyright file="ByRefWrapTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -13,10 +13,10 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class ByRef_Wrap_should
+    public class ByRefWrapTests
     {
         [Fact]
-        public void create_new_reference_with_passed_value()
+        public void CreateNewReferenceWithPassedValue()
         {
             ref var wrapped = ref ByRef<int>.Wrap(15);
             Assert.Equal(15, wrapped);

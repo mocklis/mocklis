@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyMock_constructor_should.cs">
+// <copyright file="IndexerMockConstructorTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,53 +14,53 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class PropertyMock_constructor_should
+    public class IndexerMockConstructorTests
     {
         [Fact]
-        public void require_mockInstance()
+        public void RequireMockInstance()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PropertyMock<int>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
+                new IndexerMock<int, string>(null!, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mockInstance", exception.ParamName);
         }
 
         [Fact]
-        public void require_mocklisClassName()
+        public void RequireMocklisClassName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PropertyMock<int>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
+                new IndexerMock<int, string>(new object(), null!, "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("mocklisClassName", exception.ParamName);
         }
 
         [Fact]
-        public void require_interfaceName()
+        public void RequireInterfaceName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PropertyMock<int>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
+                new IndexerMock<int, string>(new object(), "MocklisClassName", null!, "MemberName", "MemberMockName", Strictness.Lenient));
             Assert.Equal("interfaceName", exception.ParamName);
         }
 
         [Fact]
-        public void require_memberName()
+        public void RequireMemberName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
+                new IndexerMock<int, string>(new object(), "MocklisClassName", "InterfaceName", null!, "MemberMockName", Strictness.Lenient));
             Assert.Equal("memberName", exception.ParamName);
         }
 
         [Fact]
-        public void require_memberMockName()
+        public void RequireMemberMockName()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
+                new IndexerMock<int, string>(new object(), "MocklisClassName", "InterfaceName", "MemberName", null!, Strictness.Lenient));
             Assert.Equal("memberMockName", exception.ParamName);
         }
 
         [Fact]
-        public void set_IMockInfo_properties()
+        public void SetIMockInfoProperties()
         {
             var mockInstance = new object();
-            var mockInfo = (IMockInfo)new PropertyMock<int>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName",
+            var mockInfo = (IMockInfo)new IndexerMock<int, string>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName",
                 Strictness.Lenient);
             Assert.Equal(mockInstance, mockInfo.MockInstance);
             Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);

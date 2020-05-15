@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FuncMethodMock_Call_should.cs">
+// <copyright file="FuncMethodMockCallTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class FuncMethodMock_Call_should
+    public class FuncMethodMockCallTests
     {
         private static FakeNextMethodStep<TParam, TResult> NextStepFor<TParam, TResult>(ICanHaveNextMethodStep<TParam, TResult> mock, TResult result)
         {
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_to_step_and_get_result_back()
+        public void SendMockInformationToStepAndGetResultBack()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(methodMock, "5");
@@ -35,7 +35,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_no_step_in_lenient_mode()
+        public void ReturnDefaultIfNoStepInLenientMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             string result = methodMock.Call();
@@ -43,7 +43,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode()
+        public void ThrowIfNoStepInStrictMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
@@ -51,7 +51,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode()
+        public void ThrowIfNoStepInVeryStrictMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
@@ -59,7 +59,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_cleared_in_lenient_mode()
+        public void ReturnDefaultIfClearedInLenientMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(methodMock, "5");
@@ -70,7 +70,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode()
+        public void ThrowIfClearedInStrictMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(methodMock, "5");
@@ -81,7 +81,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode()
+        public void ThrowIfClearedInVeryStrictMode()
         {
             var methodMock = new FuncMethodMock<string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var nextStep = NextStepFor(methodMock, "5");
@@ -92,7 +92,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_and_parameters_to_step_and_get_result_back()
+        public void SendMockInformationAndParametersToStepAndGetResultBack()
         {
             var methodMock =
                 new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
@@ -107,7 +107,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_no_step_in_lenient_mode_parameter_case()
+        public void ReturnDefaultIfNoStepInLenientModeParameterCase()
         {
             var methodMock =
                 new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
@@ -116,7 +116,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_parameter_case()
+        public void ThrowIfNoStepInStrictModeParameterCase()
         {
             var methodMock = new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
@@ -124,7 +124,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_parameter_case()
+        public void ThrowIfNoStepInVeryStrictModeParameterCase()
         {
             var methodMock =
                 new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
@@ -133,7 +133,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_cleared_in_lenient_mode_parameter_case()
+        public void ReturnDefaultIfClearedInLenientModeParameterCase()
         {
             var methodMock =
                 new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
@@ -145,7 +145,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_parameter_case()
+        public void ThrowIfClearedInStrictModeParameterCase()
         {
             var methodMock = new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(methodMock, "5");
@@ -156,7 +156,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_parameter_case()
+        public void ThrowIfClearedInVeryStrictModeParameterCase()
         {
             var methodMock =
                 new FuncMethodMock<int, string>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);

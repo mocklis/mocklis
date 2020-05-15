@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyMock_Value_should.cs">
+// <copyright file="PropertyMockValueTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class PropertyMock_Value_should
+    public class PropertyMockValueTests
     {
         private static FakeNextPropertyStep<TValue> NextStepFor<TValue>(ICanHaveNextPropertyStep<TValue> mock, TValue value)
         {
@@ -22,7 +22,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_to_step_and_get_value_on_getting()
+        public void SendMockInformationToStepAndGetValueOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -36,7 +36,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_no_step_in_lenient_mode_on_getting()
+        public void ReturnDefaultIfNoStepInLenientModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             int result = propertyMock.Value;
@@ -44,7 +44,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_on_getting()
+        public void ThrowIfNoStepInStrictModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => propertyMock.Value);
@@ -52,7 +52,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_on_getting()
+        public void ThrowIfNoStepInVeryStrictModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var ex = Assert.Throws<MockMissingException>(() => propertyMock.Value);
@@ -60,7 +60,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_default_if_cleared_in_lenient_mode_on_getting()
+        public void ReturnDefaultIfClearedInLenientModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -72,7 +72,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_on_getting()
+        public void ThrowIfClearedInStrictModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -84,7 +84,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_on_getting()
+        public void ThrowIfClearedInVeryStrictModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -96,7 +96,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_and_value_to_step_on_setting()
+        public void SendMockInformationAndValueToStepOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -110,14 +110,14 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_no_step_in_lenient_mode_on_setting()
+        public void DoNothingIfNoStepInLenientModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             propertyMock.Value = 5;
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_on_setting()
+        public void ThrowIfNoStepInStrictModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => propertyMock.Value = 5);
@@ -125,7 +125,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_on_setting()
+        public void ThrowIfNoStepInVeryStrictModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var ex = Assert.Throws<MockMissingException>(() => propertyMock.Value = 5);
@@ -133,7 +133,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_cleared_in_lenient_mode_on_setting()
+        public void DoNothingIfClearedInLenientModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -144,7 +144,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_on_setting()
+        public void ThrowIfClearedInStrictModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(propertyMock, 5);
@@ -156,7 +156,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_on_setting()
+        public void ThrowIfClearedInVeryStrictModeOnSetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var nextStep = NextStepFor(propertyMock, 5);

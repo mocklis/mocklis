@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ActionMethodMock_Call_should.cs">
+// <copyright file="ActionMethodMockCallTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ namespace Mocklis.Core
     #endregion
 
 
-    public class ActionMethodMock_Call_should
+    public class ActionMethodMockCallTests
     {
         private static FakeNextMethodStep<TParam, ValueTuple> NextStepFor<TParam>(ICanHaveNextMethodStep<TParam, ValueTuple> mock)
         {
@@ -24,7 +24,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void send_mock_information_to_step()
+        public void SendMockInformationToStep()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(methodMock);
@@ -36,14 +36,14 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_no_step_in_lenient_mode()
+        public void DoNothingIfNoStepInLenientMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             methodMock.Call();
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode()
+        public void ThrowIfNoStepInStrictMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
@@ -51,7 +51,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode()
+        public void ThrowIfNoStepInVeryStrictMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call());
@@ -59,7 +59,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_cleared_in_lenient_mode()
+        public void DoNothingIfClearedInLenientMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(methodMock);
@@ -69,7 +69,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode()
+        public void ThrowIfClearedInStrictMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(methodMock);
@@ -80,7 +80,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode()
+        public void ThrowIfClearedInVeryStrictMode()
         {
             var methodMock = new ActionMethodMock(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var nextStep = NextStepFor(methodMock);
@@ -92,7 +92,7 @@ namespace Mocklis.Core
 
 
         [Fact]
-        public void send_mock_information_and_parameters_to_step()
+        public void SendMockInformationAndParametersToStep()
         {
             var actionMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(actionMock);
@@ -105,14 +105,14 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_no_step_in_lenient_mode_parameter_case()
+        public void DoNothingIfNoStepInLenientModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             methodMock.Call(5);
         }
 
         [Fact]
-        public void throw_if_no_step_in_strict_mode_parameter_case()
+        public void ThrowIfNoStepInStrictModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
@@ -120,7 +120,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_no_step_in_very_strict_mode_parameter_case()
+        public void ThrowIfNoStepInVeryStrictModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var ex = Assert.Throws<MockMissingException>(() => methodMock.Call(5));
@@ -128,7 +128,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void do_nothing_if_cleared_in_lenient_mode_parameter_case()
+        public void DoNothingIfClearedInLenientModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(methodMock);
@@ -138,7 +138,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_strict_mode_parameter_case()
+        public void ThrowIfClearedInStrictModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Strict);
             var nextStep = NextStepFor(methodMock);
@@ -149,7 +149,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void throw_if_cleared_in_very_strict_mode_parameter_case()
+        public void ThrowIfClearedInVeryStrictModeParameterCase()
         {
             var methodMock = new ActionMethodMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.VeryStrict);
             var nextStep = NextStepFor(methodMock);

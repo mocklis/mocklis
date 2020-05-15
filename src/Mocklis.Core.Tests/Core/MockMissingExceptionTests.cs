@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MockMissingException_should.cs">
+// <copyright file="MockMissingExceptionTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MockMissingException_should
+    public class MockMissingExceptionTests
     {
         private readonly IMockInfo _mockInfo =
             new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);
@@ -33,7 +33,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void be_serializable()
+        public void BeSerializable()
         {
             var exception = new MockMissingException(MockType.PropertyGet, _mockInfo);
             var roundtrippedException = RoundTrip(exception);

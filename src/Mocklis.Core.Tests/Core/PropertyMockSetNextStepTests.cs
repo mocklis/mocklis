@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyMock_SetNextStep_should.cs">
+// <copyright file="PropertyMockSetNextStepTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -15,17 +15,17 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class PropertyMock_SetNextStep_should
+    public class PropertyMockSetNextStepTests
     {
         private readonly PropertyMock<int> _propertyMock;
 
-        public PropertyMock_SetNextStep_should()
+        public PropertyMockSetNextStepTests()
         {
             _propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
         }
 
         [Fact]
-        public void require_step()
+        public void RequireStep()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep((IPropertyStep<int>)null!));
@@ -33,7 +33,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void return_new_step()
+        public void ReturnNewStep()
         {
             var newStep = new MockPropertyStep<int>();
             var returnedStep = ((ICanHaveNextPropertyStep<int>)_propertyMock).SetNextStep(newStep);
@@ -41,7 +41,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_step_used_by_Value_getter()
+        public void SetStepUsedByValueGetter()
         {
             bool called = false;
             var newStep = new MockPropertyStep<int>();
@@ -57,7 +57,7 @@ namespace Mocklis.Core
         }
 
         [Fact]
-        public void set_step_used_by_Value_setter()
+        public void SetStepUsedByValueSetter()
         {
             bool called = false;
             var newStep = new MockPropertyStep<int>();

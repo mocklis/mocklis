@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MocklisClassAttribute_constructor_should.cs">
+// <copyright file="MocklisClassAttributeConstructorTests.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -13,10 +13,10 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MocklisClassAttribute_constructor_should
+    public class MocklisClassAttributeConstructorTests
     {
         [Fact]
-        public void set_correct_property_values()
+        public void SetCorrectPropertyValues()
         {
             var sut = new MocklisClassAttribute();
 
