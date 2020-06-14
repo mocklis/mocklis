@@ -26,21 +26,21 @@ namespace Mocklis
         /// <param name="storedEvent">The stored event step that holds the event handler.</param>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        public static void Raise(this IStoredEvent<EventHandler> storedEvent, object sender, EventArgs e)
+        public static void Raise(this IStoredEvent<EventHandler> storedEvent, object? sender, EventArgs e)
         {
             storedEvent.EventHandler?.Invoke(sender, e);
         }
 
         /// <summary>
         ///     Raises an <see cref="EventHandler{TEventArgs}" /> generic event using a sender and
-        ///     <typeparamref name="TEventArg" /> pair.
+        ///     <typeparamref name="TEventArgs" /> pair.
         /// </summary>
-        /// <typeparam name="TEventArg">The type argument used for this event handler type.</typeparam>
+        /// <typeparam name="TEventArgs">The type argument used for this event handler type.</typeparam>
         /// <param name="storedEvent">The stored event step that holds the event handler.</param>
         /// <param name="sender">The event sender.</param>
-        /// <param name="e">The <typeparamref name="TEventArg" /> instance containing the event data.</param>
-        public static void Raise<TEventArg>(this IStoredEvent<EventHandler<TEventArg>> storedEvent, object sender,
-            TEventArg e) where TEventArg : EventArgs
+        /// <param name="e">The <typeparamref name="TEventArgs" /> instance containing the event data.</param>
+        public static void Raise<TEventArgs>(this IStoredEvent<EventHandler<TEventArgs>> storedEvent, object? sender,
+            TEventArgs e) where TEventArgs : EventArgs
         {
             storedEvent.EventHandler?.Invoke(sender, e);
         }
@@ -52,7 +52,7 @@ namespace Mocklis
         /// <param name="storedEvent">The stored event step that holds the event handler.</param>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The <see cref="PropertyChangedEventArgs" /> instance containing the event data.</param>
-        public static void Raise(this IStoredEvent<PropertyChangedEventHandler> storedEvent, object sender,
+        public static void Raise(this IStoredEvent<PropertyChangedEventHandler> storedEvent, object? sender,
             PropertyChangedEventArgs e)
         {
             storedEvent.EventHandler?.Invoke(sender, e);
