@@ -27,7 +27,6 @@ namespace Mocklis.Core
 
             public override void Clear()
             {
-                throw new NotImplementedException();
             }
         }
 

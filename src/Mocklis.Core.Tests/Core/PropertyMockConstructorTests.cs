@@ -62,7 +62,7 @@ namespace Mocklis.Core
             var mockInstance = new object();
             var mockInfo = (IMockInfo)new PropertyMock<int>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName",
                 Strictness.Lenient);
-            Assert.Equal(mockInstance, mockInfo.MockInstance);
+            Assert.Same(mockInstance, mockInfo.MockInstance);
             Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
             Assert.Equal("InterfaceName", mockInfo.InterfaceName);
             Assert.Equal("MemberName", mockInfo.MemberName);

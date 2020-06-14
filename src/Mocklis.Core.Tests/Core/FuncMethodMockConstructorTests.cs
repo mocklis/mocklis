@@ -116,7 +116,6 @@ namespace Mocklis.Core
             var mockInstance = new object();
             var mockInfo = (IMockInfo)new FuncMethodMock<int, string>(mockInstance, "MocklisClassName", "InterfaceName", "MemberName",
                 "MemberMockName", Strictness.Lenient);
-            // TODO: Assert Same for all these files
             Assert.Same(mockInstance, mockInfo.MockInstance);
             Assert.Equal("MocklisClassName", mockInfo.MocklisClassName);
             Assert.Equal("InterfaceName", mockInfo.InterfaceName);
