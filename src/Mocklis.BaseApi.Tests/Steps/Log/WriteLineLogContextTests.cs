@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="WriteLineLogContextTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,7 +11,6 @@ namespace Mocklis.Steps.Log
 
     using System;
     using System.Collections.Generic;
-    using JetBrains.Annotations;
     using Mocklis.Interfaces;
     using Mocklis.Mocks;
     using Xunit;
@@ -57,7 +56,6 @@ namespace Mocklis.Steps.Log
             Assert.Equal("writeLine", exception.ParamName);
         }
 
-        [AssertionMethod]
         private void AssertLogLines(params string[] expectedLines)
         {
             Assert.Equal(expectedLines, _logLines);

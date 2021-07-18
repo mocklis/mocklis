@@ -1,12 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReturnValueTaskMethodStep.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 #if NETSTANDARD2_1
-
 namespace Mocklis.Steps.ReturnTask
 {
     #region Using Directives

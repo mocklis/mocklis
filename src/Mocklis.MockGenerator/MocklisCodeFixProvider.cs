@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MocklisCodeFixProvider.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -77,13 +77,27 @@ namespace Mocklis.MockGenerator
             var classIsInNullableContext = semanticModel.ClassIsInNullableContext(classDecl);
 
             var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            if (oldRoot == null)
+            {
+                return document.Project.Solution;
+            }
 
             var emptyClassDecl = MocklisClass.EmptyMocklisClass(classDecl).WithAdditionalAnnotations(new SyntaxAnnotation(MocklisEmptiedClass));
             var emptyRoot = oldRoot.ReplaceNode(classDecl, emptyClassDecl);
             var emptyDoc = document.WithSyntaxRoot(emptyRoot);
             emptyRoot = await emptyDoc.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
+            if (emptyRoot == null)
+            {
+                return document.Project.Solution;
+            }
+
             semanticModel = await emptyDoc.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+
+            if (semanticModel == null)
+            {
+                return document.Project.Solution;
+            }
 
             // And find the class again
             emptyClassDecl = emptyRoot.DescendantNodesAndSelf().OfType<ClassDeclarationSyntax>()

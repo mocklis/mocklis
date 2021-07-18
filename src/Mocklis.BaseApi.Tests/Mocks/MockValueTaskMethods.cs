@@ -1,14 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockValueTaskMethods.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Mocks
 {
 #if NETCOREAPP3_0
-
     #region Using Directives
 
     using System.Threading.Tasks;
@@ -41,5 +40,4 @@ namespace Mocklis.Mocks
     }
 
 #endif
-
 }

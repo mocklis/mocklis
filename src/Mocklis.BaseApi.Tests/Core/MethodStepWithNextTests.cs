@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MethodStepWithNextTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using JetBrains.Annotations;
     using Mocklis.Helpers;
     using Mocklis.Verification;
     using Xunit;
@@ -20,7 +19,7 @@ namespace Mocklis.Core
 
     public class MethodStepWithNextTests : XUnitTestClass
     {
-        public MethodStepWithNextTests([NotNull] ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        public MethodStepWithNextTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
         }
 
@@ -59,7 +58,7 @@ namespace Mocklis.Core
         public void CallForwardsToNextStep()
         {
             var vg = new VerificationGroup();
-            MethodStep.ExpectedUsage(vg, null, expectedNumberOfCalls:1);
+            MethodStep.ExpectedUsage(vg, null, expectedNumberOfCalls: 1);
 
             MethodStep.Call(MockInfo.Lenient, 1);
 

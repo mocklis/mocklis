@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexerStepWithNextTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,6 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using JetBrains.Annotations;
     using Mocklis.Helpers;
     using Mocklis.Verification;
     using Xunit;
@@ -20,7 +19,7 @@ namespace Mocklis.Core
 
     public class IndexerStepWithNextTests : XUnitTestClass
     {
-        public IndexerStepWithNextTests([NotNull] ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        public IndexerStepWithNextTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
         }
 
@@ -80,7 +79,7 @@ namespace Mocklis.Core
         public void GetForwardsToNextStep()
         {
             var vg = new VerificationGroup();
-            IndexerStep.ExpectedUsage(vg, null, expectedNumberOfGets:1, expectedNumberOfSets:0);
+            IndexerStep.ExpectedUsage(vg, null, expectedNumberOfGets: 1, expectedNumberOfSets: 0);
 
             IndexerStep.Get(MockInfo.Lenient, 1);
 
@@ -91,13 +90,11 @@ namespace Mocklis.Core
         public void SetForwardsToNextStep()
         {
             var vg = new VerificationGroup();
-            IndexerStep.ExpectedUsage(vg, null, expectedNumberOfGets:0, expectedNumberOfSets:1);
+            IndexerStep.ExpectedUsage(vg, null, expectedNumberOfGets: 0, expectedNumberOfSets: 1);
 
             IndexerStep.Set(MockInfo.Lenient, 1, "one");
 
             vg.Assert();
         }
-
-
     }
 }

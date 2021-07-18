@@ -1,9 +1,20 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MockTaskMethods.cs">
+//   SPDX-License-Identifier: MIT
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace Mocklis.Mocks
 {
+    #region Using Directives
+
     using Mocklis.Core;
     using Mocklis.Interfaces;
 
-    [MocklisClass, System.CodeDom.Compiler.GeneratedCode("Mocklis", "1.2.0")]
+    #endregion
+
+    [MocklisClass] [System.CodeDom.Compiler.GeneratedCode("Mocklis", "1.2.0")]
     public class MockTaskMethods : ITaskMethods
     {
         // The contents of this class were created by the Mocklis code-generator.

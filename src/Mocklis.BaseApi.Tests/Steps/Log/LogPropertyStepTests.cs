@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="LogPropertyStepTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,7 +10,6 @@ namespace Mocklis.Steps.Log
     #region Using Directives
 
     using System;
-    using JetBrains.Annotations;
     using Mocklis.Core;
     using Mocklis.Interfaces;
     using Mocklis.Mocks;
@@ -42,7 +41,6 @@ namespace Mocklis.Steps.Log
             Assert.Equal("logContext", exception.ParamName);
         }
 
-        [AssertionMethod]
         private void AssertMockInfoIsCorrect(IMockInfo mockInfo)
         {
             Assert.Same(_properties, mockInfo.MockInstance);

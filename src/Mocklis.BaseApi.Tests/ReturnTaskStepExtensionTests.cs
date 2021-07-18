@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReturnTaskStepExtensionTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -36,7 +36,6 @@ namespace Mocklis
         }
 
 #if NETCOREAPP3_0
-
         [Fact]
         public void ReturnTaskRequiresCallerForValueTask()
         {
@@ -48,6 +47,5 @@ namespace Mocklis
         }
 
 #endif
-
     }
 }

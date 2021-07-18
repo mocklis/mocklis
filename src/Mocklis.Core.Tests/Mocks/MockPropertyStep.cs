@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockPropertyStep.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ namespace Mocklis.Mocks
 
     #endregion
 
-    [MocklisClass, GeneratedCode("Mocklis", "1.2.0")]
+    [MocklisClass] [GeneratedCode("Mocklis", "1.2.0")]
     public class MockPropertyStep<TValue> : IPropertyStep<TValue>
     {
         // The contents of this class were created by the Mocklis code-generator.
