@@ -22,11 +22,11 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void IMemberMock.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        void IMemberMock.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
         }
 
-        void IMemberMock.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        void IMemberMock.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
         }
     }

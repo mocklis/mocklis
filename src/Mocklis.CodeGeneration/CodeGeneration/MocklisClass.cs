@@ -140,6 +140,9 @@ namespace Mocklis.CodeGeneration
             private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
+            private readonly bool _strict;
+            private readonly bool _veryStrict;
+
             public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration,
                 MocklisSymbols mocklisSymbols)
             {
@@ -195,12 +198,15 @@ namespace Mocklis.CodeGeneration
                 // 'Very strict' implies 'strict'
                 strict |= veryStrict;
 
-                _mocks = CreateMocks(mocklisSymbols, _classSymbol, _typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly, strict, veryStrict);
+                _strict = strict;
+                _veryStrict = veryStrict;
+
+                _mocks = CreateMocks(mocklisSymbols, _classSymbol, _typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly);
             }
 
             private static IMemberMock[] CreateMocks(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol,
                 MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef,
-                bool mockReturnsByRefReadonly, bool strict, bool veryStrict)
+                bool mockReturnsByRefReadonly)
             {
                 var members = GetMembers(classSymbol).ToArray();
 
@@ -216,7 +222,7 @@ namespace Mocklis.CodeGeneration
 
                 return members.Select(m =>
                     CreateMock(mocklisSymbols, classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier,
-                        typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly, strict, veryStrict)).ToArray();
+                        typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly)).ToArray();
             }
 
             private static IEnumerable<(INamedTypeSymbol interfaceSymbol, ISymbol memberSymbol)> GetMembers(ITypeSymbol classSymbol)
@@ -248,8 +254,7 @@ namespace Mocklis.CodeGeneration
 
             private static IMemberMock CreateMock(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
                 INamedTypeSymbol interfaceSymbol,
-                Uniquifier uniquifier, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly,
-                bool strict, bool veryStrict)
+                Uniquifier uniquifier, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
             {
                 string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
 
@@ -272,8 +277,7 @@ namespace Mocklis.CodeGeneration
                                     mockMemberName);
                             }
 
-                            return new PropertyBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName,
-                                strict, veryStrict);
+                            return new PropertyBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                         }
 
                         if (useVirtualMethod)
@@ -282,13 +286,11 @@ namespace Mocklis.CodeGeneration
                                 mockMemberName);
                         }
 
-                        return new PropertyBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName,
-                            strict, veryStrict);
+                        return new PropertyBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
 
                     case IEventSymbol memberEventSymbol:
-                        return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName, strict,
-                            veryStrict);
+                        return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
                     case IMethodSymbol memberMethodSymbol:
                     {
                         var hasRestrictedParameter = memberMethodSymbol.Parameters.Any(p => !mocklisSymbols.HasImplicitConversionToObject(p.Type));
@@ -310,11 +312,10 @@ namespace Mocklis.CodeGeneration
                         {
                             var mockProviderName = uniquifier.GetUniqueName(CreateMockProviderName(memberSymbol.MetadataName));
                             return new PropertyBasedMethodMockWithTypeParameters(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,
-                                mockMemberName, mockProviderName, strict, veryStrict);
+                                mockMemberName, mockProviderName);
                         }
 
-                        return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName, strict,
-                            veryStrict);
+                        return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
                     }
 
                     default:
@@ -335,7 +336,7 @@ namespace Mocklis.CodeGeneration
 
                 foreach (var mock in _mocks)
                 {
-                    mock.AddMembersToClass(declarationList);
+                    mock.AddMembersToClass(declarationList, _strict, _veryStrict);
                 }
 
                 return new SyntaxList<MemberDeclarationSyntax>(declarationList);
@@ -365,7 +366,7 @@ namespace Mocklis.CodeGeneration
 
                 foreach (var mock in _mocks)
                 {
-                    mock.AddInitialisersToConstructor(constructorStatements);
+                    mock.AddInitialisersToConstructor(constructorStatements, _strict, _veryStrict);
                 }
 
                 var baseTypeConstructors = _classSymbol.BaseType.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))

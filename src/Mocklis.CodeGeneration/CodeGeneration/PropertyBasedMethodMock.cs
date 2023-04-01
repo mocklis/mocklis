@@ -28,8 +28,8 @@ namespace Mocklis.CodeGeneration
         protected TypeSyntax MockMemberType { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol, string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
-            mockMemberName, strict, veryStrict)
+            IMethodSymbol symbol, string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
+            mockMemberName)
         {
             var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
             var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
@@ -91,15 +91,15 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-        public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             declarationList.Add(MockProperty(MockMemberType));
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockMemberType));
+            constructorStatements.Add(InitialisationStatement(MockMemberType, strict, veryStrict));
         }
 
         protected MemberDeclarationSyntax ExplicitInterfaceMember()

@@ -16,7 +16,7 @@ namespace Mocklis.CodeGeneration
 
     public interface IMemberMock
     {
-        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList);
-        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements);
+        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict);
+        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict);
     }
 }

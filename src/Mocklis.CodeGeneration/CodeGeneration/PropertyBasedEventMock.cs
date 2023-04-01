@@ -24,22 +24,21 @@ namespace Mocklis.CodeGeneration
         private TypeSyntax MockPropertyType { get; }
 
         public PropertyBasedEventMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IEventSymbol symbol, string memberMockName, bool strict, bool veryStrict) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
-            memberMockName, strict, veryStrict)
+            IEventSymbol symbol, string memberMockName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, memberMockName)
         {
             EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
             MockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(symbol.Type, false));
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             declarationList.Add(MockProperty(MockPropertyType));
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType));
+            constructorStatements.Add(InitialisationStatement(MockPropertyType, strict, veryStrict));
         }
 
         private MemberDeclarationSyntax ExplicitInterfaceMember()

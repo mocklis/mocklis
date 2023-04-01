@@ -23,27 +23,23 @@ namespace Mocklis.CodeGeneration
         protected INamedTypeSymbol InterfaceSymbol { get; }
         protected TSymbol Symbol { get; }
         protected string MemberMockName { get; }
-        protected bool Strict { get; }
-        protected bool VeryStrict { get; }
 
-        protected MemberAccessExpressionSyntax StrictnessExpression()
+        protected MemberAccessExpressionSyntax StrictnessExpression(bool strict, bool veryStrict)
         {
             return
-                VeryStrict ? TypesForSymbols.StrictnessVeryStrict() :
-                Strict ? TypesForSymbols.StrictnessStrict() :
+                veryStrict ? TypesForSymbols.StrictnessVeryStrict() :
+                strict ? TypesForSymbols.StrictnessStrict() :
                 TypesForSymbols.StrictnessLenient();
         }
 
         protected PropertyBasedMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            TSymbol symbol, string memberMockName, bool strict, bool veryStrict)
+            TSymbol symbol, string memberMockName)
         {
             TypesForSymbols = typesForSymbols;
             ClassSymbol = classSymbol;
             InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = memberMockName;
-            Strict = strict;
-            VeryStrict = veryStrict;
         }
 
         protected PropertyDeclarationSyntax MockProperty(TypeSyntax mockPropertyType)
@@ -53,7 +49,7 @@ namespace Mocklis.CodeGeneration
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
         }
 
-        protected ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType)
+        protected ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, bool strict, bool veryStrict)
         {
             return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 F.IdentifierName(MemberMockName),
@@ -64,7 +60,7 @@ namespace Mocklis.CodeGeneration
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MemberMockName)),
-                        StrictnessExpression()
+                        StrictnessExpression(strict, veryStrict)
                     )));
         }
     }

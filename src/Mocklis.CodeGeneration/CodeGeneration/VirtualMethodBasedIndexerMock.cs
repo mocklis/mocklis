@@ -44,7 +44,7 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             if (!Symbol.IsWriteOnly)
             {
@@ -59,7 +59,7 @@ namespace Mocklis.CodeGeneration
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
         }
 

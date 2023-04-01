@@ -23,16 +23,16 @@ namespace Mocklis.CodeGeneration
         public string MockProviderName { get; }
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
-            INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName, bool strict, bool veryStrict)
-            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
+            INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName)
+            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
         }
 
-        public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             declarationList.Add(TypedMockProviderField());
-            declarationList.Add(MockProviderMethod());
+            declarationList.Add(MockProviderMethod(strict, veryStrict));
             declarationList.Add(ExplicitInterfaceMember());
         }
 
@@ -45,7 +45,7 @@ namespace Mocklis.CodeGeneration
             ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
         }
 
-        private MemberDeclarationSyntax MockProviderMethod()
+        private MemberDeclarationSyntax MockProviderMethod(bool strict, bool veryStrict)
         {
             var m = F.MethodDeclaration(MockMemberType, F.Identifier(MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -67,7 +67,7 @@ namespace Mocklis.CodeGeneration
                         F.LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
                             F.Literal("()"))),
-                    StrictnessExpression()
+                    StrictnessExpression(strict, veryStrict)
                 ));
 
             var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(
@@ -95,7 +95,7 @@ namespace Mocklis.CodeGeneration
                     F.TypeOfExpression(F.IdentifierName(TypesForSymbols.FindTypeParameterName(typeParameter.Name)))))));
         }
 
-        public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
         }
 

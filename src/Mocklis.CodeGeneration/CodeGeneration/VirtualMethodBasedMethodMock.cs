@@ -68,13 +68,13 @@ namespace Mocklis.CodeGeneration
             return null;
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             declarationList.Add(MockVirtualMethod());
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
         }
 

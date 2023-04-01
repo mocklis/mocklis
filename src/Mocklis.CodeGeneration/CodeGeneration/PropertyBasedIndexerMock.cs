@@ -28,8 +28,8 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedIndexerMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
-            string mockMemberName, bool strict, bool veryStrict) : base(typesForSymbols,
-            classSymbol, interfaceSymbol, symbol, mockMemberName, strict, veryStrict)
+            string mockMemberName) : base(typesForSymbols,
+            classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             var builder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
             foreach (var p in symbol.Parameters)
@@ -48,15 +48,15 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = typesForSymbols.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
         {
             declarationList.Add(MockProperty(MockPropertyType));
             declarationList.Add(ExplicitInterfaceMember());
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType));
+            constructorStatements.Add(InitialisationStatement(MockPropertyType, strict, veryStrict));
         }
 
         private MemberDeclarationSyntax ExplicitInterfaceMember()
