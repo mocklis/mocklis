@@ -7,7 +7,6 @@
 
 namespace Mocklis.Steps.ReturnTask
 {
-#if NETCOREAPP3_0
     #region Using Directives
 
     using System;
@@ -140,6 +139,4 @@ namespace Mocklis.Steps.ReturnTask
             Assert.Equal("step", exception.ParamName);
         }
     }
-
-#endif
 }

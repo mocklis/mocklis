@@ -56,7 +56,6 @@ namespace Mocklis
             return caller.SetNextStep(new ReturnTaskMethodStep<TParam>());
         }
 
-#if NETSTANDARD2_1
         /// <summary>
         ///     Introduces a step that wraps the return value of the next step in a ValueTask.
         /// </summary>
@@ -91,7 +90,5 @@ namespace Mocklis
 
             return caller.SetNextStep(new ReturnValueTaskMethodStep<TParam>());
         }
-
-#endif
     }
 }

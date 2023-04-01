@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Core", "Mocklis.Core\Mocklis.Core.csproj", "{F95ABD71-1B90-4D55-A39E-137432586609}"
 EndProject
@@ -22,6 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.MockGenerator.Tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D6A5B215-51E9-4A8A-858E-CBA238EDCFCD}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
 		mocklis128.png = mocklis128.png
 		NuGet.msbuild = NuGet.msbuild
@@ -36,11 +37,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.BaseApi.Tests", "Mocklis.BaseApi.Tests\Mocklis.BaseApi.Tests.csproj", "{9CF4F9C1-4F6C-4E61-972B-3B7C52F21AF4}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{05839517-8929-47e0-a8e5-3c015dcc3fe5}*SharedItemsImports = 5
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{640710a2-756b-496c-976a-1656690795a7}*SharedItemsImports = 13
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{f5d8c9ac-02d4-4164-b965-c528e9cef06d}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -100,5 +96,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52E54121-C474-48AB-B982-62BC165980A7}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{05839517-8929-47e0-a8e5-3c015dcc3fe5}*SharedItemsImports = 5
+		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{640710a2-756b-496c-976a-1656690795a7}*SharedItemsImports = 13
+		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{f5d8c9ac-02d4-4164-b965-c528e9cef06d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

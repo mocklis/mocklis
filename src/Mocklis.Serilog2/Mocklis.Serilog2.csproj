@@ -4,7 +4,7 @@
     <RootNamespace>Mocklis</RootNamespace>
     <CodeAnalysisRuleSet>..\MocklisDefault.ruleset</CodeAnalysisRuleSet>
     <LangVersion>8.0</LangVersion>
-    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This package contains an ILogContext which writes to a Serilog ILogger.</Description>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -22,9 +22,8 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="[2.0.0, 3.0.0)" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mocklis.BaseApi\Mocklis.BaseApi.csproj" />

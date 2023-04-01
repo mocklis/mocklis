@@ -51,7 +51,7 @@ namespace Mocklis.Verification
             Assert.Same(innerException, sut.InnerException);
         }
 
-#if !NETCOREAPP1_1
+#if NETFRAMEWORK
         [Fact]
         public void BeSerialisable()
         {
@@ -62,7 +62,6 @@ namespace Mocklis.Verification
             Assert.Equal("This is a special message!", sut.Message);
             Assert.Null(sut.InnerException);
         }
-
 #endif
     }
 }

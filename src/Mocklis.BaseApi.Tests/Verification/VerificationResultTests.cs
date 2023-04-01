@@ -9,11 +9,9 @@ namespace Mocklis.Verification
 {
     #region Using Directives
 
+    using System;
     using Xunit;
-#if !NETCOREAPP1_1
     using Mocklis.Helpers;
-
-#endif
 
     #endregion
 
@@ -31,7 +29,7 @@ namespace Mocklis.Verification
 
             _failureLeaf = new VerificationResult("Failed Leaf", false);
 
-            _emptyBranch = new VerificationResult("Empty Branch", new VerificationResult[0]);
+            _emptyBranch = new VerificationResult("Empty Branch", Array.Empty<VerificationResult>());
 
             _successfulBranch = new VerificationResult("Branch", new[]
             {
@@ -134,7 +132,7 @@ FAILED:   Failed Leaf", _sut.ToString(false));
             Assert.Equal(_sut.ToString(true), _sut.ToString());
         }
 
-#if !NETCOREAPP1_1
+#if NETFRAMEWORK
         [Fact]
         public void BeSerializable()
         {

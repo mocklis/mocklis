@@ -17,7 +17,7 @@ namespace Mocklis.Verification
 
     #endregion
 
-#if !NETSTANDARD1_3
+
     /// <summary>
     ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
     ///     only on that check) or a branch node (and it's deemed successful only if all its child nodes are successful.)
@@ -26,20 +26,8 @@ namespace Mocklis.Verification
     /// <seealso cref="System.Runtime.Serialization.ISerializable" />
     [Serializable]
     public readonly struct VerificationResult : System.Runtime.Serialization.ISerializable
-#else
-    /// <summary>
-    ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
-    ///     only on that check) or a branch node (and it's deemed successful only if all its child nodes are successful.)
-    /// </summary>
-    public readonly struct VerificationResult
-#endif
     {
-#if NET45
-        private static readonly VerificationResult[] EmptyVerificationResultArray = new VerificationResult[0];
-#else
         private static readonly VerificationResult[] EmptyVerificationResultArray = Array.Empty<VerificationResult>();
-
-#endif
 
         /// <summary>
         ///     Gets the description of the verification node.
@@ -136,7 +124,6 @@ namespace Mocklis.Verification
             }
         }
 
-#if !NETSTANDARD1_3
         private VerificationResult(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {
             Description = info.GetString(nameof(Description));
@@ -164,6 +151,5 @@ namespace Mocklis.Verification
             info.AddValue(nameof(SubResults), SubResults);
             info.AddValue(nameof(Success), Success);
         }
-#endif
     }
 }

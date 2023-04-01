@@ -7,7 +7,6 @@
 
 namespace Mocklis.Mocks
 {
-#if NETCOREAPP3_0
     #region Using Directives
 
     using System.Threading.Tasks;
@@ -38,6 +37,4 @@ namespace Mocklis.Mocks
 
         ValueTask IValueTaskMethods.ReturnValueTask() => ReturnValueTask.Call();
     }
-
-#endif
 }

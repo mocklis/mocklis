@@ -5,7 +5,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if NETSTANDARD2_1
 namespace Mocklis.Steps.ReturnTask
 {
     #region Using Directives
@@ -133,5 +132,3 @@ namespace Mocklis.Steps.ReturnTask
         }
     }
 }
-
-#endif

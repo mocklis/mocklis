@@ -10,10 +10,7 @@ namespace Mocklis.Verification
     #region Using Directives
 
     using System;
-#if !NETSTANDARD1_3
     using System.Runtime.Serialization;
-
-#endif
 
     #endregion
 
@@ -22,9 +19,7 @@ namespace Mocklis.Verification
     ///     Inherits from the <see cref="Exception" /> class.
     /// </summary>
     /// <seealso cref="Exception" />
-#if !NETSTANDARD1_3
     [Serializable]
-#endif
     public class VerificationFailedException : Exception
     {
         /// <summary>
@@ -66,7 +61,6 @@ namespace Mocklis.Verification
             VerificationResult = verificationResult;
         }
 
-#if !NETSTANDARD1_3
         /// <summary>
         ///     Initializes a new instance of the <see cref="VerificationFailedException" /> class with serialized data.
         /// </summary>
@@ -99,6 +93,5 @@ namespace Mocklis.Verification
             base.GetObjectData(info, context);
             info.AddValue(nameof(VerificationResult), VerificationResult);
         }
-#endif
     }
 }

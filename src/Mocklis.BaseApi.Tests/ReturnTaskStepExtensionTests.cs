@@ -35,7 +35,6 @@ namespace Mocklis
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, Task<int>>)null!).ReturnTask());
         }
 
-#if NETCOREAPP3_0
         [Fact]
         public void ReturnTaskRequiresCallerForValueTask()
         {
@@ -46,6 +45,5 @@ namespace Mocklis
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, ValueTask<int>>)null!).ReturnTask());
         }
 
-#endif
     }
 }

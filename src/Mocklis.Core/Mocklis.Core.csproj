@@ -3,7 +3,7 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\MocklisDefault.ruleset</CodeAnalysisRuleSet>
     <LangVersion>8.0</LangVersion>
-    <TargetFrameworks>net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Core contains classes and interfaces used by the generated test doubles. See also the Mocklis package for a more comprehensive set of tools for writing tests using the generated code.</Description>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -22,8 +22,8 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' != 'netstandard2.0'" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    <PackageReference Include="System.ValueTuple" Condition="'$(TargetFramework)' == 'net462'" />
   </ItemGroup>
  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

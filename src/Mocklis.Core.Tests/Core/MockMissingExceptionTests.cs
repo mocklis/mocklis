@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if !NETCOREAPP1_1
+#if NETFRAMEWORK
 
 namespace Mocklis.Core
 {
@@ -17,7 +17,7 @@ namespace Mocklis.Core
 
     #endregion
 
-    public class MockMissingExceptionTests
+    public sealed class MockMissingExceptionTests
     {
         private readonly IMockInfo _mockInfo =
             new PropertyMock<int>(new object(), "MocklisClassName", "InterfaceName", "MemberName", "MemberMockName", Strictness.Lenient);

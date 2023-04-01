@@ -28,22 +28,13 @@ namespace Mocklis.Helpers
 
             public CultureScope(CultureInfo cultureInfo)
             {
-#if NETCOREAPP1_1
-                _savedCulture = CultureInfo.CurrentCulture;
-                CultureInfo.CurrentCulture = cultureInfo;
-#else
                 _savedCulture = Thread.CurrentThread.CurrentCulture;
                 Thread.CurrentThread.CurrentCulture = cultureInfo;
-#endif
             }
 
             public void Dispose()
             {
-#if NETCOREAPP1_1
-                CultureInfo.CurrentCulture = _savedCulture;
-#else
                 Thread.CurrentThread.CurrentCulture = _savedCulture;
-#endif
             }
         }
     }

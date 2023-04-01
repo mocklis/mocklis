@@ -7,7 +7,6 @@
 
 namespace Mocklis.Interfaces
 {
-#if NETCOREAPP3_0
     #region Using Directives
 
     using System.Threading.Tasks;
@@ -19,6 +18,4 @@ namespace Mocklis.Interfaces
         ValueTask<int> ReturnValueTaskInt();
         ValueTask ReturnValueTask();
     }
-
-#endif
 }

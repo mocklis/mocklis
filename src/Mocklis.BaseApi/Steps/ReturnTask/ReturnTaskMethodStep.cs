@@ -59,24 +59,6 @@ namespace Mocklis.Steps.ReturnTask
         /// <returns>The returned result, wrapped in a Task.</returns>
         public Task<TResult> Call(IMockInfo mockInfo, TParam param)
         {
-#if NET45
-            var tcl = new TaskCompletionSource<TResult>();
-            try
-            {
-                var result = NextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
-                tcl.SetResult(result);
-            }
-            catch (OperationCanceledException)
-            {
-                tcl.SetCanceled();
-            }
-            catch (Exception e)
-            {
-                tcl.SetException(e);
-            }
-
-            return tcl.Task;
-#else
             try
             {
                 return Task.FromResult(NextStep.CallWithStrictnessCheckIfNull(mockInfo, param));
@@ -89,7 +71,6 @@ namespace Mocklis.Steps.ReturnTask
             {
                 return Task.FromException<TResult>(e);
             }
-#endif
         }
     }
 
@@ -134,24 +115,6 @@ namespace Mocklis.Steps.ReturnTask
         /// <returns>The returned result, wrapped in a Task.</returns>
         public Task Call(IMockInfo mockInfo, TParam param)
         {
-#if NET45
-            var tcl = new TaskCompletionSource<bool>();
-            try
-            {
-                NextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
-                tcl.SetResult(false);
-            }
-            catch (OperationCanceledException)
-            {
-                tcl.SetCanceled();
-            }
-            catch (Exception e)
-            {
-                tcl.SetException(e);
-            }
-
-            return tcl.Task;
-#else
             try
             {
                 return Task.FromResult(NextStep.CallWithStrictnessCheckIfNull(mockInfo, param));
@@ -164,7 +127,6 @@ namespace Mocklis.Steps.ReturnTask
             {
                 return Task.FromException(e);
             }
-#endif
         }
     }
 }
