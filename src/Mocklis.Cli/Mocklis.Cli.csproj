@@ -19,10 +19,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
   <Import Project="..\Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems" Label="Shared" />
 
 </Project>
