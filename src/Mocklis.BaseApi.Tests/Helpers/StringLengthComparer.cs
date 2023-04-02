@@ -15,12 +15,12 @@ namespace Mocklis.Helpers
 
     public sealed class StringLengthComparer : IEqualityComparer<string>
     {
-        private int GetLength(string s)
+        private int GetLength(string? s)
         {
             return s?.Length ?? 0;
         }
 
-        public bool Equals(string x, string y) => GetLength(x) == GetLength(y);
+        public bool Equals(string? x, string? y) => GetLength(x) == GetLength(y);
 
         public int GetHashCode(string obj) => GetLength(obj);
     }

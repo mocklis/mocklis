@@ -95,7 +95,7 @@ namespace Mocklis
         /// <returns>An <see cref="ICanHaveNextPropertyStep{TValue}" /> that can be used to add further steps.</returns>
         public static IStoredProperty<TValue> Stored<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
-            TValue initialValue = default)
+            TValue initialValue = default!)
         {
             return caller.SetNextStep(new StoredPropertyStep<TValue>(initialValue));
         }
@@ -114,7 +114,7 @@ namespace Mocklis
         public static IStoredProperty<TValue> Stored<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
             out StoredPropertyStep<TValue> step,
-            TValue initialValue = default)
+            TValue initialValue = default!)
         {
             step = new StoredPropertyStep<TValue>(initialValue);
             return caller.SetNextStep(step);
@@ -135,7 +135,7 @@ namespace Mocklis
         public static IStoredProperty<TValue> StoredWithChangeNotification<TValue>(
             this ICanHaveNextPropertyStep<TValue> caller,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
-            TValue initialValue = default,
+            TValue initialValue = default!,
             IEqualityComparer<TValue>? comparer = null)
         {
             return caller
@@ -164,7 +164,7 @@ namespace Mocklis
             this ICanHaveNextPropertyStep<TValue> caller,
             out StoredPropertyStep<TValue> storedPropertyStep,
             IStoredEvent<PropertyChangedEventHandler> propertyChangedEvent,
-            TValue initialValue = default,
+            TValue initialValue = default!,
             IEqualityComparer<TValue>? comparer = null)
         {
             return caller

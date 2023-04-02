@@ -41,19 +41,26 @@ namespace Mocklis.MockGenerator
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
+            if (root != null)
+            {
+                var diagnostic = context.Diagnostics.First();
+                var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
+                // Find the type declaration identified by the diagnostic.
+                var parentSyntaxNode = root.FindToken(diagnosticSpan.Start).Parent;
+                if (parentSyntaxNode != null)
+                {
+                    var declaration = parentSyntaxNode.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
 
-            // Register a code action that will invoke the fix.
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: Title,
-                    createChangedSolution: c => UpdateMocklisClassAsync(context.Document, declaration, c),
-                    equivalenceKey: Title),
-                diagnostic);
+                    // Register a code action that will invoke the fix.
+                    context.RegisterCodeFix(
+                        CodeAction.Create(
+                            title: Title,
+                            createChangedSolution: c => UpdateMocklisClassAsync(context.Document, declaration, c),
+                            equivalenceKey: Title),
+                        diagnostic);
+                }
+            }
         }
 
         private async Task<Solution> UpdateMocklisClassAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
@@ -64,10 +71,20 @@ namespace Mocklis.MockGenerator
             }
 
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+
+            if (semanticModel == null)
+            {
+                return document.Project.Solution;
+            }
+
             MocklisSymbols mocklisSymbols = new MocklisSymbols(semanticModel.Compilation);
 
             bool isMocklisClass = classDecl.AttributeLists.SelectMany(al => al.Attributes)
-                .Any(a => semanticModel.GetSymbolInfo(a).Symbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute));
+                .Any(a =>
+                {
+                    var attrSymbol = semanticModel.GetSymbolInfo(a).Symbol;
+                    return attrSymbol != null && attrSymbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
+                });
 
             if (!isMocklisClass)
             {

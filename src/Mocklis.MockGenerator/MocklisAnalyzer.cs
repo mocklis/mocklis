@@ -32,7 +32,7 @@ namespace Mocklis.MockGenerator
             category: "Code Generation",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true,
-            description: "Mocklis code can be generated");
+            description: "Mocklis code can be generated.");
 
 
         private static readonly DiagnosticDescriptor UpdateRule = new DiagnosticDescriptor(
@@ -42,7 +42,7 @@ namespace Mocklis.MockGenerator
             category: "Code Generation",
             DiagnosticSeverity.Info,
             isEnabledByDefault: true,
-            description: "Mocklis code can be regenerated");
+            description: "Mocklis code can be regenerated.");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(CreateRule, UpdateRule);
 

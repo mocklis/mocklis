@@ -85,9 +85,11 @@ namespace Mocklis.CodeGeneration
                 {
                     case SymbolDisplayPartKind.TypeParameterName:
                     {
-                        if (part.Symbol.ContainingSymbol is IMethodSymbol methodSymbol && methodSymbol.TypeParameters.Contains(part.Symbol))
+                        var partSymbol = part.Symbol;
+
+                        if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } && methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
                         {
-                            s += FindTypeParameterName(part.Symbol.Name);
+                            s += FindTypeParameterName(partSymbol.Name);
                         }
                         else
                         {

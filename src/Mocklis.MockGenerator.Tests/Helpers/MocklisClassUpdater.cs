@@ -91,6 +91,11 @@ namespace Mocklis.MockGenerator.Helpers
             var document = CreateDocument(source, languageVersion);
 
             var compilation = await document.Project.GetCompilationAsync();
+            if (compilation == null)
+            {
+                throw new InvalidOperationException("Could not update Mocklis class since compilation can't be found.");
+            }
+
             var compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(_mocklisAnalyzer));
             var diagnostics = (await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync()).Single();
 
@@ -103,6 +108,12 @@ namespace Mocklis.MockGenerator.Helpers
             var solution = operations.OfType<ApplyChangesOperation>().Single().ChangedSolution;
             var updatedDocument = solution.GetDocument(document.Id)!;
             var root = await updatedDocument.GetSyntaxRootAsync();
+
+            if (root == null)
+            {
+                throw new InvalidOperationException("Could not find updated root node.");
+            }
+
             var code = root.GetText().ToString();
 
             var project = updatedDocument.Project;

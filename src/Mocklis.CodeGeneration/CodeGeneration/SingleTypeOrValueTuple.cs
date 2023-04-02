@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     public sealed class SingleTypeOrValueTuple : IReadOnlyList<SingleTypeOrValueTuple.Entry>
     {
-        public struct Entry
+        public readonly struct Entry
         {
             public Entry(string originalName, TypeSyntax type, bool isReturnValue, string tupleSafeName)
             {
@@ -65,13 +65,8 @@ namespace Mocklis.CodeGeneration
                 : this[0].Type;
         }
 
-        public BracketedParameterListSyntax? BuildParameterList()
+        public BracketedParameterListSyntax BuildParameterList()
         {
-            if (Count == 0)
-            {
-                return null;
-            }
-
             return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.Type))));
         }
 

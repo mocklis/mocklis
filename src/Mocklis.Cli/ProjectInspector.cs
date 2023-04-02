@@ -38,7 +38,11 @@ namespace Mocklis.Cli
             {
                 bool hasMocklisAttribute = node.AttributeLists.Any(
                     al => al.Attributes.Any(
-                        a => ModelExtensions.GetSymbolInfo(Model, a).Symbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute)));
+                        a =>
+                        {
+                            var attrSymbol = Model.GetSymbolInfo(a).Symbol;
+                            return attrSymbol != null && attrSymbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
+                        }));
 
                 if (!hasMocklisAttribute)
                 {
@@ -59,7 +63,7 @@ namespace Mocklis.Cli
             {
             }
 
-            public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+            public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
                 if (ShouldRewriteClass(node))
                 {
@@ -77,7 +81,7 @@ namespace Mocklis.Cli
             {
             }
 
-            public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+            public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
                 if (ShouldRewriteClass(node))
                 {
@@ -98,27 +102,27 @@ namespace Mocklis.Cli
 
             var symbols = new MocklisSymbols(compilation);
 
-            // If we don't reference the right assembly, we could bail early.
-            if (symbols.MocklisClassAttribute == null)
-            {
-                return project;
-            }
-
             foreach (var documentId in project.DocumentIds)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var document = project.GetDocument(documentId);
-                if (document == null || document.SourceCodeKind != SourceCodeKind.Regular)
+                if (!(document is { SourceCodeKind: SourceCodeKind.Regular }))
                 {
                     continue;
                 }
 
                 var syntaxTree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
+                if (syntaxTree == null)
+                {
+                    continue;
+                }
+
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var emptier = new MocklisClassEmptier(semanticModel, symbols);
 
-                var syntaxRoot = emptier.Visit(syntaxTree.GetRoot());
+                var root = await syntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
+                var syntaxRoot = emptier.Visit(root);
                 if (!emptier.FoundMocklisClass)
                 {
                     continue;
@@ -126,11 +130,23 @@ namespace Mocklis.Cli
 
                 document = document.WithSyntaxRoot(syntaxRoot);
                 syntaxTree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
+
+                if (syntaxTree == null)
+                {
+                    continue;
+                }
+
                 semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+
+                if (semanticModel == null)
+                {
+                    continue;
+                }
 
                 var rewriter = new MocklisClassSyntaxRewriter(semanticModel, symbols);
 
-                syntaxRoot = rewriter.Visit(syntaxTree.GetRoot());
+                root = await syntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
+                syntaxRoot = rewriter.Visit(root);
                 document = document.WithSyntaxRoot(syntaxRoot);
 
                 var modifiedSpans = syntaxRoot.DescendantNodes().OfType<ClassDeclarationSyntax>().Where(n => n.HasAnnotation(Formatter.Annotation))

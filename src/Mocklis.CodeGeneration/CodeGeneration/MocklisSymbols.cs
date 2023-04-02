@@ -9,6 +9,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using Microsoft.CodeAnalysis;
 
     #endregion
@@ -36,23 +37,29 @@ namespace Mocklis.CodeGeneration
 
         public MocklisSymbols(Compilation compilation)
         {
+            INamedTypeSymbol GetTypeSymbol(string metadataName)
+            {
+                return compilation.GetTypeByMetadataName(metadataName) ??
+                       throw new ArgumentException($"Compilation does not contain {metadataName}.", nameof(compilation));
+            }
+
             Compilation = compilation;
-            MocklisClassAttribute = compilation.GetTypeByMetadataName("Mocklis.Core.MocklisClassAttribute");
-            ActionMethodMock0 = compilation.GetTypeByMetadataName("Mocklis.Core.ActionMethodMock");
-            ActionMethodMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.ActionMethodMock`1");
-            EventMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.EventMock`1");
-            FuncMethodMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.FuncMethodMock`1");
-            FuncMethodMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.FuncMethodMock`2");
-            IndexerMock2 = compilation.GetTypeByMetadataName("Mocklis.Core.IndexerMock`2");
-            PropertyMock1 = compilation.GetTypeByMetadataName("Mocklis.Core.PropertyMock`1");
-            MockMissingException = compilation.GetTypeByMetadataName("Mocklis.Core.MockMissingException");
-            MockType = compilation.GetTypeByMetadataName("Mocklis.Core.MockType");
-            ByRef1 = compilation.GetTypeByMetadataName("Mocklis.Core.ByRef`1");
-            TypedMockProvider = compilation.GetTypeByMetadataName("Mocklis.Core.TypedMockProvider");
-            Strictness = compilation.GetTypeByMetadataName("Mocklis.Core.Strictness");
-            RuntimeArgumentHandle = compilation.GetTypeByMetadataName("System.RuntimeArgumentHandle");
-            Object = compilation.GetTypeByMetadataName("System.Object");
-            GeneratedCodeAttribute = compilation.GetTypeByMetadataName("System.CodeDom.Compiler.GeneratedCodeAttribute");
+            MocklisClassAttribute = GetTypeSymbol("Mocklis.Core.MocklisClassAttribute");
+            ActionMethodMock0 = GetTypeSymbol("Mocklis.Core.ActionMethodMock");
+            ActionMethodMock1 = GetTypeSymbol("Mocklis.Core.ActionMethodMock`1");
+            EventMock1 = GetTypeSymbol("Mocklis.Core.EventMock`1");
+            FuncMethodMock1 = GetTypeSymbol("Mocklis.Core.FuncMethodMock`1");
+            FuncMethodMock2 = GetTypeSymbol("Mocklis.Core.FuncMethodMock`2");
+            IndexerMock2 = GetTypeSymbol("Mocklis.Core.IndexerMock`2");
+            PropertyMock1 = GetTypeSymbol("Mocklis.Core.PropertyMock`1");
+            MockMissingException = GetTypeSymbol("Mocklis.Core.MockMissingException");
+            MockType = GetTypeSymbol("Mocklis.Core.MockType");
+            ByRef1 = GetTypeSymbol("Mocklis.Core.ByRef`1");
+            TypedMockProvider = GetTypeSymbol("Mocklis.Core.TypedMockProvider");
+            Strictness = GetTypeSymbol("Mocklis.Core.Strictness");
+            RuntimeArgumentHandle = GetTypeSymbol("System.RuntimeArgumentHandle");
+            Object = GetTypeSymbol("System.Object");
+            GeneratedCodeAttribute = GetTypeSymbol("System.CodeDom.Compiler.GeneratedCodeAttribute");
         }
 
         public bool HasImplicitConversionToObject(ITypeSymbol symbol)

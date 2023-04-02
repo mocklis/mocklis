@@ -24,7 +24,7 @@ namespace Mocklis.Steps.Miscellaneous
         private readonly MockPropertiesWithChangeNotification _mockProperties;
         private readonly IProperties _properties;
         private readonly IStoredEvent<PropertyChangedEventHandler> _npc;
-        private readonly List<string> _changedPropertyNames = new List<string>();
+        private readonly List<string?> _changedPropertyNames = new List<string?>();
 
         public RaisePropertyChangedEventPropertyStepTests()
         {

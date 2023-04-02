@@ -32,7 +32,7 @@ namespace Mocklis.Steps.Stored
         ///     Initializes a new instance of the <see cref="StoredPropertyStep{TValue}" /> class.
         /// </summary>
         /// <param name="initialValue">The initial value.</param>
-        public StoredPropertyStep(TValue initialValue = default)
+        public StoredPropertyStep(TValue initialValue = default!)
         {
             Value = initialValue;
         }

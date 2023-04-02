@@ -9,6 +9,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -74,13 +75,13 @@ namespace Mocklis.CodeGeneration
                         continue;
                     }
 
-                    var p = semanticModel.GetSymbolInfo(attribute);
-                    if (p.Symbol.ContainingType.Equals(mocklisSymbols.GeneratedCodeAttribute))
+                    var p = semanticModel.GetSymbolInfo(attribute).Symbol;
+                    if (p != null && p.ContainingType.Equals(mocklisSymbols.GeneratedCodeAttribute, SymbolEqualityComparer.Default))
                     {
                         found = true;
                         attributes.Add(typesForSymbols.GeneratedCodeAttribute());
                     }
-                    else if (add && p.Symbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute))
+                    else if (add && p != null && p.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default))
                     {
                         found = true;
                         attributes.Add(attribute);
@@ -109,11 +110,6 @@ namespace Mocklis.CodeGeneration
                 }
 
                 return found ? F.AttributeList(F.SeparatedList(attributes)) : originalAttributeList;
-            }
-
-            if (mocklisSymbols.GeneratedCodeAttribute == null)
-            {
-                return classDeclAttributeLists;
             }
 
             var result = new List<AttributeListSyntax>();
@@ -146,51 +142,54 @@ namespace Mocklis.CodeGeneration
             public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration,
                 MocklisSymbols mocklisSymbols)
             {
-                _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
+                _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) ?? throw new ArgumentException("symbol for class was not found in semantic model.", nameof(classDeclaration));
                 _typesForSymbols = typesForSymbols;
                 bool mockReturnsByRef = false;
                 bool mockReturnsByRefReadonly = true;
                 bool strict = false;
                 bool veryStrict = false;
-                var attribute = _classSymbol.GetAttributes().Single(a => a.AttributeClass.Equals(mocklisSymbols.MocklisClassAttribute));
+                var attribute = _classSymbol.GetAttributes().SingleOrDefault(a => a.AttributeClass != null && a.AttributeClass.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default));
 
-                var attributeArguments = classDeclaration.FindNode(attribute.ApplicationSyntaxReference.Span).DescendantNodes()
-                    .OfType<AttributeArgumentSyntax>().ToList();
-
-
-                foreach (var k in attributeArguments)
+                if (attribute != null)
                 {
-                    if (k.Expression is LiteralExpressionSyntax les)
-                    {
-                        var name = k.NameEquals.Name.Identifier.Text;
-                        bool value;
-                        if (les.IsKind(SyntaxKind.TrueLiteralExpression))
-                        {
-                            value = true;
-                        }
-                        else if (les.IsKind(SyntaxKind.FalseLiteralExpression))
-                        {
-                            value = false;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                    var attributeSyntaxReference = attribute.ApplicationSyntaxReference ?? throw new ArgumentException("MocklisClass attribute did not have syntax reference.");
 
-                        switch (name)
+                    var attributeArguments = classDeclaration.FindNode(attributeSyntaxReference.Span).DescendantNodes().OfType<AttributeArgumentSyntax>();
+
+                    foreach (var k in attributeArguments)
+                    {
+                        if (k.Expression is LiteralExpressionSyntax les)
                         {
-                            case "MockReturnsByRef":
-                                mockReturnsByRef = value;
+                            var name = k.NameEquals?.Name.Identifier.Text;
+                            bool value;
+                            if (les.IsKind(SyntaxKind.TrueLiteralExpression))
+                            {
+                                value = true;
+                            }
+                            else if (les.IsKind(SyntaxKind.FalseLiteralExpression))
+                            {
+                                value = false;
+                            }
+                            else
+                            {
                                 break;
-                            case "MockReturnsByRefReadonly":
-                                mockReturnsByRefReadonly = value;
-                                break;
-                            case "Strict":
-                                strict = value;
-                                break;
-                            case "VeryStrict":
-                                veryStrict = value;
-                                break;
+                            }
+
+                            switch (name)
+                            {
+                                case "MockReturnsByRef":
+                                    mockReturnsByRef = value;
+                                    break;
+                                case "MockReturnsByRefReadonly":
+                                    mockReturnsByRefReadonly = value;
+                                    break;
+                                case "Strict":
+                                    strict = value;
+                                    break;
+                                case "VeryStrict":
+                                    veryStrict = value;
+                                    break;
+                            }
                         }
                     }
                 }
@@ -211,7 +210,7 @@ namespace Mocklis.CodeGeneration
                 var members = GetMembers(classSymbol).ToArray();
 
                 // make sure to reserve and use all names defined by the base types, and the class itself
-                var namesToReserveAndUse = new List<string>(classSymbol.BaseType.GetUsableNames()) { classSymbol.Name };
+                var namesToReserveAndUse = new List<string>(classSymbol.BaseType?.GetUsableNames() ?? Array.Empty<string>()) { classSymbol.Name };
                 var uniquifier = new Uniquifier(namesToReserveAndUse);
 
                 // Then reserve all names used by new members
@@ -369,8 +368,8 @@ namespace Mocklis.CodeGeneration
                     mock.AddInitialisersToConstructor(constructorStatements, _strict, _veryStrict);
                 }
 
-                var baseTypeConstructors = _classSymbol.BaseType.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
-                    .ToArray();
+                var baseTypeConstructors = _classSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
+                    .ToArray() ?? Array.Empty<IMethodSymbol>();
 
                 if (baseTypeConstructors.Length == 1 && baseTypeConstructors[0].Parameters.Length == 0 && constructorStatements.Count == 0)
                 {
@@ -384,14 +383,10 @@ namespace Mocklis.CodeGeneration
 
                     var constructorStatementsWithThisWhereRequired = constructorStatements.Select(constructorStatement =>
                     {
-                        if (constructorStatement is ExpressionStatementSyntax expressionStatementSyntax
-                            && expressionStatementSyntax.Expression is AssignmentExpressionSyntax assignmentExpressionSyntax
-                            && assignmentExpressionSyntax.Left is IdentifierNameSyntax identifierNameSyntax
-                            && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
+                        if (constructorStatement is ExpressionStatementSyntax { Expression: AssignmentExpressionSyntax { Left: IdentifierNameSyntax identifierNameSyntax } assignmentExpressionSyntax } expressionStatementSyntax && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
                         )
                         {
-                            var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(),
-                                identifierNameSyntax);
+                            var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(), identifierNameSyntax);
                             return expressionStatementSyntax.WithExpression(assignmentExpressionSyntax.WithLeft(newLeft));
                         }
 

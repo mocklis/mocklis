@@ -34,7 +34,7 @@ namespace Mocklis.CodeGeneration
             params ExpressionSyntax?[] expressions)
         {
             return invocationExpression.WithArgumentList(
-                F.ArgumentList(F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
+                F.ArgumentList(F.SeparatedList(expressions.Where(e => e != null).Select(e => F.Argument(e!)))));
         }
 
         public static ElementAccessExpressionSyntax WithExpressionsAsArgumentList(
@@ -43,14 +43,16 @@ namespace Mocklis.CodeGeneration
         {
             return elementAccessExpression.WithArgumentList(
                 F.BracketedArgumentList(
-                    F.SeparatedList(expressions.Where(e => e != null).Select(F.Argument))));
+                    F.SeparatedList(expressions.Where(e => e != null).Select(e => F.Argument(e!)))));
         }
 
         public static IEnumerable<string> GetUsableNames(this ITypeSymbol typeSymbol)
         {
-            while (typeSymbol != null)
+            ITypeSymbol? tmp = typeSymbol;
+
+            while (tmp != null)
             {
-                foreach (var member in typeSymbol.GetMembers())
+                foreach (var member in tmp.GetMembers())
                 {
                     if (member.CanBeReferencedByName)
                     {
@@ -58,7 +60,7 @@ namespace Mocklis.CodeGeneration
                     }
                 }
 
-                typeSymbol = typeSymbol.BaseType;
+                tmp = tmp.BaseType;
             }
         }
 

@@ -76,7 +76,7 @@ namespace Mocklis.Steps.Stored
             mock.StringProperty.StoredWithChangeNotification(propertyChangedEvent);
             IProperties sut = mock;
 
-            var updatedProperties = new List<string>();
+            var updatedProperties = new List<string?>();
 
             mock.PropertyChanged.Add((s, e) =>
             {
@@ -96,7 +96,7 @@ namespace Mocklis.Steps.Stored
             mock.StringProperty.StoredWithChangeNotification(out var prop, propertyChangedEvent, "Test", new StringLengthComparer());
             IProperties sut = mock;
 
-            var updatedProperties = new List<string>();
+            var updatedProperties = new List<string?>();
 
             mock.PropertyChanged.Add((s, e) =>
             {

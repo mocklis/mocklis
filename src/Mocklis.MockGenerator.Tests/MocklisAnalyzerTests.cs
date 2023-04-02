@@ -81,7 +81,7 @@ namespace Mocklis.MockGenerator
         {
             Task<string> sourceTask = File.ReadAllTextAsync(test.SourceFileName);
 
-            Task<string?> expectedTask = Task.FromResult<string?>(null);
+            Task<string> expectedTask = Task.FromResult(string.Empty);
             if (File.Exists(test.ExpectedFileName))
             {
                 expectedTask = File.ReadAllTextAsync(test.ExpectedFileName);
@@ -91,25 +91,24 @@ namespace Mocklis.MockGenerator
 
             var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion).ConfigureAwait(false);
 
-            string? expected = (await expectedTask.ConfigureAwait(false))?.Replace("[VERSION]", _version);
+            string expected = (await expectedTask.ConfigureAwait(false)).Replace("[VERSION]", _version);
 
             // Create the 'expected' file if it isn't there. Empty out to recreate.
             if (string.IsNullOrWhiteSpace(expected))
             {
 #if NCRUNCH
                 var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
-                string expectedFilePathInSourceCode =
- folder == null ? null : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
+                string expectedFilePathInSourceCode = folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #else
                 string expectedFilePathInSourceCode =
                     Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #endif
-
-                if (expectedFilePathInSourceCode != null)
+                if (!string.IsNullOrWhiteSpace(expectedFilePathInSourceCode))
                 {
                     await File.WriteAllTextAsync(expectedFilePathInSourceCode, result.Code.Replace(_version, "[VERSION]")).ConfigureAwait(false);
-                    expected = result.Code;
                 }
+
+                expected = result.Code;
             }
 
             try
