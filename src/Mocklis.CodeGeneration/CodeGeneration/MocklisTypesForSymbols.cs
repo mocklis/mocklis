@@ -339,5 +339,11 @@ namespace Mocklis.CodeGeneration
                     F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Version)))
                 })));
         }
+
+        public MemberAccessExpressionSyntax StrictnessExpression(bool strict, bool veryStrict)
+        {
+            return veryStrict ? StrictnessVeryStrict() : strict ? StrictnessStrict() : StrictnessLenient();
+        }
+
     }
 }

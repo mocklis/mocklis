@@ -28,11 +28,10 @@ namespace Mocklis.CodeGeneration
         protected TypeSyntax MockMemberType { get; }
 
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol, string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol,
-            mockMemberName)
+            IMethodSymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
-            var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
+            var parametersBuilder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
+            var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
 
             if (!symbol.ReturnsVoid)
             {
@@ -80,33 +79,35 @@ namespace Mocklis.CodeGeneration
             if (returnValueTypeSyntax == null)
             {
                 MockMemberType = parameterTypeSyntax == null
-                    ? TypesForSymbols.ActionMethodMock()
-                    : TypesForSymbols.ActionMethodMock(parameterTypeSyntax);
+                    ? typesForSymbols.ActionMethodMock()
+                    : typesForSymbols.ActionMethodMock(parameterTypeSyntax);
             }
             else
             {
                 MockMemberType = parameterTypeSyntax == null
-                    ? TypesForSymbols.FuncMethodMock(returnValueTypeSyntax)
-                    : TypesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
+                    ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax)
+                    : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
             }
         }
 
-        public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
             declarationList.Add(MockProperty(MockMemberType));
-            declarationList.Add(ExplicitInterfaceMember());
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols));
         }
 
-        public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols,
+            bool strict, bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockMemberType, strict, veryStrict));
+            constructorStatements.Add(InitialisationStatement(MockMemberType, typesForSymbols, strict, veryStrict));
         }
 
-        protected MemberDeclarationSyntax ExplicitInterfaceMember()
+        protected MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
         {
             var baseReturnType = Symbol.ReturnsVoid
                 ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                : TypesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious());
+                : typesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious());
             var returnType = baseReturnType;
 
             if (Symbol.ReturnsByRef)
@@ -118,9 +119,9 @@ namespace Mocklis.CodeGeneration
                 returnType = F.RefType(returnType).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
             }
 
-            var mockedMethod = ExplicitInterfaceMemberMethodDeclaration(returnType);
+            var mockedMethod = ExplicitInterfaceMemberMethodDeclaration(returnType, typesForSymbols);
 
-            var memberMockInstance = ExplicitInterfaceMemberMemberMockInstance();
+            var memberMockInstance = ExplicitInterfaceMemberMemberMockInstance(typesForSymbols);
 
             ExpressionSyntax invocation = F.InvocationExpression(
                     F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
@@ -134,7 +135,7 @@ namespace Mocklis.CodeGeneration
             {
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
-                    invocation = TypesForSymbols.WrapByRef(invocation, baseReturnType);
+                    invocation = typesForSymbols.WrapByRef(invocation, baseReturnType);
                 }
 
                 mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
@@ -175,7 +176,7 @@ namespace Mocklis.CodeGeneration
 
                     if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                     {
-                        memberAccess = TypesForSymbols.WrapByRef(memberAccess, baseReturnType);
+                        memberAccess = typesForSymbols.WrapByRef(memberAccess, baseReturnType);
                     }
 
                     statements.Add(F.ReturnStatement(memberAccess));
@@ -187,14 +188,15 @@ namespace Mocklis.CodeGeneration
             return mockedMethod;
         }
 
-        protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
+        protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType,
+            MocklisTypesForSymbols typesForSymbols)
         {
             return F.MethodDeclaration(returnType, Symbol.Name)
-                .WithParameterList(Symbol.Parameters.AsParameterList(TypesForSymbols))
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                .WithParameterList(Symbol.Parameters.AsParameterList(typesForSymbols))
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
         }
 
-        protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()
+        protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance(MocklisTypesForSymbols typesForSymbols)
         {
             return F.IdentifierName(MemberMockName);
         }

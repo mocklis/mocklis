@@ -24,27 +24,27 @@ namespace Mocklis.CodeGeneration
         private TypeSyntax MockPropertyType { get; }
 
         public PropertyBasedEventMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IEventSymbol symbol, string memberMockName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, memberMockName)
+            IEventSymbol symbol, string memberMockName) : base(classSymbol, interfaceSymbol, symbol, memberMockName)
         {
             EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
             MockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(symbol.Type, false));
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
             declarationList.Add(MockProperty(MockPropertyType));
-            declarationList.Add(ExplicitInterfaceMember());
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols));
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType, strict, veryStrict));
+            constructorStatements.Add(InitialisationStatement(MockPropertyType, typesForSymbols, strict, veryStrict));
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
         {
             var mockedProperty = F.EventDeclaration(EventHandlerTypeSyntax, Symbol.Name)
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
 
             mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
                 .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(

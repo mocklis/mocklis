@@ -46,7 +46,7 @@ namespace Mocklis.CodeGeneration
             var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
 
             var populator = new MocklisClassPopulator(typesForSymbols, semanticModel, classDecl, mocklisSymbols);
-            return classDecl.WithMembers(F.List(populator.GenerateMembers()))
+            return classDecl.WithMembers(F.List(populator.GenerateMembers(typesForSymbols)))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
                 .WithAdditionalAnnotations(Formatter.Annotation)
@@ -272,7 +272,7 @@ namespace Mocklis.CodeGeneration
                         {
                             if (useVirtualMethod)
                             {
-                                return new VirtualMethodBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol,
+                                return new VirtualMethodBasedIndexerMock(classSymbol, interfaceSymbol, memberPropertySymbol,
                                     mockMemberName);
                             }
 
@@ -281,7 +281,7 @@ namespace Mocklis.CodeGeneration
 
                         if (useVirtualMethod)
                         {
-                            return new VirtualMethodBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol,
+                            return new VirtualMethodBasedPropertyMock(classSymbol, interfaceSymbol, memberPropertySymbol,
                                 mockMemberName);
                         }
 
@@ -303,7 +303,7 @@ namespace Mocklis.CodeGeneration
 
                         if (useVirtualMethod)
                         {
-                            return new VirtualMethodBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,
+                            return new VirtualMethodBasedMethodMock(classSymbol, interfaceSymbol, memberMethodSymbol,
                                 mockMemberName);
                         }
 
@@ -327,21 +327,21 @@ namespace Mocklis.CodeGeneration
                 return "_" + char.ToLowerInvariant(memberName[0]) + memberName.Substring(1);
             }
 
-            public SyntaxList<MemberDeclarationSyntax> GenerateMembers()
+            public SyntaxList<MemberDeclarationSyntax> GenerateMembers(MocklisTypesForSymbols typesForSymbols)
             {
                 var declarationList = new List<MemberDeclarationSyntax>();
 
-                GenerateConstructors(declarationList);
+                GenerateConstructors(declarationList, typesForSymbols);
 
                 foreach (var mock in _mocks)
                 {
-                    mock.AddMembersToClass(declarationList, _strict, _veryStrict);
+                    mock.AddMembersToClass(declarationList, typesForSymbols, _strict, _veryStrict);
                 }
 
                 return new SyntaxList<MemberDeclarationSyntax>(declarationList);
             }
 
-            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList)
+            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols)
             {
                 static bool CanAccessConstructor(IMethodSymbol constructor)
                 {
@@ -365,7 +365,7 @@ namespace Mocklis.CodeGeneration
 
                 foreach (var mock in _mocks)
                 {
-                    mock.AddInitialisersToConstructor(constructorStatements, _strict, _veryStrict);
+                    mock.AddInitialisersToConstructor(constructorStatements, typesForSymbols, _strict, _veryStrict);
                 }
 
                 var baseTypeConstructors = _classSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))

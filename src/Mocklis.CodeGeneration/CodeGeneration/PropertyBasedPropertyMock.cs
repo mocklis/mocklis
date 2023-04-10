@@ -25,24 +25,26 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedPropertyMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
-            string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
+            string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
             MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
             declarationList.Add(MockProperty(MockPropertyType));
-            declarationList.Add(ExplicitInterfaceMember());
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols));
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType, strict, veryStrict));
+            constructorStatements.Add(InitialisationStatement(MockPropertyType, typesForSymbols, strict, veryStrict));
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
         {
             var decoratedValueTypeSyntax = ValueTypeSyntax;
 
@@ -56,7 +58,7 @@ namespace Mocklis.CodeGeneration
             }
 
             var mockedProperty = F.PropertyDeclaration(decoratedValueTypeSyntax, Symbol.Name)
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.IsReadOnly)
             {
@@ -65,7 +67,7 @@ namespace Mocklis.CodeGeneration
 
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
-                    elementAccess = TypesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                    elementAccess = typesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
                 }
 
                 mockedProperty = mockedProperty.WithExpressionBody(F.ArrowExpressionClause(elementAccess))

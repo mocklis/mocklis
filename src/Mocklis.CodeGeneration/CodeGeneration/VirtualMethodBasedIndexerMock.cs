@@ -22,76 +22,74 @@ namespace Mocklis.CodeGeneration
 
     public sealed class VirtualMethodBasedIndexerMock : VirtualMethodBasedMock<IPropertySymbol>, IMemberMock
     {
-        private TypeSyntax ValueTypeSyntax { get; }
-        private TypeSyntax ValueWithReadonlyTypeSyntax { get; }
-
-        public VirtualMethodBasedIndexerMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IPropertySymbol symbol,
-            string mockMemberName) : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
+        public VirtualMethodBasedIndexerMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
-            ValueWithReadonlyTypeSyntax = ValueTypeSyntax;
+        }
+
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
+        {
+            var valueTypeSyntax = typesForSymbols.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious());
+            var valueWithReadonlyTypeSyntax = valueTypeSyntax;
 
             if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
             {
-                RefTypeSyntax tmp = F.RefType(ValueTypeSyntax);
-                ValueTypeSyntax = tmp;
-                ValueWithReadonlyTypeSyntax = tmp;
+                RefTypeSyntax tmp = F.RefType(valueTypeSyntax);
+                valueTypeSyntax = tmp;
+                valueWithReadonlyTypeSyntax = tmp;
                 if (Symbol.ReturnsByRefReadonly)
                 {
-                    ValueWithReadonlyTypeSyntax = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                    valueWithReadonlyTypeSyntax = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                 }
             }
-        }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
-        {
             if (!Symbol.IsWriteOnly)
             {
-                declarationList.Add(MockGetVirtualMethod());
+                declarationList.Add(MockGetVirtualMethod(typesForSymbols, valueTypeSyntax));
             }
 
             if (!Symbol.IsReadOnly)
             {
-                declarationList.Add(MockSetVirtualMethod());
+                declarationList.Add(MockSetVirtualMethod(typesForSymbols, valueTypeSyntax));
             }
 
-            declarationList.Add(ExplicitInterfaceMember());
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols, valueWithReadonlyTypeSyntax));
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
         }
 
-        private MemberDeclarationSyntax MockGetVirtualMethod()
+        private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax)
         {
-            return F.MethodDeclaration(ValueTypeSyntax, F.Identifier(MemberMockName))
+            return F.MethodDeclaration(valueTypeSyntax, F.Identifier(MemberMockName))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                 .WithParameterList(F.ParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                .WithBody(F.Block(ThrowMockMissingStatement("VirtualIndexerGet")));
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
+                .WithBody(F.Block(ThrowMockMissingStatement(typesForSymbols, "VirtualIndexerGet")));
         }
 
-        private MemberDeclarationSyntax MockSetVirtualMethod()
+        private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax)
         {
             var uniquifier = new Uniquifier(Symbol.Parameters.Select(p => p.Name));
 
             var parameterList = F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))
-                .Add(F.Parameter(F.Identifier(uniquifier.GetUniqueName("value"))).WithType(ValueTypeSyntax));
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))
+                .Add(F.Parameter(F.Identifier(uniquifier.GetUniqueName("value"))).WithType(valueTypeSyntax));
 
             return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(MemberMockName))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                 .WithParameterList(F.ParameterList(parameterList))
-                .WithBody(F.Block(ThrowMockMissingStatement("VirtualIndexerSet")));
+                .WithBody(F.Block(ThrowMockMissingStatement(typesForSymbols, "VirtualIndexerSet")));
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax)
         {
-            var mockedIndexer = F.IndexerDeclaration(ValueWithReadonlyTypeSyntax)
+            var mockedIndexer = F.IndexerDeclaration(valueWithReadonlyTypeSyntax)
                 .WithParameterList(F.BracketedParameterList(F.SeparatedList(Symbol.Parameters.Select(a =>
-                    F.Parameter(F.Identifier(a.Name)).WithType(TypesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.IsReadOnly)
             {

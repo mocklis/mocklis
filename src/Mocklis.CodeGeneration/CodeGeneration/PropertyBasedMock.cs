@@ -18,24 +18,13 @@ namespace Mocklis.CodeGeneration
 
     public abstract class PropertyBasedMock<TSymbol> where TSymbol : ISymbol
     {
-        protected MocklisTypesForSymbols TypesForSymbols { get; }
         protected INamedTypeSymbol ClassSymbol { get; }
         protected INamedTypeSymbol InterfaceSymbol { get; }
         protected TSymbol Symbol { get; }
         protected string MemberMockName { get; }
 
-        protected MemberAccessExpressionSyntax StrictnessExpression(bool strict, bool veryStrict)
+        protected PropertyBasedMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, TSymbol symbol, string memberMockName)
         {
-            return
-                veryStrict ? TypesForSymbols.StrictnessVeryStrict() :
-                strict ? TypesForSymbols.StrictnessStrict() :
-                TypesForSymbols.StrictnessLenient();
-        }
-
-        protected PropertyBasedMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            TSymbol symbol, string memberMockName)
-        {
-            TypesForSymbols = typesForSymbols;
             ClassSymbol = classSymbol;
             InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
@@ -49,7 +38,7 @@ namespace Mocklis.CodeGeneration
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
         }
 
-        protected ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, bool strict, bool veryStrict)
+        protected ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
             return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 F.IdentifierName(MemberMockName),
@@ -60,7 +49,7 @@ namespace Mocklis.CodeGeneration
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(InterfaceSymbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Symbol.Name)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(MemberMockName)),
-                        StrictnessExpression(strict, veryStrict)
+                        typesForSymbols.StrictnessExpression(strict, veryStrict)
                     )));
         }
     }

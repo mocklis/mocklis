@@ -28,10 +28,9 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedIndexerMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
-            string mockMemberName) : base(typesForSymbols,
-            classSymbol, interfaceSymbol, symbol, mockMemberName)
+            string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            var builder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
+            var builder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
             foreach (var p in symbol.Parameters)
             {
                 builder.AddParameter(p);
@@ -48,18 +47,20 @@ namespace Mocklis.CodeGeneration
             MockPropertyType = typesForSymbols.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
             declarationList.Add(MockProperty(MockPropertyType));
-            declarationList.Add(ExplicitInterfaceMember());
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols));
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType, strict, veryStrict));
+            constructorStatements.Add(InitialisationStatement(MockPropertyType, typesForSymbols, strict, veryStrict));
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
         {
             var decoratedValueTypeSyntax = ValueTypeSyntax;
 
@@ -74,7 +75,7 @@ namespace Mocklis.CodeGeneration
 
             var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
                 .WithParameterList(KeyType.BuildParameterList())
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
 
             var arguments = KeyType.BuildArgumentList();
 
@@ -85,7 +86,7 @@ namespace Mocklis.CodeGeneration
 
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
-                    elementAccess = TypesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                    elementAccess = typesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
                 }
 
                 mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(elementAccess))

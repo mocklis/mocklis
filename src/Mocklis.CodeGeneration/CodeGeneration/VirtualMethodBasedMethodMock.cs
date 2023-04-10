@@ -22,39 +22,9 @@ namespace Mocklis.CodeGeneration
 
     public class VirtualMethodBasedMethodMock : VirtualMethodBasedMock<IMethodSymbol>, IMemberMock
     {
-        private TypeSyntax ReturnTypeWithoutReadonly { get; }
-        private TypeSyntax ReturnType { get; }
-        private string? ArglistParameterName { get; }
-
-        public VirtualMethodBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IMethodSymbol symbol,
-            string mockMemberName) : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol,
-            mockMemberName)
+        public VirtualMethodBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName) : base(
+            classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            if (symbol.ReturnsByRef)
-            {
-                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious()));
-                ReturnType = tmp;
-                ReturnTypeWithoutReadonly = tmp;
-            }
-            else if (symbol.ReturnsByRefReadonly)
-            {
-                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious()));
-                ReturnType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
-                ReturnTypeWithoutReadonly = tmp;
-            }
-            else if (symbol.ReturnsVoid)
-            {
-                ReturnType = F.PredefinedType(F.Token(SyntaxKind.VoidKeyword));
-                ReturnTypeWithoutReadonly = ReturnType;
-            }
-            else
-            {
-                ReturnType = typesForSymbols.ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious());
-                ReturnTypeWithoutReadonly = ReturnType;
-            }
-
-            ArglistParameterName = FindArglistParameterName(symbol);
         }
 
         private static string? FindArglistParameterName(IMethodSymbol symbol)
@@ -68,34 +38,66 @@ namespace Mocklis.CodeGeneration
             return null;
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
-            declarationList.Add(MockVirtualMethod());
-            declarationList.Add(ExplicitInterfaceMember());
-        }
+            TypeSyntax returnTypeWithoutReadonly;
+            TypeSyntax returnType;
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
-        {
-        }
+            typesForSymbols = typesForSymbols.WithSubstitutions(ClassSymbol, Symbol);
 
-        private MemberDeclarationSyntax MockVirtualMethod()
-        {
-            var parameters = F.SeparatedList(Symbol.Parameters.Select(ps => TypesForSymbols.AsParameterSyntax(ps)));
-            if (ArglistParameterName != null && TypesForSymbols.RuntimeArgumentHandle() != null)
+            if (Symbol.ReturnsByRef)
             {
-                parameters = parameters.Add(F.Parameter(F.Identifier(ArglistParameterName)).WithType(TypesForSymbols.RuntimeArgumentHandle()));
+                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious()));
+                returnType = tmp;
+                returnTypeWithoutReadonly = tmp;
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                RefTypeSyntax tmp = F.RefType(typesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious()));
+                returnType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                returnTypeWithoutReadonly = tmp;
+            }
+            else if (Symbol.ReturnsVoid)
+            {
+                returnType = F.PredefinedType(F.Token(SyntaxKind.VoidKeyword));
+                returnTypeWithoutReadonly = returnType;
+            }
+            else
+            {
+                returnType = typesForSymbols.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious());
+                returnTypeWithoutReadonly = returnType;
             }
 
-            var method = F.MethodDeclaration(ReturnTypeWithoutReadonly, F.Identifier(MemberMockName))
+            var arglistParameterName = FindArglistParameterName(Symbol);
+
+            declarationList.Add(MockVirtualMethod(typesForSymbols, returnTypeWithoutReadonly, arglistParameterName));
+            declarationList.Add(ExplicitInterfaceMember(typesForSymbols, returnType, arglistParameterName));
+        }
+
+        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
+        {
+        }
+
+        private MemberDeclarationSyntax MockVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnTypeWithoutReadonly, string? arglistParameterName)
+        {
+            var parameters = F.SeparatedList(Symbol.Parameters.Select(ps => typesForSymbols.AsParameterSyntax(ps)));
+            if (arglistParameterName != null && typesForSymbols.RuntimeArgumentHandle() != null)
+            {
+                parameters = parameters.Add(F.Parameter(F.Identifier(arglistParameterName)).WithType(typesForSymbols.RuntimeArgumentHandle()));
+            }
+
+            var method = F.MethodDeclaration(returnTypeWithoutReadonly, F.Identifier(MemberMockName))
                 .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                 .WithParameterList(F.ParameterList(parameters))
-                .WithBody(F.Block(ThrowMockMissingStatement("VirtualMethod")));
+                .WithBody(F.Block(ThrowMockMissingStatement(typesForSymbols, "VirtualMethod")));
 
             if (Symbol.TypeParameters.Any())
             {
-                method = method.WithTypeParameterList(TypeParameterList());
+                method = method.WithTypeParameterList(TypeParameterList(typesForSymbols));
 
-                var constraints = TypesForSymbols.AsConstraintClauses(Symbol.TypeParameters);
+                var constraints = typesForSymbols.AsConstraintClauses(Symbol.TypeParameters);
 
                 if (constraints.Any())
                 {
@@ -106,35 +108,35 @@ namespace Mocklis.CodeGeneration
             return method;
         }
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember()
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType, string? arglistParameterName)
         {
-            var parameters = F.SeparatedList(Symbol.Parameters.Select(p => TypesForSymbols.AsParameterSyntax(p)));
-            if (ArglistParameterName != null)
+            var parameters = F.SeparatedList(Symbol.Parameters.Select(p => typesForSymbols.AsParameterSyntax(p)));
+            if (arglistParameterName != null)
             {
                 parameters = parameters.Add(F.Parameter(F.Token(SyntaxKind.ArgListKeyword)));
             }
 
             var arguments = Symbol.Parameters.AsArgumentList();
 
-            if (ArglistParameterName != null && TypesForSymbols.RuntimeArgumentHandle() != null)
+            if (arglistParameterName != null && typesForSymbols.RuntimeArgumentHandle() != null)
             {
                 arguments = arguments.Add(F.Argument(F.LiteralExpression(SyntaxKind.ArgListExpression, F.Token(SyntaxKind.ArgListKeyword))));
             }
 
-            var mockedMethod = F.MethodDeclaration(ReturnType, Symbol.Name)
+            var mockedMethod = F.MethodDeclaration(returnType, Symbol.Name)
                 .WithParameterList(F.ParameterList(parameters))
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(InterfaceSymbol)));
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
 
             if (Symbol.TypeParameters.Any())
             {
-                mockedMethod = mockedMethod.WithTypeParameterList(TypeParameterList());
+                mockedMethod = mockedMethod.WithTypeParameterList(TypeParameterList(typesForSymbols));
             }
 
             var invocation = Symbol.TypeParameters.Any()
                 ? (ExpressionSyntax)F.GenericName(MemberMockName)
                     .WithTypeArgumentList(F.TypeArgumentList(
                         F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
-                            TypesForSymbols.ParseTypeName(typeParameter, false)))))
+                            typesForSymbols.ParseTypeName(typeParameter, false)))))
                 : F.IdentifierName(MemberMockName);
 
             invocation = F.InvocationExpression(invocation, F.ArgumentList(arguments));
@@ -151,10 +153,10 @@ namespace Mocklis.CodeGeneration
             return mockedMethod;
         }
 
-        private TypeParameterListSyntax TypeParameterList()
+        private TypeParameterListSyntax TypeParameterList(MocklisTypesForSymbols typesForSymbols)
         {
             return F.TypeParameterList(F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
-                F.TypeParameter(TypesForSymbols.FindTypeParameterName(typeParameter.Name)))));
+                F.TypeParameter(typesForSymbols.FindTypeParameterName(typeParameter.Name)))));
         }
     }
 }

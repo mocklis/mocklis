@@ -22,11 +22,13 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void IMemberMock.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, bool strict, bool veryStrict)
+        void IMemberMock.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
+            bool veryStrict)
         {
         }
 
-        void IMemberMock.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, bool strict, bool veryStrict)
+        void IMemberMock.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols,
+            bool strict, bool veryStrict)
         {
         }
     }
