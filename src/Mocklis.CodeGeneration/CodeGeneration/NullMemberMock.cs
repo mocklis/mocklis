@@ -22,14 +22,14 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
         {
         }
 
-        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
         {
         }
 
-        public ISyntaxAdder GetSyntaxAdder() => this;
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict) => this;
     }
 }

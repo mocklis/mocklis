@@ -58,7 +58,6 @@ namespace Mocklis.CodeGeneration
         {
             bool found = false;
 
-
             AttributeListSyntax FindInList(AttributeListSyntax originalAttributeList, bool add)
             {
                 if (found)
@@ -200,11 +199,11 @@ namespace Mocklis.CodeGeneration
                 _strict = strict;
                 _veryStrict = veryStrict;
 
-                _mocks = CreateMocks(mocklisSymbols, _classSymbol, _typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly);
+                _mocks = CreateMocks(mocklisSymbols, _classSymbol, mockReturnsByRef, mockReturnsByRefReadonly);
             }
 
             private static IMemberMock[] CreateMocks(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol,
-                MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef,
+                bool mockReturnsByRef,
                 bool mockReturnsByRefReadonly)
             {
                 var members = GetMembers(classSymbol).ToArray();
@@ -221,7 +220,7 @@ namespace Mocklis.CodeGeneration
 
                 return members.Select(m =>
                     CreateMock(mocklisSymbols, classSymbol, m.memberSymbol, m.interfaceSymbol, uniquifier,
-                        typesForSymbols, mockReturnsByRef, mockReturnsByRefReadonly)).ToArray();
+                        mockReturnsByRef, mockReturnsByRefReadonly)).ToArray();
             }
 
             private static IEnumerable<(INamedTypeSymbol interfaceSymbol, ISymbol memberSymbol)> GetMembers(ITypeSymbol classSymbol)
@@ -253,7 +252,7 @@ namespace Mocklis.CodeGeneration
 
             private static IMemberMock CreateMock(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
                 INamedTypeSymbol interfaceSymbol,
-                Uniquifier uniquifier, MocklisTypesForSymbols typesForSymbols, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
+                Uniquifier uniquifier, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
             {
                 string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
 
@@ -276,7 +275,7 @@ namespace Mocklis.CodeGeneration
                                     mockMemberName);
                             }
 
-                            return new PropertyBasedIndexerMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
+                            return new PropertyBasedIndexerMock(classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                         }
 
                         if (useVirtualMethod)
@@ -285,11 +284,11 @@ namespace Mocklis.CodeGeneration
                                 mockMemberName);
                         }
 
-                        return new PropertyBasedPropertyMock(typesForSymbols, classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
+                        return new PropertyBasedPropertyMock(classSymbol, interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
 
                     case IEventSymbol memberEventSymbol:
-                        return new PropertyBasedEventMock(typesForSymbols, classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
+                        return new PropertyBasedEventMock(classSymbol, interfaceSymbol, memberEventSymbol, mockMemberName);
                     case IMethodSymbol memberMethodSymbol:
                     {
                         var hasRestrictedParameter = memberMethodSymbol.Parameters.Any(p => !mocklisSymbols.HasImplicitConversionToObject(p.Type));
@@ -310,11 +309,11 @@ namespace Mocklis.CodeGeneration
                         if (memberMethodSymbol.Arity > 0)
                         {
                             var mockProviderName = uniquifier.GetUniqueName(CreateMockProviderName(memberSymbol.MetadataName));
-                            return new PropertyBasedMethodMockWithTypeParameters(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol,
+                            return new PropertyBasedMethodMockWithTypeParameters(classSymbol, interfaceSymbol, memberMethodSymbol,
                                 mockMemberName, mockProviderName);
                         }
 
-                        return new PropertyBasedMethodMock(typesForSymbols, classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
+                        return new PropertyBasedMethodMock(classSymbol, interfaceSymbol, memberMethodSymbol, mockMemberName);
                     }
 
                     default:
@@ -329,21 +328,21 @@ namespace Mocklis.CodeGeneration
 
             public SyntaxList<MemberDeclarationSyntax> GenerateMembers(MocklisTypesForSymbols typesForSymbols)
             {
-                var syntaxAdders = _mocks.Select(m => m.GetSyntaxAdder()).ToArray();
+                var syntaxAdders = _mocks.Select(m => m.GetSyntaxAdder(typesForSymbols, _strict, _veryStrict)).ToArray();
 
                 var declarationList = new List<MemberDeclarationSyntax>();
 
-                GenerateConstructors(declarationList, syntaxAdders, typesForSymbols);
+                GenerateConstructors(declarationList, syntaxAdders);
 
                 foreach (var syntaxAdder in syntaxAdders)
                 {
-                    syntaxAdder.AddMembersToClass(declarationList, typesForSymbols, _strict, _veryStrict);
+                    syntaxAdder.AddMembersToClass(declarationList);
                 }
 
                 return new SyntaxList<MemberDeclarationSyntax>(declarationList);
             }
 
-            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, ISyntaxAdder[] syntaxAdders, MocklisTypesForSymbols typesForSymbols)
+            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, ISyntaxAdder[] syntaxAdders)
             {
                 static bool CanAccessConstructor(IMethodSymbol constructor)
                 {
@@ -367,7 +366,7 @@ namespace Mocklis.CodeGeneration
 
                 foreach (var syntaxAdder in syntaxAdders)
                 {
-                    syntaxAdder.AddInitialisersToConstructor(constructorStatements, typesForSymbols, _strict, _veryStrict);
+                    syntaxAdder.AddInitialisersToConstructor(constructorStatements);
                 }
 
                 var baseTypeConstructors = _classSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))

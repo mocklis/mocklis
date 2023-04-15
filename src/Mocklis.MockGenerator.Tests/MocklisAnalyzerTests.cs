@@ -124,7 +124,7 @@ namespace Mocklis.MockGenerator
                 {
                     var eline = i <= e.Length ? e[i] : string.Empty;
                     var cline = i <= c.Length ? c[i] : string.Empty;
-                    Assert.Equal(cline, eline);
+                    Assert.Equal(eline, cline);
                 }
             }
             catch (Xunit.Sdk.EqualException ex)

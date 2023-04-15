@@ -18,90 +18,106 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedPropertyMock : PropertyBasedMock<IPropertySymbol>, IMemberMock, ISyntaxAdder
+    public class PropertyBasedPropertyMock : PropertyBasedMock<IPropertySymbol>, IMemberMock
     {
-        private TypeSyntax ValueTypeSyntax { get; }
-        private TypeSyntax MockPropertyType { get; }
-
-        public PropertyBasedPropertyMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IPropertySymbol symbol,
-            string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
+        public PropertyBasedPropertyMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
-            ValueTypeSyntax = typesForSymbols.ParseTypeName(symbol.Type, symbol.NullableOrOblivious());
-            MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);
         }
 
-        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
-            bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
-            declarationList.Add(MockProperty(MockPropertyType));
-            declarationList.Add(ExplicitInterfaceMember(typesForSymbols));
+            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
         }
 
-        public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict,
-            bool veryStrict)
+        private class SyntaxAdder : ISyntaxAdder
         {
-            constructorStatements.Add(InitialisationStatement(MockPropertyType, typesForSymbols, strict, veryStrict));
-        }
+            private TypeSyntax ValueTypeSyntax { get; }
+            private TypeSyntax MockPropertyType { get; }
+            private MocklisTypesForSymbols TypesForSymbols { get; }
+            private bool Strict { get; }
+            private bool VeryStrict { get; }
+            private PropertyBasedPropertyMock Mock { get; }
+        
 
-        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
-        {
-            var decoratedValueTypeSyntax = ValueTypeSyntax;
-
-            if (Symbol.ReturnsByRef)
+            public SyntaxAdder(PropertyBasedPropertyMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
             {
-                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
-            }
-            else if (Symbol.ReturnsByRefReadonly)
-            {
-                decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                TypesForSymbols = typesForSymbols;
+                Strict = strict;
+                VeryStrict = veryStrict;
+                Mock = mock;
+                ValueTypeSyntax = typesForSymbols.ParseTypeName(mock.Symbol.Type, mock.Symbol.NullableOrOblivious());
+                MockPropertyType = typesForSymbols.PropertyMock(ValueTypeSyntax);
             }
 
-            var mockedProperty = F.PropertyDeclaration(decoratedValueTypeSyntax, Symbol.Name)
-                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(InterfaceSymbol)));
-
-            if (Symbol.IsReadOnly)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
             {
-                ExpressionSyntax elementAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(MemberMockName),
-                    F.IdentifierName("Value"));
+                declarationList.Add(Mock.MockProperty(MockPropertyType));
+                declarationList.Add(ExplicitInterfaceMember());
+            }
 
-                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            {
+                constructorStatements.Add(Mock.InitialisationStatement(MockPropertyType, TypesForSymbols, Strict, VeryStrict));
+            }
+
+            private MemberDeclarationSyntax ExplicitInterfaceMember()
+            {
+                var decoratedValueTypeSyntax = ValueTypeSyntax;
+
+                if (Mock.Symbol.ReturnsByRef)
                 {
-                    elementAccess = typesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                    decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
+                }
+                else if (Mock.Symbol.ReturnsByRefReadonly)
+                {
+                    decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                 }
 
-                mockedProperty = mockedProperty.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
-                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
-            }
-            else
-            {
-                if (!Symbol.IsWriteOnly)
+                var mockedProperty = F.PropertyDeclaration(decoratedValueTypeSyntax, Mock.Symbol.Name)
+                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(Mock.InterfaceSymbol)));
+
+                if (Mock.Symbol.IsReadOnly)
                 {
-                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            F.IdentifierName(MemberMockName),
-                            F.IdentifierName("Value"))))
-                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                    );
+                    ExpressionSyntax elementAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(Mock.MemberMockName),
+                        F.IdentifierName("Value"));
+
+                    if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
+                    {
+                        elementAccess = TypesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
+                    }
+
+                    mockedProperty = mockedProperty.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+                }
+                else
+                {
+                    if (!Mock.Symbol.IsWriteOnly)
+                    {
+                        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                            .WithExpressionBody(F.ArrowExpressionClause(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                                F.IdentifierName(Mock.MemberMockName),
+                                F.IdentifierName("Value"))))
+                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                        );
+                    }
+
+                    if (!Mock.Symbol.IsReadOnly)
+                    {
+                        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                            .WithExpressionBody(
+                                F.ArrowExpressionClause(
+                                    F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(Mock.MemberMockName),
+                                            F.IdentifierName("Value")),
+                                        F.IdentifierName("value"))))
+                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                        );
+                    }
                 }
 
-                if (!Symbol.IsReadOnly)
-                {
-                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithExpressionBody(
-                            F.ArrowExpressionClause(
-                                F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(MemberMockName),
-                                        F.IdentifierName("Value")),
-                                    F.IdentifierName("value"))))
-                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                    );
-                }
+                return mockedProperty;
             }
 
-            return mockedProperty;
         }
-
-        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }
