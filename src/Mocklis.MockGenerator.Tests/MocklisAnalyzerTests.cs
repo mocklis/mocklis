@@ -14,6 +14,7 @@ namespace Mocklis.MockGenerator
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis.CSharp;
+    using Mocklis.CodeGeneration;
     using Mocklis.MockGenerator.Helpers;
     using Xunit;
     using Xunit.Abstractions;
@@ -111,14 +112,26 @@ namespace Mocklis.MockGenerator
                 expected = result.Code;
             }
 
+            int i = 0;
+
             try
             {
-                Assert.Equal(expected, result.Code);
+                var e = expected.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                var c = result.Code.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+                var linesToCheck = Math.Max(e.Length, c.Length);
+                for (i = 0; i < linesToCheck; i++)
+                {
+                    var eline = i <= e.Length ? e[i] : string.Empty;
+                    var cline = i <= c.Length ? c[i] : string.Empty;
+                    Assert.Equal(cline, eline);
+                }
             }
             catch (Xunit.Sdk.EqualException ex)
             {
                 if (!result.IsSuccess)
                 {
+                    _testOutputHelper.WriteLine($"Mismatch on line {i+1}:");
                     _testOutputHelper.WriteLine(ex.Message);
                     _testOutputHelper.WriteLine(string.Empty);
                 }

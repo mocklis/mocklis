@@ -16,6 +16,11 @@ namespace Mocklis.CodeGeneration
 
     public interface IMemberMock
     {
+        ISyntaxAdder GetSyntaxAdder();
+    }
+
+    public interface ISyntaxAdder
+    {
         void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict);
         void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict);
     }

@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class VirtualMethodBasedMethodMock : VirtualMethodBasedMock<IMethodSymbol>, IMemberMock
+    public class VirtualMethodBasedMethodMock : VirtualMethodBasedMock<IMethodSymbol>, IMemberMock, ISyntaxAdder
     {
         public VirtualMethodBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName) : base(
             classSymbol, interfaceSymbol, symbol, mockMemberName)
@@ -158,5 +158,7 @@ namespace Mocklis.CodeGeneration
             return F.TypeParameterList(F.SeparatedList(Symbol.TypeParameters.Select(typeParameter =>
                 F.TypeParameter(typesForSymbols.FindTypeParameterName(typeParameter.Name)))));
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

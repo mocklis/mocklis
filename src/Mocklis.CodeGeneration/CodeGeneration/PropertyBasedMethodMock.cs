@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedMethodMock : PropertyBasedMock<IMethodSymbol>, IMemberMock
+    public class PropertyBasedMethodMock : PropertyBasedMock<IMethodSymbol>, IMemberMock, ISyntaxAdder
     {
         private SingleTypeOrValueTuple ParametersType { get; }
         private SingleTypeOrValueTuple ReturnValuesType { get; }
@@ -30,6 +30,8 @@ namespace Mocklis.CodeGeneration
         public PropertyBasedMethodMock(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
             IMethodSymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
+            typesForSymbols = typesForSymbols.WithSubstitutions(classSymbol, symbol);
+
             var parametersBuilder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
             var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
 
@@ -200,5 +202,7 @@ namespace Mocklis.CodeGeneration
         {
             return F.IdentifierName(MemberMockName);
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

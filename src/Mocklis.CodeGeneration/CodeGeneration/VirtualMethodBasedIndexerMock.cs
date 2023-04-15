@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public sealed class VirtualMethodBasedIndexerMock : VirtualMethodBasedMock<IPropertySymbol>, IMemberMock
+    public sealed class VirtualMethodBasedIndexerMock : VirtualMethodBasedMock<IPropertySymbol>, IMemberMock, ISyntaxAdder
     {
         public VirtualMethodBasedIndexerMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
@@ -132,5 +132,7 @@ namespace Mocklis.CodeGeneration
 
             return mockedIndexer;
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

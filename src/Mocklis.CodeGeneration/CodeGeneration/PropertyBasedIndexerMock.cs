@@ -19,7 +19,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedIndexerMock : PropertyBasedMock<IPropertySymbol>, IMemberMock
+    public class PropertyBasedIndexerMock : PropertyBasedMock<IPropertySymbol>, IMemberMock, ISyntaxAdder
     {
         private SingleTypeOrValueTuple KeyType { get; }
         private TypeSyntax KeyTypeSyntax { get; }
@@ -116,5 +116,7 @@ namespace Mocklis.CodeGeneration
 
             return mockedIndexer;
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

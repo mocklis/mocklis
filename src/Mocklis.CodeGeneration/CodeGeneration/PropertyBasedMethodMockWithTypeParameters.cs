@@ -24,7 +24,7 @@ namespace Mocklis.CodeGeneration
 
         public PropertyBasedMethodMockWithTypeParameters(MocklisTypesForSymbols typesForSymbols, INamedTypeSymbol classSymbol,
             INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName)
-            : base(typesForSymbols.WithSubstitutions(classSymbol, symbol), classSymbol, interfaceSymbol, symbol, mockMemberName)
+            : base(typesForSymbols, classSymbol, interfaceSymbol, symbol, mockMemberName)
         {
             MockProviderName = mockProviderName;
         }
@@ -32,6 +32,8 @@ namespace Mocklis.CodeGeneration
         public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
             bool veryStrict)
         {
+            typesForSymbols = typesForSymbols.WithSubstitutions(ClassSymbol, Symbol);
+
             declarationList.Add(TypedMockProviderField(typesForSymbols));
             declarationList.Add(MockProviderMethod(typesForSymbols, strict, veryStrict));
             declarationList.Add(ExplicitInterfaceMember(typesForSymbols));

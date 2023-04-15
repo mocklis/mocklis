@@ -14,7 +14,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public sealed class NullMemberMock : IMemberMock
+    public sealed class NullMemberMock : IMemberMock, ISyntaxAdder
     {
         public static IMemberMock Instance { get; } = new NullMemberMock();
 
@@ -22,14 +22,14 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void IMemberMock.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict,
-            bool veryStrict)
+        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
         }
 
-        void IMemberMock.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols,
-            bool strict, bool veryStrict)
+        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
         {
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

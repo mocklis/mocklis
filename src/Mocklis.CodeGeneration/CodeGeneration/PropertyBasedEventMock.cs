@@ -18,7 +18,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedEventMock : PropertyBasedMock<IEventSymbol>, IMemberMock
+    public class PropertyBasedEventMock : PropertyBasedMock<IEventSymbol>, IMemberMock, ISyntaxAdder
     {
         private TypeSyntax EventHandlerTypeSyntax { get; }
         private TypeSyntax MockPropertyType { get; }
@@ -63,5 +63,7 @@ namespace Mocklis.CodeGeneration
 
             return mockedProperty;
         }
+
+        public ISyntaxAdder GetSyntaxAdder() => this;
     }
 }

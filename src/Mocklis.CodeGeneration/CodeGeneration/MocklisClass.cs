@@ -329,19 +329,21 @@ namespace Mocklis.CodeGeneration
 
             public SyntaxList<MemberDeclarationSyntax> GenerateMembers(MocklisTypesForSymbols typesForSymbols)
             {
+                var syntaxAdders = _mocks.Select(m => m.GetSyntaxAdder()).ToArray();
+
                 var declarationList = new List<MemberDeclarationSyntax>();
 
-                GenerateConstructors(declarationList, typesForSymbols);
+                GenerateConstructors(declarationList, syntaxAdders, typesForSymbols);
 
-                foreach (var mock in _mocks)
+                foreach (var syntaxAdder in syntaxAdders)
                 {
-                    mock.AddMembersToClass(declarationList, typesForSymbols, _strict, _veryStrict);
+                    syntaxAdder.AddMembersToClass(declarationList, typesForSymbols, _strict, _veryStrict);
                 }
 
                 return new SyntaxList<MemberDeclarationSyntax>(declarationList);
             }
 
-            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, MocklisTypesForSymbols typesForSymbols)
+            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, ISyntaxAdder[] syntaxAdders, MocklisTypesForSymbols typesForSymbols)
             {
                 static bool CanAccessConstructor(IMethodSymbol constructor)
                 {
@@ -363,9 +365,9 @@ namespace Mocklis.CodeGeneration
 
                 var constructorStatements = new List<StatementSyntax>();
 
-                foreach (var mock in _mocks)
+                foreach (var syntaxAdder in syntaxAdders)
                 {
-                    mock.AddInitialisersToConstructor(constructorStatements, typesForSymbols, _strict, _veryStrict);
+                    syntaxAdder.AddInitialisersToConstructor(constructorStatements, typesForSymbols, _strict, _veryStrict);
                 }
 
                 var baseTypeConstructors = _classSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
