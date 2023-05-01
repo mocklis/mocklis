@@ -36,11 +36,13 @@ namespace Mocklis.CodeGeneration
         {
             private readonly VirtualMethodBasedMethodMock _mock;
             private readonly MocklisTypesForSymbols _typesForSymbols;
+            private readonly Substitutions _substitutions;
 
             public SyntaxAdder(VirtualMethodBasedMethodMock mock, MocklisTypesForSymbols typesForSymbols)
             {
                 _mock = mock;
-                _typesForSymbols = typesForSymbols.WithSubstitutions(_mock.ClassSymbol, _mock.Symbol);
+                _typesForSymbols = typesForSymbols;
+                _substitutions = new Substitutions(_mock.ClassSymbol, _mock.Symbol);
             }
 
             private static string? FindArglistParameterName(IMethodSymbol symbol)
@@ -95,7 +97,7 @@ namespace Mocklis.CodeGeneration
             private MemberDeclarationSyntax MockVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnTypeWithoutReadonly,
                 string? arglistParameterName)
             {
-                var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(typesForSymbols.AsParameterSyntax));
+                var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(a => typesForSymbols.AsParameterSyntax(a, _substitutions.FindTypeParameterName)));
                 if (arglistParameterName != null && typesForSymbols.RuntimeArgumentHandle() != null)
                 {
                     parameters = parameters.Add(F.Parameter(F.Identifier(arglistParameterName)).WithType(typesForSymbols.RuntimeArgumentHandle()));
@@ -110,7 +112,7 @@ namespace Mocklis.CodeGeneration
                 {
                     method = method.WithTypeParameterList(TypeParameterList(typesForSymbols));
 
-                    var constraints = typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters);
+                    var constraints = typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters, _substitutions.FindTypeParameterName);
 
                     if (constraints.Any())
                     {
@@ -123,7 +125,7 @@ namespace Mocklis.CodeGeneration
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax returnType, string? arglistParameterName)
             {
-                var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(p => _typesForSymbols.AsParameterSyntax(p)));
+                var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(p => _typesForSymbols.AsParameterSyntax(p, _substitutions.FindTypeParameterName)));
                 if (arglistParameterName != null)
                 {
                     parameters = parameters.Add(F.Parameter(F.Token(SyntaxKind.ArgListKeyword)));
@@ -149,7 +151,7 @@ namespace Mocklis.CodeGeneration
                     ? (ExpressionSyntax)F.GenericName(_mock.MemberMockName)
                         .WithTypeArgumentList(F.TypeArgumentList(
                             F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
-                                _typesForSymbols.ParseTypeName(typeParameter, false)))))
+                                _typesForSymbols.ParseTypeName(typeParameter, false, _substitutions.FindTypeParameterName)))))
                     : F.IdentifierName(_mock.MemberMockName);
 
                 invocation = F.InvocationExpression(invocation, F.ArgumentList(arguments));
@@ -169,7 +171,7 @@ namespace Mocklis.CodeGeneration
             private TypeParameterListSyntax TypeParameterList(MocklisTypesForSymbols typesForSymbols)
             {
                 return F.TypeParameterList(F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeParameter(typesForSymbols.FindTypeParameterName(typeParameter.Name)))));
+                    F.TypeParameter(_substitutions.FindTypeParameterName(typeParameter.Name)))));
             }
         }
     }

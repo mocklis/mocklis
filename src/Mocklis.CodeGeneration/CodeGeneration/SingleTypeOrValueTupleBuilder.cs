@@ -51,9 +51,9 @@ namespace Mocklis.CodeGeneration
             Items.Add(new BuilderEntry(parameter.Name, x, false));
         }
 
-        public void AddReturnValue(ITypeSymbol returnType, bool nullable)
+        public void AddReturnValue(ITypeSymbol returnType, bool nullable, Func<string, string> findTypeParameterName)
         {
-            Items.Add(new BuilderEntry("returnValue", TypesForSymbols.ParseTypeName(returnType, nullable), true));
+            Items.Add(new BuilderEntry("returnValue", TypesForSymbols.ParseTypeName(returnType, nullable, findTypeParameterName), true));
         }
 
         public SingleTypeOrValueTuple Build(string? mockMemberName = null)

@@ -9,6 +9,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -16,7 +17,6 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration.Compatibility;
-    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -27,7 +27,6 @@ namespace Mocklis.CodeGeneration
         private readonly ClassDeclarationSyntax _classDeclaration;
         private readonly MocklisSymbols _mocklisSymbols;
         private readonly bool _nullableContextEnabled;
-        private readonly Dictionary<string, string>? _typeParameterNameSubstitutions;
 
         private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
@@ -42,39 +41,9 @@ namespace Mocklis.CodeGeneration
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
             _nullableContextEnabled = nullableContextEnabled;
-            _typeParameterNameSubstitutions = null;
         }
 
-        public MocklisTypesForSymbols WithSubstitutions(INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
-        {
-            return new MocklisTypesForSymbols(_semanticModel, _classDeclaration, _mocklisSymbols, classSymbol, methodSymbol, _nullableContextEnabled);
-        }
-
-        private MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
-            INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol, bool nullableContextEnabled)
-        {
-            _semanticModel = semanticModel;
-            _classDeclaration = classDeclaration;
-            _mocklisSymbols = mocklisSymbols;
-            _typeParameterNameSubstitutions = new Dictionary<string, string>();
-            _nullableContextEnabled = nullableContextEnabled;
-            Uniquifier t = new Uniquifier(classSymbol.TypeParameters.Select(tp => tp.Name));
-
-            foreach (var methodTypeParameter in methodSymbol.TypeParameters)
-            {
-                string uniqueName = t.GetUniqueName(methodTypeParameter.Name);
-                _typeParameterNameSubstitutions[methodTypeParameter.Name] = uniqueName;
-            }
-        }
-
-        public string FindTypeParameterName(string typeParameterName)
-        {
-            return _typeParameterNameSubstitutions != null && _typeParameterNameSubstitutions.ContainsKey(typeParameterName)
-                ? _typeParameterNameSubstitutions[typeParameterName]
-                : typeParameterName;
-        }
-
-        public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible)
+        public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, Func<string, string>? findTypeParameterName = null)
         {
             var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat);
 
@@ -89,7 +58,14 @@ namespace Mocklis.CodeGeneration
 
                         if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } && methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
                         {
-                            s += FindTypeParameterName(partSymbol.Name);
+                            if (findTypeParameterName is null)
+                            {
+                                s += partSymbol.Name;
+                            }
+                            else
+                            {
+                                s += findTypeParameterName(partSymbol.Name);
+                            }
                         }
                         else
                         {
@@ -129,7 +105,7 @@ namespace Mocklis.CodeGeneration
             return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat));
         }
 
-        private TypeSyntax ParseGenericType(ITypeSymbol symbol, params TypeSyntax[] typeParameters)
+        private TypeSyntax ParseGenericType(ITypeSymbol symbol, Func<string, string>? findTypeParameterName, params TypeSyntax[] typeParameters)
         {
             TypeSyntax ApplyTypeParameters(TypeSyntax typeSyntax)
             {
@@ -146,7 +122,7 @@ namespace Mocklis.CodeGeneration
                 return typeSyntax;
             }
 
-            return ApplyTypeParameters(ParseTypeName(symbol, false));
+            return ApplyTypeParameters(ParseTypeName(symbol, false, findTypeParameterName));
         }
 
         public TypeSyntax ActionMethodMock()
@@ -154,34 +130,34 @@ namespace Mocklis.CodeGeneration
             return ParseTypeName(_mocklisSymbols.ActionMethodMock0, false);
         }
 
-        public TypeSyntax ActionMethodMock(TypeSyntax tparam)
+        public TypeSyntax ActionMethodMock(TypeSyntax tparam, Func<string, string>? findTypeParameterName = null)
         {
-            return ParseGenericType(_mocklisSymbols.ActionMethodMock1, tparam);
+            return ParseGenericType(_mocklisSymbols.ActionMethodMock1, findTypeParameterName, tparam);
         }
 
         public TypeSyntax EventMock(TypeSyntax thandler)
         {
-            return ParseGenericType(_mocklisSymbols.EventMock1, thandler);
+            return ParseGenericType(_mocklisSymbols.EventMock1, null, thandler);
         }
 
-        public TypeSyntax FuncMethodMock(TypeSyntax tresult)
+        public TypeSyntax FuncMethodMock(TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
         {
-            return ParseGenericType(_mocklisSymbols.FuncMethodMock1, tresult);
+            return ParseGenericType(_mocklisSymbols.FuncMethodMock1, findTypeParameterName, tresult);
         }
 
-        public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult)
+        public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
         {
-            return ParseGenericType(_mocklisSymbols.FuncMethodMock2, tparam, tresult);
+            return ParseGenericType(_mocklisSymbols.FuncMethodMock2, findTypeParameterName, tparam, tresult);
         }
 
         public TypeSyntax IndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
         {
-            return ParseGenericType(_mocklisSymbols.IndexerMock2, tkey, tvalue);
+            return ParseGenericType(_mocklisSymbols.IndexerMock2, null, tkey, tvalue);
         }
 
         public TypeSyntax PropertyMock(TypeSyntax tvalue)
         {
-            return ParseGenericType(_mocklisSymbols.PropertyMock1, tvalue);
+            return ParseGenericType(_mocklisSymbols.PropertyMock1, null, tvalue);
         }
 
         public TypeSyntax MockMissingException() => ParseTypeName(_mocklisSymbols.MockMissingException, false);
@@ -191,7 +167,7 @@ namespace Mocklis.CodeGeneration
 
         public TypeSyntax ByRef(TypeSyntax tresult)
         {
-            return ParseGenericType(_mocklisSymbols.ByRef1, tresult);
+            return ParseGenericType(_mocklisSymbols.ByRef1, null, tresult);
         }
 
         public TypeSyntax TypedMockProvider() => ParseTypeName(_mocklisSymbols.TypedMockProvider, false);
@@ -207,9 +183,9 @@ namespace Mocklis.CodeGeneration
         public MemberAccessExpressionSyntax StrictnessVeryStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
             ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("VeryStrict"));
 
-        public ParameterSyntax AsParameterSyntax(IParameterSymbol p)
+        public ParameterSyntax AsParameterSyntax(IParameterSymbol p, Func<string, string>? findTypeParameterName = null)
         {
-            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, p.NullableOrOblivious()));
+            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, p.NullableOrOblivious(), findTypeParameterName));
 
             switch (p.RefKind)
             {
@@ -235,7 +211,7 @@ namespace Mocklis.CodeGeneration
             return syntax;
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter)
+        private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
         {
             if (_nullableContextEnabled)
             {
@@ -248,7 +224,7 @@ namespace Mocklis.CodeGeneration
 
                 if (constraints.Any())
                 {
-                    var name = FindTypeParameterName(typeParameter.Name);
+                    var name = findTypeParameterName(typeParameter.Name);
                     return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
                 }
             }
@@ -256,7 +232,7 @@ namespace Mocklis.CodeGeneration
             return null;
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter)
+        private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
         {
             var constraints = new List<TypeParameterConstraintSyntax>();
 
@@ -295,26 +271,26 @@ namespace Mocklis.CodeGeneration
 
             if (constraints.Any())
             {
-                var name = FindTypeParameterName(typeParameter.Name);
+                var name = findTypeParameterName(typeParameter.Name);
                 return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
             }
 
             return null;
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters)
+        public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
         {
             return typeParameters
-                .Select(CreateClassConstraintClausesForReferenceTypeParameter)
+                .Select(a => CreateClassConstraintClausesForReferenceTypeParameter(a, findTypeParameterName))
                 .Where(a => a != null)
                 .Select(a => a!)
                 .ToArray();
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters)
+        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
         {
             return typeParameters
-                .Select(CreateConstraintClauseFromTypeParameter)
+                .Select(a => CreateConstraintClauseFromTypeParameter(a, findTypeParameterName))
                 .Where(a => a != null)
                 .Select(a => a!)
                 .ToArray();
