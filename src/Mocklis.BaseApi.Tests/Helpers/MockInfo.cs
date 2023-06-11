@@ -31,7 +31,7 @@ namespace Mocklis.Helpers
         public string MemberMockName { get; }
         public Strictness Strictness { get; }
 
-        public MockInfo(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName,
+        private MockInfo(object mockInstance, string mocklisClassName, string interfaceName, string memberName, string memberMockName,
             Strictness strictness)
         {
             MockInstance = mockInstance;

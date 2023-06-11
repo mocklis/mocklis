@@ -10,6 +10,7 @@ namespace Mocklis.Steps.Stored
     #region Using Directives
 
     using System.Collections.Generic;
+    using System.ComponentModel;
     using Mocklis.Helpers;
     using Mocklis.Interfaces;
     using Mocklis.Mocks;
@@ -72,7 +73,7 @@ namespace Mocklis.Steps.Stored
         public void HandleChangeNotificationWithoutComparer()
         {
             var mock = new MockPropertiesWithChangeNotification();
-            mock.PropertyChanged.Stored(out var propertyChangedEvent);
+            mock.PropertyChanged.Stored(out StoredEventStep<PropertyChangedEventHandler> propertyChangedEvent);
             mock.StringProperty.StoredWithChangeNotification(propertyChangedEvent);
             IProperties sut = mock;
 

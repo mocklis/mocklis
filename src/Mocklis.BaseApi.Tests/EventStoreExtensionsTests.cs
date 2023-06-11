@@ -36,7 +36,7 @@ namespace Mocklis
                 eventArgs = e;
             };
 
-            var newEventArgs = new EventArgs();
+            var newEventArgs = EventArgs.Empty;
             stored.Raise(this, newEventArgs);
 
             Assert.Same(this, sender);

@@ -58,8 +58,8 @@ namespace Mocklis.CodeGeneration
             TypedMockProvider = GetTypeSymbol("Mocklis.Core.TypedMockProvider");
             Strictness = GetTypeSymbol("Mocklis.Core.Strictness");
             RuntimeArgumentHandle = GetTypeSymbol("System.RuntimeArgumentHandle");
-            Object = GetTypeSymbol("System.Object");
             GeneratedCodeAttribute = GetTypeSymbol("System.CodeDom.Compiler.GeneratedCodeAttribute");
+            Object = GetTypeSymbol("System.Object");
         }
 
         public bool HasImplicitConversionToObject(ITypeSymbol symbol)

@@ -47,7 +47,7 @@ namespace Mocklis.Steps.Conditional
         public void CheckCommonCondition()
         {
             StoredEventStep<EventHandler>? eventStore = null;
-            MockMembers.MyEvent.If(e => e?.GetMethodInfo()?.Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
+            MockMembers.MyEvent.If(e => e?.GetMethodInfo().Name == nameof(MyFirstEventHandler), i => i.Stored(out eventStore));
 
             Sut.MyEvent += MyFirstEventHandler;
             Sut.MyEvent += MySecondEventHandler;
@@ -65,8 +65,8 @@ namespace Mocklis.Steps.Conditional
         {
             StoredEventStep<EventHandler>? eventStore = null;
             MockMembers.MyEvent.If(
-                e => e?.GetMethodInfo()?.Name == nameof(MyFirstEventHandler),
-                e => e?.GetMethodInfo()?.Name == nameof(MySecondEventHandler),
+                e => e?.GetMethodInfo().Name == nameof(MyFirstEventHandler),
+                e => e?.GetMethodInfo().Name == nameof(MySecondEventHandler),
                 i => i.Stored(out eventStore));
 
             // This only adds first event handler

@@ -21,7 +21,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class MocklisTypesForSymbols
+    public sealed class MocklisTypesForSymbols
     {
         private readonly SemanticModel _semanticModel;
         private readonly ClassDeclarationSyntax _classDeclaration;
@@ -228,6 +228,8 @@ namespace Mocklis.CodeGeneration
                     return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
                 }
             }
+
+            // TODO: Clearly we want to do something here even if we're not in a nullable context?
 
             return null;
         }

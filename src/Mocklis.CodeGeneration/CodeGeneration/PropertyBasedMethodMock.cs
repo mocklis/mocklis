@@ -38,10 +38,10 @@ namespace Mocklis.CodeGeneration
 
         protected class SyntaxAdder<TMock> : ISyntaxAdder where TMock : PropertyBasedMethodMock
         {
-            protected readonly TMock _mock;
-            protected readonly MocklisTypesForSymbols _typesForSymbols;
-            protected readonly bool _strict;
-            protected readonly bool _veryStrict;
+            protected TMock Mock { get; }
+            protected MocklisTypesForSymbols TypesForSymbols { get; }
+            protected bool Strict { get; }
+            protected bool VeryStrict { get; }
 
             protected SingleTypeOrValueTuple ParametersType { get; }
             protected SingleTypeOrValueTuple ReturnValuesType { get; }
@@ -52,21 +52,21 @@ namespace Mocklis.CodeGeneration
 
             public SyntaxAdder(TMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
             {
-                _mock = mock;
-                _typesForSymbols = typesForSymbols;
-                Substitutions = new Substitutions(_mock.ClassSymbol, _mock.Symbol);
-                _strict = strict;
-                _veryStrict = veryStrict;
+                Mock = mock;
+                TypesForSymbols = typesForSymbols;
+                Substitutions = new Substitutions(Mock.ClassSymbol, Mock.Symbol);
+                Strict = strict;
+                VeryStrict = veryStrict;
 
-                var parametersBuilder = new SingleTypeOrValueTupleBuilder(_typesForSymbols);
-                var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(_typesForSymbols);
+                var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
+                var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
 
-                if (!_mock.Symbol.ReturnsVoid)
+                if (!Mock.Symbol.ReturnsVoid)
                 {
-                    returnValuesBuilder.AddReturnValue(_mock.Symbol.ReturnType, _mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
+                    returnValuesBuilder.AddReturnValue(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
                 }
 
-                foreach (var parameter in _mock.Symbol.Parameters)
+                foreach (var parameter in Mock.Symbol.Parameters)
                 {
                     switch (parameter.RefKind)
                     {
@@ -121,27 +121,27 @@ namespace Mocklis.CodeGeneration
 
             public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
             {
-                declarationList.Add(_mock.MockProperty(MockMemberType));
+                declarationList.Add(Mock.MockProperty(MockMemberType));
                 declarationList.Add(ExplicitInterfaceMember());
             }
 
             public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
             {
-                constructorStatements.Add(_mock.InitialisationStatement(MockMemberType, _typesForSymbols, _strict, _veryStrict));
+                constructorStatements.Add(Mock.InitialisationStatement(MockMemberType, TypesForSymbols, Strict, VeryStrict));
             }
 
             protected MemberDeclarationSyntax ExplicitInterfaceMember()
             {
-                var baseReturnType = _mock.Symbol.ReturnsVoid
+                var baseReturnType = Mock.Symbol.ReturnsVoid
                     ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                    : _typesForSymbols.ParseTypeName(_mock.Symbol.ReturnType, _mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
+                    : TypesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
                 var returnType = baseReturnType;
 
-                if (_mock.Symbol.ReturnsByRef)
+                if (Mock.Symbol.ReturnsByRef)
                 {
                     returnType = F.RefType(returnType);
                 }
-                else if (_mock.Symbol.ReturnsByRefReadonly)
+                else if (Mock.Symbol.ReturnsByRefReadonly)
                 {
                     returnType = F.RefType(returnType).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                 }
@@ -160,9 +160,9 @@ namespace Mocklis.CodeGeneration
                 if (ReturnValuesType.Count == 0 ||
                     ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue)
                 {
-                    if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
+                    if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
                     {
-                        invocation = _typesForSymbols.WrapByRef(invocation, baseReturnType);
+                        invocation = TypesForSymbols.WrapByRef(invocation, baseReturnType);
                     }
 
                     mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
@@ -177,7 +177,7 @@ namespace Mocklis.CodeGeneration
                 else
                 {
                     // if we have more than one, put it in a temporary variable. (consider name clashes with method parameter names)
-                    var x = new Uniquifier(_mock.Symbol.Parameters.Select(m => m.Name));
+                    var x = new Uniquifier(Mock.Symbol.Parameters.Select(m => m.Name));
                     string tmp = x.GetUniqueName("tmp");
 
                     var statements = new List<StatementSyntax>
@@ -201,9 +201,9 @@ namespace Mocklis.CodeGeneration
                         ExpressionSyntax memberAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
                             F.IdentifierName(rv.TupleSafeName));
 
-                        if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
+                        if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
                         {
-                            memberAccess = _typesForSymbols.WrapByRef(memberAccess, baseReturnType);
+                            memberAccess = TypesForSymbols.WrapByRef(memberAccess, baseReturnType);
                         }
 
                         statements.Add(F.ReturnStatement(memberAccess));
@@ -217,14 +217,14 @@ namespace Mocklis.CodeGeneration
 
             protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
             {
-                return F.MethodDeclaration(returnType, _mock.Symbol.Name)
-                    .WithParameterList(_mock.Symbol.Parameters.AsParameterList(_typesForSymbols))
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(_typesForSymbols.ParseName(_mock.InterfaceSymbol)));
+                return F.MethodDeclaration(returnType, Mock.Symbol.Name)
+                    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(TypesForSymbols))
+                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(Mock.InterfaceSymbol)));
             }
 
             protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()
             {
-                return F.IdentifierName(_mock.MemberMockName);
+                return F.IdentifierName(Mock.MemberMockName);
             }
         }
     }

@@ -67,7 +67,7 @@ namespace Mocklis
             Targets.Item
                 .JoinPoint(out var joinPoint)
                 .InstanceRecordAfterGet(out var ledger, (i, k, v) => (i, k, v))
-                .Return("Twentyfive");
+                .Return("Twenty-five");
             Sources.Item.Join(joinPoint);
 
             var result = Indexers[25];
@@ -75,8 +75,8 @@ namespace Mocklis
             var (instance, key, value) = Assert.Single(ledger);
             Assert.Same(Sources, instance);
             Assert.Equal(25, key);
-            Assert.Equal("Twentyfive", value);
-            Assert.Equal("Twentyfive", result);
+            Assert.Equal("Twenty-five", value);
+            Assert.Equal("Twenty-five", result);
         }
 
         [Fact]
@@ -87,12 +87,12 @@ namespace Mocklis
                 .InstanceRecordBeforeSet(out var ledger, (i, k, v) => (i, k, v));
             Sources.Item.Join(joinPoint);
 
-            Indexers[25] = "Twentyfive";
+            Indexers[25] = "Twenty-five";
 
             var (instance, key, value) = Assert.Single(ledger);
             Assert.Same(Sources, instance);
             Assert.Equal(25, key);
-            Assert.Equal("Twentyfive", value);
+            Assert.Equal("Twenty-five", value);
         }
 
         [Fact]
@@ -118,15 +118,15 @@ namespace Mocklis
             Targets.StringProperty
                 .JoinPoint(out var joinPoint)
                 .InstanceRecordAfterGet(out var ledger, (i, v) => (i, v))
-                .Return("Twentyfive");
+                .Return("Twenty-five");
             Sources.StringProperty.Join(joinPoint);
 
             var result = Properties.StringProperty;
 
             var (instance, value) = Assert.Single(ledger);
             Assert.Same(Sources, instance);
-            Assert.Equal("Twentyfive", value);
-            Assert.Equal("Twentyfive", result);
+            Assert.Equal("Twenty-five", value);
+            Assert.Equal("Twenty-five", result);
         }
 
         [Fact]
@@ -137,11 +137,11 @@ namespace Mocklis
                 .InstanceRecordBeforeSet(out var ledger, (i, v) => (i, v));
             Sources.StringProperty.Join(joinPoint);
 
-            Properties.StringProperty = "Twentyfive";
+            Properties.StringProperty = "Twenty-five";
 
             var (instance, value) = Assert.Single(ledger);
             Assert.Same(Sources, instance);
-            Assert.Equal("Twentyfive", value);
+            Assert.Equal("Twenty-five", value);
         }
     }
 }

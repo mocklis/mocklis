@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Stored
             MockMembers.MyEvent.Stored(out var store);
             Sut.MyEvent += _handler1;
             Sut.MyEvent += _handler2;
-            Assert.Equal(new Delegate[] { _handler1, _handler2 }, store?.EventHandler?.GetInvocationList());
+            Assert.Equal(new Delegate[] { _handler1, _handler2 }, store.EventHandler?.GetInvocationList());
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace Mocklis.Steps.Stored
             Sut.MyEvent += _handler1;
             Sut.MyEvent += _handler2;
             Sut.MyEvent -= _handler1;
-            Assert.Equal(new Delegate[] { _handler2 }, store?.EventHandler?.GetInvocationList());
+            Assert.Equal(new Delegate[] { _handler2 }, store.EventHandler?.GetInvocationList());
         }
 
         [Fact]

@@ -14,7 +14,6 @@ namespace Mocklis.MockGenerator
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis.CSharp;
-    using Mocklis.CodeGeneration;
     using Mocklis.MockGenerator.Helpers;
     using Xunit;
     using Xunit.Abstractions;

@@ -49,47 +49,47 @@ namespace Mocklis.CodeGeneration
 
             private MemberDeclarationSyntax TypedMockProviderField()
             {
-                return F.FieldDeclaration(F.VariableDeclaration(_typesForSymbols.TypedMockProvider()).WithVariables(
-                    F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(_mock.MockProviderName))
-                        .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(_typesForSymbols.TypedMockProvider())
+                return F.FieldDeclaration(F.VariableDeclaration(TypesForSymbols.TypedMockProvider()).WithVariables(
+                    F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(Mock.MockProviderName))
+                        .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(TypesForSymbols.TypedMockProvider())
                             .WithArgumentList(F.ArgumentList())))))
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
             private MemberDeclarationSyntax MockProviderMethod()
             {
-                var m = F.MethodDeclaration(MockMemberType, F.Identifier(_mock.MemberMockName)).WithTypeParameterList(TypeParameterList(_typesForSymbols));
+                var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
                 m = m.WithModifiers(F.TokenList(F.Token(SyntaxKind.PublicKeyword)));
 
                 var keyCreation = F.LocalDeclarationStatement(F.VariableDeclaration(F.IdentifierName("var")).WithVariables(F.SingletonSeparatedList(F
-                    .VariableDeclarator(F.Identifier("key")).WithInitializer(F.EqualsValueClause(TypesOfTypeParameters(_typesForSymbols))))));
+                    .VariableDeclarator(F.Identifier("key")).WithInitializer(F.EqualsValueClause(TypesOfTypeParameters())))));
 
                 var mockCreation = F.SimpleLambdaExpression(F.Parameter(F.Identifier("keyString")), F.ObjectCreationExpression(MockMemberType)
                     .WithExpressionsAsArgumentList(
                         F.ThisExpression(),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(_mock.ClassSymbol.Name)),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(_mock.InterfaceSymbol.Name)),
-                        F.BinaryExpression(SyntaxKind.AddExpression, F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(_mock.Symbol.Name)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.ClassSymbol.Name)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.InterfaceSymbol.Name)),
+                        F.BinaryExpression(SyntaxKind.AddExpression, F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.Symbol.Name)),
                             F.IdentifierName("keyString")),
                         F.BinaryExpression(SyntaxKind.AddExpression,
                             F.BinaryExpression(SyntaxKind.AddExpression,
-                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(_mock.MemberMockName)), F.IdentifierName("keyString")),
+                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.MemberMockName)), F.IdentifierName("keyString")),
                             F.LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
                                 F.Literal("()"))),
-                        _typesForSymbols.StrictnessExpression(_strict, _veryStrict)
+                        TypesForSymbols.StrictnessExpression(Strict, VeryStrict)
                     ));
 
                 var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(
-                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(_mock.MockProviderName),
+                        F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(Mock.MockProviderName),
                             F.IdentifierName("GetOrAdd")))
                     .WithArgumentList(
                         F.ArgumentList(F.SeparatedList(new[] { F.Argument(F.IdentifierName("key")), F.Argument(mockCreation) })))));
 
                 m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-                var constraints = _typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters, Substitutions.FindTypeParameterName);
+                var constraints = TypesForSymbols.AsConstraintClauses(Mock.Symbol.TypeParameters, Substitutions.FindTypeParameterName);
 
                 if (constraints.Any())
                 {
@@ -99,10 +99,10 @@ namespace Mocklis.CodeGeneration
                 return m;
             }
 
-            private ImplicitArrayCreationExpressionSyntax TypesOfTypeParameters(MocklisTypesForSymbols typesForSymbols)
+            private ImplicitArrayCreationExpressionSyntax TypesOfTypeParameters()
             {
                 return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                    F.SeparatedList<ExpressionSyntax>(_mock.Symbol.TypeParameters.Select(typeParameter =>
+                    F.SeparatedList<ExpressionSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
                         F.TypeOfExpression(F.IdentifierName(Substitutions.FindTypeParameterName(typeParameter.Name)))))));
             }
 
@@ -113,9 +113,9 @@ namespace Mocklis.CodeGeneration
             protected override MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
             {
                 var m = base.ExplicitInterfaceMemberMethodDeclaration(returnType)
-                    .WithTypeParameterList(TypeParameterList(_typesForSymbols));
+                    .WithTypeParameterList(TypeParameterList());
 
-                var constraints = _typesForSymbols.AsClassConstraintClausesForReferenceTypes(_mock.Symbol.TypeParameters, Substitutions.FindTypeParameterName);
+                var constraints = TypesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Substitutions.FindTypeParameterName);
                 if (constraints.Any())
                 {
                     m = m.AddConstraintClauses(constraints);
@@ -126,20 +126,20 @@ namespace Mocklis.CodeGeneration
 
             protected override ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()
             {
-                return F.InvocationExpression(F.GenericName(_mock.MemberMockName).WithTypeArgumentList(TypeArgumentList(_typesForSymbols)))
+                return F.InvocationExpression(F.GenericName(Mock.MemberMockName).WithTypeArgumentList(TypeArgumentList()))
                     .WithArgumentList(F.ArgumentList());
             }
 
-            private TypeParameterListSyntax TypeParameterList(MocklisTypesForSymbols typesForSymbols)
+            private TypeParameterListSyntax TypeParameterList()
             {
-                return F.TypeParameterList(F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
+                return F.TypeParameterList(F.SeparatedList(Mock.Symbol.TypeParameters.Select(typeParameter =>
                     F.TypeParameter(Substitutions.FindTypeParameterName(typeParameter.Name)))));
             }
 
-            private TypeArgumentListSyntax TypeArgumentList(MocklisTypesForSymbols typesForSymbols)
+            private TypeArgumentListSyntax TypeArgumentList()
             {
                 return F.TypeArgumentList(
-                    F.SeparatedList<TypeSyntax>(_mock.Symbol.TypeParameters.Select(typeParameter =>
+                    F.SeparatedList<TypeSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
                         F.IdentifierName(Substitutions.FindTypeParameterName(typeParameter.Name)))));
             }
         }

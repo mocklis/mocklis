@@ -272,7 +272,7 @@ namespace Mocklis.Steps.Log
         }
 
         [Fact]
-        public void LogBeforeAndExceptionOnProportyGet()
+        public void LogBeforeAndExceptionOnPropertyGet()
         {
             // Arrange
             _mockMembers.StringProperty.Log(_logLineContext).Throw(() => new Exception("Exception thrown!"));

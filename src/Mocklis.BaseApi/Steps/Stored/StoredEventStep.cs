@@ -75,7 +75,7 @@ namespace Mocklis.Steps.Stored
             do
             {
                 previousHandler = eventHandler;
-                THandler? newHandler = (THandler)Delegate.Remove(previousHandler, value);
+                THandler? newHandler = (THandler?)Delegate.Remove(previousHandler, value);
                 eventHandler = Interlocked.CompareExchange(ref _eventHandler, newHandler, previousHandler);
             }
             while (eventHandler != previousHandler);

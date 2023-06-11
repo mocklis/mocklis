@@ -28,7 +28,7 @@ namespace Mocklis.Core
             {
             }
 
-            public bool Equals(Type[] left, Type[] right) => left == null ? right == null : right != null && left.SequenceEqual(right);
+            public bool Equals(Type[] left, Type[] right) => left.SequenceEqual(right);
 
             public int GetHashCode(Type[] obj) => obj.Aggregate(0, (acc, t) => unchecked((acc * 23357) ^ t.GetHashCode()));
         }
@@ -72,9 +72,9 @@ namespace Mocklis.Core
 
             lock (_mocks)
             {
-                if (_mocks.ContainsKey(types))
+                if (_mocks.TryGetValue(types, out var add))
                 {
-                    return _mocks[types];
+                    return add;
                 }
 
                 var mock = factory(TypeParameterString(types));

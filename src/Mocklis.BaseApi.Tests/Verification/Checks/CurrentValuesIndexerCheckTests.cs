@@ -118,9 +118,12 @@ namespace Mocklis.Verification.Checks
         public void UseGivenEqualityComparer()
         {
             // Arrange
+            // ReSharper disable StringLiteralTypo
             MockMembers.Item.StoredAsDictionary()
                 .CurrentValuesCheck(Group, null, new[] { new KeyValuePair<int, string>(0, "tomahto") }, new StringLengthComparer());
+
             Indexers[0] = "tomeyto";
+            // ReSharper restore StringLiteralTypo
 
             // Act
             var groupResult = ((IVerifiable)Group).Verify().FirstOrDefault();

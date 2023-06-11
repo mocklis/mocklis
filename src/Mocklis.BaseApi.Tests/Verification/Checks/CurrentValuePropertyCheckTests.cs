@@ -88,7 +88,9 @@ namespace Mocklis.Verification.Checks
         public void UseGivenEqualityComparer()
         {
             // Arrange
+            // ReSharper disable StringLiteralTypo
             MockMembers.StringProperty.Stored("tomeyto").CurrentValueCheck(Group, null, "tomahto", new StringLengthComparer());
+            // ReSharper restore StringLiteralTypo
 
             // Act
             var groupResult = ((IVerifiable)Group).Verify().FirstOrDefault();

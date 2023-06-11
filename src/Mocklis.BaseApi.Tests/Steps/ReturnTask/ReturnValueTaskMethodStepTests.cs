@@ -124,7 +124,7 @@ namespace Mocklis.Steps.ReturnTask
         }
 
         [Fact]
-        public void SetNextStepShoundNotAcceptNull()
+        public void SetNextStepShouldNotAcceptNull()
         {
             ICanHaveNextMethodStep<int, int> step = new ReturnValueTaskMethodStep<int, int>();
             var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IMethodStep<int, int>)null!));
@@ -132,7 +132,7 @@ namespace Mocklis.Steps.ReturnTask
         }
 
         [Fact]
-        public void SetNextStepShoundNotAcceptNull2()
+        public void SetNextStepShouldNotAcceptNull2()
         {
             ICanHaveNextMethodStep<int, ValueTuple> step = new ReturnValueTaskMethodStep<int>();
             var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IMethodStep<int, ValueTuple>)null!));

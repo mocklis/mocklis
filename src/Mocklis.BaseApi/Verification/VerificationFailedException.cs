@@ -78,7 +78,7 @@ namespace Mocklis.Verification
         }
 
         /// <summary>
-        ///     Sets the <see cref="SerializationInfo" /> with information abouet the exception.
+        ///     Sets the <see cref="SerializationInfo" /> with information about the exception.
         /// </summary>
         /// <param name="info">
         ///     The <see cref="SerializationInfo" /> that holds the serialized object data about the exception being

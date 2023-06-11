@@ -70,10 +70,10 @@ namespace Mocklis.Verification.Checks
                 TKey key = expectation.Key;
                 TValue expectedValue = expectation.Value;
                 TValue currentValue = _indexer[key];
-                string keyString = Convert.ToString(key, provider);
-                string expectedValueString = Convert.ToString(expectedValue, provider);
-                string currentValueString = Convert.ToString(currentValue, provider);
-                string description = $"Key '{keyString}'; Expected '{expectedValueString}'; Current Value is '{currentValueString}'";
+                string? keyString = Convert.ToString(key, provider);
+                string? expectedValueString = Convert.ToString(expectedValue, provider);
+                string? currentValueString = Convert.ToString(currentValue, provider);
+                string description = $"Key {keyString.QuotedOrNull()}; Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}";
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);
             }

@@ -30,7 +30,7 @@ namespace Mocklis.CodeGeneration
 
         public string FindTypeParameterName(string typeParameterName)
         {
-            return _typeParameterNameSubstitutions.ContainsKey(typeParameterName) ? _typeParameterNameSubstitutions[typeParameterName] : typeParameterName;
+            return _typeParameterNameSubstitutions.TryGetValue(typeParameterName, out var substitution) ? substitution : typeParameterName;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     public static class TypeParameterSymbolExtensions
     {
-        private static readonly PropertyInfo HasNotNullConstraintPropertyInfo = typeof(ITypeParameterSymbol).GetProperty("HasNotNullConstraint");
+        private static readonly PropertyInfo? HasNotNullConstraintPropertyInfo = typeof(ITypeParameterSymbol).GetProperty("HasNotNullConstraint");
 
         public static bool HasNotNullConstraint(this ITypeParameterSymbol typeParameterSymbol)
         {

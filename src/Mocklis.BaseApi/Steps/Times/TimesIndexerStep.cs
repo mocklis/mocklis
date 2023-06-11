@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Times
         public TimesIndexerStep(int times, Action<ICanHaveNextIndexerStep<TKey, TValue>> branch)
         {
             _times = times;
-            branch?.Invoke(_branch);
+            branch.Invoke(_branch);
         }
 
         private bool ShouldUseBranch()

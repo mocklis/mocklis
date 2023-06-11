@@ -11,7 +11,10 @@ namespace Mocklis.Verification
 
     using System;
     using Xunit;
+
+#if NETFRAMEWORK
     using Mocklis.Helpers;
+#endif
 
     #endregion
 

@@ -17,7 +17,7 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     public static class SemanticModelExtensions
     {
-        private static readonly MethodInfo GetNullableContextMethodInfo = typeof(SemanticModel).GetMethod("GetNullableContext");
+        private static readonly MethodInfo? GetNullableContextMethodInfo = typeof(SemanticModel).GetMethod("GetNullableContext");
 
         public static bool ClassIsInNullableContext(this SemanticModel semanticModel, ClassDeclarationSyntax classDecl)
         {

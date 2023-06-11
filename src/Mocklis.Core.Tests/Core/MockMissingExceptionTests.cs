@@ -24,6 +24,11 @@ namespace Mocklis.Core
 
         private static T RoundTrip<T>(T item)
         {
+            if (item == null)
+            {
+                return item;
+            }
+
             var formatter = new BinaryFormatter();
 
             using var m = new MemoryStream();

@@ -7,10 +7,6 @@
 
 namespace Mocklis.Interfaces
 {
-    #region Using Directives
-
-    #endregion
-
     public interface IMethods
     {
         void SimpleAction();

@@ -62,10 +62,12 @@ namespace Mocklis.Verification.Checks
             string prefix = string.IsNullOrEmpty(_name) ? "Value check" : $"Value check '{_name}'";
 
             TValue currentValue = _property.Value;
-            string expectedValueString = Convert.ToString(_expectedValue, provider);
-            string currentValueString = Convert.ToString(currentValue, provider);
-            yield return new VerificationResult($"{prefix}: Expected '{expectedValueString}'; Current Value is '{currentValueString}'",
+            string? expectedValueString = Convert.ToString(_expectedValue, provider);
+            string? currentValueString = Convert.ToString(currentValue, provider);
+            yield return new VerificationResult($"{prefix}: Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}",
                 _comparer.Equals(_expectedValue, currentValue));
         }
+
+
     }
 }

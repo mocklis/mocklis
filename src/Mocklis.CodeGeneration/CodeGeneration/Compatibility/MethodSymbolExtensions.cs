@@ -16,7 +16,7 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     public static class MethodSymbolExtensions
     {
-        private static readonly PropertyInfo ReturnNullableAnnotationPropertyInfo = typeof(IMethodSymbol).GetProperty("ReturnNullableAnnotation");
+        private static readonly PropertyInfo? ReturnNullableAnnotationPropertyInfo = typeof(IMethodSymbol).GetProperty("ReturnNullableAnnotation");
 
         public static bool ReturnTypeIsNullableOrOblivious(this IMethodSymbol methodSymbol)
         {

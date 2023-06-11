@@ -36,7 +36,7 @@ namespace Mocklis.Steps.Times
         public TimesEventStep(int times, Action<ICanHaveNextEventStep<THandler>> branch)
         {
             _times = times;
-            branch?.Invoke(_branch);
+            branch.Invoke(_branch);
         }
 
         private bool ShouldUseBranch()

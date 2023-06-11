@@ -98,7 +98,7 @@ namespace Mocklis.CodeGeneration
                 string? arglistParameterName)
             {
                 var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(a => typesForSymbols.AsParameterSyntax(a, _substitutions.FindTypeParameterName)));
-                if (arglistParameterName != null && typesForSymbols.RuntimeArgumentHandle() != null)
+                if (arglistParameterName != null)
                 {
                     parameters = parameters.Add(F.Parameter(F.Identifier(arglistParameterName)).WithType(typesForSymbols.RuntimeArgumentHandle()));
                 }
@@ -110,7 +110,7 @@ namespace Mocklis.CodeGeneration
 
                 if (_mock.Symbol.TypeParameters.Any())
                 {
-                    method = method.WithTypeParameterList(TypeParameterList(typesForSymbols));
+                    method = method.WithTypeParameterList(TypeParameterList());
 
                     var constraints = typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters, _substitutions.FindTypeParameterName);
 
@@ -133,7 +133,7 @@ namespace Mocklis.CodeGeneration
 
                 var arguments = _mock.Symbol.Parameters.AsArgumentList();
 
-                if (arglistParameterName != null && _typesForSymbols.RuntimeArgumentHandle() != null)
+                if (arglistParameterName != null)
                 {
                     arguments = arguments.Add(F.Argument(F.LiteralExpression(SyntaxKind.ArgListExpression, F.Token(SyntaxKind.ArgListKeyword))));
                 }
@@ -144,7 +144,7 @@ namespace Mocklis.CodeGeneration
 
                 if (_mock.Symbol.TypeParameters.Any())
                 {
-                    mockedMethod = mockedMethod.WithTypeParameterList(TypeParameterList(_typesForSymbols));
+                    mockedMethod = mockedMethod.WithTypeParameterList(TypeParameterList());
                 }
 
                 var invocation = _mock.Symbol.TypeParameters.Any()
@@ -168,7 +168,7 @@ namespace Mocklis.CodeGeneration
                 return mockedMethod;
             }
 
-            private TypeParameterListSyntax TypeParameterList(MocklisTypesForSymbols typesForSymbols)
+            private TypeParameterListSyntax TypeParameterList()
             {
                 return F.TypeParameterList(F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
                     F.TypeParameter(_substitutions.FindTypeParameterName(typeParameter.Name)))));

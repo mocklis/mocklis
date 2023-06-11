@@ -37,7 +37,7 @@ namespace Mocklis.Steps.Times
         public TimesMethodStep(int times, Action<ICanHaveNextMethodStep<TParam, TResult>> branch)
         {
             _times = times;
-            branch?.Invoke(_branch);
+            branch.Invoke(_branch);
         }
 
         private bool ShouldUseBranch()

@@ -20,6 +20,11 @@ namespace Mocklis.Helpers
     {
         public static T RoundTripWithBinaryFormatter<T>(this T item)
         {
+            if (item == null)
+            {
+                return item;
+            }
+
             var formatter = new BinaryFormatter();
 
             using var m = new MemoryStream();

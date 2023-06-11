@@ -16,20 +16,12 @@ namespace Mocklis.Steps.ReturnTask
     using Mocklis.Interfaces;
     using Mocklis.Mocks;
     using Xunit;
-    using Xunit.Abstractions;
 
     #endregion
 
     public class ReturnTaskMethodStepTests
     {
         public MockTaskMethods MockTaskMethods { get; } = new MockTaskMethods();
-
-        public ITestOutputHelper TestOutputHelper { get; }
-
-        public ReturnTaskMethodStepTests(ITestOutputHelper testOutputHelper)
-        {
-            TestOutputHelper = testOutputHelper;
-        }
 
         [Fact]
         public async Task WrapsVoidReturnValue()
@@ -124,7 +116,7 @@ namespace Mocklis.Steps.ReturnTask
         }
 
         [Fact]
-        public void SetNextStepShoundNotAcceptNull()
+        public void SetNextStepShouldNotAcceptNull()
         {
             ICanHaveNextMethodStep<int, int> step = new ReturnTaskMethodStep<int, int>();
             var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IMethodStep<int, int>)null!));
@@ -132,7 +124,7 @@ namespace Mocklis.Steps.ReturnTask
         }
 
         [Fact]
-        public void SetNextStepShoundNotAcceptNull2()
+        public void SetNextStepShouldNotAcceptNull2()
         {
             ICanHaveNextMethodStep<int, ValueTuple> step = new ReturnTaskMethodStep<int>();
             var exception = Assert.Throws<ArgumentNullException>(() => step.SetNextStep((IMethodStep<int, ValueTuple>)null!));

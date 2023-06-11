@@ -9,7 +9,6 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
@@ -40,7 +39,7 @@ namespace Mocklis.CodeGeneration
 
         public SingleTypeOrValueTuple(IEnumerable<Entry> entries)
         {
-            Entries = entries?.ToArray() ?? Array.Empty<Entry>();
+            Entries = entries.ToArray();
         }
 
         public IEnumerator<Entry> GetEnumerator() => Entries.OfType<Entry>().GetEnumerator();

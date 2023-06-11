@@ -15,7 +15,7 @@ namespace Mocklis.Helpers
 
     public sealed class StringLengthComparer : IEqualityComparer<string>
     {
-        private int GetLength(string? s)
+        private static int GetLength(string? s)
         {
             return s?.Length ?? 0;
         }

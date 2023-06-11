@@ -27,8 +27,6 @@ namespace Mocklis.Verification
     [Serializable]
     public readonly struct VerificationResult : System.Runtime.Serialization.ISerializable
     {
-        private static readonly VerificationResult[] EmptyVerificationResultArray = Array.Empty<VerificationResult>();
-
         /// <summary>
         ///     Gets the description of the verification node.
         /// </summary>
@@ -52,7 +50,7 @@ namespace Mocklis.Verification
         public VerificationResult(string description, bool success)
         {
             Description = description;
-            SubResults = EmptyVerificationResultArray;
+            SubResults = Array.Empty<VerificationResult>();
             Success = success;
         }
 
@@ -65,11 +63,11 @@ namespace Mocklis.Verification
         {
             Description = description;
 
-            VerificationResult[] array = subResults?.ToArray() ?? EmptyVerificationResultArray;
+            VerificationResult[] array = subResults.ToArray();
 
             if (array.Length == 0)
             {
-                SubResults = EmptyVerificationResultArray;
+                SubResults = Array.Empty<VerificationResult>();
             }
             else
             {

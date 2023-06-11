@@ -16,7 +16,7 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     public static class ParameterSymbolExtensions
     {
-        private static readonly PropertyInfo NullableAnnotationPropertyInfo = typeof(IParameterSymbol).GetProperty("NullableAnnotation");
+        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IParameterSymbol).GetProperty("NullableAnnotation");
 
         public static bool NullableOrOblivious(this IParameterSymbol parameterSymbol)
         {

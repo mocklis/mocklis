@@ -10,6 +10,7 @@ namespace Mocklis.MockGenerator
     #region Using Directives
 
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -66,7 +67,7 @@ namespace Mocklis.MockGenerator
             }
         }
 
-        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl, out AttributeSyntax mocklisAttribute)
+        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl, [NotNullWhen(true)] out AttributeSyntax? mocklisAttribute)
         {
             mocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).FirstOrDefault(a =>
                 a.Name.DescendantTokens().Any(t => t.Text == "MocklisClass" || t.Text == "MocklisClassAttribute"));
