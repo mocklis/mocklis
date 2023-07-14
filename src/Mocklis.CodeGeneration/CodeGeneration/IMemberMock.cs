@@ -7,21 +7,8 @@
 
 namespace Mocklis.CodeGeneration
 {
-    #region Using Directives
-
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-    #endregion
-
     public interface IMemberMock
     {
         ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict);
-    }
-
-    public interface ISyntaxAdder
-    {
-        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList);
-        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements);
     }
 }

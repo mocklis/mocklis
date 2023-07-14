@@ -82,11 +82,11 @@ namespace Mocklis.Steps.Record
             Assert.Throws<Exception>(() => _methods.FuncWithParameter(25));
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.True(ledger[0].IsSuccess);
-            Assert.Equal(20, ledger[0].Data1);
-            Assert.Equal(result, ledger[0].Data2);
-            Assert.Same(_mockMembers, ledger[0].Instance);
+            var item = Assert.Single(ledger);
+            Assert.True(item.IsSuccess);
+            Assert.Equal(20, item.Data1);
+            Assert.Equal(result, item.Data2);
+            Assert.Same(_mockMembers, item.Instance);
         }
 
         [Fact]

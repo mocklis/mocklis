@@ -45,7 +45,9 @@ namespace Mocklis.CodeGeneration
         {
             var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
 
-            var populator = new MocklisClassPopulator(typesForSymbols, semanticModel, classDecl, mocklisSymbols);
+            var extractionMocklisSymbols = new ExtractionMocklisSymbols(semanticModel.Compilation);
+            
+            var populator = new MocklisClassPopulator(semanticModel, classDecl, extractionMocklisSymbols);
             return classDecl.WithMembers(F.List(populator.GenerateMembers(typesForSymbols)))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
@@ -129,80 +131,27 @@ namespace Mocklis.CodeGeneration
             return F.List(result);
         }
 
-        private class MocklisClassPopulator
+        public class MocklisClassPopulator
         {
             private readonly INamedTypeSymbol _classSymbol;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
             private readonly IMemberMock[] _mocks;
 
             private readonly bool _strict;
             private readonly bool _veryStrict;
 
-            public MocklisClassPopulator(MocklisTypesForSymbols typesForSymbols, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration,
-                MocklisSymbols mocklisSymbols)
+            public MocklisClassPopulator(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, ExtractionMocklisSymbols extractionMocklisSymbols)
             {
                 _classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) ?? throw new ArgumentException("symbol for class was not found in semantic model.", nameof(classDeclaration));
-                _typesForSymbols = typesForSymbols;
-                bool mockReturnsByRef = false;
-                bool mockReturnsByRefReadonly = true;
-                bool strict = false;
-                bool veryStrict = false;
-                var attribute = _classSymbol.GetAttributes().SingleOrDefault(a => a.AttributeClass != null && a.AttributeClass.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default));
 
-                if (attribute != null)
-                {
-                    var attributeSyntaxReference = attribute.ApplicationSyntaxReference ?? throw new ArgumentException("MocklisClass attribute did not have syntax reference.");
+                var x = ExtractedClassInformation.GetSettingsFromAttribute(classDeclaration, _classSymbol, extractionMocklisSymbols);
+  
+                _strict = x.Strict;
+                _veryStrict = x.VeryStrict;
 
-                    var attributeArguments = classDeclaration.FindNode(attributeSyntaxReference.Span).DescendantNodes().OfType<AttributeArgumentSyntax>();
-
-                    foreach (var k in attributeArguments)
-                    {
-                        if (k.Expression is LiteralExpressionSyntax les)
-                        {
-                            var name = k.NameEquals?.Name.Identifier.Text;
-                            bool value;
-                            if (les.IsKind(SyntaxKind.TrueLiteralExpression))
-                            {
-                                value = true;
-                            }
-                            else if (les.IsKind(SyntaxKind.FalseLiteralExpression))
-                            {
-                                value = false;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                            switch (name)
-                            {
-                                case "MockReturnsByRef":
-                                    mockReturnsByRef = value;
-                                    break;
-                                case "MockReturnsByRefReadonly":
-                                    mockReturnsByRefReadonly = value;
-                                    break;
-                                case "Strict":
-                                    strict = value;
-                                    break;
-                                case "VeryStrict":
-                                    veryStrict = value;
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                // 'Very strict' implies 'strict'
-                strict |= veryStrict;
-
-                _strict = strict;
-                _veryStrict = veryStrict;
-
-                _mocks = CreateMocks(mocklisSymbols, _classSymbol, mockReturnsByRef, mockReturnsByRefReadonly);
+                _mocks = CreateMocks(extractionMocklisSymbols, _classSymbol, x.MockReturnsByRef, x.MockReturnsByRefReadonly);
             }
 
-            private static IMemberMock[] CreateMocks(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol,
+            private static IMemberMock[] CreateMocks(ExtractionMocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol,
                 bool mockReturnsByRef,
                 bool mockReturnsByRefReadonly)
             {
@@ -250,7 +199,7 @@ namespace Mocklis.CodeGeneration
                 }
             }
 
-            private static IMemberMock CreateMock(MocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
+            private static IMemberMock CreateMock(ExtractionMocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
                 INamedTypeSymbol interfaceSymbol,
                 Uniquifier uniquifier, bool mockReturnsByRef, bool mockReturnsByRefReadonly)
             {
@@ -332,20 +281,23 @@ namespace Mocklis.CodeGeneration
 
                 var declarationList = new List<MemberDeclarationSyntax>();
 
-                GenerateConstructors(declarationList, syntaxAdders);
+                GenerateConstructors(declarationList, syntaxAdders, typesForSymbols);
 
                 foreach (var syntaxAdder in syntaxAdders)
                 {
-                    syntaxAdder.AddMembersToClass(declarationList);
+                    var interfaceSymbol = syntaxAdder.InterfaceSymbol;
+                    var interfaceNameSyntax = typesForSymbols.ParseName(interfaceSymbol);
+                    syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax);
                 }
 
                 return new SyntaxList<MemberDeclarationSyntax>(declarationList);
             }
 
-            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, ISyntaxAdder[] syntaxAdders)
+            private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, ISyntaxAdder[] syntaxAdders, MocklisTypesForSymbols typesForSymbols)
             {
                 static bool CanAccessConstructor(IMethodSymbol constructor)
                 {
+                    // TODO: Should we consider allowing access to internal constructors as well - if they can be seen?
                     switch (constructor.DeclaredAccessibility)
                     {
                         case Accessibility.Protected:
@@ -398,7 +350,7 @@ namespace Mocklis.CodeGeneration
                         .WithModifiers(F.TokenList(F.Token(_classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
                         .WithParameterList(
                             F.ParameterList(
-                                F.SeparatedList(constructor.Parameters.Select(tp => _typesForSymbols.AsParameterSyntax(tp)))))
+                                F.SeparatedList(constructor.Parameters.Select(tp => typesForSymbols.AsParameterSyntax(tp)))))
                         .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
 
                     if (parameterNames.Any())

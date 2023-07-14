@@ -18,10 +18,21 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public sealed class VirtualMethodBasedPropertyMock : VirtualMethodBasedMock<IPropertySymbol>, IMemberMock
+    public sealed class VirtualMethodBasedPropertyMock : IMemberMock
     {
-        public VirtualMethodBasedPropertyMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
+        public string ClassName { get; }
+        public INamedTypeSymbol InterfaceSymbol { get; }
+        public string InterfaceName { get; }
+        public IPropertySymbol Symbol { get; }
+        public string MemberMockName { get; }
+
+        public VirtualMethodBasedPropertyMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
         {
+            ClassName = classSymbol.Name;
+            InterfaceSymbol = interfaceSymbol;
+            InterfaceName = interfaceSymbol.Name;
+            Symbol = symbol;
+            MemberMockName = mockMemberName;
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
@@ -40,7 +51,7 @@ namespace Mocklis.CodeGeneration
                 _typesForSymbols = typesForSymbols;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
             {
                 var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
                 var valueWithReadonlyTypeSyntax = valueTypeSyntax;
@@ -66,8 +77,10 @@ namespace Mocklis.CodeGeneration
                     declarationList.Add(MockSetVirtualMethod(valueTypeSyntax));
                 }
 
-                declarationList.Add(ExplicitInterfaceMember(valueWithReadonlyTypeSyntax));
+                declarationList.Add(ExplicitInterfaceMember(valueWithReadonlyTypeSyntax, interfaceNameSyntax));
             }
+
+            public ITypeSymbol InterfaceSymbol => _mock.InterfaceSymbol;
 
             public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
             {
@@ -77,7 +90,7 @@ namespace Mocklis.CodeGeneration
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_mock.ThrowMockMissingStatement(_typesForSymbols, "VirtualPropertyGet")));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
             }
 
             private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax)
@@ -88,13 +101,13 @@ namespace Mocklis.CodeGeneration
                         F.Parameter(F.Identifier("value")).WithType(valueTypeSyntax)
                     })))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_mock.ThrowMockMissingStatement(_typesForSymbols, "VirtualPropertySet")));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
             }
 
-            private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax)
+            private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)
             {
                 var mockedProperty = F.PropertyDeclaration(valueWithReadonlyTypeSyntax, _mock.Symbol.Name)
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(_typesForSymbols.ParseName(_mock.InterfaceSymbol)));
+                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
                 if (_mock.Symbol.IsReadOnly)
                 {

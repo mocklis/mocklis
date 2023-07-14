@@ -47,14 +47,14 @@ namespace Mocklis.Steps.Conditional
         public void ForwardAdd()
         {
             Sut.MyEvent += _handler;
-            Assert.Equal(1, Adds.Count);
+            Assert.Single(Adds);
         }
 
         [Fact]
         public void NotForwardRemove()
         {
             Sut.MyEvent -= _handler;
-            Assert.Equal(0, Removes.Count);
+            Assert.Empty(Removes);
         }
     }
 }

@@ -62,11 +62,11 @@ namespace Mocklis.Steps.Log
             _properties.StringProperty = "Test";
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal("Test", before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            AssertMockInfoIsCorrect(after[0]);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal("Test", beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            AssertMockInfoIsCorrect(afterItem);
         }
 
         [Fact]
@@ -81,12 +81,12 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _properties.StringProperty = "Test");
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal("Test", before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal("Test", beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -101,11 +101,11 @@ namespace Mocklis.Steps.Log
             var _ = _properties.StringProperty;
 
             // Assert
-            Assert.Equal(1, before.Count);
-            AssertMockInfoIsCorrect(before[0]);
-            Assert.Equal(1, after.Count);
-            Assert.Equal("Test", after[0].value);
-            AssertMockInfoIsCorrect(after[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            AssertMockInfoIsCorrect(beforeItem);
+            var afterItem = Assert.Single(after);
+            Assert.Equal("Test", afterItem.value);
+            AssertMockInfoIsCorrect(afterItem.mockInfo);
         }
 
         [Fact]
@@ -120,11 +120,11 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _properties.StringProperty);
 
             // Assert
-            Assert.Equal(1, before.Count);
-            AssertMockInfoIsCorrect(before[0]);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            AssertMockInfoIsCorrect(beforeItem);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Mocklis.Steps.Log
             _properties.StringProperty = "Test";
 
             // Assert
-            Assert.Equal(1, before.Count);
+            Assert.Single(before);
         }
     }
 }

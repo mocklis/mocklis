@@ -63,7 +63,7 @@ namespace Mocklis.MockGenerator
             }
         }
 
-        private async Task<Solution> UpdateMocklisClassAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        private static async Task<Solution> UpdateMocklisClassAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
         {
             if (!(typeDecl is ClassDeclarationSyntax classDecl))
             {

@@ -6,22 +6,22 @@
 
 ### New Rules
 
-Rule ID | Category | Severity | Notes
---------|----------|----------|--------------------
-MocklisAnalyzer | Code Generation | Info     | Mocklis code can be regenerated
+| Rule ID          | Category        | Severity | Notes                           |
+|------------------|-----------------|----------|---------------------------------|
+| MocklisAnalyzer  | Code Generation | Info     | Mocklis code can be regenerated |
 
 
 ## Release 1.1
 
 ### New Rules
 
-Rule ID | Category | Severity | Notes
---------|----------|----------|--------------------
-MocklisAnalyzerCreate | Code Generation | Error    | Mocklis code can be generated
-MocklisAnalyzerUpdate | Code Generation | Info     | Mocklis code can be regenerated
+| Rule ID               | Category        | Severity | Notes                           |
+|-----------------------|-----------------|----------|---------------------------------|
+| MocklisAnalyzerCreate | Code Generation | Error    | Mocklis code can be generated   |
+| MocklisAnalyzerUpdate | Code Generation | Info     | Mocklis code can be regenerated |
 
 ### Removed Rules
 
-Rule ID | Category | Severity | Notes
---------|----------|----------|--------------------
-MocklisAnalyzer | Code Generation | Info     | Mocklis code can be regenerated
+| Rule ID         | Category        | Severity | Notes                           |
+|-----------------|-----------------|----------|---------------------------------|
+| MocklisAnalyzer | Code Generation | Info     | Mocklis code can be regenerated |

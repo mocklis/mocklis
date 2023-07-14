@@ -62,12 +62,12 @@ namespace Mocklis.Steps.Log
             _indexers[5] = "Test";
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(5, before[0].key);
-            Assert.Equal("Test", before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            AssertMockInfoIsCorrect(after[0]);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(5, beforeItem.key);
+            Assert.Equal("Test", beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            AssertMockInfoIsCorrect(afterItem);
         }
 
         [Fact]
@@ -82,13 +82,13 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _indexers[5] = "Test");
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(5, before[0].key);
-            Assert.Equal("Test", before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(5, beforeItem.key);
+            Assert.Equal("Test", beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -103,12 +103,12 @@ namespace Mocklis.Steps.Log
             var _ = _indexers[5];
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(5, before[0].key);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            Assert.Equal("Test", after[0].value);
-            AssertMockInfoIsCorrect(after[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(5, beforeItem.key);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            Assert.Equal("Test", afterItem.value);
+            AssertMockInfoIsCorrect(afterItem.mockInfo);
         }
 
         [Fact]
@@ -123,12 +123,12 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _indexers[5]);
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(5, before[0].key);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(5, beforeItem.key);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Mocklis.Steps.Log
             _indexers[5] = "Test";
 
             // Assert
-            Assert.Equal(1, before.Count);
+            Assert.Single(before);
         }
     }
 }

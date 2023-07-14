@@ -15,7 +15,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\Compatibility\PropertySymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\Compatibility\SemanticModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\Compatibility\TypeParameterSymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\ExtractedClassInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\IMemberMock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\ISyntaxAdder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisSymbols.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\MocklisTypesForSymbols.cs" />
@@ -24,7 +26,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedIndexerMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMethodMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMethodMockWithTypeParameters.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\PropertyBasedPropertyMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\RoslynExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\SingleTypeOrValueTupleBuilder.cs" />
@@ -33,7 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\UniqueNames\Uniquifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedIndexerMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMethodMock.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedMock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGeneration\VirtualMethodBasedPropertyMock.cs" />
   </ItemGroup>
 </Project>

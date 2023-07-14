@@ -9,7 +9,9 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     #endregion
@@ -22,7 +24,9 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+        ITypeSymbol ISyntaxAdder.InterfaceSymbol => throw new NotImplementedException();
+
+        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
         {
         }
 

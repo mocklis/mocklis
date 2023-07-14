@@ -32,8 +32,6 @@ namespace Mocklis.CodeGeneration
         public INamedTypeSymbol RuntimeArgumentHandle { get; }
         public INamedTypeSymbol GeneratedCodeAttribute { get; }
 
-        private INamedTypeSymbol Object { get; }
-        private Compilation Compilation { get; }
 
         public MocklisSymbols(Compilation compilation)
         {
@@ -43,7 +41,6 @@ namespace Mocklis.CodeGeneration
                        throw new ArgumentException($"Compilation does not contain {metadataName}.", nameof(compilation));
             }
 
-            Compilation = compilation;
             MocklisClassAttribute = GetTypeSymbol("Mocklis.Core.MocklisClassAttribute");
             ActionMethodMock0 = GetTypeSymbol("Mocklis.Core.ActionMethodMock");
             ActionMethodMock1 = GetTypeSymbol("Mocklis.Core.ActionMethodMock`1");
@@ -59,12 +56,6 @@ namespace Mocklis.CodeGeneration
             Strictness = GetTypeSymbol("Mocklis.Core.Strictness");
             RuntimeArgumentHandle = GetTypeSymbol("System.RuntimeArgumentHandle");
             GeneratedCodeAttribute = GetTypeSymbol("System.CodeDom.Compiler.GeneratedCodeAttribute");
-            Object = GetTypeSymbol("System.Object");
-        }
-
-        public bool HasImplicitConversionToObject(ITypeSymbol symbol)
-        {
-            return Compilation.HasImplicitConversion(symbol, Object);
         }
     }
 }

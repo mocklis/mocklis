@@ -29,8 +29,8 @@ namespace Mocklis
             eventMock.Dummy();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(DummyEventStep<EventHandler>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(DummyEventStep<EventHandler>.Instance, item);
         }
 
         [Fact]
@@ -44,8 +44,8 @@ namespace Mocklis
             indexerMock.Dummy();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(DummyIndexerStep<int, string>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(DummyIndexerStep<int, string>.Instance, item);
         }
 
         [Fact]
@@ -59,8 +59,8 @@ namespace Mocklis
             eventMock.Dummy();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(DummyMethodStep<int, string>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(DummyMethodStep<int, string>.Instance, item);
         }
 
         [Fact]
@@ -74,8 +74,8 @@ namespace Mocklis
             indexerMock.Dummy();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(DummyPropertyStep<int>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(DummyPropertyStep<int>.Instance, item);
         }
     }
 }

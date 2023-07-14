@@ -123,5 +123,12 @@ namespace Mocklis.CodeGeneration
 
             return F.ParameterList(F.SeparatedList(args));
         }
+
+        public static PropertyDeclarationSyntax MockProperty(this TypeSyntax mockPropertyType, string memberMockName)
+        {
+            return F.PropertyDeclaration(mockPropertyType, memberMockName).AddModifiers(F.Token(SyntaxKind.PublicKeyword))
+                .AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
+        }
     }
 }

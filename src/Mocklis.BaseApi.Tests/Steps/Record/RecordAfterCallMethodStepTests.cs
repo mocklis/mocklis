@@ -54,9 +54,9 @@ namespace Mocklis.Steps.Record
             Assert.Throws<Exception>(() => _methods.FuncWithParameter(17));
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Equal(16, ledger[0].Parameter);
-            Assert.Equal(result, ledger[0].Result);
+            var item = Assert.Single(ledger);
+            Assert.Equal(16, item.Parameter);
+            Assert.Equal(result, item.Result);
         }
 
         [Fact]
@@ -98,10 +98,10 @@ namespace Mocklis.Steps.Record
             Assert.Throws<Exception>(() => _methods.FuncWithParameter(25));
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.True(ledger[0].IsSuccess);
-            Assert.Equal(20, ledger[0].Data1);
-            Assert.Equal(result, ledger[0].Data2);
+            var item = Assert.Single(ledger);
+            Assert.True(item.IsSuccess);
+            Assert.Equal(20, item.Data1);
+            Assert.Equal(result, item.Data2);
         }
 
         [Fact]

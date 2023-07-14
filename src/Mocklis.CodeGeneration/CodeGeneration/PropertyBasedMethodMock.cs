@@ -20,10 +20,23 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedMethodMock : PropertyBasedMock<IMethodSymbol>, IMemberMock
+    public class PropertyBasedMethodMock : IMemberMock
     {
-        public PropertyBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
+        public string ClassName { get; }
+        public INamedTypeSymbol InterfaceSymbol { get; }
+        public string InterfaceName { get; }
+        public IMethodSymbol Symbol { get; }
+        public string MemberMockName { get; }
+        public Substitutions Substitutions { get; }
+
+        public PropertyBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName)
         {
+            ClassName = classSymbol.Name;
+            InterfaceSymbol = interfaceSymbol;
+            InterfaceName = interfaceSymbol.Name;
+            Symbol = symbol;
+            MemberMockName = mockMemberName;
+            Substitutions = new Substitutions(classSymbol, symbol);
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
@@ -48,13 +61,12 @@ namespace Mocklis.CodeGeneration
 
             protected TypeSyntax MockMemberType { get; }
 
-            protected Substitutions Substitutions { get; }
+            
 
             public SyntaxAdder(TMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
             {
                 Mock = mock;
                 TypesForSymbols = typesForSymbols;
-                Substitutions = new Substitutions(Mock.ClassSymbol, Mock.Symbol);
                 Strict = strict;
                 VeryStrict = veryStrict;
 
@@ -63,7 +75,7 @@ namespace Mocklis.CodeGeneration
 
                 if (!Mock.Symbol.ReturnsVoid)
                 {
-                    returnValuesBuilder.AddReturnValue(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
+                    returnValuesBuilder.AddReturnValue(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), mock.Substitutions.FindTypeParameterName);
                 }
 
                 foreach (var parameter in Mock.Symbol.Parameters)
@@ -108,33 +120,35 @@ namespace Mocklis.CodeGeneration
                 {
                     MockMemberType = parameterTypeSyntax == null
                         ? typesForSymbols.ActionMethodMock()
-                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax, Substitutions.FindTypeParameterName);
+                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax, mock.Substitutions.FindTypeParameterName);
                 }
                 else
                 {
                     MockMemberType = parameterTypeSyntax == null
-                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, Substitutions.FindTypeParameterName)
-                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, Substitutions.FindTypeParameterName);
+                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, mock.Substitutions.FindTypeParameterName)
+                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, mock.Substitutions.FindTypeParameterName);
                 }
 
             }
 
-            public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+            public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
             {
-                declarationList.Add(Mock.MockProperty(MockMemberType));
-                declarationList.Add(ExplicitInterfaceMember());
+                declarationList.Add(MockMemberType.MockProperty(Mock.MemberMockName));
+                declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
             }
+
+            public ITypeSymbol InterfaceSymbol => Mock.InterfaceSymbol;
 
             public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
             {
-                constructorStatements.Add(Mock.InitialisationStatement(MockMemberType, TypesForSymbols, Strict, VeryStrict));
+                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, Mock.ClassName, Mock.InterfaceName, Mock.Symbol.Name, Strict, VeryStrict));
             }
 
-            protected MemberDeclarationSyntax ExplicitInterfaceMember()
+            protected MemberDeclarationSyntax ExplicitInterfaceMember(NameSyntax interfaceNameSyntax)
             {
                 var baseReturnType = Mock.Symbol.ReturnsVoid
                     ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                    : TypesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.FindTypeParameterName);
+                    : TypesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Mock.Substitutions.FindTypeParameterName);
                 var returnType = baseReturnType;
 
                 if (Mock.Symbol.ReturnsByRef)
@@ -146,7 +160,7 @@ namespace Mocklis.CodeGeneration
                     returnType = F.RefType(returnType).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                 }
 
-                var mockedMethod = ExplicitInterfaceMemberMethodDeclaration(returnType);
+                var mockedMethod = ExplicitInterfaceMemberMethodDeclaration(returnType, interfaceNameSyntax);
 
                 var memberMockInstance = ExplicitInterfaceMemberMemberMockInstance();
 
@@ -215,11 +229,11 @@ namespace Mocklis.CodeGeneration
                 return mockedMethod;
             }
 
-            protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType)
+            protected virtual MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType, NameSyntax interfaceNameSyntax)
             {
                 return F.MethodDeclaration(returnType, Mock.Symbol.Name)
                     .WithParameterList(Mock.Symbol.Parameters.AsParameterList(TypesForSymbols))
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(TypesForSymbols.ParseName(Mock.InterfaceSymbol)));
+                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
             }
 
             protected virtual ExpressionSyntax ExplicitInterfaceMemberMemberMockInstance()

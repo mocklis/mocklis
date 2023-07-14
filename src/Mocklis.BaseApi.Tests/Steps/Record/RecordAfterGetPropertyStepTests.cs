@@ -54,8 +54,8 @@ namespace Mocklis.Steps.Record
             Assert.Throws<Exception>(() => _properties.IntProperty);
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Equal(result, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Equal(result, item);
         }
 
         [Fact]
@@ -95,9 +95,9 @@ namespace Mocklis.Steps.Record
             Assert.Throws<Exception>(() => _properties.IntProperty);
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.True(ledger[0].IsSuccess);
-            Assert.Equal(result, ledger[0].Data);
+            var item = Assert.Single(ledger);
+            Assert.True(item.IsSuccess);
+            Assert.Equal(result, item.Data);
         }
 
         [Fact]

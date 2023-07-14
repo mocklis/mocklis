@@ -323,5 +323,34 @@ namespace Mocklis.CodeGeneration
             return veryStrict ? StrictnessVeryStrict() : strict ? StrictnessStrict() : StrictnessLenient();
         }
 
+        public ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName, bool strict, bool veryStrict)
+        {
+            return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                F.IdentifierName(memberMockName),
+                F.ObjectCreationExpression(mockPropertyType)
+                    .WithExpressionsAsArgumentList(
+                        F.ThisExpression(),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(symbolName)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName)),
+                        StrictnessExpression(strict, veryStrict)
+                    )));
+        }
+
+        public ThrowStatementSyntax ThrowMockMissingStatement(string mockType, string memberMockName, string className, string interfaceName, string symbolName)
+        {
+            return F.ThrowStatement(F.ObjectCreationExpression(MockMissingException())
+                .WithExpressionsAsArgumentList(
+                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, MockType(),
+                        F.IdentifierName(mockType)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(symbolName)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName))
+                )
+            );
+        }
+
     }
 }

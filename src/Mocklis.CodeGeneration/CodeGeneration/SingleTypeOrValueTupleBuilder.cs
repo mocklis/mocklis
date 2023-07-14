@@ -112,7 +112,7 @@ namespace Mocklis.CodeGeneration
             return new SingleTypeOrValueTuple(entries);
         }
 
-        private bool IsNameValidForPosition(string name, int position)
+        private static bool IsNameValidForPosition(string name, int position)
         {
             if (!name.StartsWith("Item"))
             {
