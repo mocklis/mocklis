@@ -22,11 +22,10 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog" VersionOverride="[2.0.0, 3.0.0)"/>
+    <PackageReference Include="Serilog" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mocklis.BaseApi\Mocklis.BaseApi.csproj" />
   </ItemGroup>
-
 </Project>
