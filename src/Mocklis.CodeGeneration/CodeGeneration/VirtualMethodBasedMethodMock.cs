@@ -22,20 +22,18 @@ namespace Mocklis.CodeGeneration
 
     public class VirtualMethodBasedMethodMock : IMemberMock
     {
-        public INamedTypeSymbol InterfaceSymbol { get; }
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public Substitutions Substitutions { get; }
 
-        public VirtualMethodBasedMethodMock(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions) 
+        public VirtualMethodBasedMethodMock(IMethodSymbol symbol, string mockMemberName, Substitutions substitutions) 
         {
-            InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = substitutions; // new Substitutions(classSymbol, symbol);
+            Substitutions = substitutions;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
             return new SyntaxAdder(this, typesForSymbols);
         }
@@ -62,7 +60,8 @@ namespace Mocklis.CodeGeneration
                 return null;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 TypeSyntax returnTypeWithoutReadonly;
@@ -97,7 +96,8 @@ namespace Mocklis.CodeGeneration
                 declarationList.Add(ExplicitInterfaceMember(returnType, arglistParameterName, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 

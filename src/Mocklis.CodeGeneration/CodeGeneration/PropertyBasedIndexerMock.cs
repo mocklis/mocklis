@@ -21,42 +21,35 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedIndexerMock : IMemberMock
     {
-        public INamedTypeSymbol InterfaceSymbol { get; }
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public PropertyBasedIndexerMock(INamedTypeSymbol interfaceSymbol,
-            IPropertySymbol symbol,
+        public PropertyBasedIndexerMock(IPropertySymbol symbol,
             string mockMemberName)
         {
-            InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
-            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
+            return new SyntaxAdder(this, typesForSymbols);
         }
 
         private class SyntaxAdder : ISyntaxAdder
         {
             private readonly PropertyBasedIndexerMock _mock;
             private readonly MocklisTypesForSymbols _typesForSymbols;
-            private readonly bool _strict;
-            private readonly bool _veryStrict;
 
             private SingleTypeOrValueTuple KeyType { get; }
             private TypeSyntax KeyTypeSyntax { get; }
             private TypeSyntax ValueTypeSyntax { get; }
             private TypeSyntax MockPropertyType { get; }
 
-            public SyntaxAdder(PropertyBasedIndexerMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+            public SyntaxAdder(PropertyBasedIndexerMock mock, MocklisTypesForSymbols typesForSymbols)
             {
                 _mock = mock;
                 _typesForSymbols = typesForSymbols;
-                _strict = strict;
-                _veryStrict = veryStrict;
 
                 var builder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
                 foreach (var p in _mock.Symbol.Parameters)
@@ -76,16 +69,18 @@ namespace Mocklis.CodeGeneration
 
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 declarationList.Add(MockPropertyType.MockProperty(_mock.MemberMockName));
                 declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, _strict, _veryStrict));
+                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)

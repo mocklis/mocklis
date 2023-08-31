@@ -9,14 +9,11 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
-    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -43,13 +40,11 @@ namespace Mocklis.CodeGeneration
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
             MocklisSymbols mocklisSymbols, bool nullableContextEnabled)
         {
-            // var populator = new MocklisClassPopulator(semanticModel, classDecl, extractionMocklisSymbols);
-
-            var populator = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel);
+            var classInformation = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel);
 
             var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, nullableContextEnabled);
 
-            return classDecl.WithMembers(F.List(populator.GenerateMembers(typesForSymbols)))
+            return classDecl.WithMembers(F.List(classInformation.GenerateMembers(typesForSymbols)))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))
                 .WithCloseBraceToken(F.Token(SyntaxKind.CloseBraceToken))
                 .WithAdditionalAnnotations(Formatter.Annotation)

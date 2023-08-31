@@ -20,18 +20,16 @@ namespace Mocklis.CodeGeneration
 
     public sealed class VirtualMethodBasedPropertyMock : IMemberMock
     {
-        public INamedTypeSymbol InterfaceSymbol { get; }
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public VirtualMethodBasedPropertyMock(INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
+        public VirtualMethodBasedPropertyMock(IPropertySymbol symbol, string mockMemberName)
         {
-            InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
             return new SyntaxAdder(this, typesForSymbols);
         }
@@ -47,7 +45,8 @@ namespace Mocklis.CodeGeneration
                 _typesForSymbols = typesForSymbols;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
@@ -77,7 +76,8 @@ namespace Mocklis.CodeGeneration
                 declarationList.Add(ExplicitInterfaceMember(valueWithReadonlyTypeSyntax, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 

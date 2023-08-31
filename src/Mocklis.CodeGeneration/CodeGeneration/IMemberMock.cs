@@ -9,6 +9,6 @@ namespace Mocklis.CodeGeneration
 {
     public interface IMemberMock
     {
-        ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict);
+        ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols);
     }
 }

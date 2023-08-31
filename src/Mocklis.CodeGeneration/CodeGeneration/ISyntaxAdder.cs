@@ -17,7 +17,9 @@ namespace Mocklis.CodeGeneration
 
     public interface ISyntaxAdder
     {
-        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName);
-        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName);
+        void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns, IList<MemberDeclarationSyntax> declarationList,
+            NameSyntax interfaceNameSyntax, string className, string interfaceName);
+        void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+            List<StatementSyntax> constructorStatements, string className, string interfaceName);
     }
 }

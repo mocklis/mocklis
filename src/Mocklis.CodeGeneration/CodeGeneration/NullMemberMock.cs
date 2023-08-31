@@ -24,15 +24,17 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+        void ISyntaxAdder.AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+            IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
             string interfaceName)
         {
         }
 
-        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+        void ISyntaxAdder.AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+            List<StatementSyntax> constructorStatements, string className, string interfaceName)
         {
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict) => this;
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols) => this;
     }
 }

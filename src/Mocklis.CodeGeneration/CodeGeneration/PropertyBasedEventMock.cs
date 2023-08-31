@@ -20,56 +20,50 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedEventMock : IMemberMock
     {
-        public INamedTypeSymbol InterfaceSymbol { get; }
         public IEventSymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public PropertyBasedEventMock(INamedTypeSymbol interfaceSymbol, IEventSymbol symbol, string memberMockName)
+        public PropertyBasedEventMock(IEventSymbol symbol, string memberMockName)
         {
-            InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = memberMockName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
-            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
+            return new SyntaxAdder(this, typesForSymbols);
         }
 
         private class SyntaxAdder : ISyntaxAdder
         {
             private readonly PropertyBasedEventMock _mock;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
-            private readonly bool _strict;
-            private readonly bool _veryStrict;
-            private TypeSyntax EventHandlerTypeSyntax { get; }
+            
             private TypeSyntax MockPropertyType { get; }
 
-            public SyntaxAdder(PropertyBasedEventMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+            public SyntaxAdder(PropertyBasedEventMock mock, MocklisTypesForSymbols typesForSymbols)
             {
                 _mock = mock;
-                _typesForSymbols = typesForSymbols;
-                _strict = strict;
-                _veryStrict = veryStrict;
-                EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
                 MockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(_mock.Symbol.Type, false));
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 declarationList.Add(MockPropertyType.MockProperty(_mock.MemberMockName));
-                declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
+                declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, _strict, _veryStrict));
+                constructorStatements.Add(typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
-            private MemberDeclarationSyntax ExplicitInterfaceMember(NameSyntax interfaceNameSyntax)
+            private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)
             {
-                var mockedProperty = F.EventDeclaration(EventHandlerTypeSyntax, _mock.Symbol.Name)
+                var eventHandlerTypeSyntax = typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
+                var mockedProperty = F.EventDeclaration(eventHandlerTypeSyntax, _mock.Symbol.Name)
                     .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
                 mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)

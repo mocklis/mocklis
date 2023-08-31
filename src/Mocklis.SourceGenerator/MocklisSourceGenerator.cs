@@ -18,7 +18,6 @@ using Mocklis.CodeGeneration.Compatibility;
 
 #endregion
 
-
 [Generator(LanguageNames.CSharp)]
 public class MocklisSourceGenerator : IIncrementalGenerator
 {

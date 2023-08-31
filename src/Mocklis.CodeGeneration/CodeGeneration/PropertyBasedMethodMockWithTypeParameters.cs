@@ -22,28 +22,29 @@ namespace Mocklis.CodeGeneration
     {
         public string MockProviderName { get; }
 
-        public PropertyBasedMethodMockWithTypeParameters(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions, string mockProviderName)
-            : base(interfaceSymbol, symbol, mockMemberName, substitutions)
+        public PropertyBasedMethodMockWithTypeParameters(IMethodSymbol symbol, string mockMemberName, Substitutions substitutions, string mockProviderName)
+            : base(symbol, mockMemberName, substitutions)
         {
             MockProviderName = mockProviderName;
         }
 
-        protected override ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        protected override ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
-            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
+            return new SyntaxAdder(this, typesForSymbols);
         }
 
         private class SyntaxAdder : SyntaxAdder<PropertyBasedMethodMockWithTypeParameters>
         {
-            public SyntaxAdder(PropertyBasedMethodMockWithTypeParameters mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict) :
-                base(mock, typesForSymbols, strict, veryStrict)
+            public SyntaxAdder(PropertyBasedMethodMockWithTypeParameters mock, MocklisTypesForSymbols typesForSymbols) :
+                base(mock, typesForSymbols)
             {
             }
 
-            public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
+            public override void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
             {
                 declarationList.Add(TypedMockProviderField());
-                declarationList.Add(MockProviderMethod(className, interfaceName));
+                declarationList.Add(MockProviderMethod(className, interfaceName, mockSettings));
                 declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
             }
 
@@ -56,7 +57,7 @@ namespace Mocklis.CodeGeneration
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
-            private MemberDeclarationSyntax MockProviderMethod(string className, string interfaceName)
+            private MemberDeclarationSyntax MockProviderMethod(string className, string interfaceName, MockSettings mockSettings)
             {
                 var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -78,7 +79,7 @@ namespace Mocklis.CodeGeneration
                             F.LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
                                 F.Literal("()"))),
-                        TypesForSymbols.StrictnessExpression(Strict, VeryStrict)
+                        TypesForSymbols.StrictnessExpression(mockSettings.Strict, mockSettings.VeryStrict)
                     ));
 
                 var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(
@@ -106,7 +107,8 @@ namespace Mocklis.CodeGeneration
                         F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindTypeParameterName(typeParameter.Name)))))));
             }
 
-            public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public override void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 

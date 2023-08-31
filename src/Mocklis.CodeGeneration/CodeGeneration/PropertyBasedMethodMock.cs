@@ -22,35 +22,31 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedMethodMock : IMemberMock
     {
-        public INamedTypeSymbol InterfaceSymbol { get; }
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public Substitutions Substitutions { get; }
 
-        public PropertyBasedMethodMock(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions)
+        public PropertyBasedMethodMock(IMethodSymbol symbol, string mockMemberName, Substitutions substitutions)
         {
-            InterfaceSymbol = interfaceSymbol;
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = substitutions; // new Substitutions(classSymbol, symbol);
+            Substitutions = substitutions;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
-            return CreateSyntaxAdder(typesForSymbols, strict, veryStrict);
+            return CreateSyntaxAdder(typesForSymbols);
         }
 
-        protected virtual ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        protected virtual ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
-            return new SyntaxAdder<PropertyBasedMethodMock>(this, typesForSymbols, strict, veryStrict);
+            return new SyntaxAdder<PropertyBasedMethodMock>(this, typesForSymbols);
         }
 
         protected class SyntaxAdder<TMock> : ISyntaxAdder where TMock : PropertyBasedMethodMock
         {
             protected TMock Mock { get; }
             protected MocklisTypesForSymbols TypesForSymbols { get; }
-            protected bool Strict { get; }
-            protected bool VeryStrict { get; }
 
             protected SingleTypeOrValueTuple ParametersType { get; }
             protected SingleTypeOrValueTuple ReturnValuesType { get; }
@@ -59,12 +55,10 @@ namespace Mocklis.CodeGeneration
 
             
 
-            public SyntaxAdder(TMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+            public SyntaxAdder(TMock mock, MocklisTypesForSymbols typesForSymbols)
             {
                 Mock = mock;
                 TypesForSymbols = typesForSymbols;
-                Strict = strict;
-                VeryStrict = veryStrict;
 
                 var parametersBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
                 var returnValuesBuilder = new SingleTypeOrValueTupleBuilder(TypesForSymbols);
@@ -127,16 +121,18 @@ namespace Mocklis.CodeGeneration
 
             }
 
-            public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public virtual void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 declarationList.Add(MockMemberType.MockProperty(Mock.MemberMockName));
                 declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
             }
 
-            public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public virtual void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+                List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, Strict, VeryStrict));
+                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             protected MemberDeclarationSyntax ExplicitInterfaceMember(NameSyntax interfaceNameSyntax)
