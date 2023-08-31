@@ -22,17 +22,13 @@ namespace Mocklis.CodeGeneration
 
     public sealed class VirtualMethodBasedIndexerMock : IMemberMock
     {
-        public string ClassName { get; }
         public INamedTypeSymbol InterfaceSymbol { get; }
-        public string InterfaceName { get; }
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public VirtualMethodBasedIndexerMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
+        public VirtualMethodBasedIndexerMock(INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
         {
-            ClassName = classSymbol.Name;
             InterfaceSymbol = interfaceSymbol;
-            InterfaceName = interfaceSymbol.Name;
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
@@ -53,7 +49,8 @@ namespace Mocklis.CodeGeneration
                 _typesForSymbols = typesForSymbols;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+                string interfaceName)
             {
                 var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
                 var valueWithReadonlyTypeSyntax = valueTypeSyntax;
@@ -71,33 +68,31 @@ namespace Mocklis.CodeGeneration
 
                 if (!_mock.Symbol.IsWriteOnly)
                 {
-                    declarationList.Add(MockGetVirtualMethod(_typesForSymbols, valueTypeSyntax));
+                    declarationList.Add(MockGetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
                 }
 
                 if (!_mock.Symbol.IsReadOnly)
                 {
-                    declarationList.Add(MockSetVirtualMethod(_typesForSymbols, valueTypeSyntax));
+                    declarationList.Add(MockSetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
                 }
 
                 declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, valueWithReadonlyTypeSyntax, interfaceNameSyntax));
             }
 
-            public ITypeSymbol InterfaceSymbol => _mock.InterfaceSymbol;
-
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 
-            private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax)
+            private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                     .WithParameterList(F.ParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
                         F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
-            private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax)
+            private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 var uniquifier = new Uniquifier(_mock.Symbol.Parameters.Select(p => p.Name));
 
@@ -108,7 +103,7 @@ namespace Mocklis.CodeGeneration
                 return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                     .WithParameterList(F.ParameterList(parameterList))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)

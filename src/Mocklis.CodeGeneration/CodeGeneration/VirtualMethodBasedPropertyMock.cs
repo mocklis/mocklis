@@ -20,17 +20,13 @@ namespace Mocklis.CodeGeneration
 
     public sealed class VirtualMethodBasedPropertyMock : IMemberMock
     {
-        public string ClassName { get; }
         public INamedTypeSymbol InterfaceSymbol { get; }
-        public string InterfaceName { get; }
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public VirtualMethodBasedPropertyMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
+        public VirtualMethodBasedPropertyMock(INamedTypeSymbol interfaceSymbol, IPropertySymbol symbol, string mockMemberName)
         {
-            ClassName = classSymbol.Name;
             InterfaceSymbol = interfaceSymbol;
-            InterfaceName = interfaceSymbol.Name;
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
@@ -51,7 +47,8 @@ namespace Mocklis.CodeGeneration
                 _typesForSymbols = typesForSymbols;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+                string interfaceName)
             {
                 var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
                 var valueWithReadonlyTypeSyntax = valueTypeSyntax;
@@ -69,31 +66,29 @@ namespace Mocklis.CodeGeneration
 
                 if (!_mock.Symbol.IsWriteOnly)
                 {
-                    declarationList.Add(MockGetVirtualMethod(valueTypeSyntax));
+                    declarationList.Add(MockGetVirtualMethod(valueTypeSyntax, className, interfaceName));
                 }
 
                 if (!_mock.Symbol.IsReadOnly)
                 {
-                    declarationList.Add(MockSetVirtualMethod(valueTypeSyntax));
+                    declarationList.Add(MockSetVirtualMethod(valueTypeSyntax, className, interfaceName));
                 }
 
                 declarationList.Add(ExplicitInterfaceMember(valueWithReadonlyTypeSyntax, interfaceNameSyntax));
             }
 
-            public ITypeSymbol InterfaceSymbol => _mock.InterfaceSymbol;
-
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 
-            private MemberDeclarationSyntax MockGetVirtualMethod(TypeSyntax valueTypeSyntax)
+            private MemberDeclarationSyntax MockGetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
-            private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax)
+            private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
                     .WithParameterList(F.ParameterList(F.SeparatedList(new[]
@@ -101,7 +96,7 @@ namespace Mocklis.CodeGeneration
                         F.Parameter(F.Identifier("value")).WithType(valueTypeSyntax)
                     })))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)

@@ -53,30 +53,17 @@ public class MocklisSourceGenerator : IIncrementalGenerator
     {
         if (context.TargetNode is ClassDeclarationSyntax cds)
         {
-            return ExtractedClassInformation.BuildFromClassSymbol(cds, context.SemanticModel, cancellationToken);
-
-
-
-            //MocklisSymbols mocklisSymbols = new MocklisSymbols(context.SemanticModel.Compilation);
-
-            //var classIsInNullableContext = context.SemanticModel.ClassIsInNullableContext(cds);
-
-            //var typesForSymbols = new MocklisTypesForSymbols(context.SemanticModel, cds, mocklisSymbols, classIsInNullableContext);
-
-            //return new MocklisClass.MocklisClassPopulator(typesForSymbols, context.SemanticModel, cds, mocklisSymbols);
+            return ExtractedClassInformation.BuildFromClassSymbol(cds, context.SemanticModel);
         }
 
         return null;
     }
 
-
     private void Execute(SourceProductionContext context, ExtractedClassInformation classInformation)
     {
         classInformation.AddSourceToContext(context);
     }
-
-
-  
+ 
 
 //        public void Execute(GeneratorExecutionContext context)
 //        {

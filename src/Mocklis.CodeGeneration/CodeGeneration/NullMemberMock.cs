@@ -24,13 +24,12 @@ namespace Mocklis.CodeGeneration
         {
         }
 
-        ITypeSymbol ISyntaxAdder.InterfaceSymbol => throw new NotImplementedException();
-
-        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+        void ISyntaxAdder.AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            string interfaceName)
         {
         }
 
-        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+        void ISyntaxAdder.AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
         {
         }
 

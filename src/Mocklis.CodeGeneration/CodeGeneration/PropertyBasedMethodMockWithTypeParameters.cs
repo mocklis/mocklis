@@ -22,8 +22,8 @@ namespace Mocklis.CodeGeneration
     {
         public string MockProviderName { get; }
 
-        public PropertyBasedMethodMockWithTypeParameters(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, string mockProviderName)
-            : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
+        public PropertyBasedMethodMockWithTypeParameters(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions, string mockProviderName)
+            : base(interfaceSymbol, symbol, mockMemberName, substitutions)
         {
             MockProviderName = mockProviderName;
         }
@@ -40,10 +40,10 @@ namespace Mocklis.CodeGeneration
             {
             }
 
-            public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public override void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
             {
                 declarationList.Add(TypedMockProviderField());
-                declarationList.Add(MockProviderMethod());
+                declarationList.Add(MockProviderMethod(className, interfaceName));
                 declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
             }
 
@@ -56,7 +56,7 @@ namespace Mocklis.CodeGeneration
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
-            private MemberDeclarationSyntax MockProviderMethod()
+            private MemberDeclarationSyntax MockProviderMethod(string className, string interfaceName)
             {
                 var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -68,8 +68,8 @@ namespace Mocklis.CodeGeneration
                 var mockCreation = F.SimpleLambdaExpression(F.Parameter(F.Identifier("keyString")), F.ObjectCreationExpression(MockMemberType)
                     .WithExpressionsAsArgumentList(
                         F.ThisExpression(),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.ClassName)),
-                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.InterfaceName)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
+                        F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
                         F.BinaryExpression(SyntaxKind.AddExpression, F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.Symbol.Name)),
                             F.IdentifierName("keyString")),
                         F.BinaryExpression(SyntaxKind.AddExpression,
@@ -106,7 +106,7 @@ namespace Mocklis.CodeGeneration
                         F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindTypeParameterName(typeParameter.Name)))))));
             }
 
-            public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public override void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 

@@ -17,8 +17,7 @@ namespace Mocklis.CodeGeneration
 
     public interface ISyntaxAdder
     {
-        ITypeSymbol InterfaceSymbol { get; }
-        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax);
-        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements);
+        void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName);
+        void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName);
     }
 }

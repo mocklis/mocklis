@@ -5,6 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Mocklis.CodeGeneration;
+
 namespace Mocklis.CodeGeneration
 {
     #region Using Directives
@@ -13,12 +19,12 @@ namespace Mocklis.CodeGeneration
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Threading;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
+    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
 
@@ -65,8 +71,10 @@ namespace Mocklis.CodeGeneration
             _interfaces = interfaces.ToArray();
         }
 
-        public static ExtractedClassInformation BuildFromClassSymbol(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken)
+        public static ExtractedClassInformation BuildFromClassSymbol(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel)
         {
+            //TODO: Reinstate cancellation token...
+
             var symbols = new ExtractionMocklisSymbols(semanticModel.Compilation);
 
             var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) ?? throw new ArgumentException("symbol for class was not found in semantic model.", nameof(classDeclaration));
@@ -124,7 +132,7 @@ namespace Mocklis.CodeGeneration
                 for (int j = 0; j < msyms.Count; j++)
                 {
                     // Create the right type of member...?
-                    members[j] = CreateMock(symbols, classSymbol, msyms[j], uniquifier, settings);
+                    members[j] = CreateMock(symbols, classSymbol, isym, msyms[j], uniquifier, settings);
                 }
 
                 interfaces[i] = new ExtractedInterfaceInformation(isym, members);
@@ -134,7 +142,7 @@ namespace Mocklis.CodeGeneration
         }
 
 
-        public static IMemberMock CreateMock(ExtractionMocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, ISymbol memberSymbol, Uniquifier uniquifier, MockSettings settings)
+        public static IMemberMock CreateMock(ExtractionMocklisSymbols mocklisSymbols, INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, ISymbol memberSymbol, Uniquifier uniquifier, MockSettings settings)
         {
             string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
 
@@ -153,27 +161,22 @@ namespace Mocklis.CodeGeneration
                     {
                         if (useVirtualMethod)
                         {
-                            return NullMemberMock.Instance;
-                            // return new VirtualMethodBasedIndexerMock(memberPropertySymbol, mockMemberName);
+                            return new VirtualMethodBasedIndexerMock(interfaceSymbol, memberPropertySymbol, mockMemberName);
                         }
 
-                        return NullMemberMock.Instance;
-                        // return new PropertyBasedIndexerMock(memberPropertySymbol, mockMemberName);
+                        return new PropertyBasedIndexerMock(interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
 
                     if (useVirtualMethod)
                     {
-                        return NullMemberMock.Instance;
-                        // return new VirtualMethodBasedPropertyMock(memberPropertySymbol, mockMemberName);
+                        return new VirtualMethodBasedPropertyMock(interfaceSymbol, memberPropertySymbol, mockMemberName);
                     }
 
-                    return NullMemberMock.Instance;
-                    // return new PropertyBasedPropertyMock(memberPropertySymbol, mockMemberName);
+                    return new PropertyBasedPropertyMock(interfaceSymbol, memberPropertySymbol, mockMemberName);
                 }
 
                 case IEventSymbol memberEventSymbol:
-                    return NullMemberMock.Instance;
-                    // return new PropertyBasedEventMock(memberEventSymbol, mockMemberName);
+                    return new PropertyBasedEventMock(interfaceSymbol, memberEventSymbol, mockMemberName);
                 case IMethodSymbol memberMethodSymbol:
                 {
                     var hasRestrictedParameter = memberMethodSymbol.Parameters.Any(p => !mocklisSymbols.HasImplicitConversionToObject(p.Type));
@@ -189,20 +192,17 @@ namespace Mocklis.CodeGeneration
 
                     if (useVirtualMethod)
                     {
-                        return NullMemberMock.Instance;
-                        // return new VirtualMethodBasedMethodMock(memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
+                        return new VirtualMethodBasedMethodMock(interfaceSymbol, memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
                     }
 
                     if (memberMethodSymbol.Arity > 0)
                     {
                         var metadataName = memberSymbol.MetadataName;
                         var mockProviderName = uniquifier.GetUniqueName( "_" + char.ToLowerInvariant(metadataName[0]) + metadataName.Substring(1));
-                        return NullMemberMock.Instance;
-                        // return new PropertyBasedMethodMockWithTypeParameters(memberMethodSymbol, mockMemberName, typeParameterSubstitutions, mockProviderName);
+                        return new PropertyBasedMethodMockWithTypeParameters(interfaceSymbol, memberMethodSymbol, mockMemberName, typeParameterSubstitutions, mockProviderName);
                     }
 
-                    return NullMemberMock.Instance;
-                    // return new PropertyBasedMethodMock(memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
+                    return new PropertyBasedMethodMock(interfaceSymbol, memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
                 }
 
                 default:
@@ -270,6 +270,8 @@ namespace Mocklis.CodeGeneration
             return new MockSettings(mockReturnsByRef, mockReturnsByRefReadonly, strict, veryStrict);
         }
 
+
+
         public void AddSourceToContext(SourceProductionContext context)
         {
             var sb = new StringBuilder();
@@ -279,18 +281,114 @@ namespace Mocklis.CodeGeneration
 
             context.AddSource(ClassSymbol.Name + ".g.cs", sb.ToString());
         }
+
+        public SyntaxList<MemberDeclarationSyntax> GenerateMembers(MocklisTypesForSymbols typesForSymbols)
+        {
+            var declarationList = new List<MemberDeclarationSyntax>();
+
+            var constructorStatements = new List<StatementSyntax>();
+
+            var constructorDeclarationList = new List<MemberDeclarationSyntax>();
+
+            foreach (var i in Interfaces)
+            {
+                i.GenerateMembers(typesForSymbols, Settings, declarationList, constructorStatements, ClassSymbol);
+            }
+
+            GenerateConstructors(constructorDeclarationList, constructorStatements, typesForSymbols, ClassSymbol);
+
+            declarationList.InsertRange(0, constructorDeclarationList);
+
+            return new SyntaxList<MemberDeclarationSyntax>(declarationList);
+        }
+
+         private void GenerateConstructors(IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements, MocklisTypesForSymbols typesForSymbols, ITypeSymbol classSymbol)
+            {
+                static bool CanAccessConstructor(IMethodSymbol constructor)
+                {
+                    // TODO: Should we consider allowing access to internal constructors as well - if they can be seen?
+                    switch (constructor.DeclaredAccessibility)
+                    {
+                        case Accessibility.Protected:
+                        case Accessibility.ProtectedOrInternal:
+                        case Accessibility.Public:
+                        {
+                            return true;
+                        }
+
+                        default:
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                var baseTypeConstructors = classSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
+                    .ToArray() ?? Array.Empty<IMethodSymbol>();
+
+                if (baseTypeConstructors.Length == 1 && baseTypeConstructors[0].Parameters.Length == 0 && constructorStatements.Count == 0)
+                {
+                    // This would correspond to emitting just a default constructor, which we don't really need to do.
+                    return;
+                }
+
+                foreach (var constructor in baseTypeConstructors)
+                {
+                    var parameterNames = constructor.Parameters.Select(p => p.Name).ToArray();
+
+                    var constructorStatementsWithThisWhereRequired = constructorStatements.Select(constructorStatement =>
+                    {
+                        if (constructorStatement is ExpressionStatementSyntax { Expression: AssignmentExpressionSyntax { Left: IdentifierNameSyntax identifierNameSyntax } assignmentExpressionSyntax } expressionStatementSyntax && parameterNames.Contains(identifierNameSyntax.Identifier.Text)
+                        )
+                        {
+                            var newLeft = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.ThisExpression(), identifierNameSyntax);
+                            return expressionStatementSyntax.WithExpression(assignmentExpressionSyntax.WithLeft(newLeft));
+                        }
+
+                        return constructorStatement;
+                    });
+
+                    var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(classSymbol.Name))
+                        .WithModifiers(F.TokenList(F.Token(classSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
+                        .WithParameterList(
+                            F.ParameterList(
+                                F.SeparatedList(constructor.Parameters.Select(tp => typesForSymbols.AsParameterSyntax(tp)))))
+                        .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
+
+                    if (parameterNames.Any())
+                    {
+                        constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
+                            SyntaxKind.BaseConstructorInitializer,
+                            F.ArgumentList(constructor.Parameters.AsArgumentList())));
+                    }
+
+                    declarationList.Add(constructorDeclaration);
+                }
+            }
+        }
     }
 
-    public class ExtractedInterfaceInformation
-    {
-        public INamedTypeSymbol InterfaceSymbol { get; }
-        private readonly IMemberMock[] _memberSymbols;
-        public IReadOnlyList<IMemberMock> MemberSymbols => _memberSymbols;
+public class ExtractedInterfaceInformation
+{
+    public INamedTypeSymbol InterfaceSymbol { get; }
+    private readonly IMemberMock[] _memberMocks;
 
-        public ExtractedInterfaceInformation(INamedTypeSymbol interfaceSymbol, IReadOnlyCollection<IMemberMock> memberSymbols)
+    public ExtractedInterfaceInformation(INamedTypeSymbol interfaceSymbol, IReadOnlyCollection<IMemberMock> memberMocks)
+    {
+        InterfaceSymbol = interfaceSymbol;
+        _memberMocks = memberMocks.ToArray();
+    }
+
+    public void GenerateMembers(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings, List<MemberDeclarationSyntax> declarationList,
+        List<StatementSyntax> constructorStatements, INamedTypeSymbol classSymbol)
+    {
+        var interfaceNameSyntax = typesForSymbols.ParseName(InterfaceSymbol);
+        foreach (var memberMock in _memberMocks)
         {
-            InterfaceSymbol = interfaceSymbol;
-            _memberSymbols = memberSymbols.ToArray();
+            var syntaxAdder = memberMock.GetSyntaxAdder(typesForSymbols, mockSettings.Strict, mockSettings.VeryStrict);
+            syntaxAdder.AddInitialisersToConstructor(constructorStatements, classSymbol.Name, InterfaceSymbol.Name);
+            syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, classSymbol.Name, InterfaceSymbol.Name);
         }
     }
 }
+

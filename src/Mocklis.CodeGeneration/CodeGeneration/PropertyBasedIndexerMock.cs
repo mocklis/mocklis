@@ -21,19 +21,15 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedIndexerMock : IMemberMock
     {
-        public string ClassName { get; }
         public INamedTypeSymbol InterfaceSymbol { get; }
-        public string InterfaceName { get; }
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 
-        public PropertyBasedIndexerMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
+        public PropertyBasedIndexerMock(INamedTypeSymbol interfaceSymbol,
             IPropertySymbol symbol,
             string mockMemberName)
         {
-            ClassName = classSymbol.Name;
             InterfaceSymbol = interfaceSymbol;
-            InterfaceName = interfaceSymbol.Name;
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
@@ -80,17 +76,16 @@ namespace Mocklis.CodeGeneration
 
             }
 
-            public ITypeSymbol InterfaceSymbol => _mock.InterfaceSymbol;
-
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+                string interfaceName)
             {
                 declarationList.Add(MockPropertyType.MockProperty(_mock.MemberMockName));
                 declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name, _strict, _veryStrict));
+                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, _strict, _veryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)

@@ -22,21 +22,17 @@ namespace Mocklis.CodeGeneration
 
     public class PropertyBasedMethodMock : IMemberMock
     {
-        public string ClassName { get; }
         public INamedTypeSymbol InterfaceSymbol { get; }
-        public string InterfaceName { get; }
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public Substitutions Substitutions { get; }
 
-        public PropertyBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName)
+        public PropertyBasedMethodMock(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions)
         {
-            ClassName = classSymbol.Name;
             InterfaceSymbol = interfaceSymbol;
-            InterfaceName = interfaceSymbol.Name;
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = new Substitutions(classSymbol, symbol);
+            Substitutions = substitutions; // new Substitutions(classSymbol, symbol);
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
@@ -131,17 +127,16 @@ namespace Mocklis.CodeGeneration
 
             }
 
-            public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public virtual void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+                string interfaceName)
             {
                 declarationList.Add(MockMemberType.MockProperty(Mock.MemberMockName));
                 declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
             }
 
-            public ITypeSymbol InterfaceSymbol => Mock.InterfaceSymbol;
-
-            public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public virtual void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, Mock.ClassName, Mock.InterfaceName, Mock.Symbol.Name, Strict, VeryStrict));
+                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, Strict, VeryStrict));
             }
 
             protected MemberDeclarationSyntax ExplicitInterfaceMember(NameSyntax interfaceNameSyntax)

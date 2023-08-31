@@ -22,21 +22,17 @@ namespace Mocklis.CodeGeneration
 
     public class VirtualMethodBasedMethodMock : IMemberMock
     {
-        public string ClassName { get; }
         public INamedTypeSymbol InterfaceSymbol { get; }
-        public string InterfaceName { get; }
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public Substitutions Substitutions { get; }
 
-        public VirtualMethodBasedMethodMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName) 
+        public VirtualMethodBasedMethodMock(INamedTypeSymbol interfaceSymbol, IMethodSymbol symbol, string mockMemberName, Substitutions substitutions) 
         {
-            ClassName = classSymbol.Name;
             InterfaceSymbol = interfaceSymbol;
-            InterfaceName = interfaceSymbol.Name;
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = new Substitutions(classSymbol, symbol);
+            Substitutions = substitutions; // new Substitutions(classSymbol, symbol);
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
@@ -66,7 +62,8 @@ namespace Mocklis.CodeGeneration
                 return null;
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+                string interfaceName)
             {
                 TypeSyntax returnTypeWithoutReadonly;
                 TypeSyntax returnType;
@@ -96,18 +93,16 @@ namespace Mocklis.CodeGeneration
 
                 var arglistParameterName = FindArglistParameterName(_mock.Symbol);
 
-                declarationList.Add(MockVirtualMethod(_typesForSymbols, returnTypeWithoutReadonly, arglistParameterName));
+                declarationList.Add(MockVirtualMethod(_typesForSymbols, returnTypeWithoutReadonly, arglistParameterName, className, interfaceName));
                 declarationList.Add(ExplicitInterfaceMember(returnType, arglistParameterName, interfaceNameSyntax));
             }
 
-            public ITypeSymbol InterfaceSymbol => _mock.InterfaceSymbol;
-
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
             }
 
             private MemberDeclarationSyntax MockVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnTypeWithoutReadonly,
-                string? arglistParameterName)
+                string? arglistParameterName, string className, string interfaceName)
             {
                 var parameters = F.SeparatedList(_mock.Symbol.Parameters.Select(a => typesForSymbols.AsParameterSyntax(a, _mock.Substitutions.FindTypeParameterName)));
                 if (arglistParameterName != null)
@@ -118,7 +113,7 @@ namespace Mocklis.CodeGeneration
                 var method = F.MethodDeclaration(returnTypeWithoutReadonly, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                     .WithParameterList(F.ParameterList(parameters))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualMethod", _mock.MemberMockName, _mock.ClassName, _mock.InterfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualMethod", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
 
                 if (_mock.Symbol.TypeParameters.Any())
                 {
