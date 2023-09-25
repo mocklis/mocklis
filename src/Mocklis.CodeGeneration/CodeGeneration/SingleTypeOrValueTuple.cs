@@ -9,9 +9,11 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -21,18 +23,25 @@ namespace Mocklis.CodeGeneration
     {
         public readonly struct Entry
         {
-            public Entry(string originalName, TypeSyntax type, bool isReturnValue, string tupleSafeName)
+            public Entry(string originalName, ITypeSymbol typeSymbol, bool isNullable, bool isReturnValue, string tupleSafeName)
             {
                 OriginalName = originalName;
-                Type = type;
+                TypeSymbol = typeSymbol;
+                IsNullable = isNullable;
                 IsReturnValue = isReturnValue;
                 TupleSafeName = tupleSafeName;
             }
 
             public string OriginalName { get; }
-            public TypeSyntax Type { get; }
+            public ITypeSymbol TypeSymbol { get; }
+            public bool IsNullable { get; }
             public bool IsReturnValue { get; }
             public string TupleSafeName { get; }
+
+            public TypeSyntax CreateType(MocklisTypesForSymbols typesForSymbols, Func<string, string>? typeParameterNameSubstitutions)
+            {
+                return typesForSymbols.ParseTypeName(TypeSymbol, IsNullable, typeParameterNameSubstitutions);
+            }
         }
 
         private Entry[] Entries { get; }
@@ -52,7 +61,7 @@ namespace Mocklis.CodeGeneration
 
         public bool IsMultiDimensional => Count > 1;
 
-        public TypeSyntax? BuildTypeSyntax()
+        public TypeSyntax? BuildTypeSyntax(MocklisTypesForSymbols typesForSymbols, Func<string, string>? typeParameterNameSubstitutions)
         {
             if (Count == 0)
             {
@@ -60,13 +69,13 @@ namespace Mocklis.CodeGeneration
             }
 
             return IsMultiDimensional
-                ? F.TupleType(F.SeparatedList(this.Select(a => F.TupleElement(a.Type, F.Identifier(a.TupleSafeName)))))
-                : this[0].Type;
+                ? F.TupleType(F.SeparatedList(this.Select(a => F.TupleElement(a.CreateType(typesForSymbols, typeParameterNameSubstitutions), F.Identifier(a.TupleSafeName)))))
+                : this[0].CreateType(typesForSymbols, typeParameterNameSubstitutions);
         }
 
-        public BracketedParameterListSyntax BuildParameterList()
+        public BracketedParameterListSyntax BuildParameterList(MocklisTypesForSymbols typesForSymbols, Func<string, string>? typeParameterNameSubstitutions)
         {
-            return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.Type))));
+            return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.CreateType(typesForSymbols, typeParameterNameSubstitutions)))));
         }
 
         public ExpressionSyntax? BuildArgumentList()

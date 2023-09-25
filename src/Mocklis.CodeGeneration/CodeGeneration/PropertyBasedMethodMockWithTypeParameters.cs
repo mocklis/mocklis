@@ -43,21 +43,21 @@ namespace Mocklis.CodeGeneration
             public override void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
                 IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
             {
-                declarationList.Add(TypedMockProviderField());
-                declarationList.Add(MockProviderMethod(className, interfaceName, mockSettings));
-                declarationList.Add(ExplicitInterfaceMember(interfaceNameSyntax));
+                declarationList.Add(TypedMockProviderField(typesForSymbols));
+                declarationList.Add(MockProviderMethod(typesForSymbols, className, interfaceName, mockSettings));
+                declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax));
             }
 
-            private MemberDeclarationSyntax TypedMockProviderField()
+            private MemberDeclarationSyntax TypedMockProviderField(MocklisTypesForSymbols typesForSymbols)
             {
-                return F.FieldDeclaration(F.VariableDeclaration(TypesForSymbols.TypedMockProvider()).WithVariables(
+                return F.FieldDeclaration(F.VariableDeclaration(typesForSymbols.TypedMockProvider()).WithVariables(
                     F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(Mock.MockProviderName))
-                        .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(TypesForSymbols.TypedMockProvider())
+                        .WithInitializer(F.EqualsValueClause(F.ObjectCreationExpression(typesForSymbols.TypedMockProvider())
                             .WithArgumentList(F.ArgumentList())))))
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
-            private MemberDeclarationSyntax MockProviderMethod(string className, string interfaceName, MockSettings mockSettings)
+            private MemberDeclarationSyntax MockProviderMethod(MocklisTypesForSymbols typesForSymbols, string className, string interfaceName, MockSettings mockSettings)
             {
                 var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -79,7 +79,7 @@ namespace Mocklis.CodeGeneration
                             F.LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
                                 F.Literal("()"))),
-                        TypesForSymbols.StrictnessExpression(mockSettings.Strict, mockSettings.VeryStrict)
+                        typesForSymbols.StrictnessExpression(mockSettings.Strict, mockSettings.VeryStrict)
                     ));
 
                 var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(
@@ -90,7 +90,7 @@ namespace Mocklis.CodeGeneration
 
                 m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-                var constraints = TypesForSymbols.AsConstraintClauses(Mock.Symbol.TypeParameters, Mock.Substitutions.FindTypeParameterName);
+                var constraints = typesForSymbols.AsConstraintClauses(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
 
                 if (constraints.Any())
                 {
@@ -104,7 +104,7 @@ namespace Mocklis.CodeGeneration
             {
                 return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                     F.SeparatedList<ExpressionSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                        F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindTypeParameterName(typeParameter.Name)))))));
+                        F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindSubstitution(typeParameter.Name)))))));
             }
 
             public override void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
@@ -112,12 +112,12 @@ namespace Mocklis.CodeGeneration
             {
             }
 
-            protected override MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(TypeSyntax returnType, NameSyntax interfaceNameSyntax)
+            protected override MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType, NameSyntax interfaceNameSyntax)
             {
-                var m = base.ExplicitInterfaceMemberMethodDeclaration(returnType, interfaceNameSyntax)
+                var m = base.ExplicitInterfaceMemberMethodDeclaration(typesForSymbols, returnType, interfaceNameSyntax)
                     .WithTypeParameterList(TypeParameterList());
 
-                var constraints = TypesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Mock.Substitutions.FindTypeParameterName);
+                var constraints = typesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
                 if (constraints.Any())
                 {
                     m = m.AddConstraintClauses(constraints);
@@ -135,14 +135,14 @@ namespace Mocklis.CodeGeneration
             private TypeParameterListSyntax TypeParameterList()
             {
                 return F.TypeParameterList(F.SeparatedList(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeParameter(Mock.Substitutions.FindTypeParameterName(typeParameter.Name)))));
+                    F.TypeParameter(Mock.Substitutions.FindSubstitution(typeParameter.Name)))));
             }
 
             private TypeArgumentListSyntax TypeArgumentList()
             {
                 return F.TypeArgumentList(
                     F.SeparatedList<TypeSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                        F.IdentifierName(Mock.Substitutions.FindTypeParameterName(typeParameter.Name)))));
+                        F.IdentifierName(Mock.Substitutions.FindSubstitution(typeParameter.Name)))));
             }
         }
     }

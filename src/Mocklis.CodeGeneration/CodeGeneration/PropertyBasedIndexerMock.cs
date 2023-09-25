@@ -36,6 +36,11 @@ namespace Mocklis.CodeGeneration
             return new SyntaxAdder(this, typesForSymbols);
         }
 
+        public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+        {
+            ctx.AppendLine("// Adding line for Property Based Indexer Mock");
+        }
+
         private class SyntaxAdder : ISyntaxAdder
         {
             private readonly PropertyBasedIndexerMock _mock;
@@ -51,7 +56,7 @@ namespace Mocklis.CodeGeneration
                 _mock = mock;
                 _typesForSymbols = typesForSymbols;
 
-                var builder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
+                var builder = new SingleTypeOrValueTupleBuilder();
                 foreach (var p in _mock.Symbol.Parameters)
                 {
                     builder.AddParameter(p);
@@ -59,7 +64,7 @@ namespace Mocklis.CodeGeneration
 
                 KeyType = builder.Build(_mock.MemberMockName);
 
-                var keyTypeSyntax = KeyType.BuildTypeSyntax();
+                var keyTypeSyntax = KeyType.BuildTypeSyntax(typesForSymbols, null);
 
                 KeyTypeSyntax = keyTypeSyntax ?? throw new ArgumentException("Property symbol must have at least one parameter", nameof(mock));
 
@@ -97,7 +102,7 @@ namespace Mocklis.CodeGeneration
                 }
 
                 var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
-                    .WithParameterList(KeyType.BuildParameterList())
+                    .WithParameterList(KeyType.BuildParameterList(typesForSymbols, null))
                     .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
                 var arguments = KeyType.BuildArgumentList();

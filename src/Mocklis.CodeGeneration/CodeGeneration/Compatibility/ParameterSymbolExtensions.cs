@@ -9,24 +9,15 @@ namespace Mocklis.CodeGeneration.Compatibility
 {
     #region Using Directives
 
-    using System.Reflection;
     using Microsoft.CodeAnalysis;
 
     #endregion
 
     public static class ParameterSymbolExtensions
     {
-        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IParameterSymbol).GetProperty("NullableAnnotation");
-
         public static bool NullableOrOblivious(this IParameterSymbol parameterSymbol)
         {
-            if (NullableAnnotationPropertyInfo == null)
-            {
-                return true;
-            }
-
-            var result = (byte)NullableAnnotationPropertyInfo.GetValue(parameterSymbol);
-            return result != 1;
+            return parameterSymbol.NullableAnnotation != NullableAnnotation.NotAnnotated;
         }
     }
 }

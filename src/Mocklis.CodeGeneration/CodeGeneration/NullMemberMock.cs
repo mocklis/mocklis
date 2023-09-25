@@ -36,5 +36,9 @@ namespace Mocklis.CodeGeneration
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols) => this;
+
+        public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+        {
+        }
     }
 }

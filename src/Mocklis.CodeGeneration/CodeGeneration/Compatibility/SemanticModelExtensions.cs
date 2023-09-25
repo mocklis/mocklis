@@ -9,7 +9,6 @@ namespace Mocklis.CodeGeneration.Compatibility
 {
     #region Using Directives
 
-    using System.Reflection;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -17,17 +16,9 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     public static class SemanticModelExtensions
     {
-        private static readonly MethodInfo? GetNullableContextMethodInfo = typeof(SemanticModel).GetMethod("GetNullableContext");
-
         public static bool ClassIsInNullableContext(this SemanticModel semanticModel, ClassDeclarationSyntax classDecl)
         {
-            if (GetNullableContextMethodInfo == null)
-            {
-                return false;
-            }
-
-            var result = (int)GetNullableContextMethodInfo.Invoke(semanticModel, new object[] { classDecl.Span.Start });
-            return (result & 2) != 0;
+            return semanticModel.GetNullableContext(classDecl.Span.Start).AnnotationsEnabled();
         }
     }
 }

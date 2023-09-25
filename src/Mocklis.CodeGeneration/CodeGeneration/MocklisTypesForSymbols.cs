@@ -266,7 +266,7 @@ namespace Mocklis.CodeGeneration
                 constraints.Add(F.ConstructorConstraint());
             }
 
-            if (typeParameter.HasNotNullConstraint() && _nullableContextEnabled)
+            if (typeParameter.HasNotNullConstraint && _nullableContextEnabled)
             {
                 constraints.Add(F.TypeConstraint(F.IdentifierName("notnull")));
             }

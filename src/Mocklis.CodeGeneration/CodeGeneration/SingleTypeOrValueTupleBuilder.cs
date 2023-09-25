@@ -9,12 +9,10 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.CodeGeneration.UniqueNames;
 
@@ -22,38 +20,32 @@ namespace Mocklis.CodeGeneration
 
     public sealed class SingleTypeOrValueTupleBuilder
     {
-        private struct BuilderEntry
+        private readonly struct BuilderEntry
         {
-            public BuilderEntry(string originalName, TypeSyntax type, bool isReturnValue)
+            public BuilderEntry(string originalName, ITypeSymbol typeSymbol, bool isNullable, bool isReturnValue)
             {
                 OriginalName = originalName;
-                Type = type;
+                TypeSymbol = typeSymbol;
+                IsNullable = isNullable;
                 IsReturnValue = isReturnValue;
             }
 
             public string OriginalName { get; }
-            public TypeSyntax Type { get; }
+            public ITypeSymbol TypeSymbol { get; }
+            public bool IsNullable { get; }
             public bool IsReturnValue { get; }
         }
 
-        private MocklisTypesForSymbols TypesForSymbols { get; }
-
-        private List<BuilderEntry> Items { get; } = new List<BuilderEntry>();
-
-        public SingleTypeOrValueTupleBuilder(MocklisTypesForSymbols typesForSymbols)
-        {
-            TypesForSymbols = typesForSymbols ?? throw new ArgumentNullException(nameof(typesForSymbols));
-        }
+        private List<BuilderEntry> Items { get; } = new();
 
         public void AddParameter(IParameterSymbol parameter)
         {
-            var x = TypesForSymbols.ParseTypeName(parameter.Type, parameter.NullableOrOblivious());
-            Items.Add(new BuilderEntry(parameter.Name, x, false));
+            Items.Add(new BuilderEntry(parameter.Name, parameter.Type, parameter.NullableOrOblivious(), false));
         }
 
-        public void AddReturnValue(ITypeSymbol returnType, bool nullable, Func<string, string> findTypeParameterName)
+        public void AddReturnValue(ITypeSymbol returnType, bool nullable)
         {
-            Items.Add(new BuilderEntry("returnValue", TypesForSymbols.ParseTypeName(returnType, nullable, findTypeParameterName), true));
+            Items.Add(new BuilderEntry("returnValue", returnType, nullable, true));
         }
 
         public SingleTypeOrValueTuple Build(string? mockMemberName = null)
@@ -79,7 +71,8 @@ namespace Mocklis.CodeGeneration
                         {
                             entries[i] = new SingleTypeOrValueTuple.Entry(
                                 item.OriginalName,
-                                item.Type,
+                                item.TypeSymbol,
+                                item.IsNullable,
                                 item.IsReturnValue,
                                 uniquifier.GetUniqueName(name));
                         }
@@ -94,7 +87,8 @@ namespace Mocklis.CodeGeneration
                         {
                             entries[i] = new SingleTypeOrValueTuple.Entry(
                                 item.OriginalName,
-                                item.Type,
+                                item.TypeSymbol,
+                                item.IsNullable,
                                 item.IsReturnValue,
                                 uniquifier.GetUniqueName(name + "_"));
                         }
@@ -105,7 +99,7 @@ namespace Mocklis.CodeGeneration
                     var item = Items[0];
                     string name = item.OriginalName;
                     name = name == mockMemberName ? name + "_" : name;
-                    entries[0] = new SingleTypeOrValueTuple.Entry(item.OriginalName, item.Type, item.IsReturnValue, name);
+                    entries[0] = new SingleTypeOrValueTuple.Entry(item.OriginalName, item.TypeSymbol, item.IsNullable, item.IsReturnValue, name);
                 }
             }
 

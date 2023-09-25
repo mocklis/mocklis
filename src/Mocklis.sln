@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Serilog3.Tests", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.SourceGenerator", "Mocklis.SourceGenerator\Mocklis.SourceGenerator.csproj", "{435610F5-278F-499A-9E81-F36A2E44F86C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mocklis.SourceGenerator.Tests", "Mocklis.SourceGenerator.Tests\Mocklis.SourceGenerator.Tests.csproj", "{8AC13D47-1DAA-48FE-BC0F-48A020337EB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{435610F5-278F-499A-9E81-F36A2E44F86C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{435610F5-278F-499A-9E81-F36A2E44F86C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{435610F5-278F-499A-9E81-F36A2E44F86C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AC13D47-1DAA-48FE-BC0F-48A020337EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AC13D47-1DAA-48FE-BC0F-48A020337EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AC13D47-1DAA-48FE-BC0F-48A020337EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AC13D47-1DAA-48FE-BC0F-48A020337EB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

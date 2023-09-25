@@ -7,12 +7,28 @@
 
 namespace Mocklis.CodeGeneration
 {
+    #region Using Directives
+
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Mocklis.CodeGeneration.UniqueNames;
 
-    public class Substitutions
+    #endregion
+
+    public interface ITypeParameterSubstitutions
+    {
+        string FindSubstitution(string typeParameterName);
+    }
+
+    public sealed class EmptyTypeParameterSubstitutions : ITypeParameterSubstitutions
+    {
+        public static ITypeParameterSubstitutions Empty { get; } = new EmptyTypeParameterSubstitutions();  
+
+        public string FindSubstitution(string typeParameterName) => typeParameterName;
+    }
+
+    public sealed class Substitutions : ITypeParameterSubstitutions
     {
         private readonly Dictionary<string, string> _typeParameterNameSubstitutions;
 
@@ -28,7 +44,7 @@ namespace Mocklis.CodeGeneration
             }
         }
 
-        public string FindTypeParameterName(string typeParameterName)
+        public string FindSubstitution(string typeParameterName)
         {
             return _typeParameterNameSubstitutions.TryGetValue(typeParameterName, out var substitution) ? substitution : typeParameterName;
         }

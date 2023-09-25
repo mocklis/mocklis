@@ -77,14 +77,8 @@ namespace Mocklis.MockGenerator.Helpers
 
         #endregion
 
-        private readonly MocklisAnalyzer _mocklisAnalyzer;
-        private readonly MocklisCodeFixProvider _mocklisCodeFixProvider;
-
-        public MocklisClassUpdater()
-        {
-            _mocklisAnalyzer = new MocklisAnalyzer();
-            _mocklisCodeFixProvider = new MocklisCodeFixProvider();
-        }
+        private readonly MocklisAnalyzer _mocklisAnalyzer = new();
+        private readonly MocklisCodeFixProvider _mocklisCodeFixProvider = new();
 
         public async Task<MocklisClassUpdaterResult> UpdateMocklisClass(string source, LanguageVersion languageVersion)
         {
@@ -100,7 +94,7 @@ namespace Mocklis.MockGenerator.Helpers
             var diagnostics = (await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync()).Single();
 
             CodeAction? action = null;
-            var context = new CodeFixContext(document, diagnostics, (a, d) => action = a, CancellationToken.None);
+            var context = new CodeFixContext(document, diagnostics, (a, _) => action = a, CancellationToken.None);
             await _mocklisCodeFixProvider.RegisterCodeFixesAsync(context);
 
             // Action will have been created by the call to CodeFixContext

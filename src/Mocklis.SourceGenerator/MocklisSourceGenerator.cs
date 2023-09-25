@@ -28,7 +28,8 @@ public class MocklisSourceGenerator : IIncrementalGenerator
         IncrementalValuesProvider<ExtractedClassInformation> x = context.SyntaxProvider
             .ForAttributeWithMetadataName("Mocklis.Core.MocklisClassAttribute", Predicate, Transform)
             .Where(static a => a != null)
-            .Select(static (a, _) => a!);
+            .Select(static (a, _) => a!)
+            .WithTrackingName("Syntax");
         // .WithComparer(EqualityComparer<MocklisClassInformation>.Default);
 
         context.RegisterSourceOutput(x, Execute);

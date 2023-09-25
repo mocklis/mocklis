@@ -34,6 +34,11 @@ namespace Mocklis.CodeGeneration
             return new SyntaxAdder(this, typesForSymbols);
         }
 
+        public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+        {
+            ctx.AppendLine("// Adding line for Virtual Method Based Property Mock");
+        }
+
         public class SyntaxAdder : ISyntaxAdder
         {
             private readonly VirtualMethodBasedPropertyMock _mock;

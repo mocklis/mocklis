@@ -130,5 +130,15 @@ namespace Mocklis.CodeGeneration
                 .AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
         }
+
+        public static string FullName(this ITypeSymbol typeSymbol)
+        {
+            if (typeSymbol.ContainingNamespace.IsGlobalNamespace)
+            {
+                return typeSymbol.Name;
+            }
+
+            return typeSymbol.ContainingNamespace.Name + "." + typeSymbol.Name;
+        }
     }
 }
