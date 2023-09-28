@@ -35,43 +35,17 @@ namespace Mocklis.MockGenerator
                 ?.InformationalVersion ?? string.Empty;
         }
 
-        public static TheoryData<ClassUpdateTestCase> GetTestCasesFromFolder(string testCaseFolder)
-        {
-            var pathToTestCases = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                                  throw new InvalidOperationException("Could not find executing assembly folder");
-
-            var result = new TheoryData<ClassUpdateTestCase>();
-
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(pathToTestCases, testCaseFolder), "*.cs"))
-            {
-                if (!file.EndsWith(".Expected.cs"))
-                {
-                    result.Add(new ClassUpdateTestCase
-                    {
-                        PathToTestCases = pathToTestCases,
-                        TestCaseFolder = testCaseFolder,
-                        TestCase = Path.GetFileNameWithoutExtension(file)
-                    });
-                }
-            }
-
-            return result;
-        }
-
-        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases() => GetTestCasesFromFolder("TestCases");
-
-        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases8() => GetTestCasesFromFolder("TestCases8");
-
+      
         [Theory]
-        [MemberData(nameof(EnumerateTestCases))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp7_3(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp7_3);
         }
 
         [Theory]
-        [MemberData(nameof(EnumerateTestCases))]
-        [MemberData(nameof(EnumerateTestCases8))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases8), MemberType=typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp8(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp8);
@@ -88,6 +62,8 @@ namespace Mocklis.MockGenerator
             }
 
             string source = await sourceTask.ConfigureAwait(false);
+
+            source = source.Replace("[PARTIAL] ", "");
 
             var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion).ConfigureAwait(false);
 

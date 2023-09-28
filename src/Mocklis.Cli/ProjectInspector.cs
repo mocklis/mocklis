@@ -85,7 +85,7 @@ namespace Mocklis.Cli
             {
                 if (ShouldRewriteClass(node))
                 {
-                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols, Model.ClassIsInNullableContext(node));
+                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols);
                 }
 
                 return base.VisitClassDeclaration(node);

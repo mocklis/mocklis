@@ -13,7 +13,7 @@ namespace InterfaceyStuff
 namespace Test
 {
     [MocklisClass]
-    public class TestClass : InterfaceyStuff.ITest
+    public [PARTIAL] class TestClass : InterfaceyStuff.ITest
     {
     }
 }

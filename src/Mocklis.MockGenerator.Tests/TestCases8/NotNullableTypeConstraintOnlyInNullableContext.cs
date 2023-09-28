@@ -15,7 +15,7 @@ namespace Test
 
 #nullable disable
     [MocklisClass]
-    public abstract class TestClass<T> : ITestClass<T>
+    public abstract [PARTIAL] class TestClass<T> : ITestClass<T>
     {
     }
 }

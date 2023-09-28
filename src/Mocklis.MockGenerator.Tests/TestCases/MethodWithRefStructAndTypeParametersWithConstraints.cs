@@ -17,7 +17,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public class TestClass<TOuter> : ITestClass<TOuter>
+    public [PARTIAL] class TestClass<TOuter> : ITestClass<TOuter>
     {
     }
 }

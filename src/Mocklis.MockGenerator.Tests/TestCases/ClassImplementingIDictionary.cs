@@ -6,7 +6,7 @@ using Mocklis.Core;
 namespace Test
 {
     [MocklisClass]
-    public class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
+    public [PARTIAL] class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
     {
     }
 }

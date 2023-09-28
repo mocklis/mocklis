@@ -10,7 +10,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public abstract class TestClass : ITestClass
+    public abstract [PARTIAL] class TestClass : ITestClass
     {
     }
 }

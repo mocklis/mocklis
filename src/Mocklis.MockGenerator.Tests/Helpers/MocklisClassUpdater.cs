@@ -26,29 +26,13 @@ namespace Mocklis.MockGenerator.Helpers
     using Microsoft.CodeAnalysis.Emit;
     using Microsoft.CodeAnalysis.Text;
     using Mocklis.Core;
+    using Mocklis.SourceGenerator;
 
     #endregion
 
     public class MocklisClassUpdater
     {
         #region Static
-
-        private static readonly MetadataReference CorlibReference;
-        private static readonly MetadataReference SystemLinqReference;
-        private static readonly MetadataReference SystemDiagnosticsReference;
-        private static readonly MetadataReference MocklisCoreReference;
-        private static readonly MetadataReference RuntimeReference;
-        private static readonly MetadataReference NetStandardReference;
-
-        static MocklisClassUpdater()
-        {
-            CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-            SystemLinqReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-            SystemDiagnosticsReference = MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location);
-            MocklisCoreReference = MetadataReference.CreateFromFile(typeof(MocklisClassAttribute).Assembly.Location);
-            RuntimeReference = MetadataReference.CreateFromFile(Assembly.Load("System.Runtime, Version=0.0.0.0").Location);
-            NetStandardReference = MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.1.0.0").Location);
-        }
 
         private static Document CreateDocument(string source, LanguageVersion languageVersion)
         {
@@ -61,10 +45,7 @@ namespace Mocklis.MockGenerator.Helpers
             var projectInfo = ProjectInfo.Create(projectId, VersionStamp.Default, projectName, projectName, LanguageNames.CSharp,
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 parseOptions: new CSharpParseOptions(languageVersion),
-                metadataReferences: new[]
-                {
-                    CorlibReference, SystemLinqReference, SystemDiagnosticsReference, MocklisCoreReference, RuntimeReference, NetStandardReference
-                });
+                metadataReferences: TestReferences.MetadataReferences);
 
             var solution = new AdhocWorkspace()
                 .CurrentSolution

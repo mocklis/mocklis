@@ -43,5 +43,6 @@ namespace Mocklis.MockGenerator
 
         public string SourceFileName => Path.Combine(PathToTestCases, TestCaseFolder, TestCase + ".cs");
         public string ExpectedFileName => Path.Combine(PathToTestCases, TestCaseFolder, TestCase + ".Expected.cs");
+        public string ExpectedSourceFileName => Path.Combine(PathToTestCases, TestCaseFolder, TestCase + ".ExpectedSource.cs");
     }
 }

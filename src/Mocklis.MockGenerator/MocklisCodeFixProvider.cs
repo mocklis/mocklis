@@ -20,7 +20,6 @@ namespace Mocklis.MockGenerator
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration;
-    using Mocklis.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -91,8 +90,6 @@ namespace Mocklis.MockGenerator
                 return document.Project.Solution;
             }
 
-            var classIsInNullableContext = semanticModel.ClassIsInNullableContext(classDecl);
-
             var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             if (oldRoot == null)
             {
@@ -125,7 +122,7 @@ namespace Mocklis.MockGenerator
                 return document.Project.Solution;
             }
 
-            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols, classIsInNullableContext);
+            var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols);
 
             var newRoot = emptyRoot.ReplaceNode(emptyClassDecl, newClassDecl);
             return emptyDoc.WithSyntaxRoot(newRoot).Project.Solution;
