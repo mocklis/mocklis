@@ -91,22 +91,22 @@ namespace Mocklis.CodeGeneration
             var parametersString = ctx.BuildTupleType(parametersType, Substitutions);
             var returnValuesString = ctx.BuildTupleType(returnValuesType, Substitutions);
 
-            string mockType;
+            string mockPropertyType;
 
             if (returnValuesString == null)
             {
-                mockType = parametersString == null
+                mockPropertyType = parametersString == null
                     ? "global::Mocklis.Core.ActionMethodMock"
                     : $"global::Mocklis.Core.ActionMethodMock<{parametersString}>";
             }
             else
             {
-                mockType = parametersString == null
+                mockPropertyType = parametersString == null
                     ? $"global::Mocklis.Core.FuncMethodMock<{returnValuesString}>"
                     : $"global::Mocklis.Core.FuncMethodMock<{parametersString}, {returnValuesString}>";
             }
 
-            ctx.AppendLine($"public {mockType} {MemberMockName} {{ get; }}");
+            ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
             ctx.AppendSeparator();
 
 
@@ -217,7 +217,7 @@ namespace Mocklis.CodeGeneration
             // string mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName
             // constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
 
-            ctx.AddConstructorStatement(mockType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
         protected virtual ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols)

@@ -2,8 +2,15 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T>
     {
-        // Adding line for Property Based Event Mock
+        public global::Mocklis.Core.EventMock<global::System.EventHandler<T>> MyEvent { get; }
+
+        event global::System.EventHandler<T> global::Test.ITestClass<T>.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
+
+        public TestClass() : base()
+        {
+            this.MyEvent = new global::Mocklis.Core.EventMock<global::System.EventHandler<T>>(this, "TestClass", "ITestClass", "MyEvent", "MyEvent", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

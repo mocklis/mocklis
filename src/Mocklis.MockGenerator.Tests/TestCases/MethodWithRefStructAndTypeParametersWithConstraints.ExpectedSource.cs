@@ -2,7 +2,7 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<TOuter>
     {
         // Adding line for Virtual Method Based Method Mock
     }

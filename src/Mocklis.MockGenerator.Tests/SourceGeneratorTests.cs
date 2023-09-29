@@ -1,16 +1,26 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Xunit;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SourceGeneratorTests.cs">
+//   SPDX-License-Identifier: MIT
+//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.SourceGenerator;
+namespace Mocklis.MockGenerator;
+
+#region Using Directives
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mocklis.MockGenerator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Mocklis.SourceGenerator;
+using Xunit;
 using Xunit.Abstractions;
+
+#endregion
 
 public sealed class SourceGeneratorTests
 {
@@ -38,7 +48,6 @@ public sealed class SourceGeneratorTests
 
     private async Task TestCodeGenerationCase(ClassUpdateTestCase test, LanguageVersion languageVersion)
     {
-
         Task<string> sourceTask = File.ReadAllTextAsync(test.SourceFileName);
 
         Task<string> expectedSourceTask = Task.FromResult(string.Empty);
@@ -61,7 +70,7 @@ public sealed class SourceGeneratorTests
 
         // trackIncrementalGeneratorSteps allows to report info about each step of the generator
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            generators: new ISourceGenerator[] { sourceGenerator },
+            generators: new[] { sourceGenerator },
             driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true));
 
         // Run the generator
@@ -79,13 +88,13 @@ public sealed class SourceGeneratorTests
 
         string expected = await expectedSourceTask.ConfigureAwait(false);
 
-        // Create the 'expected' file if it isn't there. Empty out to recreate.
+        // Create the 'expected' file if it isn't there. Comment out next line and run tests manually to recreate.
         if (string.IsNullOrWhiteSpace(expected))
         {
 #if NCRUNCH
                 var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
                 string expectedFilePathInSourceCode =
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".ExpectedSource.cs");
+                    folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".ExpectedSource.cs");
 #else
             string expectedFilePathInSourceCode =
                 Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".ExpectedSource.cs");

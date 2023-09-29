@@ -87,6 +87,7 @@ namespace Mocklis.CodeGeneration
             {
             }
 
+            // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
             private MemberDeclarationSyntax MockGetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
@@ -94,6 +95,7 @@ namespace Mocklis.CodeGeneration
                     .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
+            // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
             private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))

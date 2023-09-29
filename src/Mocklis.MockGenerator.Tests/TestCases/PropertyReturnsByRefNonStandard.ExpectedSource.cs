@@ -4,8 +4,15 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<int> ReturnsByRef { get; }
+
+        ref int global::Test.ITestClass.ReturnsByRef => ref global::Mocklis.Core.ByRef<int>.Wrap(ReturnsByRef.Value);
 
         // Adding line for Virtual Method Based Property Mock
+
+        public TestClass() : base()
+        {
+            this.ReturnsByRef = new global::Mocklis.Core.PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

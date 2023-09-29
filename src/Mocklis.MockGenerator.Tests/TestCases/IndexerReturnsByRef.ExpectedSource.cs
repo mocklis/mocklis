@@ -6,6 +6,13 @@ namespace Test
     {
         // Adding line for Virtual Method Based Indexer Mock
 
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<string, int> Item0 { get; }
+
+        ref readonly int global::Test.ITestClass.this[string s] => ref global::Mocklis.Core.ByRef<int>.Wrap(Item0[s]);
+
+        public TestClass() : base()
+        {
+            this.Item0 = new global::Mocklis.Core.IndexerMock<string, int>(this, "TestClass", "ITestClass", "this[]", "Item0", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

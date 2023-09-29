@@ -4,10 +4,23 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<int, int> Item { get; }
 
-        // Adding line for Property Based Indexer Mock
+        int global::Test.ITestClass.this[int i] { get => Item[i]; set => Item[i] = value; }
 
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<string, int> Item0 { get; }
+
+        int global::Test.ITestClass.this[string s] { set => Item0[s] = value; }
+
+        public global::Mocklis.Core.IndexerMock<char, int> Item1 { get; }
+
+        int global::Test.ITestClass.this[char c] => Item1[c];
+
+        public TestClass() : base()
+        {
+            this.Item = new global::Mocklis.Core.IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "Item", global::Mocklis.Core.Strictness.Lenient);
+            this.Item0 = new global::Mocklis.Core.IndexerMock<string, int>(this, "TestClass", "ITestClass", "this[]", "Item0", global::Mocklis.Core.Strictness.Lenient);
+            this.Item1 = new global::Mocklis.Core.IndexerMock<char, int>(this, "TestClass", "ITestClass", "this[]", "Item1", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

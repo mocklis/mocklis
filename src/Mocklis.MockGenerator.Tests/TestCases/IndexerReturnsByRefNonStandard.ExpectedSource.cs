@@ -4,8 +4,15 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<int, int> Item { get; }
+
+        ref int global::Test.ITestClass.this[int i] => ref global::Mocklis.Core.ByRef<int>.Wrap(Item[i]);
 
         // Adding line for Virtual Method Based Indexer Mock
+
+        public TestClass() : base()
+        {
+            this.Item = new global::Mocklis.Core.IndexerMock<int, int>(this, "TestClass", "ITestClass", "this[]", "Item", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

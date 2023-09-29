@@ -4,19 +4,28 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<int> Property { get; }
 
-        // Adding line for Property Based Indexer Mock
+        int global::Test.ITestClass.Property { get => Property.Value; set => Property.Value = value; }
+
+        public global::Mocklis.Core.IndexerMock<int, string> Item { get; }
+
+        string global::Test.ITestClass.this[int i] { get => Item[i]; set => Item[i] = value; }
 
         public global::Mocklis.Core.FuncMethodMock<string, string> MyMethod { get; }
 
         string global::Test.ITestClass.MyMethod(string param) => MyMethod.Call(param);
 
-        // Adding line for Property Based Event Mock
+        public global::Mocklis.Core.EventMock<global::System.EventHandler> MyEvent { get; }
+
+        event global::System.EventHandler global::Test.ITestClass.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
 
         public TestClass() : base()
         {
+            this.Property = new global::Mocklis.Core.PropertyMock<int>(this, "TestClass", "ITestClass", "Property", "Property", global::Mocklis.Core.Strictness.VeryStrict);
+            this.Item = new global::Mocklis.Core.IndexerMock<int, string>(this, "TestClass", "ITestClass", "this[]", "Item", global::Mocklis.Core.Strictness.VeryStrict);
             this.MyMethod = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "MyMethod", "MyMethod", global::Mocklis.Core.Strictness.VeryStrict);
+            this.MyEvent = new global::Mocklis.Core.EventMock<global::System.EventHandler>(this, "TestClass", "ITestClass", "MyEvent", "MyEvent", global::Mocklis.Core.Strictness.VeryStrict);
         }
     }
 }

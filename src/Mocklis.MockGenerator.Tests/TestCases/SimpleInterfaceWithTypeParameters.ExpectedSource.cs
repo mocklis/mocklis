@@ -2,8 +2,15 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T>
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<T> GetAndSet { get; }
+
+        T global::Test.ITestClass<T>.GetAndSet { get => GetAndSet.Value; set => GetAndSet.Value = value; }
+
+        public TestClass() : base()
+        {
+            this.GetAndSet = new global::Mocklis.Core.PropertyMock<T>(this, "TestClass", "ITestClass", "GetAndSet", "GetAndSet", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

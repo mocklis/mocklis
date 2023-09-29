@@ -2,7 +2,7 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T>
     {
         public global::Mocklis.Core.FuncMethodMock<global::System.Collections.Generic.IEnumerator<T>> GetEnumerator { get; }
 

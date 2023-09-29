@@ -15,6 +15,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.MockGenerator.CodeGeneration;
+    using static System.Net.Mime.MediaTypeNames;
 
     #endregion
 
@@ -23,6 +24,7 @@ namespace Mocklis.CodeGeneration
         private const string Indentation = "    ";
         private readonly List<string> _constructorStatements = new();
         private readonly StringBuilder _stringBuilder = new();
+        private readonly StringBuilder _lineBuilder = new();
         private readonly MockSettings _settings;
         private readonly INamedTypeSymbol _classSymbol;
         private readonly bool _nullableAnnotationsEnabled;
@@ -71,13 +73,39 @@ namespace Mocklis.CodeGeneration
                 _stringBuilder.AppendLine();
                 _addSeparator = false;
             }
-            AppendIndentation();
-            _stringBuilder.AppendLine(text);
+
+            _lineBuilder.Append(text);
+            if (_lineBuilder.Length > 0)
+            {
+                AppendIndentation();
+                _stringBuilder.AppendLine(_lineBuilder.ToString());
+                _lineBuilder.Clear();
+            }
         }
 
         public void AppendSeparator()
         {
             _addSeparator = true;
+        }
+
+        public void Append(string text)
+        {
+            _lineBuilder.Append(text);
+        }
+
+        public void AppendLine()
+        {
+            if (_addSeparator)
+            {
+                _stringBuilder.AppendLine();
+                _addSeparator = false;
+            }
+            if (_lineBuilder.Length > 0)
+            {
+                AppendIndentation();
+                _stringBuilder.AppendLine(_lineBuilder.ToString());
+                _lineBuilder.Clear();
+            }
         }
 
         public override string ToString()

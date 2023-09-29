@@ -2,7 +2,7 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T1, T2>
     {
         public global::Mocklis.Core.FuncMethodMock<T1, T2> DoCalculation { get; }
 

@@ -278,8 +278,16 @@ public class ExtractedClassInformation
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
         }
-        
-        ctx.AppendLine($"partial class {ClassSymbol.Name}");
+
+        if (ClassSymbol.IsGenericType)
+        {
+            ctx.AppendLine($"partial class {ClassSymbol.Name}<{string.Join(", ", ClassSymbol.TypeParameters.Select(tp => tp.Name))}>");
+        }
+        else
+        {
+            ctx.AppendLine($"partial class {ClassSymbol.Name}");
+        }
+    
         ctx.AppendLine("{");
         ctx.IncreaseIndent();
 

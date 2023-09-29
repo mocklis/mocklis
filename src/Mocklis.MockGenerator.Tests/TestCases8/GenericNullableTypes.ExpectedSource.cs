@@ -4,11 +4,15 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T>
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<T?> Property { get; }
 
-        // Adding line for Property Based Indexer Mock
+        T? global::Test.ITestClass<T>.Property { get => Property.Value; set => Property.Value = value; }
+
+        public global::Mocklis.Core.IndexerMock<(T? p1, T? p2), T?> Item { get; }
+
+        T? global::Test.ITestClass<T>.this[T? p1, T? p2] { get => Item[(p1, p2)]; set => Item[(p1, p2)] = value; }
 
         public global::Mocklis.Core.FuncMethodMock<T?, T?> Test { get; }
 
@@ -16,6 +20,8 @@ namespace Test
 
         protected TestClass() : base()
         {
+            this.Property = new global::Mocklis.Core.PropertyMock<T?>(this, "TestClass", "ITestClass", "Property", "Property", global::Mocklis.Core.Strictness.Lenient);
+            this.Item = new global::Mocklis.Core.IndexerMock<(T? p1, T? p2), T?>(this, "TestClass", "ITestClass", "this[]", "Item", global::Mocklis.Core.Strictness.Lenient);
             this.Test = new global::Mocklis.Core.FuncMethodMock<T?, T?>(this, "TestClass", "ITestClass", "Test", "Test", global::Mocklis.Core.Strictness.Lenient);
         }
     }

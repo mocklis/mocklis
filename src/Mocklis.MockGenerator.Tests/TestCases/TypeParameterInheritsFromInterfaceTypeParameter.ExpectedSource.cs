@@ -2,7 +2,7 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<T>
     {
         public global::Mocklis.Core.ActionMethodMock<TInner> Test { get; }
 

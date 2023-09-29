@@ -6,6 +6,13 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.IDictionary<int?, global::System.Collections.Generic.List<(byte, string)>>> Test { get; }
+
+        global::System.Collections.Generic.IDictionary<int?, global::System.Collections.Generic.List<(byte, string)>> global::Test.ITestClass.Test => Test.Value;
+
+        protected TestClass() : base()
+        {
+            this.Test = new global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.IDictionary<int?, global::System.Collections.Generic.List<(byte, string)>>>(this, "TestClass", "ITestClass", "Test", "Test", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

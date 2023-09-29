@@ -4,21 +4,37 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<string> NullableProperty { get; }
 
-        // Adding line for Property Based Property Mock
+        string global::Test.ITestClass.NullableProperty => NullableProperty.Value;
 
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.PropertyMock<string> NormalProperty { get; }
 
-        // Adding line for Property Based Indexer Mock
+        string global::Test.ITestClass.NormalProperty => NormalProperty.Value;
 
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<int, string> Item { get; }
 
-        // Adding line for Property Based Indexer Mock
+        string global::Test.ITestClass.this[int i] => Item[i];
 
-        // Adding line for Property Based Event Mock
+        public global::Mocklis.Core.IndexerMock<bool, string> Item0 { get; }
 
-        // Adding line for Property Based Event Mock
+        string global::Test.ITestClass.this[bool b] => Item0[b];
+
+        public global::Mocklis.Core.IndexerMock<string, string> Item1 { get; }
+
+        string global::Test.ITestClass.this[string s] => Item1[s];
+
+        public global::Mocklis.Core.IndexerMock<(int i, string s), string> Item2 { get; }
+
+        string global::Test.ITestClass.this[int i, string s] => Item2[(i, s)];
+
+        public global::Mocklis.Core.EventMock<global::System.EventHandler> NonNullableEvent { get; }
+
+        event global::System.EventHandler global::Test.ITestClass.NonNullableEvent { add => NonNullableEvent.Add(value); remove => NonNullableEvent.Remove(value); }
+
+        public global::Mocklis.Core.EventMock<global::System.EventHandler> NullableEvent { get; }
+
+        event global::System.EventHandler global::Test.ITestClass.NullableEvent { add => NullableEvent.Add(value); remove => NullableEvent.Remove(value); }
 
         public global::Mocklis.Core.FuncMethodMock<string, string> Method1 { get; }
 
@@ -34,6 +50,14 @@ namespace Test
 
         protected TestClass() : base()
         {
+            this.NullableProperty = new global::Mocklis.Core.PropertyMock<string>(this, "TestClass", "ITestClass", "NullableProperty", "NullableProperty", global::Mocklis.Core.Strictness.Lenient);
+            this.NormalProperty = new global::Mocklis.Core.PropertyMock<string>(this, "TestClass", "ITestClass", "NormalProperty", "NormalProperty", global::Mocklis.Core.Strictness.Lenient);
+            this.Item = new global::Mocklis.Core.IndexerMock<int, string>(this, "TestClass", "ITestClass", "this[]", "Item", global::Mocklis.Core.Strictness.Lenient);
+            this.Item0 = new global::Mocklis.Core.IndexerMock<bool, string>(this, "TestClass", "ITestClass", "this[]", "Item0", global::Mocklis.Core.Strictness.Lenient);
+            this.Item1 = new global::Mocklis.Core.IndexerMock<string, string>(this, "TestClass", "ITestClass", "this[]", "Item1", global::Mocklis.Core.Strictness.Lenient);
+            this.Item2 = new global::Mocklis.Core.IndexerMock<(int i, string s), string>(this, "TestClass", "ITestClass", "this[]", "Item2", global::Mocklis.Core.Strictness.Lenient);
+            this.NonNullableEvent = new global::Mocklis.Core.EventMock<global::System.EventHandler>(this, "TestClass", "ITestClass", "NonNullableEvent", "NonNullableEvent", global::Mocklis.Core.Strictness.Lenient);
+            this.NullableEvent = new global::Mocklis.Core.EventMock<global::System.EventHandler>(this, "TestClass", "ITestClass", "NullableEvent", "NullableEvent", global::Mocklis.Core.Strictness.Lenient);
             this.Method1 = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "Method1", "Method1", global::Mocklis.Core.Strictness.Lenient);
             this.Method2 = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "Method2", "Method2", global::Mocklis.Core.Strictness.Lenient);
             this.Method3 = new global::Mocklis.Core.FuncMethodMock<(string p1, string p2), string>(this, "TestClass", "ITestClass", "Method3", "Method3", global::Mocklis.Core.Strictness.Lenient);

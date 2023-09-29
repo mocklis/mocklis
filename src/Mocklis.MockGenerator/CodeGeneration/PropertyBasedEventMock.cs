@@ -37,7 +37,19 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Property Based Event Mock");
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
+            var eventHandlerType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+
+            // TODO: Verify that the generic parameter indeed never is nullable. (Pretty sure this is the case but it doesn't hurt to double-check...
+            var mockPropertyType = $"global::Mocklis.Core.EventMock<{ctx.ParseTypeName(Symbol.Type, false, ITypeParameterSubstitutions.Empty)}>";
+
+            ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+            ctx.AppendSeparator();
+
+            ctx.AppendLine($"event {eventHandlerType} {interfaceName}.{Symbol.Name} {{ add => {MemberMockName}.Add(value); remove => {MemberMockName}.Remove(value); }}");
+            ctx.AppendSeparator();
+
+            ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
         private class SyntaxAdder : ISyntaxAdder

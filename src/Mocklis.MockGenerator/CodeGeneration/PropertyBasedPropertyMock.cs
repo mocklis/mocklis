@@ -37,7 +37,57 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Property Based Property Mock");
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
+            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+
+            var mockPropertyType = $"global::Mocklis.Core.PropertyMock<{valueType}>";
+
+            ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+            ctx.AppendSeparator();
+
+            if (Symbol.ReturnsByRef)
+            {
+                ctx.Append("ref ");
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                ctx.Append("ref readonly ");
+            }
+
+            ctx.Append($"{valueType} {interfaceName}.{Symbol.Name}");
+
+            if (Symbol.IsReadOnly)
+            {
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    ctx.AppendLine($" => ref global::Mocklis.Core.ByRef<{valueType}>.Wrap({MemberMockName}.Value);");
+                }
+                else
+                {
+                    ctx.AppendLine($" => {MemberMockName}.Value;");
+                }
+            }
+            else
+            {
+                ctx.Append(" { ");
+
+                if (!Symbol.IsWriteOnly)
+                {
+                    ctx.Append($"get => {MemberMockName}.Value; ");
+                }
+
+                if (!Symbol.IsReadOnly)
+                {
+                    ctx.Append($"set => {MemberMockName}.Value = value; ");
+                }
+
+                ctx.Append("}");
+            }
+
+            ctx.AppendLine();
+            ctx.AppendSeparator();
+
+            ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
         private class SyntaxAdder : ISyntaxAdder
@@ -46,7 +96,6 @@ namespace Mocklis.CodeGeneration
             private TypeSyntax MockPropertyType { get; }
             private MocklisTypesForSymbols TypesForSymbols { get; }
             private PropertyBasedPropertyMock Mock { get; }
-        
 
             public SyntaxAdder(PropertyBasedPropertyMock mock, MocklisTypesForSymbols typesForSymbols)
             {

@@ -4,7 +4,7 @@
 
 namespace Test
 {
-    partial class TestClass
+    partial class TestClass<TKey, TValue>
     {
         public global::Mocklis.Core.FuncMethodMock<TKey, bool> ContainsKey { get; }
 
@@ -27,11 +27,17 @@ namespace Test
             return tmp.returnValue;
         }
 
-        // Adding line for Property Based Indexer Mock
+        public global::Mocklis.Core.IndexerMock<TKey, TValue> Item { get; }
 
-        // Adding line for Property Based Property Mock
+        TValue global::System.Collections.Generic.IDictionary<TKey, TValue>.this[TKey key] { get => Item[key]; set => Item[key] = value; }
 
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.ICollection<TKey>> Keys { get; }
+
+        global::System.Collections.Generic.ICollection<TKey> global::System.Collections.Generic.IDictionary<TKey, TValue>.Keys => Keys.Value;
+
+        public global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.ICollection<TValue>> Values { get; }
+
+        global::System.Collections.Generic.ICollection<TValue> global::System.Collections.Generic.IDictionary<TKey, TValue>.Values => Values.Value;
 
         public global::Mocklis.Core.ActionMethodMock<global::System.Collections.Generic.KeyValuePair<TKey, TValue>> Add0 { get; }
 
@@ -53,9 +59,13 @@ namespace Test
 
         bool global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>.Remove(global::System.Collections.Generic.KeyValuePair<TKey, TValue> item) => Remove0.Call(item);
 
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<int> Count { get; }
 
-        // Adding line for Property Based Property Mock
+        int global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>.Count => Count.Value;
+
+        public global::Mocklis.Core.PropertyMock<bool> IsReadOnly { get; }
+
+        bool global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>.IsReadOnly => IsReadOnly.Value;
 
         public global::Mocklis.Core.FuncMethodMock<global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>> GetEnumerator { get; }
 
@@ -71,11 +81,16 @@ namespace Test
             this.Add = new global::Mocklis.Core.ActionMethodMock<(TKey key, TValue value)>(this, "TestClass", "IDictionary", "Add", "Add", global::Mocklis.Core.Strictness.Lenient);
             this.Remove = new global::Mocklis.Core.FuncMethodMock<TKey, bool>(this, "TestClass", "IDictionary", "Remove", "Remove", global::Mocklis.Core.Strictness.Lenient);
             this.TryGetValue = new global::Mocklis.Core.FuncMethodMock<TKey, (bool returnValue, TValue value)>(this, "TestClass", "IDictionary", "TryGetValue", "TryGetValue", global::Mocklis.Core.Strictness.Lenient);
+            this.Item = new global::Mocklis.Core.IndexerMock<TKey, TValue>(this, "TestClass", "IDictionary", "this[]", "Item", global::Mocklis.Core.Strictness.Lenient);
+            this.Keys = new global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.ICollection<TKey>>(this, "TestClass", "IDictionary", "Keys", "Keys", global::Mocklis.Core.Strictness.Lenient);
+            this.Values = new global::Mocklis.Core.PropertyMock<global::System.Collections.Generic.ICollection<TValue>>(this, "TestClass", "IDictionary", "Values", "Values", global::Mocklis.Core.Strictness.Lenient);
             this.Add0 = new global::Mocklis.Core.ActionMethodMock<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>(this, "TestClass", "ICollection", "Add", "Add0", global::Mocklis.Core.Strictness.Lenient);
             this.Clear = new global::Mocklis.Core.ActionMethodMock(this, "TestClass", "ICollection", "Clear", "Clear", global::Mocklis.Core.Strictness.Lenient);
             this.Contains = new global::Mocklis.Core.FuncMethodMock<global::System.Collections.Generic.KeyValuePair<TKey, TValue>, bool>(this, "TestClass", "ICollection", "Contains", "Contains", global::Mocklis.Core.Strictness.Lenient);
             this.CopyTo = new global::Mocklis.Core.ActionMethodMock<(global::System.Collections.Generic.KeyValuePair<TKey, TValue>[] array, int arrayIndex)>(this, "TestClass", "ICollection", "CopyTo", "CopyTo", global::Mocklis.Core.Strictness.Lenient);
             this.Remove0 = new global::Mocklis.Core.FuncMethodMock<global::System.Collections.Generic.KeyValuePair<TKey, TValue>, bool>(this, "TestClass", "ICollection", "Remove", "Remove0", global::Mocklis.Core.Strictness.Lenient);
+            this.Count = new global::Mocklis.Core.PropertyMock<int>(this, "TestClass", "ICollection", "Count", "Count", global::Mocklis.Core.Strictness.Lenient);
+            this.IsReadOnly = new global::Mocklis.Core.PropertyMock<bool>(this, "TestClass", "ICollection", "IsReadOnly", "IsReadOnly", global::Mocklis.Core.Strictness.Lenient);
             this.GetEnumerator = new global::Mocklis.Core.FuncMethodMock<global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<TKey, TValue>>>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator", global::Mocklis.Core.Strictness.Lenient);
             this.GetEnumerator0 = new global::Mocklis.Core.FuncMethodMock<global::System.Collections.IEnumerator>(this, "TestClass", "IEnumerable", "GetEnumerator", "GetEnumerator0", global::Mocklis.Core.Strictness.Lenient);
         }

@@ -39,7 +39,71 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Property Based Indexer Mock");
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
+
+            var builder = new SingleTypeOrValueTupleBuilder();
+            foreach (var p in Symbol.Parameters)
+            {
+                builder.AddParameter(p);
+            }
+
+            var keyTypex = builder.Build(MemberMockName);
+
+            var keyType = ctx.BuildTupleType(keyTypex, ITypeParameterSubstitutions.Empty) ?? throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
+
+            var arglist = keyTypex.BuildArgumentListAsString();
+
+            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+
+            var mockPropertyType = $"global::Mocklis.Core.IndexerMock<{keyType}, {valueType}>";
+
+            ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+
+            ctx.AppendSeparator();
+
+            if (Symbol.ReturnsByRef)
+            {
+                ctx.Append("ref ");
+            }
+            else if (Symbol.ReturnsByRefReadonly)
+            {
+                ctx.Append("ref readonly ");
+            }
+
+            ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters)}]");
+
+            if (Symbol.IsReadOnly)
+            {
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    ctx.AppendLine($" => ref global::Mocklis.Core.ByRef<{valueType}>.Wrap({MemberMockName}[{arglist}]);");
+                }
+                else
+                {
+                    ctx.AppendLine($" => {MemberMockName}[{arglist}];");
+                }
+            }
+            else
+            {
+                ctx.Append(" { ");
+
+                if (!Symbol.IsWriteOnly)
+                {
+                    ctx.Append($"get => {MemberMockName}[{arglist}]; ");
+                }
+
+                if (!Symbol.IsReadOnly)
+                {
+                    ctx.Append($"set => {MemberMockName}[{arglist}] = value; ");
+                }
+
+                ctx.Append("}");
+            }
+
+            ctx.AppendLine();
+            ctx.AppendSeparator();
+
+            ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
         private class SyntaxAdder : ISyntaxAdder

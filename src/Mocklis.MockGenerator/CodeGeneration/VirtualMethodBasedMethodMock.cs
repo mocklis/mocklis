@@ -108,6 +108,7 @@ namespace Mocklis.CodeGeneration
             {
             }
 
+            // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing and return default values.
             private MemberDeclarationSyntax MockVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnTypeWithoutReadonly,
                 string? arglistParameterName, string className, string interfaceName)
             {

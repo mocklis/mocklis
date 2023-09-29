@@ -89,6 +89,7 @@ namespace Mocklis.CodeGeneration
             {
             }
 
+            // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
             private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
@@ -98,6 +99,7 @@ namespace Mocklis.CodeGeneration
                     .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
             }
 
+            // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
             private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
             {
                 var uniquifier = new Uniquifier(_mock.Symbol.Parameters.Select(p => p.Name));

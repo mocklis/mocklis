@@ -6,6 +6,13 @@ namespace Test
     {
         // Adding line for Virtual Method Based Property Mock
 
-        // Adding line for Property Based Property Mock
+        public global::Mocklis.Core.PropertyMock<int> ReturnsByRefReadonly { get; }
+
+        ref readonly int global::Test.ITestClass.ReturnsByRefReadonly => ref global::Mocklis.Core.ByRef<int>.Wrap(ReturnsByRefReadonly.Value);
+
+        public TestClass() : base()
+        {
+            this.ReturnsByRefReadonly = new global::Mocklis.Core.PropertyMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }
