@@ -4,22 +4,31 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
-
-        public global::Mocklis.Core.FuncMethodMock<string,(bool returnValue, int result)> TryParse { get; }
+        public global::Mocklis.Core.FuncMethodMock<string, (bool returnValue, int result)> TryParse { get; }
 
         bool global::Test.ITestClass.TryParse(string source, out int result)
-        // Adding line for Property Based Method Mock
+        {
+            var tmp = TryParse.Call(source);
+            result = tmp.result;
+            return tmp.returnValue;
+        }
 
-        public global::Mocklis.Core.FuncMethodMock<(int t1, int t2),int> Test { get; }
+        public global::Mocklis.Core.FuncMethodMock<(int t1, int t2), int> Test { get; }
 
-        int global::Test.ITestClass.Test(in int t1, in int t2)
-        // Adding line for Property Based Method Mock
+        int global::Test.ITestClass.Test(in int t1, in int t2) => Test.Call((t1, t2));
 
-        public global::Mocklis.Core.FuncMethodMock<string,string> Mutate { get; }
+        public global::Mocklis.Core.FuncMethodMock<string, string> Mutate { get; }
 
         void global::Test.ITestClass.Mutate(ref string value)
-        // Adding constructors here...
+        {
+            value = Mutate.Call(value);
+        }
+
+        public TestClass() : base()
+        {
+            this.TryParse = new global::Mocklis.Core.FuncMethodMock<string, (bool returnValue, int result)>(this, "TestClass", "ITestClass", "TryParse", "TryParse", global::Mocklis.Core.Strictness.Lenient);
+            this.Test = new global::Mocklis.Core.FuncMethodMock<(int t1, int t2), int>(this, "TestClass", "ITestClass", "Test", "Test", global::Mocklis.Core.Strictness.Lenient);
+            this.Mutate = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "Mutate", "Mutate", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

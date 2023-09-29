@@ -4,22 +4,23 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string> Combine { get; }
 
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2),string> Combine { get; }
+        string global::Test.ITestClass.Combine(T1 param1, T2 param2) => Combine.Call((param1, param2));
 
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2)
-        // Adding line for Property Based Method Mock
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string> Combine0 { get; }
 
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3),string> Combine0 { get; }
+        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3) => Combine0.Call((param1, param2, param3));
 
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3)
-        // Adding line for Property Based Method Mock
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string> Combine1 { get; }
 
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4),string> Combine1 { get; }
+        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3, T4 param4) => Combine1.Call((param1, param2, param3, param4));
 
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3, T4 param4)
-        // Adding constructors here...
+        public TestClass() : base()
+        {
+            this.Combine = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string>(this, "TestClass", "ITestClass", "Combine", "Combine", global::Mocklis.Core.Strictness.Lenient);
+            this.Combine0 = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string>(this, "TestClass", "ITestClass", "Combine", "Combine0", global::Mocklis.Core.Strictness.Lenient);
+            this.Combine1 = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string>(this, "TestClass", "ITestClass", "Combine", "Combine1", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

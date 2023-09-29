@@ -183,6 +183,7 @@ namespace Mocklis.CodeGeneration
         public MemberAccessExpressionSyntax StrictnessVeryStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
             ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("VeryStrict"));
 
+        // TODO: Check that in, out and ref are used in 'base(...)' part of constructor calling.
         public ParameterSyntax AsParameterSyntax(IParameterSymbol p, Func<string, string>? findTypeParameterName = null)
         {
             var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, p.NullableOrOblivious(), findTypeParameterName));

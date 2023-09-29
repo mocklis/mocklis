@@ -4,18 +4,25 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
         // Adding line for Virtual Method Based Method Mock
-        // Adding line for Property Based Method Mock
 
         public global::Mocklis.Core.FuncMethodMock<int> ReturnsByRefReadonly { get; }
 
-        ref readonly int global::Test.ITestClass.ReturnsByRefReadonly()
-        // Adding line for Property Based Method Mock
+        ref readonly int global::Test.ITestClass.ReturnsByRefReadonly() => ref global::Mocklis.Core.ByRef<int>.Wrap(ReturnsByRefReadonly.Call());
 
         public global::Mocklis.Core.FuncMethodMock<(int returnValue, int blah)> ReturnsMoreStuffByRef { get; }
 
         ref readonly int global::Test.ITestClass.ReturnsMoreStuffByRef(out int blah)
-        // Adding constructors here...
+        {
+            var tmp = ReturnsMoreStuffByRef.Call();
+            blah = tmp.blah;
+            return ref global::Mocklis.Core.ByRef<int>.Wrap(tmp.returnValue);
+        }
+
+        public TestClass() : base()
+        {
+            this.ReturnsByRefReadonly = new global::Mocklis.Core.FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly", global::Mocklis.Core.Strictness.Lenient);
+            this.ReturnsMoreStuffByRef = new global::Mocklis.Core.FuncMethodMock<(int returnValue, int blah)>(this, "TestClass", "ITestClass", "ReturnsMoreStuffByRef", "ReturnsMoreStuffByRef", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

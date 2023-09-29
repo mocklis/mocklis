@@ -6,12 +6,13 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
-
         public global::Mocklis.Core.ActionMethodMock<T?> DoStuff { get; }
 
-        void global::Test.ITestClass.DoStuff(T? p)
-        // Adding constructors here...
+        void global::Test.ITestClass.DoStuff(T? p) => DoStuff.Call(p);
+
+        protected TestClass() : base()
+        {
+            this.DoStuff = new global::Mocklis.Core.ActionMethodMock<T?>(this, "TestClass", "ITestClass", "DoStuff", "DoStuff", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

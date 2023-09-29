@@ -4,17 +4,18 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
-
         public global::Mocklis.Core.FuncMethodMock<T> ReturnsNewType { get; }
 
-        T global::Test.ITestClass.ReturnsNewType()
-        // Adding line for Property Based Method Mock
+        T global::Test.ITestClass.ReturnsNewType() => ReturnsNewType.Call();
 
         public global::Mocklis.Core.ActionMethodMock<T> UsesNewType { get; }
 
-        void global::Test.ITestClass.UsesNewType(T parameter)
-        // Adding constructors here...
+        void global::Test.ITestClass.UsesNewType(T parameter) => UsesNewType.Call(parameter);
+
+        public TestClass() : base()
+        {
+            this.ReturnsNewType = new global::Mocklis.Core.FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType", "ReturnsNewType", global::Mocklis.Core.Strictness.Lenient);
+            this.UsesNewType = new global::Mocklis.Core.ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType", "UsesNewType", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

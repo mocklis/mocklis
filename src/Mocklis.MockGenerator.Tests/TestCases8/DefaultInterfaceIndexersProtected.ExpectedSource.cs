@@ -4,6 +4,5 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding constructors here...
     }
 }

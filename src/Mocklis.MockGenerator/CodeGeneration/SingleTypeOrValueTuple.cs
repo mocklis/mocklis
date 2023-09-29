@@ -101,5 +101,20 @@ namespace Mocklis.CodeGeneration
                 ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.OriginalName))).ToArray()))
                 : F.IdentifierName(this[0].OriginalName);
         }
+
+        public string BuildArgumentListAsString()
+        {
+            if (Count == 0)
+            {
+                return string.Empty;
+            }
+
+            if (IsMultiDimensional)
+            {
+                return $"({string.Join(", ", this.Select(a => a.OriginalName))})";
+            }
+
+            return this[0].OriginalName;
+        }
     }
 }

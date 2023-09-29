@@ -9,13 +9,10 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.CSharp;
     using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.MockGenerator.CodeGeneration;
 
@@ -31,22 +28,32 @@ namespace Mocklis.CodeGeneration
         private readonly bool _nullableAnnotationsEnabled;
 
         private int _indentationLevel;
+        private bool _addSeparator;
+
+        private readonly string _strictness;
+
+        public IReadOnlyCollection<string> ConstructorStatements => _constructorStatements;
 
         public SourceGenerationContext(MockSettings settings, INamedTypeSymbol classSymbol, bool nullableAnnotationsEnabled)
         {
             _settings = settings;
             _classSymbol = classSymbol;
             _nullableAnnotationsEnabled = nullableAnnotationsEnabled;
+
+            _strictness = settings.VeryStrict ? "global::Mocklis.Core.Strictness.VeryStrict" :
+                (settings.Strict ? "global::Mocklis.Core.Strictness.Strict" : "global::Mocklis.Core.Strictness.Lenient");
         }
 
         public void IncreaseIndent()
         {
             _indentationLevel++;
+            _addSeparator = false;
         }
 
         public void DecreaseIndent()
         {
             _indentationLevel--;
+            _addSeparator = false;
         }
 
         private void AppendIndentation()
@@ -59,13 +66,18 @@ namespace Mocklis.CodeGeneration
 
         public void AppendLine(string text)
         {
+            if (_addSeparator)
+            {
+                _stringBuilder.AppendLine();
+                _addSeparator = false;
+            }
             AppendIndentation();
             _stringBuilder.AppendLine(text);
         }
 
-        public void AppendLine()
+        public void AppendSeparator()
         {
-            _stringBuilder.AppendLine();
+            _addSeparator = true;
         }
 
         public override string ToString()
@@ -73,6 +85,10 @@ namespace Mocklis.CodeGeneration
             return _stringBuilder.ToString();
         }
 
+        public void AddConstructorStatement(string mockPropertyType, string memberMockName, string interfaceName, string symbolName)
+        {
+            _constructorStatements.Add($"this.{memberMockName} = new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\", {_strictness});");
+        }
 
         public string ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, ITypeParameterSubstitutions substitutions)
         {
@@ -169,5 +185,33 @@ namespace Mocklis.CodeGeneration
 
             return string.Join(", ", args);
         }
+
+        public string BuildArgumentList(IEnumerable<IParameterSymbol> parameters)
+        {
+            var args = parameters.Select(p =>
+            {
+                switch (p.RefKind)
+                {
+                    case RefKind.In:
+                    {
+                        return $"in {p.Name}";
+                    }
+
+                    case RefKind.Out:
+                    {
+                        return $"out {p.Name}";
+                    }
+
+                    case RefKind.Ref:
+                    {
+                        return $"ref {p.Name}";                    }
+                }
+
+                return $"{p.Name}";
+            });
+
+            return string.Join(", ", args);
+        }
+
     }
 }

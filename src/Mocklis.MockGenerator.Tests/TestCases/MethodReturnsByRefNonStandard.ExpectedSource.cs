@@ -4,13 +4,15 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
-
         public global::Mocklis.Core.FuncMethodMock<int> ReturnsByRef { get; }
 
-        ref int global::Test.ITestClass.ReturnsByRef()
+        ref int global::Test.ITestClass.ReturnsByRef() => ref global::Mocklis.Core.ByRef<int>.Wrap(ReturnsByRef.Call());
+
         // Adding line for Virtual Method Based Method Mock
-        // Adding constructors here...
+
+        public TestClass() : base()
+        {
+            this.ReturnsByRef = new global::Mocklis.Core.FuncMethodMock<int>(this, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

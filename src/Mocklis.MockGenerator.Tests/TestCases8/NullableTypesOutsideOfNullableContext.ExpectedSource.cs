@@ -4,30 +4,39 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
         // Adding line for Property Based Property Mock
+
         // Adding line for Property Based Property Mock
+
         // Adding line for Property Based Indexer Mock
+
         // Adding line for Property Based Indexer Mock
+
         // Adding line for Property Based Indexer Mock
+
         // Adding line for Property Based Indexer Mock
+
         // Adding line for Property Based Event Mock
+
         // Adding line for Property Based Event Mock
-        // Adding line for Property Based Method Mock
 
-        public global::Mocklis.Core.FuncMethodMock<string,string> Method1 { get; }
+        public global::Mocklis.Core.FuncMethodMock<string, string> Method1 { get; }
 
-        string global::Test.ITestClass.Method1(string parameter)
-        // Adding line for Property Based Method Mock
+        string global::Test.ITestClass.Method1(string parameter) => Method1.Call(parameter);
 
-        public global::Mocklis.Core.FuncMethodMock<string,string> Method2 { get; }
+        public global::Mocklis.Core.FuncMethodMock<string, string> Method2 { get; }
 
-        string global::Test.ITestClass.Method2(string parameter)
-        // Adding line for Property Based Method Mock
+        string global::Test.ITestClass.Method2(string parameter) => Method2.Call(parameter);
 
-        public global::Mocklis.Core.FuncMethodMock<(string p1, string p2),string> Method3 { get; }
+        public global::Mocklis.Core.FuncMethodMock<(string p1, string p2), string> Method3 { get; }
 
-        string global::Test.ITestClass.Method3(string p1, string p2)
-        // Adding constructors here...
+        string global::Test.ITestClass.Method3(string p1, string p2) => Method3.Call((p1, p2));
+
+        protected TestClass() : base()
+        {
+            this.Method1 = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "Method1", "Method1", global::Mocklis.Core.Strictness.Lenient);
+            this.Method2 = new global::Mocklis.Core.FuncMethodMock<string, string>(this, "TestClass", "ITestClass", "Method2", "Method2", global::Mocklis.Core.Strictness.Lenient);
+            this.Method3 = new global::Mocklis.Core.FuncMethodMock<(string p1, string p2), string>(this, "TestClass", "ITestClass", "Method3", "Method3", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

@@ -4,30 +4,34 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface IDuplexConnection
         // Adding line for Property Based Event Mock
+
         // Adding line for Property Based Event Mock
-        // Adding line for Property Based Method Mock
 
         public global::Mocklis.Core.ActionMethodMock<byte[]> SendData { get; }
 
-        void global::Test.IDuplexConnection.SendData(byte[] data)
-        // Adding line for Property Based Method Mock
+        void global::Test.IDuplexConnection.SendData(byte[] data) => SendData.Call(data);
 
         public global::Mocklis.Core.ActionMethodMock<string> SendText { get; }
 
-        void global::Test.IDuplexConnection.SendText(string text)
-        // Adding line for Property Based Method Mock
+        void global::Test.IDuplexConnection.SendText(string text) => SendText.Call(text);
 
-        public global::Mocklis.Core.FuncMethodMock<string,global::System.Threading.Tasks.Task<string>> Close { get; }
+        public global::Mocklis.Core.FuncMethodMock<string, global::System.Threading.Tasks.Task<string>> Close { get; }
 
-        global::System.Threading.Tasks.Task<string> global::Test.IDuplexConnection.Close(string reason)
-        // Adding line for Property Based Method Mock
+        global::System.Threading.Tasks.Task<string> global::Test.IDuplexConnection.Close(string reason) => Close.Call(reason);
 
         public global::Mocklis.Core.FuncMethodMock<global::System.Threading.Tasks.Task> Run { get; }
 
-        global::System.Threading.Tasks.Task global::Test.IDuplexConnection.Run()
+        global::System.Threading.Tasks.Task global::Test.IDuplexConnection.Run() => Run.Call();
+
         // Adding line for Property Based Property Mock
-        // Adding constructors here...
+
+        public TestClass() : base()
+        {
+            this.SendData = new global::Mocklis.Core.ActionMethodMock<byte[]>(this, "TestClass", "IDuplexConnection", "SendData", "SendData", global::Mocklis.Core.Strictness.Lenient);
+            this.SendText = new global::Mocklis.Core.ActionMethodMock<string>(this, "TestClass", "IDuplexConnection", "SendText", "SendText", global::Mocklis.Core.Strictness.Lenient);
+            this.Close = new global::Mocklis.Core.FuncMethodMock<string, global::System.Threading.Tasks.Task<string>>(this, "TestClass", "IDuplexConnection", "Close", "Close", global::Mocklis.Core.Strictness.Lenient);
+            this.Run = new global::Mocklis.Core.FuncMethodMock<global::System.Threading.Tasks.Task>(this, "TestClass", "IDuplexConnection", "Run", "Run", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

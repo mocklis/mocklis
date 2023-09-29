@@ -4,47 +4,48 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
-        // Adding line for Property Based Method Mock
-
         public global::Mocklis.Core.ActionMethodMock ActionWithoutParameters { get; }
 
-        void global::Test.ITestClass.ActionWithoutParameters()
-        // Adding line for Property Based Method Mock
+        void global::Test.ITestClass.ActionWithoutParameters() => ActionWithoutParameters.Call();
 
         public global::Mocklis.Core.ActionMethodMock<int> ActionWithOneParameter { get; }
 
-        void global::Test.ITestClass.ActionWithOneParameter(int i)
-        // Adding line for Property Based Method Mock
+        void global::Test.ITestClass.ActionWithOneParameter(int i) => ActionWithOneParameter.Call(i);
 
         public global::Mocklis.Core.ActionMethodMock<(int i1, int i2)> ActionWithTwoParameters { get; }
 
-        void global::Test.ITestClass.ActionWithTwoParameters(int i1, int i2)
-        // Adding line for Property Based Method Mock
+        void global::Test.ITestClass.ActionWithTwoParameters(int i1, int i2) => ActionWithTwoParameters.Call((i1, i2));
 
         public global::Mocklis.Core.ActionMethodMock<(int i1, int i2, int i3)> ActionWithThreeParameters { get; }
 
-        void global::Test.ITestClass.ActionWithThreeParameters(int i1, int i2, int i3)
-        // Adding line for Property Based Method Mock
+        void global::Test.ITestClass.ActionWithThreeParameters(int i1, int i2, int i3) => ActionWithThreeParameters.Call((i1, i2, i3));
 
         public global::Mocklis.Core.FuncMethodMock<int> FuncWithoutParameters { get; }
 
-        int global::Test.ITestClass.FuncWithoutParameters()
-        // Adding line for Property Based Method Mock
+        int global::Test.ITestClass.FuncWithoutParameters() => FuncWithoutParameters.Call();
 
-        public global::Mocklis.Core.FuncMethodMock<int,int> FuncWithOneParameter { get; }
+        public global::Mocklis.Core.FuncMethodMock<int, int> FuncWithOneParameter { get; }
 
-        int global::Test.ITestClass.FuncWithOneParameter(int i)
-        // Adding line for Property Based Method Mock
+        int global::Test.ITestClass.FuncWithOneParameter(int i) => FuncWithOneParameter.Call(i);
 
-        public global::Mocklis.Core.FuncMethodMock<(int i1, int i2),int> FuncWithTwoParameters { get; }
+        public global::Mocklis.Core.FuncMethodMock<(int i1, int i2), int> FuncWithTwoParameters { get; }
 
-        int global::Test.ITestClass.FuncWithTwoParameters(int i1, int i2)
-        // Adding line for Property Based Method Mock
+        int global::Test.ITestClass.FuncWithTwoParameters(int i1, int i2) => FuncWithTwoParameters.Call((i1, i2));
 
-        public global::Mocklis.Core.FuncMethodMock<(int i1, int i2, int i3),int> FuncWithThreeParameters { get; }
+        public global::Mocklis.Core.FuncMethodMock<(int i1, int i2, int i3), int> FuncWithThreeParameters { get; }
 
-        int global::Test.ITestClass.FuncWithThreeParameters(int i1, int i2, int i3)
-        // Adding constructors here...
+        int global::Test.ITestClass.FuncWithThreeParameters(int i1, int i2, int i3) => FuncWithThreeParameters.Call((i1, i2, i3));
+
+        public TestClass() : base()
+        {
+            this.ActionWithoutParameters = new global::Mocklis.Core.ActionMethodMock(this, "TestClass", "ITestClass", "ActionWithoutParameters", "ActionWithoutParameters", global::Mocklis.Core.Strictness.Lenient);
+            this.ActionWithOneParameter = new global::Mocklis.Core.ActionMethodMock<int>(this, "TestClass", "ITestClass", "ActionWithOneParameter", "ActionWithOneParameter", global::Mocklis.Core.Strictness.Lenient);
+            this.ActionWithTwoParameters = new global::Mocklis.Core.ActionMethodMock<(int i1, int i2)>(this, "TestClass", "ITestClass", "ActionWithTwoParameters", "ActionWithTwoParameters", global::Mocklis.Core.Strictness.Lenient);
+            this.ActionWithThreeParameters = new global::Mocklis.Core.ActionMethodMock<(int i1, int i2, int i3)>(this, "TestClass", "ITestClass", "ActionWithThreeParameters", "ActionWithThreeParameters", global::Mocklis.Core.Strictness.Lenient);
+            this.FuncWithoutParameters = new global::Mocklis.Core.FuncMethodMock<int>(this, "TestClass", "ITestClass", "FuncWithoutParameters", "FuncWithoutParameters", global::Mocklis.Core.Strictness.Lenient);
+            this.FuncWithOneParameter = new global::Mocklis.Core.FuncMethodMock<int, int>(this, "TestClass", "ITestClass", "FuncWithOneParameter", "FuncWithOneParameter", global::Mocklis.Core.Strictness.Lenient);
+            this.FuncWithTwoParameters = new global::Mocklis.Core.FuncMethodMock<(int i1, int i2), int>(this, "TestClass", "ITestClass", "FuncWithTwoParameters", "FuncWithTwoParameters", global::Mocklis.Core.Strictness.Lenient);
+            this.FuncWithThreeParameters = new global::Mocklis.Core.FuncMethodMock<(int i1, int i2, int i3), int>(this, "TestClass", "ITestClass", "FuncWithThreeParameters", "FuncWithThreeParameters", global::Mocklis.Core.Strictness.Lenient);
+        }
     }
 }

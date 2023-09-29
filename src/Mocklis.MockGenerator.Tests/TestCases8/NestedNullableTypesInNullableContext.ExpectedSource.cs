@@ -6,8 +6,6 @@ namespace Test
 {
     partial class TestClass
     {
-        // Add source for members in interface ITestClass
         // Adding line for Property Based Property Mock
-        // Adding constructors here...
     }
 }

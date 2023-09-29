@@ -9,6 +9,7 @@ namespace Mocklis.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -45,7 +46,6 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Property Based Method Mock");
             var parametersBuilder = new SingleTypeOrValueTupleBuilder();
             var returnValuesBuilder = new SingleTypeOrValueTupleBuilder();
 
@@ -103,14 +103,16 @@ namespace Mocklis.CodeGeneration
             {
                 mockType = parametersString == null
                     ? $"global::Mocklis.Core.FuncMethodMock<{returnValuesString}>"
-                    : $"global::Mocklis.Core.FuncMethodMock<{parametersString},{returnValuesString}>";
+                    : $"global::Mocklis.Core.FuncMethodMock<{parametersString}, {returnValuesString}>";
             }
-            ctx.AppendLine();
-            ctx.AppendLine($"public {mockType} {MemberMockName} {{ get; }}");
-            ctx.AppendLine();
-           
 
-            var baseReturnType = returnValuesString == null ? "void" : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions);
+            ctx.AppendLine($"public {mockType} {MemberMockName} {{ get; }}");
+            ctx.AppendSeparator();
+
+
+            var baseReturnType = returnValuesString == null
+                ? "void"
+                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions);
 
 
             var returnType = baseReturnType;
@@ -124,82 +126,98 @@ namespace Mocklis.CodeGeneration
                 returnType = "ref readonly " + returnType;
             }
 
-            var method = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters)})";
 
-            ctx.AppendLine(method);
+
             //var mockedMethod = F.MethodDeclaration(returnType, Mock.Symbol.Name)
             //    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-        
-
-           //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
-
-           // ExpressionSyntax invocation = F.InvocationExpression(
-           //         F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-           //             memberMockInstance, F.IdentifierName("Call")))
-           //     .WithExpressionsAsArgumentList(ParametersType.BuildArgumentListWithOriginalNames());
-
-           // // look at the return parameters. If we don't have any we can just make the call.
-           // // if we only have one and that's the return value, we can just return it.
-           // if (ReturnValuesType.Count == 0 ||
-           //     ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue)
-           // {
-           //     if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
-           //     {
-           //         invocation = typesForSymbols.WrapByRef(invocation, baseReturnType);
-           //     }
-
-           //     mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
-           //         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
-           // }
-           // // if we only have one and that's not a return value, we can just assign it to the out or ref parameter it corresponds to.
-           // else if (ReturnValuesType.Count == 1)
-           // {
-           //     mockedMethod = mockedMethod.WithBody(F.Block(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-           //         F.IdentifierName(ReturnValuesType[0].OriginalName), invocation))));
-           // }
-           // else
-           // {
-           //     // if we have more than one, put it in a temporary variable. (consider name clashes with method parameter names)
-           //     var x = new Uniquifier(Mock.Symbol.Parameters.Select(m => m.Name));
-           //     string tmp = x.GetUniqueName("tmp");
-
-           //     var statements = new List<StatementSyntax>
-           //     {
-           //         F.LocalDeclarationStatement(F.VariableDeclaration(F.IdentifierName("var")).WithVariables(
-           //             F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(tmp)).WithInitializer(F.EqualsValueClause(invocation)))))
-           //     };
-
-           //     // then for any out or ref parameters, set their values from the temporary variable.
-           //     foreach (var rv in ReturnValuesType.Where(a => !a.IsReturnValue))
-           //     {
-           //         statements.Add(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-           //             F.IdentifierName(rv.OriginalName),
-           //             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
-           //                 F.IdentifierName(rv.TupleSafeName)))));
-           //     }
-
-           //     // finally, if there is a 'proper' return type, return the corresponding value from the temporary variable.
-           //     foreach (var rv in ReturnValuesType.Where(a => a.IsReturnValue))
-           //     {
-           //         ExpressionSyntax memberAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
-           //             F.IdentifierName(rv.TupleSafeName));
-
-           //         if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
-           //         {
-           //             memberAccess = typesForSymbols.WrapByRef(memberAccess, baseReturnType);
-           //         }
-
-           //         statements.Add(F.ReturnStatement(memberAccess));
-           //     }
-
-           //     mockedMethod = mockedMethod.WithBody(F.Block(statements));
-           // }
-
-           // return mockedMethod;
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters)})";
 
 
+            //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 
+
+            // ExpressionSyntax invocation = F.InvocationExpression(
+            //         F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            //             memberMockInstance, F.IdentifierName("Call")))
+            //     .WithExpressionsAsArgumentList(ParametersType.BuildArgumentListWithOriginalNames());
+
+            string invocation = $"{MemberMockName}.Call({parametersType.BuildArgumentListAsString()})";
+
+            // look at the return parameters. If we don't have any we can just make the call.
+            // if we only have one and that's the return value, we can just return it.
+            if (returnValuesType.Count == 0 ||
+                returnValuesType.Count == 1 && returnValuesType[0].IsReturnValue)
+            {
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    invocation = $"ref global::Mocklis.Core.ByRef<{baseReturnType}>.Wrap({invocation})";
+                }
+
+                //     mockedMethod = mockedMethod.WithExpressionBody(F.ArrowExpressionClause(invocation))
+                //         .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+                mockedMethod += $" => {invocation};";
+
+                ctx.AppendLine(mockedMethod);
+            }
+            // if we only have one and that's not a return value, we can just assign it to the out or ref parameter it corresponds to.
+            else if (returnValuesType.Count == 1)
+            {
+                ctx.AppendLine(mockedMethod);
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                //     mockedMethod = mockedMethod.WithBody(F.Block(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                //         F.IdentifierName(ReturnValuesType[0].OriginalName), invocation))));
+                ctx.AppendLine($"{returnValuesType[0].OriginalName} = {invocation};");
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+
+            }
+            else
+            {
+                ctx.AppendLine(mockedMethod);
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                // if we have more than one, put it in a temporary variable. (consider name clashes with method parameter names)
+                var x = new Uniquifier(Symbol.Parameters.Select(m => m.Name));
+                string tmp = x.GetUniqueName("tmp");
+
+                //         F.LocalDeclarationStatement(F.VariableDeclaration(F.IdentifierName("var")).WithVariables(
+                //             F.SingletonSeparatedList(F.VariableDeclarator(F.Identifier(tmp)).WithInitializer(F.EqualsValueClause(invocation)))))
+                ctx.AppendLine($"var {tmp} = {invocation};");
+
+                // then for any out or ref parameters, set their values from the temporary variable.
+                foreach (var rv in returnValuesType.Where(a => !a.IsReturnValue))
+                {
+                //         statements.Add(F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                //             F.IdentifierName(rv.OriginalName),
+                //             F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(tmp),
+                //                 F.IdentifierName(rv.TupleSafeName)))));
+
+                    ctx.AppendLine($"{rv.OriginalName} = {tmp}.{rv.TupleSafeName};");
+                }
+
+                // finally, if there is a 'proper' return type, return the corresponding value from the temporary variable.
+                // We cheat a little here - there will never be more than one of these guys so we use a foreach.
+                foreach (var rv in returnValuesType.Where(a => a.IsReturnValue))
+                {
+                    if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                    {
+                        ctx.AppendLine($"return ref global::Mocklis.Core.ByRef<{baseReturnType}>.Wrap({tmp}.{rv.TupleSafeName});");
+                    }
+                    else
+                    {
+                        ctx.AppendLine($"return {tmp}.{rv.TupleSafeName};");
+                    }
+                }
+
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+            }
+            // string mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName
+            // constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+
+            ctx.AddConstructorStatement(mockType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
         protected virtual ISyntaxAdder CreateSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
