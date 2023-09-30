@@ -230,8 +230,6 @@ namespace Mocklis.CodeGeneration
                 }
             }
 
-            // TODO: Clearly we want to do something here even if we're not in a nullable context?
-
             return null;
         }
 

@@ -8,13 +8,14 @@ namespace Test
 
         // Adding line for Virtual Method Based Method Mock
 
-        public global::Mocklis.Core.FuncMethodMock<T0> TestWithRef { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _testWithRef = new global::Mocklis.Core.TypedMockProvider();
 
-        ref readonly T0 global::Test.ITestClass<T>.TestWithRef() => ref global::Mocklis.Core.ByRef<T0>.Wrap(TestWithRef.Call());
-
-        public TestClass() : base()
+        public global::Mocklis.Core.FuncMethodMock<T0> TestWithRef<T0>()
         {
-            this.TestWithRef = new global::Mocklis.Core.FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef", "TestWithRef", global::Mocklis.Core.Strictness.Lenient);
+            var key = new[] { typeof(T0) };
+            return (global::Mocklis.Core.FuncMethodMock<T0>)TestWithRef.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef" + keyString, "TestWithRef" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
+
+        ref readonly T0 global::Test.ITestClass<T>.TestWithRef<T0>() => ref global::Mocklis.Core.ByRef<T0>.Wrap(TestWithRef<T0>().Call());
     }
 }

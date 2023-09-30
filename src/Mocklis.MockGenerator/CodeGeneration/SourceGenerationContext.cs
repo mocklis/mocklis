@@ -10,12 +10,12 @@ namespace Mocklis.CodeGeneration
     #region Using Directives
 
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Mocklis.CodeGeneration.Compatibility;
     using Mocklis.MockGenerator.CodeGeneration;
-    using static System.Net.Mime.MediaTypeNames;
 
     #endregion
 
@@ -25,7 +25,6 @@ namespace Mocklis.CodeGeneration
         private readonly List<string> _constructorStatements = new();
         private readonly StringBuilder _stringBuilder = new();
         private readonly StringBuilder _lineBuilder = new();
-        private readonly MockSettings _settings;
         private readonly INamedTypeSymbol _classSymbol;
         private readonly bool _nullableAnnotationsEnabled;
 
@@ -38,7 +37,6 @@ namespace Mocklis.CodeGeneration
 
         public SourceGenerationContext(MockSettings settings, INamedTypeSymbol classSymbol, bool nullableAnnotationsEnabled)
         {
-            _settings = settings;
             _classSymbol = classSymbol;
             _nullableAnnotationsEnabled = nullableAnnotationsEnabled;
 
@@ -116,6 +114,11 @@ namespace Mocklis.CodeGeneration
         public void AddConstructorStatement(string mockPropertyType, string memberMockName, string interfaceName, string symbolName)
         {
             _constructorStatements.Add($"this.{memberMockName} = new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\", {_strictness});");
+        }
+
+        public string TypedMockCreation(string mockPropertyType, string memberMockName, string interfaceName, string symbolName)
+        {
+            return $"keyString => new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\" + keyString, \"{memberMockName}\" + keyString, {_strictness})";
         }
 
         public string ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, ITypeParameterSubstitutions substitutions)
@@ -205,7 +208,8 @@ namespace Mocklis.CodeGeneration
 
                     case RefKind.Ref:
                     {
-                        return $"ref {syntax}";                    }
+                        return $"ref {syntax}";
+                    }
                 }
 
                 return syntax;
@@ -232,7 +236,8 @@ namespace Mocklis.CodeGeneration
 
                     case RefKind.Ref:
                     {
-                        return $"ref {p.Name}";                    }
+                        return $"ref {p.Name}";
+                    }
                 }
 
                 return $"{p.Name}";
@@ -241,5 +246,74 @@ namespace Mocklis.CodeGeneration
             return string.Join(", ", args);
         }
 
+        public string BuildConstraintClauses(IReadOnlyCollection<ITypeParameterSymbol> typeParameters, ITypeParameterSubstitutions substitutions, bool classConstraintInNullableContextOnly)
+        {
+            StringBuilder result = new StringBuilder();
+
+            void CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter)
+            {
+                var constraints = new List<string>();
+
+                if (typeParameter.HasReferenceTypeConstraint)
+                {
+                    if (classConstraintInNullableContextOnly)
+                    {
+                        if (_nullableAnnotationsEnabled)
+                        {
+                            constraints.Add("class");
+                        }
+                    }
+                    else
+                    {
+                        constraints.Add("class");
+                    }
+                }
+
+                if (!classConstraintInNullableContextOnly)
+                {
+                    // Note that 'unmanaged' is a type of valuetype constraint.
+                    if (typeParameter.HasUnmanagedTypeConstraint)
+                    {
+                        constraints.Add("unmanaged");
+                    }
+                    else if (typeParameter.HasValueTypeConstraint)
+                    {
+                        constraints.Add("struct");
+                    }
+
+                    foreach (var type in typeParameter.ConstraintTypes)
+                    {
+                        if (!type.IsValueType)
+                        {
+                            // TODO: Original code didn't have substitutions here...
+                            constraints.Add(ParseTypeName(type, false, substitutions));
+                        }
+                    }
+
+                    if (typeParameter.HasConstructorConstraint)
+                    {
+                        constraints.Add("new()");
+                    }
+
+                    if (typeParameter.HasNotNullConstraint && _nullableAnnotationsEnabled)
+                    {
+                        constraints.Add("notnull");
+                    }
+                }
+
+                if (constraints.Any())
+                {
+                    var name = substitutions.FindSubstitution(typeParameter.Name);
+                    result.Append($" where {name} : {string.Join(", ", constraints)}");
+                }
+            }
+
+            foreach (var parameter in typeParameters)
+            {
+                CreateConstraintClauseFromTypeParameter(parameter);
+            }
+
+            return result.ToString();
+        }
     }
 }

@@ -4,13 +4,14 @@ namespace Test
 {
     partial class TestClass
     {
-        public global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2> Test { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _test = new global::Mocklis.Core.TypedMockProvider();
 
-        T2 global::Test.ITestClass.Test(T1 parameter, T3 parameter2, T4 anotherParameter) => Test.Call((parameter, parameter2, anotherParameter));
-
-        public TestClass() : base()
+        public global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2> Test<T1, T2, T3, T4>() where T1 : unmanaged, global::System.ICloneable where T2 : class, global::System.IDisposable, new() where T3 : struct where T4 : new()
         {
-            this.Test = new global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test", "Test", global::Mocklis.Core.Strictness.Lenient);
+            var key = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+            return (global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)Test.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
+
+        T2 global::Test.ITestClass.Test<T1, T2, T3, T4>(T1 parameter, T3 parameter2, T4 anotherParameter) => Test<T1, T2, T3, T4>().Call((parameter, parameter2, anotherParameter));
     }
 }

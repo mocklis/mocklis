@@ -4,23 +4,34 @@ namespace Test
 {
     partial class TestClass
     {
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string> Combine { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _combine = new global::Mocklis.Core.TypedMockProvider();
 
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2) => Combine.Call((param1, param2));
-
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string> Combine0 { get; }
-
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3) => Combine0.Call((param1, param2, param3));
-
-        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string> Combine1 { get; }
-
-        string global::Test.ITestClass.Combine(T1 param1, T2 param2, T3 param3, T4 param4) => Combine1.Call((param1, param2, param3, param4));
-
-        public TestClass() : base()
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string> Combine<T1, T2>()
         {
-            this.Combine = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string>(this, "TestClass", "ITestClass", "Combine", "Combine", global::Mocklis.Core.Strictness.Lenient);
-            this.Combine0 = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string>(this, "TestClass", "ITestClass", "Combine", "Combine0", global::Mocklis.Core.Strictness.Lenient);
-            this.Combine1 = new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string>(this, "TestClass", "ITestClass", "Combine", "Combine1", global::Mocklis.Core.Strictness.Lenient);
+            var key = new[] { typeof(T1), typeof(T2) };
+            return (global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string>)Combine.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2), string>(this, "TestClass", "ITestClass", "Combine" + keyString, "Combine" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
+
+        string global::Test.ITestClass.Combine<T1, T2>(T1 param1, T2 param2) => Combine<T1, T2>().Call((param1, param2));
+
+        private readonly global::Mocklis.Core.TypedMockProvider _combine0 = new global::Mocklis.Core.TypedMockProvider();
+
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string> Combine0<T1, T2, T3>()
+        {
+            var key = new[] { typeof(T1), typeof(T2), typeof(T3) };
+            return (global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string>)Combine0.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3), string>(this, "TestClass", "ITestClass", "Combine" + keyString, "Combine0" + keyString, global::Mocklis.Core.Strictness.Lenient));
+        }
+
+        string global::Test.ITestClass.Combine<T1, T2, T3>(T1 param1, T2 param2, T3 param3) => Combine0<T1, T2, T3>().Call((param1, param2, param3));
+
+        private readonly global::Mocklis.Core.TypedMockProvider _combine1 = new global::Mocklis.Core.TypedMockProvider();
+
+        public global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string> Combine1<T1, T2, T3, T4>()
+        {
+            var key = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+            return (global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string>)Combine1.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 param1, T2 param2, T3 param3, T4 param4), string>(this, "TestClass", "ITestClass", "Combine" + keyString, "Combine1" + keyString, global::Mocklis.Core.Strictness.Lenient));
+        }
+
+        string global::Test.ITestClass.Combine<T1, T2, T3, T4>(T1 param1, T2 param2, T3 param3, T4 param4) => Combine1<T1, T2, T3, T4>().Call((param1, param2, param3, param4));
     }
 }

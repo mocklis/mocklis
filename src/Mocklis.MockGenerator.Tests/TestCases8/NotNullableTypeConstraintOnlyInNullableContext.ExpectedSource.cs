@@ -4,13 +4,14 @@ namespace Test
 {
     partial class TestClass<T>
     {
-        public global::Mocklis.Core.FuncMethodMock<U, T> Test { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _test = new global::Mocklis.Core.TypedMockProvider();
 
-        T global::Test.ITestClass<T>.Test(U item) => Test.Call(item);
-
-        protected TestClass() : base()
+        public global::Mocklis.Core.FuncMethodMock<U, T> Test<U>()
         {
-            this.Test = new global::Mocklis.Core.FuncMethodMock<U, T>(this, "TestClass", "ITestClass", "Test", "Test", global::Mocklis.Core.Strictness.Lenient);
+            var key = new[] { typeof(U) };
+            return (global::Mocklis.Core.FuncMethodMock<U, T>)Test.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<U, T>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
+
+        T global::Test.ITestClass<T>.Test<U>(U item) => Test<U>().Call(item);
     }
 }

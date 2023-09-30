@@ -17,11 +17,17 @@ namespace Test
             return tmp.returnValue;
         }
 
-        public global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)> Item4_ { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _item4_ = new global::Mocklis.Core.TypedMockProvider();
 
-        int global::Test.ITestClass.Item4_(ref T Item4)
+        public global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)> Item4_<T>()
         {
-            var tmp = Item4_.Call(Item4);
+            var key = new[] { typeof(T) };
+            return (global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>)Item4_.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_" + keyString, "Item4_" + keyString, global::Mocklis.Core.Strictness.Lenient));
+        }
+
+        int global::Test.ITestClass.Item4_<T>(ref T Item4)
+        {
+            var tmp = Item4_<T>().Call(Item4);
             Item4 = tmp.Item4_;
             return tmp.returnValue;
         }
@@ -30,7 +36,6 @@ namespace Test
         {
             this.Item2_ = new global::Mocklis.Core.ActionMethodMock<(int Item2_, int anotherItem)>(this, "TestClass", "ITestClass", "Item2_", "Item2_", global::Mocklis.Core.Strictness.Lenient);
             this.Item3_ = new global::Mocklis.Core.FuncMethodMock<string, (int returnValue, string Item3_)>(this, "TestClass", "ITestClass", "Item3_", "Item3_", global::Mocklis.Core.Strictness.Lenient);
-            this.Item4_ = new global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_", "Item4_", global::Mocklis.Core.Strictness.Lenient);
         }
     }
 }

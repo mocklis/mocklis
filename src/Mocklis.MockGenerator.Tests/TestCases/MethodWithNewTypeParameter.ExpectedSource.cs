@@ -4,18 +4,24 @@ namespace Test
 {
     partial class TestClass
     {
-        public global::Mocklis.Core.FuncMethodMock<T> ReturnsNewType { get; }
+        private readonly global::Mocklis.Core.TypedMockProvider _returnsNewType = new global::Mocklis.Core.TypedMockProvider();
 
-        T global::Test.ITestClass.ReturnsNewType() => ReturnsNewType.Call();
-
-        public global::Mocklis.Core.ActionMethodMock<T> UsesNewType { get; }
-
-        void global::Test.ITestClass.UsesNewType(T parameter) => UsesNewType.Call(parameter);
-
-        public TestClass() : base()
+        public global::Mocklis.Core.FuncMethodMock<T> ReturnsNewType<T>()
         {
-            this.ReturnsNewType = new global::Mocklis.Core.FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType", "ReturnsNewType", global::Mocklis.Core.Strictness.Lenient);
-            this.UsesNewType = new global::Mocklis.Core.ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType", "UsesNewType", global::Mocklis.Core.Strictness.Lenient);
+            var key = new[] { typeof(T) };
+            return (global::Mocklis.Core.FuncMethodMock<T>)ReturnsNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType" + keyString, "ReturnsNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
+
+        T global::Test.ITestClass.ReturnsNewType<T>() => ReturnsNewType<T>().Call();
+
+        private readonly global::Mocklis.Core.TypedMockProvider _usesNewType = new global::Mocklis.Core.TypedMockProvider();
+
+        public global::Mocklis.Core.ActionMethodMock<T> UsesNewType<T>()
+        {
+            var key = new[] { typeof(T) };
+            return (global::Mocklis.Core.ActionMethodMock<T>)UsesNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType" + keyString, "UsesNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
+        }
+
+        void global::Test.ITestClass.UsesNewType<T>(T parameter) => UsesNewType<T>().Call(parameter);
     }
 }
