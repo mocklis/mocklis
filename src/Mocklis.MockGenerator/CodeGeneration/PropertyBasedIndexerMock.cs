@@ -70,7 +70,7 @@ namespace Mocklis.CodeGeneration
                 ctx.Append("ref readonly ");
             }
 
-            ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters)}]");
+            ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty)}]");
 
             if (Symbol.IsReadOnly)
             {

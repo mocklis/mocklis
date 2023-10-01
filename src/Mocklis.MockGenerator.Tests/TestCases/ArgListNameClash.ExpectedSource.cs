@@ -4,6 +4,11 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Method Mock
+        protected virtual string Concat(string arglist, global::System.RuntimeArgumentHandle arglist0)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "Concat", "Concat");
+        }
+
+        string global::Test.ITestClass.Concat(string arglist, global::System.RuntimeArgumentHandle arglist0) => Concat(arglist, arglist0);
     }
 }

@@ -15,6 +15,7 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration.Compatibility;
+    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -139,6 +140,17 @@ namespace Mocklis.CodeGeneration
             }
 
             return typeSymbol.ContainingNamespace.Name + "." + typeSymbol.Name;
+        }
+
+        public static string? FindArglistParameterName(this IMethodSymbol symbol)
+        {
+            if (symbol.IsVararg)
+            {
+                var uniquifier = new Uniquifier(symbol.Parameters.Select(a => a.Name));
+                return uniquifier.GetUniqueName("arglist");
+            }
+
+            return null;
         }
     }
 }

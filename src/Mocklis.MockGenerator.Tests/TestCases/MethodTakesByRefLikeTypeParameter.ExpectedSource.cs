@@ -4,6 +4,11 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Method Mock
+        protected virtual void TakesRefStructParameter(global::Test.RefStruct parameter)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "TakesRefStructParameter", "TakesRefStructParameter");
+        }
+
+        void global::Test.ITestClass.TakesRefStructParameter(global::Test.RefStruct parameter) => TakesRefStructParameter(parameter);
     }
 }

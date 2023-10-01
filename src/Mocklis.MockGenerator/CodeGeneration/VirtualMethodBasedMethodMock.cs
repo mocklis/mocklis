@@ -15,7 +15,6 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Mocklis.CodeGeneration.Compatibility;
-    using Mocklis.CodeGeneration.UniqueNames;
     using Mocklis.MockGenerator.CodeGeneration;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -23,7 +22,6 @@ namespace Mocklis.CodeGeneration
 
     public class VirtualMethodBasedMethodMock : IMemberMock
     {
-        private IMemberMock _memberMockImplementation;
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public ITypeParameterSubstitutions Substitutions { get; }
@@ -42,7 +40,76 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Virtual Method Based Method Mock");
+            string returnTypeWithoutReadonly;
+            string returnType;
+
+            if (Symbol.ReturnsVoid)
+            {
+                returnTypeWithoutReadonly = "void";
+                returnType = "void";
+            }
+            else
+            {
+                var tmp = ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+
+                if (Symbol.ReturnsByRef)
+                {
+                    returnType = "ref " + tmp;
+                    returnTypeWithoutReadonly = returnType;
+                }
+                else if (Symbol.ReturnsByRefReadonly)
+                {
+                    returnType = "ref readonly " + tmp;
+                    returnTypeWithoutReadonly = "ref " + tmp;
+                }
+                else
+                {
+                    returnType = tmp;
+                    returnTypeWithoutReadonly = tmp;
+                }
+            }
+
+            var arglistParameterName = Symbol.FindArglistParameterName();
+
+            string typeParameterList = string.Empty;
+            string constraints = string.Empty;
+
+            if (Symbol.TypeParameters.Any())
+            {
+                typeParameterList = $"<{string.Join(", ", Symbol.TypeParameters.Select(t => Substitutions.FindSubstitution(t.Name)))}>";
+                constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, false);
+            }
+
+            var parameters = ctx.BuildParameterList(Symbol.Parameters, Substitutions);
+            var arguments = ctx.BuildArgumentList(Symbol.Parameters);
+            if (arglistParameterName != null)
+            {
+                if (parameters != string.Empty)
+                {
+                    parameters += ", ";
+                    arguments += ", ";
+                }
+
+                parameters += $"global::System.RuntimeArgumentHandle {arglistParameterName}";
+                arguments += arglistParameterName;
+            }
+            
+            ctx.AppendLine($"protected virtual {returnTypeWithoutReadonly} {MemberMockName}{typeParameterList}({parameters}){constraints}");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualMethod", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
+
+            ctx.Append($"{mockedMethod} => ");
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            {
+                ctx.Append("ref ");
+            }
+            ctx.AppendLine($"{MemberMockName}{typeParameterList}({arguments});");
         }
 
         private class SyntaxAdder : ISyntaxAdder
@@ -54,17 +121,6 @@ namespace Mocklis.CodeGeneration
             {
                 _mock = mock;
                 _typesForSymbols = typesForSymbols;
-            }
-
-            private static string? FindArglistParameterName(IMethodSymbol symbol)
-            {
-                if (symbol.IsVararg)
-                {
-                    var uniquifier = new Uniquifier(symbol.Parameters.Select(a => a.Name));
-                    return uniquifier.GetUniqueName("arglist");
-                }
-
-                return null;
             }
 
             public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
@@ -97,7 +153,7 @@ namespace Mocklis.CodeGeneration
                     returnTypeWithoutReadonly = returnType;
                 }
 
-                var arglistParameterName = FindArglistParameterName(_mock.Symbol);
+                var arglistParameterName = _mock.Symbol.FindArglistParameterName();
 
                 declarationList.Add(MockVirtualMethod(_typesForSymbols, returnTypeWithoutReadonly, arglistParameterName, className, interfaceName));
                 declarationList.Add(ExplicitInterfaceMember(returnType, arglistParameterName, interfaceNameSyntax));

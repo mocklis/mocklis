@@ -324,10 +324,8 @@ public class ExtractedClassInformation
 
         foreach (var constructor in baseTypeConstructors)
         {
-            var parameterNames = constructor.Parameters.Select(p => p.Name).ToArray();
-
             ctx.AppendSeparator();
-            ctx.AppendLine($"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
+            ctx.AppendLine($"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, ITypeParameterSubstitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
 

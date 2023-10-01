@@ -10,7 +10,6 @@ namespace Mocklis.CodeGeneration
     #region Using Directives
 
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
     using System.Text;
     using Microsoft.CodeAnalysis;
@@ -121,10 +120,14 @@ namespace Mocklis.CodeGeneration
             return $"keyString => new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\" + keyString, \"{memberMockName}\" + keyString, {_strictness})";
         }
 
+        public void AppendThrow(string mockType, string memberMockName, string interfaceName, string symbolName)
+        {
+            AppendLine($"throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.{mockType}, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\");");
+        }
+
         public string ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, ITypeParameterSubstitutions substitutions)
         {
             var x = typeSymbol.ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat);
-            // var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat);
 
             string s = string.Empty;
             foreach (var part in x)
@@ -188,11 +191,11 @@ namespace Mocklis.CodeGeneration
             
         }
 
-        public string BuildParameterList(IEnumerable<IParameterSymbol> parameters)
+        public string BuildParameterList(IEnumerable<IParameterSymbol> parameters, ITypeParameterSubstitutions substitutions)
         {
             var args = parameters.Select(p =>
             {
-                var syntax = $"{ParseTypeName(p.Type, p.NullableOrOblivious(), ITypeParameterSubstitutions.Empty)} {p.Name}";
+                var syntax = $"{ParseTypeName(p.Type, p.NullableOrOblivious(), substitutions)} {p.Name}";
 
                 switch (p.RefKind)
                 {

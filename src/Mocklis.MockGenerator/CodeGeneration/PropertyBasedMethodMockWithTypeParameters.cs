@@ -179,7 +179,7 @@ namespace Mocklis.CodeGeneration
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
             var classConstraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, true);
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters)}){classConstraints}";
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters, Substitutions)}){classConstraints}";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 

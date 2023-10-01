@@ -25,17 +25,11 @@ namespace Mocklis.CodeGeneration
     {
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
-        public ITypeParameterSubstitutions Substitutions { get; }
 
-        protected PropertyBasedMethodMock(IMethodSymbol symbol, string mockMemberName, ITypeParameterSubstitutions substitutions)
+        public PropertyBasedMethodMock(IMethodSymbol symbol, string mockMemberName)
         {
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = substitutions;
-        }
-
-        public PropertyBasedMethodMock(IMethodSymbol symbol, string mockMemberName) : this(symbol, mockMemberName, ITypeParameterSubstitutions.Empty)
-        {
         }
 
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
@@ -87,8 +81,8 @@ namespace Mocklis.CodeGeneration
             var parametersType = parametersBuilder.Build();
             var returnValuesType = returnValuesBuilder.Build();
 
-            var parametersString = ctx.BuildTupleType(parametersType, Substitutions);
-            var returnValuesString = ctx.BuildTupleType(returnValuesType, Substitutions);
+            var parametersString = ctx.BuildTupleType(parametersType, ITypeParameterSubstitutions.Empty);
+            var returnValuesString = ctx.BuildTupleType(returnValuesType, ITypeParameterSubstitutions.Empty);
 
             string mockPropertyType;
 
@@ -111,7 +105,7 @@ namespace Mocklis.CodeGeneration
 
             var baseReturnType = returnValuesString == null
                 ? "void"
-                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions);
+                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), ITypeParameterSubstitutions.Empty);
 
 
             var returnType = baseReturnType;
@@ -128,7 +122,7 @@ namespace Mocklis.CodeGeneration
             //var mockedMethod = F.MethodDeclaration(returnType, Mock.Symbol.Name)
             //    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters)})";
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty)})";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 
@@ -269,21 +263,21 @@ namespace Mocklis.CodeGeneration
                 ParametersType = parametersBuilder.Build();
                 ReturnValuesType = returnValuesBuilder.Build();
 
-                var parameterTypeSyntax = ParametersType.BuildTypeSyntax(typesForSymbols, mock.Substitutions.FindSubstitution);
+                var parameterTypeSyntax = ParametersType.BuildTypeSyntax(typesForSymbols, null);
 
-                var returnValueTypeSyntax = ReturnValuesType.BuildTypeSyntax(typesForSymbols, mock.Substitutions.FindSubstitution);
+                var returnValueTypeSyntax = ReturnValuesType.BuildTypeSyntax(typesForSymbols, null);
 
                 if (returnValueTypeSyntax == null)
                 {
                     MockMemberType = parameterTypeSyntax == null
                         ? typesForSymbols.ActionMethodMock()
-                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax, mock.Substitutions.FindSubstitution);
+                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax);
                 }
                 else
                 {
                     MockMemberType = parameterTypeSyntax == null
-                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, mock.Substitutions.FindSubstitution)
-                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, mock.Substitutions.FindSubstitution);
+                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax)
+                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
                 }
 
             }
@@ -306,7 +300,7 @@ namespace Mocklis.CodeGeneration
             {
                 var baseReturnType = Mock.Symbol.ReturnsVoid
                     ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                    : typesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Mock.Substitutions.FindSubstitution);
+                    : typesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious());
                 var returnType = baseReturnType;
 
                 if (Mock.Symbol.ReturnsByRef)

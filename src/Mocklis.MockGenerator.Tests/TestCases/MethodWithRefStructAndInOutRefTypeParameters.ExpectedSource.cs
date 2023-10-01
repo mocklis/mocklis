@@ -4,10 +4,25 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Method Mock
+        protected virtual void RefStructIn<T>(global::Test.RefStruct refStruct, in T parameter)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "RefStructIn", "RefStructIn");
+        }
 
-        // Adding line for Virtual Method Based Method Mock
+        void global::Test.ITestClass.RefStructIn<T>(global::Test.RefStruct refStruct, in T parameter) => RefStructIn<T>(refStruct, in parameter);
 
-        // Adding line for Virtual Method Based Method Mock
+        protected virtual void RefStructOut<T>(global::Test.RefStruct refStruct, out T paramater)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "RefStructOut", "RefStructOut");
+        }
+
+        void global::Test.ITestClass.RefStructOut<T>(global::Test.RefStruct refStruct, out T paramater) => RefStructOut<T>(refStruct, out paramater);
+
+        protected virtual void RefStructRef<T>(global::Test.RefStruct refStruct, ref T parameter)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "RefStructRef", "RefStructRef");
+        }
+
+        void global::Test.ITestClass.RefStructRef<T>(global::Test.RefStruct refStruct, ref T parameter) => RefStructRef<T>(refStruct, ref parameter);
     }
 }
