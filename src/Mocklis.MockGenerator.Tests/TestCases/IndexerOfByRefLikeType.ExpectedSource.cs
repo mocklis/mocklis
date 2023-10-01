@@ -4,12 +4,37 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Indexer Mock
+        protected virtual global::Test.RefStruct Item(int i)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerGet, "TestClass", "ITestClass", "this[]", "Item");
+        }
 
-        // Adding line for Virtual Method Based Indexer Mock
+        protected virtual void Item(int i, global::Test.RefStruct value)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerSet, "TestClass", "ITestClass", "this[]", "Item");
+        }
 
-        // Adding line for Virtual Method Based Indexer Mock
+        global::Test.RefStruct global::Test.ITestClass.this[int i] { get => Item(i); set => Item(i, value); }
 
-        // Adding line for Virtual Method Based Indexer Mock
+        protected virtual global::Test.RefStruct Item0(string s)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerGet, "TestClass", "ITestClass", "this[]", "Item0");
+        }
+
+        global::Test.RefStruct global::Test.ITestClass.this[string s] => Item0(s);
+
+        protected virtual void Item1(int i, string s, global::Test.RefStruct value)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerSet, "TestClass", "ITestClass", "this[]", "Item1");
+        }
+
+        global::Test.RefStruct global::Test.ITestClass.this[int i, string s] { set => Item1(i, s, value); }
+
+        protected virtual ref global::Test.RefStruct Item2(bool b)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerGet, "TestClass", "ITestClass", "this[]", "Item2");
+        }
+
+        ref global::Test.RefStruct global::Test.ITestClass.this[bool b] => ref Item2(b);
     }
 }

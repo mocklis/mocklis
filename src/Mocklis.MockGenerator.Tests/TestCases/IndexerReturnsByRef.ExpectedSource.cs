@@ -4,7 +4,12 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Indexer Mock
+        protected virtual ref int Item(int i)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerGet, "TestClass", "ITestClass", "this[]", "Item");
+        }
+
+        ref int global::Test.ITestClass.this[int i] => ref Item(i);
 
         public global::Mocklis.Core.IndexerMock<string, int> Item0 { get; }
 

@@ -8,7 +8,12 @@ namespace Test
 
         ref int global::Test.ITestClass.this[int i] => ref global::Mocklis.Core.ByRef<int>.Wrap(Item[i]);
 
-        // Adding line for Virtual Method Based Indexer Mock
+        protected virtual ref int Item0(string s)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualIndexerGet, "TestClass", "ITestClass", "this[]", "Item0");
+        }
+
+        ref readonly int global::Test.ITestClass.this[string s] => ref Item0(s);
 
         public TestClass() : base()
         {

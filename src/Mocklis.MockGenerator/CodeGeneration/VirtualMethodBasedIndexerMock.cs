@@ -7,6 +7,7 @@
 
 namespace Mocklis.CodeGeneration
 {
+    using System;
     #region Using Directives
 
     using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
+    // TODO: Check if one of the paramaters can be named 'value'
     public sealed class VirtualMethodBasedIndexerMock : IMemberMock
     {
         public IPropertySymbol Symbol { get; }
@@ -39,7 +41,68 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Virtual Method Based Indexer Mock");
+            var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+            var builder = new SingleTypeOrValueTupleBuilder();
+            foreach (var p in Symbol.Parameters)
+            {
+                builder.AddParameter(p);
+            }
+
+            string paramList = ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty);
+            string arglist = ctx.BuildArgumentList(Symbol.Parameters);
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}({paramList})");
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                ctx.AppendThrow("VirtualIndexerGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+                ctx.AppendSeparator();
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.AppendLine($"protected virtual void {MemberMockName}({paramList}, {valueTypeWithoutReadonly} value)");
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                ctx.AppendThrow("VirtualIndexerSet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+                ctx.AppendSeparator();
+            }
+
+            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.this[{paramList}]");
+
+            if (Symbol.IsReadOnly)
+            {
+                ctx.Append(" => ");
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    ctx.Append("ref ");
+                }
+
+                ctx.AppendLine($"{MemberMockName}({arglist});");
+            }
+            else
+            {
+                ctx.Append(" { ");
+
+                if (!Symbol.IsWriteOnly)
+                {
+                    ctx.Append($"get => {MemberMockName}({arglist}); ");
+
+                }
+
+                if (!Symbol.IsReadOnly)
+                {
+                    ctx.Append($"set => {MemberMockName}({arglist}, value); ");
+                }
+
+                ctx.AppendLine("}");
+            }
         }
 
         private class SyntaxAdder : ISyntaxAdder
