@@ -4,12 +4,37 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Property Mock
+        protected virtual global::Test.RefStruct RefStructProperty()
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertyGet, "TestClass", "ITestClass", "RefStructProperty", "RefStructProperty");
+        }
 
-        // Adding line for Virtual Method Based Property Mock
+        protected virtual void RefStructProperty(global::Test.RefStruct value)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertySet, "TestClass", "ITestClass", "RefStructProperty", "RefStructProperty");
+        }
 
-        // Adding line for Virtual Method Based Property Mock
+        global::Test.RefStruct global::Test.ITestClass.RefStructProperty { get => RefStructProperty(); set => RefStructProperty(value); }
 
-        // Adding line for Virtual Method Based Property Mock
+        protected virtual global::Test.RefStruct ReadOnlyProperty()
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertyGet, "TestClass", "ITestClass", "ReadOnlyProperty", "ReadOnlyProperty");
+        }
+
+        global::Test.RefStruct global::Test.ITestClass.ReadOnlyProperty => ReadOnlyProperty();
+
+        protected virtual void WriteOnlyProperty(global::Test.RefStruct value)
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertySet, "TestClass", "ITestClass", "WriteOnlyProperty", "WriteOnlyProperty");
+        }
+
+        global::Test.RefStruct global::Test.ITestClass.WriteOnlyProperty { set => WriteOnlyProperty(value); }
+
+        protected virtual ref global::Test.RefStruct RefReadOnlyProperty()
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertyGet, "TestClass", "ITestClass", "RefReadOnlyProperty", "RefReadOnlyProperty");
+        }
+
+        ref global::Test.RefStruct global::Test.ITestClass.RefReadOnlyProperty => ref RefReadOnlyProperty();
     }
 }

@@ -4,7 +4,12 @@ namespace Test
 {
     partial class TestClass
     {
-        // Adding line for Virtual Method Based Property Mock
+        protected virtual ref int ReturnsByRef()
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertyGet, "TestClass", "ITestClass", "ReturnsByRef", "ReturnsByRef");
+        }
+
+        ref int global::Test.ITestClass.ReturnsByRef => ref ReturnsByRef();
 
         public global::Mocklis.Core.PropertyMock<int> ReturnsByRefReadonly { get; }
 

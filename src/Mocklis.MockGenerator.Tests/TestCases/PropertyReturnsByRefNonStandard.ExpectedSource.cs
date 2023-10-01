@@ -8,7 +8,12 @@ namespace Test
 
         ref int global::Test.ITestClass.ReturnsByRef => ref global::Mocklis.Core.ByRef<int>.Wrap(ReturnsByRef.Value);
 
-        // Adding line for Virtual Method Based Property Mock
+        protected virtual ref int ReturnsByRefReadonly()
+        {
+            throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualPropertyGet, "TestClass", "ITestClass", "ReturnsByRefReadonly", "ReturnsByRefReadonly");
+        }
+
+        ref readonly int global::Test.ITestClass.ReturnsByRefReadonly => ref ReturnsByRefReadonly();
 
         public TestClass() : base()
         {

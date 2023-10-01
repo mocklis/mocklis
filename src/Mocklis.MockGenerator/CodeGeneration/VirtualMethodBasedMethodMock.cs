@@ -40,35 +40,8 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            string returnTypeWithoutReadonly;
-            string returnType;
-
-            if (Symbol.ReturnsVoid)
-            {
-                returnTypeWithoutReadonly = "void";
-                returnType = "void";
-            }
-            else
-            {
-                var tmp = ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), ITypeParameterSubstitutions.Empty);
-
-                if (Symbol.ReturnsByRef)
-                {
-                    returnType = "ref " + tmp;
-                    returnTypeWithoutReadonly = returnType;
-                }
-                else if (Symbol.ReturnsByRefReadonly)
-                {
-                    returnType = "ref readonly " + tmp;
-                    returnTypeWithoutReadonly = "ref " + tmp;
-                }
-                else
-                {
-                    returnType = tmp;
-                    returnTypeWithoutReadonly = tmp;
-                }
-            }
-
+            (string returnType, string returnTypeWithoutReadonly) = ctx.FindReturnTypes(Symbol, Substitutions);
+            
             var arglistParameterName = Symbol.FindArglistParameterName();
 
             string typeParameterList = string.Empty;

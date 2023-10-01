@@ -37,7 +37,59 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            ctx.AppendLine("// Adding line for Virtual Method Based Property Mock");
+            var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}()");
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                ctx.AppendThrow("VirtualPropertyGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+                ctx.AppendSeparator();
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.AppendLine($"protected virtual void {MemberMockName}({valueTypeWithoutReadonly} value)");
+                ctx.AppendLine("{");
+                ctx.IncreaseIndent();
+                ctx.AppendThrow("VirtualPropertySet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+                ctx.DecreaseIndent();
+                ctx.AppendLine("}");
+                ctx.AppendSeparator();
+            }
+
+            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}");
+
+            if (Symbol.IsReadOnly)
+            {
+                ctx.Append(" => ");
+                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                {
+                    ctx.Append("ref ");
+                }
+
+                ctx.AppendLine($"{MemberMockName}();");
+            }
+            else
+            {
+                ctx.Append(" { ");
+
+                if (!Symbol.IsWriteOnly)
+                {
+                    ctx.Append($"get => {MemberMockName}(); ");
+
+                }
+
+                if (!Symbol.IsReadOnly)
+                {
+                    ctx.Append($"set => {MemberMockName}(value); ");
+                }
+
+                ctx.AppendLine("}");
+            }
         }
 
         public class SyntaxAdder : ISyntaxAdder
@@ -55,31 +107,31 @@ namespace Mocklis.CodeGeneration
                 IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
-                var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
-                var valueWithReadonlyTypeSyntax = valueTypeSyntax;
+                var valueTypeWithoutReadonly = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
+                var valueType = valueTypeWithoutReadonly;
 
                 if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
                 {
-                    RefTypeSyntax tmp = F.RefType(valueTypeSyntax);
-                    valueTypeSyntax = tmp;
-                    valueWithReadonlyTypeSyntax = tmp;
+                    RefTypeSyntax tmp = F.RefType(valueTypeWithoutReadonly);
+                    valueTypeWithoutReadonly = tmp;
+                    valueType = tmp;
                     if (_mock.Symbol.ReturnsByRefReadonly)
                     {
-                        valueWithReadonlyTypeSyntax = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                        valueType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
                     }
                 }
 
                 if (!_mock.Symbol.IsWriteOnly)
                 {
-                    declarationList.Add(MockGetVirtualMethod(valueTypeSyntax, className, interfaceName));
+                    declarationList.Add(MockGetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
                 }
 
                 if (!_mock.Symbol.IsReadOnly)
                 {
-                    declarationList.Add(MockSetVirtualMethod(valueTypeSyntax, className, interfaceName));
+                    declarationList.Add(MockSetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
                 }
 
-                declarationList.Add(ExplicitInterfaceMember(valueWithReadonlyTypeSyntax, interfaceNameSyntax));
+                declarationList.Add(ExplicitInterfaceMember(valueType, interfaceNameSyntax));
             }
 
             public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,

@@ -318,5 +318,44 @@ namespace Mocklis.CodeGeneration
 
             return result.ToString();
         }
+
+        public (string returnType, string returnTypeWithoutReadonly) FindReturnTypes(IMethodSymbol Symbol, ITypeParameterSubstitutions substitutions)
+        {
+            if (Symbol.ReturnsVoid)
+            {
+                return ("void", "void");
+            }
+
+            var tmp = ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), substitutions);
+
+            if (Symbol.ReturnsByRef)
+            {
+                return ("ref " + tmp, "ref " + tmp);
+            }
+
+            if (Symbol.ReturnsByRefReadonly)
+            {
+                return ("ref readonly " + tmp, "ref " + tmp);
+            }
+
+            return (tmp, tmp);
+        }
+
+        public (string returnType, string returnTypeWithoutReadonly) FindPropertyTypes(IPropertySymbol Symbol)
+        {
+            var tmp = ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+
+            if (Symbol.ReturnsByRef)
+            {
+                return ("ref " + tmp, "ref " + tmp);
+            }
+
+            if (Symbol.ReturnsByRefReadonly)
+            {
+                return ("ref readonly " + tmp, "ref " + tmp);
+            }
+
+            return (tmp, tmp);
+        }
     }
 }
