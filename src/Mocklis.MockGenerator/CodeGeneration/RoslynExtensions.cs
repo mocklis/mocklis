@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
@@ -14,8 +14,6 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.CodeGeneration.Compatibility;
-    using Mocklis.CodeGeneration.UniqueNames;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion
@@ -151,6 +149,26 @@ namespace Mocklis.CodeGeneration
             }
 
             return null;
+        }
+
+        public static bool NullableOrOblivious(this IEventSymbol eventSymbol)
+        {
+            return eventSymbol.NullableAnnotation != NullableAnnotation.NotAnnotated;
+        }
+
+        public static bool ReturnTypeIsNullableOrOblivious(this IMethodSymbol methodSymbol)
+        {
+            return methodSymbol.ReturnNullableAnnotation != NullableAnnotation.NotAnnotated;
+        }
+
+        public static bool NullableOrOblivious(this IParameterSymbol parameterSymbol)
+        {
+            return parameterSymbol.NullableAnnotation != NullableAnnotation.NotAnnotated;
+        }
+
+        public static bool NullableOrOblivious(this IPropertySymbol propertySymbol)
+        {
+            return propertySymbol.NullableAnnotation != NullableAnnotation.NotAnnotated;
         }
     }
 }

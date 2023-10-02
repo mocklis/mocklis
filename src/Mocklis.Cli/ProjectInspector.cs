@@ -16,7 +16,7 @@ namespace Mocklis.Cli
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
-    using Mocklis.CodeGeneration;
+    using Mocklis.MockGenerator.CodeGeneration;
 
     #endregion
 

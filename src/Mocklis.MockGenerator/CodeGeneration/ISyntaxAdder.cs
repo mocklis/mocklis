@@ -5,13 +5,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.MockGenerator.CodeGeneration;
 
     #endregion
 

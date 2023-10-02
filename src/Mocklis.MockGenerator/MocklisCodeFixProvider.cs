@@ -19,7 +19,7 @@ namespace Mocklis.MockGenerator
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.CodeGeneration;
+    using Mocklis.MockGenerator.CodeGeneration;
 
     #endregion
 

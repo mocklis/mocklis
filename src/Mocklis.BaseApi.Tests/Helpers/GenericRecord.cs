@@ -13,7 +13,7 @@ namespace Mocklis.Helpers
 
     #endregion
 
-    public struct GenericRecord<TData>
+    public readonly struct GenericRecord<TData>
     {
         public object? Instance { get; }
         public bool IsSuccess { get; }
@@ -49,7 +49,7 @@ namespace Mocklis.Helpers
             => new GenericRecord<TData>(instance, exception);
     }
 
-    public struct GenericRecord<TData1, TData2>
+    public readonly struct GenericRecord<TData1, TData2>
     {
         public object? Instance { get; }
         public bool IsSuccess { get; }

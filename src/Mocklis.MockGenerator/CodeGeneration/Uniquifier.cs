@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.UniqueNames
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
@@ -47,9 +47,9 @@ namespace Mocklis.CodeGeneration.UniqueNames
                 return name;
             }
 
-            for (int i = 0;; i++)
+            for (var i = 0; ; i++)
             {
-                string candidateName = FormattableString.Invariant($"{name}{i}");
+                var candidateName = FormattableString.Invariant($"{name}{i}");
                 if (_reservedNames.Contains(candidateName) || _usedNames.Contains(candidateName))
                 {
                     continue;

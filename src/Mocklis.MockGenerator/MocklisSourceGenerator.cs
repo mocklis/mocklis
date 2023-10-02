@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.SourceGenerator;
+namespace Mocklis.MockGenerator;
 
 #region Using Directives
 

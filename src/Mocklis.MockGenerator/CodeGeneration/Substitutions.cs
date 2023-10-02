@@ -5,21 +5,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Mocklis.CodeGeneration.UniqueNames;
 
     #endregion
-
-    public interface ITypeParameterSubstitutions
-    {
-        string FindSubstitution(string typeParameterName);
-    }
 
     public sealed class Substitutions : ITypeParameterSubstitutions
     {

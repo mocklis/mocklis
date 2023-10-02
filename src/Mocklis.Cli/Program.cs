@@ -22,25 +22,24 @@ namespace Mocklis.Cli
         {
             MSBuildLocator.RegisterDefaults();
 
-            using (var workspace = MSBuildWorkspace.Create())
+            using var workspace = MSBuildWorkspace.Create();
+
+            var solution = await workspace.OpenSolutionAsync(args[0]);
+
+            foreach (var projectId in solution.ProjectIds)
             {
-                var solution = await workspace.OpenSolutionAsync(args[0]);
+                var project = solution.GetProject(projectId);
 
-                foreach (var projectId in solution.ProjectIds)
+                if (project != null)
                 {
-                    var project = solution.GetProject(projectId);
-
-                    if (project != null)
-                    {
-                        project = await ProjectInspector.GenerateMocklisClassContents(project);
-                        solution = project.Solution;
-                    }
+                    project = await ProjectInspector.GenerateMocklisClassContents(project);
+                    solution = project.Solution;
                 }
+            }
 
-                if (!workspace.TryApplyChanges(solution))
-                {
-                    Console.WriteLine("Failed to apply changes...");
-                }
+            if (!workspace.TryApplyChanges(solution))
+            {
+                Console.WriteLine("Failed to apply changes...");
             }
 
             return 0;

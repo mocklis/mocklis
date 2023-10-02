@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
@@ -14,7 +14,6 @@ namespace Mocklis.CodeGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
-    using Mocklis.MockGenerator.CodeGeneration;
     using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
     #endregion

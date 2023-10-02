@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMemberMock.cs">
+// <copyright file="ITypeParameterSubstitutions.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -7,14 +7,7 @@
 
 namespace Mocklis.MockGenerator.CodeGeneration;
 
-#region Using Directives
-
-using Microsoft.CodeAnalysis;
-
-#endregion
-
-public interface IMemberMock
+public interface ITypeParameterSubstitutions
 {
-    ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols);
-    void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol);
+    string FindSubstitution(string typeParameterName);
 }
