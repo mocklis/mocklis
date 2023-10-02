@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedIndexerMock : IMemberMock
+    public sealed class PropertyBasedIndexerMock : IMemberMock
     {
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
@@ -39,7 +39,7 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
 
             var builder = new SingleTypeOrValueTupleBuilder();
             foreach (var p in Symbol.Parameters)
@@ -49,11 +49,11 @@ namespace Mocklis.CodeGeneration
 
             var keyTypex = builder.Build(MemberMockName);
 
-            var keyType = ctx.BuildTupleType(keyTypex, ITypeParameterSubstitutions.Empty) ?? throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
+            var keyType = ctx.BuildTupleType(keyTypex, Substitutions.Empty) ?? throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
 
             var arglist = keyTypex.BuildArgumentListAsString();
 
-            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
 
             var mockPropertyType = $"global::Mocklis.Core.IndexerMock<{keyType}, {valueType}>";
 
@@ -70,7 +70,7 @@ namespace Mocklis.CodeGeneration
                 ctx.Append("ref readonly ");
             }
 
-            ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty)}]");
+            ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty)}]");
 
             if (Symbol.IsReadOnly)
             {

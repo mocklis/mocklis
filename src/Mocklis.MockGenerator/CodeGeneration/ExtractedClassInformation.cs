@@ -169,14 +169,14 @@ public class ExtractedClassInformation
                 
                 if (useVirtualMethod)
                 {
-                    var typeParameterSubstitutions = ITypeParameterSubstitutions.Build(classSymbol, memberMethodSymbol);
+                    var typeParameterSubstitutions = Substitutions.Build(classSymbol, memberMethodSymbol);
 
                     return new VirtualMethodBasedMethodMock(memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
                 }
 
                 if (memberMethodSymbol.Arity > 0)
                 {
-                    var typeParameterSubstitutions = ITypeParameterSubstitutions.Build(classSymbol, memberMethodSymbol);
+                    var typeParameterSubstitutions = Substitutions.Build(classSymbol, memberMethodSymbol);
 
                     var metadataName = memberSymbol.MetadataName;
                     var mockProviderName = uniquifier.GetUniqueName("_" + char.ToLowerInvariant(metadataName[0]) + metadataName.Substring(1));
@@ -274,7 +274,7 @@ public class ExtractedClassInformation
 
         if (hasNamespace)
         {
-            ctx.AppendLine($"namespace {ClassSymbol.ContainingNamespace.Name}");
+            ctx.AppendLine($"namespace {ClassSymbol.ContainingNamespace.ToDisplayString()}");
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
         }
@@ -307,7 +307,11 @@ public class ExtractedClassInformation
             ctx.AppendLine("}");
         }
 
-        productionContext.AddSource(ClassSymbol.FullName() + ".g.cs", ctx.ToString());
+        string hintName = ClassSymbol.ContainingNamespace.IsGlobalNamespace
+            ? ClassSymbol.Name + ".g.cs"
+            : ClassSymbol.ContainingNamespace.ToDisplayString() + "." + ClassSymbol.Name + ".g.cs";
+
+        productionContext.AddSource(hintName, ctx.ToString());
     }
 
     private void AddSourceForConstructors(SourceGenerationContext ctx)
@@ -325,7 +329,7 @@ public class ExtractedClassInformation
         foreach (var constructor in baseTypeConstructors)
         {
             ctx.AppendSeparator();
-            ctx.AppendLine($"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, ITypeParameterSubstitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
+            ctx.AppendLine($"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, Substitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
 

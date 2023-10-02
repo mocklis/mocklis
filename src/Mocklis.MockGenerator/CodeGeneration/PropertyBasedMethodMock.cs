@@ -21,7 +21,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedMethodMock : IMemberMock
+    public sealed class PropertyBasedMethodMock : IMemberMock
     {
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
@@ -81,8 +81,8 @@ namespace Mocklis.CodeGeneration
             var parametersType = parametersBuilder.Build();
             var returnValuesType = returnValuesBuilder.Build();
 
-            var parametersString = ctx.BuildTupleType(parametersType, ITypeParameterSubstitutions.Empty);
-            var returnValuesString = ctx.BuildTupleType(returnValuesType, ITypeParameterSubstitutions.Empty);
+            var parametersString = ctx.BuildTupleType(parametersType, Substitutions.Empty);
+            var returnValuesString = ctx.BuildTupleType(returnValuesType, Substitutions.Empty);
 
             string mockPropertyType;
 
@@ -105,7 +105,7 @@ namespace Mocklis.CodeGeneration
 
             var baseReturnType = returnValuesString == null
                 ? "void"
-                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions.Empty);
 
 
             var returnType = baseReturnType;
@@ -122,7 +122,7 @@ namespace Mocklis.CodeGeneration
             //var mockedMethod = F.MethodDeclaration(returnType, Mock.Symbol.Name)
             //    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty)})";
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty)})";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 

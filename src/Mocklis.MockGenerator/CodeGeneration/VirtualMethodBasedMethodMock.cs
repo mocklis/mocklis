@@ -20,7 +20,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class VirtualMethodBasedMethodMock : IMemberMock
+    public sealed class VirtualMethodBasedMethodMock : IMemberMock
     {
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
@@ -75,7 +75,7 @@ namespace Mocklis.CodeGeneration
             ctx.AppendLine("}");
             ctx.AppendSeparator();
 
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
+            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
 
             ctx.Append($"{mockedMethod} => ");
             if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)

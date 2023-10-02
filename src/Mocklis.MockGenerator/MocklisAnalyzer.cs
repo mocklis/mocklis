@@ -62,12 +62,13 @@ namespace Mocklis.MockGenerator
                                  || classDecl.OpenBraceToken.TrailingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()))
                                  || classDecl.CloseBraceToken.LeadingTrivia.Any(x => !string.IsNullOrWhiteSpace(x.ToString()));
 
-                var diagnostic = Diagnostic.Create(regenerate ? UpdateRule : CreateRule, mocklisAttribute.GetLocation());
+                // We know that if MightBeMocklisClass returns true, then mocklisAttribute is not null.
+                var diagnostic = Diagnostic.Create(regenerate ? UpdateRule : CreateRule, mocklisAttribute!.GetLocation());
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl, [NotNullWhen(true)] out AttributeSyntax? mocklisAttribute)
+        private static bool MightBeMocklisClass(ClassDeclarationSyntax classDecl, out AttributeSyntax? mocklisAttribute)
         {
             mocklisAttribute = classDecl.AttributeLists.SelectMany(al => al.Attributes).FirstOrDefault(a =>
                 a.Name.DescendantTokens().Any(t => t.Text == "MocklisClass" || t.Text == "MocklisClassAttribute"));

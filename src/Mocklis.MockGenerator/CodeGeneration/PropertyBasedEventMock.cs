@@ -19,7 +19,7 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedEventMock : IMemberMock
+    public sealed class PropertyBasedEventMock : IMemberMock
     {
         public IEventSymbol Symbol { get; }
         public string MemberMockName { get; }
@@ -37,11 +37,11 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
-            var eventHandlerType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
+            var eventHandlerType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
 
             // TODO: Verify that the generic parameter indeed never is nullable. (Pretty sure this is the case but it doesn't hurt to double-check...
-            var mockPropertyType = $"global::Mocklis.Core.EventMock<{ctx.ParseTypeName(Symbol.Type, false, ITypeParameterSubstitutions.Empty)}>";
+            var mockPropertyType = $"global::Mocklis.Core.EventMock<{ctx.ParseTypeName(Symbol.Type, false, Substitutions.Empty)}>";
 
             ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
             ctx.AppendSeparator();

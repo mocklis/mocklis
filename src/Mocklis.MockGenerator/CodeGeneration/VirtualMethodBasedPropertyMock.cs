@@ -61,7 +61,7 @@ namespace Mocklis.CodeGeneration
                 ctx.AppendSeparator();
             }
 
-            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.{Symbol.Name}");
+            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}");
 
             if (Symbol.IsReadOnly)
             {

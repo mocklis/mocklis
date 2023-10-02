@@ -19,10 +19,10 @@ namespace Mocklis.CodeGeneration
 
     #endregion
 
-    public class PropertyBasedPropertyMock : IMemberMock
+    public sealed class PropertyBasedPropertyMock : IMemberMock
     {
-        protected IPropertySymbol Symbol { get; }
-        protected string MemberMockName { get; }
+        public IPropertySymbol Symbol { get; }
+        public string MemberMockName { get; }
 
         public PropertyBasedPropertyMock(IPropertySymbol symbol, string mockMemberName)
         {
@@ -37,8 +37,8 @@ namespace Mocklis.CodeGeneration
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty);
-            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+            var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
+            var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
 
             var mockPropertyType = $"global::Mocklis.Core.PropertyMock<{valueType}>";
 

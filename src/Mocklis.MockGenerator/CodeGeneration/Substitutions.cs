@@ -20,7 +20,16 @@ namespace Mocklis.CodeGeneration
     {
         string FindSubstitution(string typeParameterName);
 
+    }
+
+    public sealed class Substitutions : ITypeParameterSubstitutions
+    {
         public static ITypeParameterSubstitutions Empty { get; } = new EmptyTypeParameterSubstitutions();
+
+        private sealed class EmptyTypeParameterSubstitutions : ITypeParameterSubstitutions
+        {
+            string ITypeParameterSubstitutions.FindSubstitution(string typeParameterName) => typeParameterName;
+        }
 
         public static ITypeParameterSubstitutions Build(INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
         {
@@ -32,31 +41,23 @@ namespace Mocklis.CodeGeneration
             return Empty;
         }
 
-        private sealed class EmptyTypeParameterSubstitutions : ITypeParameterSubstitutions
+        private readonly Dictionary<string, string> _typeParameterNameSubstitutions;
+
+        private Substitutions(INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
         {
-            string ITypeParameterSubstitutions.FindSubstitution(string typeParameterName) => typeParameterName;
+            _typeParameterNameSubstitutions = new Dictionary<string, string>();
+            Uniquifier t = new Uniquifier(classSymbol.TypeParameters.Select(tp => tp.Name));
+
+            foreach (var methodTypeParameter in methodSymbol.TypeParameters)
+            {
+                string uniqueName = t.GetUniqueName(methodTypeParameter.Name);
+                _typeParameterNameSubstitutions[methodTypeParameter.Name] = uniqueName;
+            }
         }
 
-        private sealed class Substitutions : ITypeParameterSubstitutions
+        string ITypeParameterSubstitutions.FindSubstitution(string typeParameterName)
         {
-            private readonly Dictionary<string, string> _typeParameterNameSubstitutions;
-
-            public Substitutions(INamedTypeSymbol classSymbol, IMethodSymbol methodSymbol)
-            {
-                _typeParameterNameSubstitutions = new Dictionary<string, string>();
-                Uniquifier t = new Uniquifier(classSymbol.TypeParameters.Select(tp => tp.Name));
-
-                foreach (var methodTypeParameter in methodSymbol.TypeParameters)
-                {
-                    string uniqueName = t.GetUniqueName(methodTypeParameter.Name);
-                    _typeParameterNameSubstitutions[methodTypeParameter.Name] = uniqueName;
-                }
-            }
-
-            string ITypeParameterSubstitutions.FindSubstitution(string typeParameterName)
-            {
-                return _typeParameterNameSubstitutions.TryGetValue(typeParameterName, out var substitution) ? substitution : typeParameterName;
-            }
+            return _typeParameterNameSubstitutions.TryGetValue(typeParameterName, out var substitution) ? substitution : typeParameterName;
         }
     }
 }

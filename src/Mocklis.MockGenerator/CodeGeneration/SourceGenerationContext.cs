@@ -319,21 +319,21 @@ namespace Mocklis.CodeGeneration
             return result.ToString();
         }
 
-        public (string returnType, string returnTypeWithoutReadonly) FindReturnTypes(IMethodSymbol Symbol, ITypeParameterSubstitutions substitutions)
+        public (string returnType, string returnTypeWithoutReadonly) FindReturnTypes(IMethodSymbol symbol, ITypeParameterSubstitutions substitutions)
         {
-            if (Symbol.ReturnsVoid)
+            if (symbol.ReturnsVoid)
             {
                 return ("void", "void");
             }
 
-            var tmp = ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), substitutions);
+            var tmp = ParseTypeName(symbol.ReturnType, symbol.ReturnTypeIsNullableOrOblivious(), substitutions);
 
-            if (Symbol.ReturnsByRef)
+            if (symbol.ReturnsByRef)
             {
                 return ("ref " + tmp, "ref " + tmp);
             }
 
-            if (Symbol.ReturnsByRefReadonly)
+            if (symbol.ReturnsByRefReadonly)
             {
                 return ("ref readonly " + tmp, "ref " + tmp);
             }
@@ -343,7 +343,7 @@ namespace Mocklis.CodeGeneration
 
         public (string returnType, string returnTypeWithoutReadonly) FindPropertyTypes(IPropertySymbol Symbol)
         {
-            var tmp = ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), ITypeParameterSubstitutions.Empty);
+            var tmp = ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
 
             if (Symbol.ReturnsByRef)
             {

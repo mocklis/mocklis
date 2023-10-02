@@ -7,7 +7,6 @@
 
 namespace Mocklis.CodeGeneration
 {
-    using System;
     #region Using Directives
 
     using System.Collections.Generic;
@@ -49,7 +48,7 @@ namespace Mocklis.CodeGeneration
                 builder.AddParameter(p);
             }
 
-            string paramList = ctx.BuildParameterList(Symbol.Parameters, ITypeParameterSubstitutions.Empty);
+            string paramList = ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty);
             string arglist = ctx.BuildArgumentList(Symbol.Parameters);
 
             if (!Symbol.IsWriteOnly)
@@ -74,7 +73,7 @@ namespace Mocklis.CodeGeneration
                 ctx.AppendSeparator();
             }
 
-            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, ITypeParameterSubstitutions.Empty)}.this[{paramList}]");
+            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.this[{paramList}]");
 
             if (Symbol.IsReadOnly)
             {
