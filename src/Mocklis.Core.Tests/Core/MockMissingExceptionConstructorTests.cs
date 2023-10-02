@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockMissingExceptionConstructorTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -96,17 +96,28 @@ namespace Mocklis.Core
             return mockType switch
             {
                 MockType.Method => "No mock implementation found for Method 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.PropertyGet => "No mock implementation found for getting the value of Property 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.PropertySet => "No mock implementation found for setting the value of Property 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.EventAdd => "No mock implementation found for adding a handler to Event 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.EventRemove => "No mock implementation found for removing a handler from Event 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.IndexerGet => "No mock implementation found for getting a value via the Indexer on 'Interface'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.IndexerSet => "No mock implementation found for setting a value via the Indexer on 'Interface'. Add one using 'Mock' on your 'Class' instance.",
-                MockType.VirtualMethod => "No mock implementation found for Method 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method.",
-                MockType.VirtualPropertyGet => "No mock implementation found for getting the value of Property 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one returning a value if more than one).",
-                MockType.VirtualPropertySet => "No mock implementation found for setting the value of Property 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one not returning a value if more than one).",
-                MockType.VirtualIndexerGet => "No mock implementation found for getting a value via the Indexer on 'Interface'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one returning a value if more than one).",
-                MockType.VirtualIndexerSet => "No mock implementation found for setting a value via the Indexer on 'Interface'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one not returning a value if more than one).",
+                MockType.PropertyGet =>
+                    "No mock implementation found for getting the value of Property 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.PropertySet =>
+                    "No mock implementation found for setting the value of Property 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.EventAdd =>
+                    "No mock implementation found for adding a handler to Event 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.EventRemove =>
+                    "No mock implementation found for removing a handler from Event 'Interface.Member'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.IndexerGet =>
+                    "No mock implementation found for getting a value via the Indexer on 'Interface'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.IndexerSet =>
+                    "No mock implementation found for setting a value via the Indexer on 'Interface'. Add one using 'Mock' on your 'Class' instance.",
+                MockType.VirtualMethod =>
+                    "No mock implementation found for Method 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method.",
+                MockType.VirtualPropertyGet =>
+                    "No mock implementation found for getting the value of Property 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one returning a value if more than one).",
+                MockType.VirtualPropertySet =>
+                    "No mock implementation found for setting the value of Property 'Interface.Member'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one not returning a value if more than one).",
+                MockType.VirtualIndexerGet =>
+                    "No mock implementation found for getting a value via the Indexer on 'Interface'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one returning a value if more than one).",
+                MockType.VirtualIndexerSet =>
+                    "No mock implementation found for setting a value via the Indexer on 'Interface'. Add one by subclassing 'Class' and overriding the 'Mock' method (the one not returning a value if more than one).",
                 _ => throw new ArgumentOutOfRangeException(nameof(mockType))
             };
         }

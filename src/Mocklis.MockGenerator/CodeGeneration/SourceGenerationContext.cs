@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SourceGenerationContext.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ namespace Mocklis.CodeGeneration
             _nullableAnnotationsEnabled = nullableAnnotationsEnabled;
 
             _strictness = settings.VeryStrict ? "global::Mocklis.Core.Strictness.VeryStrict" :
-                (settings.Strict ? "global::Mocklis.Core.Strictness.Strict" : "global::Mocklis.Core.Strictness.Lenient");
+                settings.Strict ? "global::Mocklis.Core.Strictness.Strict" : "global::Mocklis.Core.Strictness.Lenient";
         }
 
         public void IncreaseIndent()
@@ -97,6 +97,7 @@ namespace Mocklis.CodeGeneration
                 _stringBuilder.AppendLine();
                 _addSeparator = false;
             }
+
             if (_lineBuilder.Length > 0)
             {
                 AppendIndentation();
@@ -112,17 +113,20 @@ namespace Mocklis.CodeGeneration
 
         public void AddConstructorStatement(string mockPropertyType, string memberMockName, string interfaceName, string symbolName)
         {
-            _constructorStatements.Add($"this.{memberMockName} = new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\", {_strictness});");
+            _constructorStatements.Add(
+                $"this.{memberMockName} = new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\", {_strictness});");
         }
 
         public string TypedMockCreation(string mockPropertyType, string memberMockName, string interfaceName, string symbolName)
         {
-            return $"keyString => new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\" + keyString, \"{memberMockName}\" + keyString, {_strictness})";
+            return
+                $"keyString => new {mockPropertyType}(this, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\" + keyString, \"{memberMockName}\" + keyString, {_strictness})";
         }
 
         public void AppendThrow(string mockType, string memberMockName, string interfaceName, string symbolName)
         {
-            AppendLine($"throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.{mockType}, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\");");
+            AppendLine(
+                $"throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.{mockType}, \"{_classSymbol.Name}\", \"{interfaceName}\", \"{symbolName}\", \"{memberMockName}\");");
         }
 
         public string ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, ITypeParameterSubstitutions substitutions)
@@ -135,27 +139,27 @@ namespace Mocklis.CodeGeneration
                 switch (part.Kind)
                 {
                     case SymbolDisplayPartKind.TypeParameterName:
+                    {
+                        var partSymbol = part.Symbol;
+
+                        if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } &&
+                            methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
                         {
-                            var partSymbol = part.Symbol;
-
-                            if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } &&
-                                methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
-                            {
-                                s += substitutions.FindSubstitution(partSymbol.Name);
-                            }
-                            else
-                            {
-                                s += part.ToString();
-                            }
-
-                            break;
+                            s += substitutions.FindSubstitution(partSymbol.Name);
                         }
-
-                    default:
+                        else
                         {
                             s += part.ToString();
-                            break;
                         }
+
+                        break;
+                    }
+
+                    default:
+                    {
+                        s += part.ToString();
+                        break;
+                    }
                 }
             }
 
@@ -188,7 +192,6 @@ namespace Mocklis.CodeGeneration
                 1 => BuildEntry(tuple[0]),
                 _ => $"({string.Join(", ", tuple.Select(t => $"{BuildEntry(t)} {t.TupleSafeName}"))})"
             };
-            
         }
 
         public string BuildParameterList(IEnumerable<IParameterSymbol> parameters, ITypeParameterSubstitutions substitutions)
@@ -249,7 +252,8 @@ namespace Mocklis.CodeGeneration
             return string.Join(", ", args);
         }
 
-        public string BuildConstraintClauses(IReadOnlyCollection<ITypeParameterSymbol> typeParameters, ITypeParameterSubstitutions substitutions, bool classConstraintInNullableContextOnly)
+        public string BuildConstraintClauses(IReadOnlyCollection<ITypeParameterSymbol> typeParameters, ITypeParameterSubstitutions substitutions,
+            bool classConstraintInNullableContextOnly)
         {
             StringBuilder result = new StringBuilder();
 

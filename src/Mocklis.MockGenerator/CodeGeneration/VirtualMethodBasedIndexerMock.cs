@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="VirtualMethodBasedIndexerMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ namespace Mocklis.CodeGeneration
             Symbol = symbol;
             MemberMockName = mockMemberName;
         }
-        
+
         public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
         {
             return new SyntaxAdder(this, typesForSymbols);
@@ -92,7 +92,6 @@ namespace Mocklis.CodeGeneration
                 if (!Symbol.IsWriteOnly)
                 {
                     ctx.Append($"get => {MemberMockName}({arglist}); ");
-
                 }
 
                 if (!Symbol.IsReadOnly)
@@ -152,17 +151,20 @@ namespace Mocklis.CodeGeneration
             }
 
             // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
-            private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
+            private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
+                string interfaceName)
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                     .WithParameterList(F.ParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
                         F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName,
+                        _mock.Symbol.Name)));
             }
 
             // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
-            private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className, string interfaceName)
+            private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
+                string interfaceName)
             {
                 var uniquifier = new Uniquifier(_mock.Symbol.Parameters.Select(p => p.Name));
 
@@ -173,10 +175,12 @@ namespace Mocklis.CodeGeneration
                 return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
                     .WithParameterList(F.ParameterList(parameterList))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, className, interfaceName,
+                        _mock.Symbol.Name)));
             }
 
-            private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)
+            private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax,
+                NameSyntax interfaceNameSyntax)
             {
                 var mockedIndexer = F.IndexerDeclaration(valueWithReadonlyTypeSyntax)
                     .WithParameterList(F.BracketedParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>

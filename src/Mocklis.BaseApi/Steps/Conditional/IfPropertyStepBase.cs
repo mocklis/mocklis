@@ -1,15 +1,15 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IfPropertyStepBase.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.Steps.Conditional
 {
     /*
-    * See comment on IfEventStepBase class.
-    */
+     * See comment on IfEventStepBase class.
+     */
 
     #region Using Directives
 

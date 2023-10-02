@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ExtractedClassInformation.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ public class ExtractedClassInformation
     {
         string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
 
-        var objectSymbol  = compilation.GetTypeByMetadataName("System.Object") ?? throw new InvalidOperationException("Could not find object type");
+        var objectSymbol = compilation.GetTypeByMetadataName("System.Object") ?? throw new InvalidOperationException("Could not find object type");
 
         switch (memberSymbol)
         {
@@ -133,8 +133,8 @@ public class ExtractedClassInformation
                 var hasRestrictedReturnType = !compilation.HasImplicitConversion(memberPropertySymbol.Type, objectSymbol);
 
                 bool useVirtualMethod = hasRestrictedParameter || hasRestrictedReturnType ||
-                                        memberPropertySymbol.ReturnsByRef && !settings.MockReturnsByRef ||
-                                        memberPropertySymbol.ReturnsByRefReadonly && !settings.MockReturnsByRefReadonly;
+                                        (memberPropertySymbol.ReturnsByRef && !settings.MockReturnsByRef) ||
+                                        (memberPropertySymbol.ReturnsByRefReadonly && !settings.MockReturnsByRefReadonly);
 
                 if (memberPropertySymbol.IsIndexer)
                 {
@@ -164,9 +164,9 @@ public class ExtractedClassInformation
 
                 bool useVirtualMethod = hasRestrictedParameter || hasRestrictedReturnType || memberMethodSymbol.IsVararg;
 
-                useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRef && !settings.MockReturnsByRef;
-                useVirtualMethod = useVirtualMethod || memberMethodSymbol.ReturnsByRefReadonly && !settings.MockReturnsByRefReadonly;
-                
+                useVirtualMethod = useVirtualMethod || (memberMethodSymbol.ReturnsByRef && !settings.MockReturnsByRef);
+                useVirtualMethod = useVirtualMethod || (memberMethodSymbol.ReturnsByRefReadonly && !settings.MockReturnsByRefReadonly);
+
                 if (useVirtualMethod)
                 {
                     var typeParameterSubstitutions = Substitutions.Build(classSymbol, memberMethodSymbol);
@@ -195,7 +195,8 @@ public class ExtractedClassInformation
     private static MockSettings GetSettingsFromAttribute(ClassDeclarationSyntax classDeclaration, INamedTypeSymbol classSymbol,
         Compilation compilation)
     {
-        var mocklisClassAttribute = compilation.GetTypeByMetadataName("Mocklis.Core.MocklisClassAttribute") ?? throw new InvalidOperationException("Could not find MocklisClassAttribute type");
+        var mocklisClassAttribute = compilation.GetTypeByMetadataName("Mocklis.Core.MocklisClassAttribute") ??
+                                    throw new InvalidOperationException("Could not find MocklisClassAttribute type");
 
         bool mockReturnsByRef = false;
         bool mockReturnsByRefReadonly = true;
@@ -287,7 +288,7 @@ public class ExtractedClassInformation
         {
             ctx.AppendLine($"partial class {ClassSymbol.Name}");
         }
-    
+
         ctx.AppendLine("{");
         ctx.IncreaseIndent();
 
@@ -329,7 +330,8 @@ public class ExtractedClassInformation
         foreach (var constructor in baseTypeConstructors)
         {
             ctx.AppendSeparator();
-            ctx.AppendLine($"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, Substitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
+            ctx.AppendLine(
+                $"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, Substitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
 
@@ -474,7 +476,8 @@ public class ExtractedInterfaceInformation
         {
             var syntaxAdder = memberMock.GetSyntaxAdder(typesForSymbols);
             syntaxAdder.AddInitialisersToConstructor(typesForSymbols, mockSettings, constructorStatements, classSymbol.Name, InterfaceSymbol.Name);
-            syntaxAdder.AddMembersToClass(typesForSymbols, mockSettings, declarationList, interfaceNameSyntax, classSymbol.Name, InterfaceSymbol.Name);
+            syntaxAdder.AddMembersToClass(typesForSymbols, mockSettings, declarationList, interfaceNameSyntax, classSymbol.Name,
+                InterfaceSymbol.Name);
         }
     }
 

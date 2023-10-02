@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyBasedIndexerMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,8 @@ namespace Mocklis.CodeGeneration
 
             var keyTypex = builder.Build(MemberMockName);
 
-            var keyType = ctx.BuildTupleType(keyTypex, Substitutions.Empty) ?? throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
+            var keyType = ctx.BuildTupleType(keyTypex, Substitutions.Empty) ??
+                          throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
 
             var arglist = keyTypex.BuildArgumentListAsString();
 
@@ -149,7 +150,8 @@ namespace Mocklis.CodeGeneration
             public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
                 List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+                constructorStatements.Add(_typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)

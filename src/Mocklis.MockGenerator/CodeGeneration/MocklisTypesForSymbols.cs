@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MocklisTypesForSymbols.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -56,7 +56,8 @@ namespace Mocklis.CodeGeneration
                     {
                         var partSymbol = part.Symbol;
 
-                        if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } && methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
+                        if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } &&
+                            methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
                         {
                             if (findTypeParameterName is null)
                             {
@@ -212,7 +213,8 @@ namespace Mocklis.CodeGeneration
             return syntax;
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
+        private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter,
+            Func<string, string> findTypeParameterName)
         {
             if (_nullableContextEnabled)
             {
@@ -233,7 +235,8 @@ namespace Mocklis.CodeGeneration
             return null;
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
+        private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter,
+            Func<string, string> findTypeParameterName)
         {
             var constraints = new List<TypeParameterConstraintSyntax>();
 
@@ -279,7 +282,8 @@ namespace Mocklis.CodeGeneration
             return null;
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
+        public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters,
+            Func<string, string> findTypeParameterName)
         {
             return typeParameters
                 .Select(a => CreateClassConstraintClausesForReferenceTypeParameter(a, findTypeParameterName))
@@ -288,7 +292,8 @@ namespace Mocklis.CodeGeneration
                 .ToArray();
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
+        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters,
+            Func<string, string> findTypeParameterName)
         {
             return typeParameters
                 .Select(a => CreateConstraintClauseFromTypeParameter(a, findTypeParameterName))
@@ -322,7 +327,8 @@ namespace Mocklis.CodeGeneration
             return veryStrict ? StrictnessVeryStrict() : strict ? StrictnessStrict() : StrictnessLenient();
         }
 
-        public ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName, bool strict, bool veryStrict)
+        public ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, string memberMockName, string className,
+            string interfaceName, string symbolName, bool strict, bool veryStrict)
         {
             return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 F.IdentifierName(memberMockName),
@@ -337,7 +343,8 @@ namespace Mocklis.CodeGeneration
                     )));
         }
 
-        public ThrowStatementSyntax ThrowMockMissingStatement(string mockType, string memberMockName, string className, string interfaceName, string symbolName)
+        public ThrowStatementSyntax ThrowMockMissingStatement(string mockType, string memberMockName, string className, string interfaceName,
+            string symbolName)
         {
             return F.ThrowStatement(F.ObjectCreationExpression(MockMissingException())
                 .WithExpressionsAsArgumentList(
@@ -350,6 +357,5 @@ namespace Mocklis.CodeGeneration
                 )
             );
         }
-
     }
 }

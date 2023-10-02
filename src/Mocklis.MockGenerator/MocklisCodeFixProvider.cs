@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MocklisCodeFixProvider.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,8 @@ namespace Mocklis.MockGenerator
             }
         }
 
-        private static async Task<Solution> UpdateMocklisClassAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+        private static async Task<Solution> UpdateMocklisClassAsync(Document document, TypeDeclarationSyntax typeDecl,
+            CancellationToken cancellationToken)
         {
             if (!(typeDecl is ClassDeclarationSyntax classDecl))
             {
@@ -82,7 +83,8 @@ namespace Mocklis.MockGenerator
                 .Any(a =>
                 {
                     var attrSymbol = semanticModel.GetSymbolInfo(a).Symbol;
-                    return attrSymbol != null && attrSymbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
+                    return attrSymbol != null &&
+                           attrSymbol.ContainingType.Equals(mocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
                 });
 
             if (!isMocklisClass)

@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Substitutions.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +19,6 @@ namespace Mocklis.CodeGeneration
     public interface ITypeParameterSubstitutions
     {
         string FindSubstitution(string typeParameterName);
-
     }
 
     public sealed class Substitutions : ITypeParameterSubstitutions

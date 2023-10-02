@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyBasedEventMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -46,7 +46,8 @@ namespace Mocklis.CodeGeneration
             ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
             ctx.AppendSeparator();
 
-            ctx.AppendLine($"event {eventHandlerType} {interfaceName}.{Symbol.Name} {{ add => {MemberMockName}.Add(value); remove => {MemberMockName}.Remove(value); }}");
+            ctx.AppendLine(
+                $"event {eventHandlerType} {interfaceName}.{Symbol.Name} {{ add => {MemberMockName}.Add(value); remove => {MemberMockName}.Remove(value); }}");
             ctx.AppendSeparator();
 
             ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
@@ -55,7 +56,7 @@ namespace Mocklis.CodeGeneration
         private class SyntaxAdder : ISyntaxAdder
         {
             private readonly PropertyBasedEventMock _mock;
-            
+
             private TypeSyntax MockPropertyType { get; }
 
             public SyntaxAdder(PropertyBasedEventMock mock, MocklisTypesForSymbols typesForSymbols)
@@ -75,7 +76,8 @@ namespace Mocklis.CodeGeneration
             public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
                 List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+                constructorStatements.Add(typesForSymbols.InitialisationStatement(MockPropertyType, _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)

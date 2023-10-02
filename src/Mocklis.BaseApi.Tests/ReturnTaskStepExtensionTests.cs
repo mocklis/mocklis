@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReturnTaskStepExtensionTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -44,6 +44,5 @@ namespace Mocklis
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, ValueTask>)null!).ReturnTask());
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, ValueTask<int>>)null!).ReturnTask());
         }
-
     }
 }

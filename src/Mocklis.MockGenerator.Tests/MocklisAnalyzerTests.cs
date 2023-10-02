@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MocklisAnalyzerTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -35,17 +35,17 @@ namespace Mocklis.MockGenerator
                 ?.InformationalVersion ?? string.Empty;
         }
 
-      
+
         [Theory]
-        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType = typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp7_3(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp7_3);
         }
 
         [Theory]
-        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
-        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases8), MemberType=typeof(TestCaseEnumerator))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType = typeof(TestCaseEnumerator))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases8), MemberType = typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp8(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp8);
@@ -74,7 +74,8 @@ namespace Mocklis.MockGenerator
             {
 #if NCRUNCH
                 var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
-                string expectedFilePathInSourceCode = folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
+                string expectedFilePathInSourceCode =
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #else
                 string expectedFilePathInSourceCode =
                     Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
@@ -106,7 +107,7 @@ namespace Mocklis.MockGenerator
             {
                 if (!result.IsSuccess)
                 {
-                    _testOutputHelper.WriteLine($"Mismatch on line {i+1}:");
+                    _testOutputHelper.WriteLine($"Mismatch on line {i + 1}:");
                     _testOutputHelper.WriteLine(ex.Message);
                     _testOutputHelper.WriteLine(string.Empty);
                 }

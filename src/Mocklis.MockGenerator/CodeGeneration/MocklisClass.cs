@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MocklisClass.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ namespace Mocklis.CodeGeneration
             MocklisSymbols mocklisSymbols)
         {
             var classInformation = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel);
-            
+
             var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, classInformation.NullableEnabled);
 
             return classDecl.WithMembers(F.List(classInformation.GenerateMembers(typesForSymbols)))

@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyBasedMethodMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -122,7 +122,8 @@ namespace Mocklis.CodeGeneration
             //var mockedMethod = F.MethodDeclaration(returnType, Mock.Symbol.Name)
             //    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty)})";
+            var mockedMethod =
+                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}({ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty)})";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 
@@ -136,7 +137,7 @@ namespace Mocklis.CodeGeneration
             // look at the return parameters. If we don't have any we can just make the call.
             // if we only have one and that's the return value, we can just return it.
             if (returnValuesType.Count == 0 ||
-                returnValuesType.Count == 1 && returnValuesType[0].IsReturnValue)
+                (returnValuesType.Count == 1 && returnValuesType[0].IsReturnValue))
             {
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
@@ -160,7 +161,6 @@ namespace Mocklis.CodeGeneration
                 ctx.AppendLine($"{returnValuesType[0].OriginalName} = {invocation};");
                 ctx.DecreaseIndent();
                 ctx.AppendLine("}");
-
             }
             else
             {
@@ -279,7 +279,6 @@ namespace Mocklis.CodeGeneration
                         ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax)
                         : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax);
                 }
-
             }
 
             public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
@@ -293,7 +292,8 @@ namespace Mocklis.CodeGeneration
             public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
                 List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+                constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName,
+                    Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)
@@ -324,7 +324,7 @@ namespace Mocklis.CodeGeneration
                 // look at the return parameters. If we don't have any we can just make the call.
                 // if we only have one and that's the return value, we can just return it.
                 if (ReturnValuesType.Count == 0 ||
-                    ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue)
+                    (ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue))
                 {
                     if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
                     {
@@ -381,7 +381,8 @@ namespace Mocklis.CodeGeneration
                 return mockedMethod;
             }
 
-            private MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType, NameSyntax interfaceNameSyntax)
+            private MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType,
+                NameSyntax interfaceNameSyntax)
             {
                 return F.MethodDeclaration(returnType, Mock.Symbol.Name)
                     .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))

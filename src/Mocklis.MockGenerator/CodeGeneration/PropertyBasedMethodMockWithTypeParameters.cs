@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyBasedMethodMockWithTypeParameters.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -28,7 +28,8 @@ namespace Mocklis.CodeGeneration
         public ITypeParameterSubstitutions Substitutions { get; }
         public string MockProviderName { get; }
 
-        public PropertyBasedMethodMockWithTypeParameters(IMethodSymbol symbol, string mockMemberName, ITypeParameterSubstitutions substitutions, string mockProviderName)
+        public PropertyBasedMethodMockWithTypeParameters(IMethodSymbol symbol, string mockMemberName, ITypeParameterSubstitutions substitutions,
+            string mockProviderName)
         {
             Symbol = symbol;
             MemberMockName = mockMemberName;
@@ -46,7 +47,6 @@ namespace Mocklis.CodeGeneration
             ctx.AppendLine(
                 $"private readonly global::Mocklis.Core.TypedMockProvider {MockProviderName} = new global::Mocklis.Core.TypedMockProvider();");
             ctx.AppendSeparator();
-
 
 
             var parametersBuilder = new SingleTypeOrValueTupleBuilder();
@@ -117,7 +117,7 @@ namespace Mocklis.CodeGeneration
             ctx.AppendLine("{");
             ctx.IncreaseIndent();
 
-            
+
             //private ImplicitArrayCreationExpressionSyntax TypesOfTypeParameters()
             //{
             //    return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
@@ -131,12 +131,13 @@ namespace Mocklis.CodeGeneration
 
             ctx.AppendLine($"var key = new[] {{ {typesOfTypeParameters} }};");
 
-            ctx.AppendLine($"return ({mockPropertyType}){MemberMockName}.GetOrAdd(key, {ctx.TypedMockCreation(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name)});");
+            ctx.AppendLine(
+                $"return ({mockPropertyType}){MemberMockName}.GetOrAdd(key, {ctx.TypedMockCreation(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name)});");
 
             ctx.DecreaseIndent();
             ctx.AppendLine("}");
             ctx.AppendSeparator();
-        //private TypeParameterListSyntax TypeParameterList()
+            //private TypeParameterListSyntax TypeParameterList()
             //{
             //    return F.TypeParameterList(F.SeparatedList(Mock.Symbol.TypeParameters.Select(typeParameter =>
             //        F.TypeParameter(Mock.Substitutions.FindSubstitution(typeParameter.Name)))));
@@ -150,13 +151,12 @@ namespace Mocklis.CodeGeneration
             //}
 
 
-              
-              //  if (constraints.Any())
-              //  {
-              //      m = m.AddConstraintClauses(constraints);
-              //  }
+            //  if (constraints.Any())
+            //  {
+            //      m = m.AddConstraintClauses(constraints);
+            //  }
 
-              //  return m;
+            //  return m;
 
             var baseReturnType = returnValuesString == null
                 ? "void"
@@ -179,7 +179,8 @@ namespace Mocklis.CodeGeneration
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
             var classConstraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, true);
-            var mockedMethod = $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters, Substitutions)}){classConstraints}";
+            var mockedMethod =
+                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters, Substitutions)}){classConstraints}";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 
@@ -193,7 +194,7 @@ namespace Mocklis.CodeGeneration
             // look at the return parameters. If we don't have any we can just make the call.
             // if we only have one and that's the return value, we can just return it.
             if (returnValuesType.Count == 0 ||
-                returnValuesType.Count == 1 && returnValuesType[0].IsReturnValue)
+                (returnValuesType.Count == 1 && returnValuesType[0].IsReturnValue))
             {
                 if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
                 {
@@ -217,7 +218,6 @@ namespace Mocklis.CodeGeneration
                 ctx.AppendLine($"{returnValuesType[0].OriginalName} = {invocation};");
                 ctx.DecreaseIndent();
                 ctx.AppendLine("}");
-
             }
             else
             {
@@ -336,7 +336,6 @@ namespace Mocklis.CodeGeneration
                         ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, mock.Substitutions.FindSubstitution)
                         : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, mock.Substitutions.FindSubstitution);
                 }
-
             }
 
             public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
@@ -361,7 +360,8 @@ namespace Mocklis.CodeGeneration
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
-            private MemberDeclarationSyntax MockProviderMethod(MocklisTypesForSymbols typesForSymbols, string className, string interfaceName, MockSettings mockSettings)
+            private MemberDeclarationSyntax MockProviderMethod(MocklisTypesForSymbols typesForSymbols, string className, string interfaceName,
+                MockSettings mockSettings)
             {
                 var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -375,11 +375,13 @@ namespace Mocklis.CodeGeneration
                         F.ThisExpression(),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
-                        F.BinaryExpression(SyntaxKind.AddExpression, F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.Symbol.Name)),
+                        F.BinaryExpression(SyntaxKind.AddExpression,
+                            F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.Symbol.Name)),
                             F.IdentifierName("keyString")),
                         F.BinaryExpression(SyntaxKind.AddExpression,
                             F.BinaryExpression(SyntaxKind.AddExpression,
-                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.MemberMockName)), F.IdentifierName("keyString")),
+                                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Mock.MemberMockName)),
+                                F.IdentifierName("keyString")),
                             F.LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
                                 F.Literal("()"))),
@@ -415,7 +417,8 @@ namespace Mocklis.CodeGeneration
             {
                 var baseReturnType = Mock.Symbol.ReturnsVoid
                     ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
-                    : typesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(), Mock.Substitutions.FindSubstitution);
+                    : typesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(),
+                        Mock.Substitutions.FindSubstitution);
                 var returnType = baseReturnType;
 
                 if (Mock.Symbol.ReturnsByRef)
@@ -439,7 +442,7 @@ namespace Mocklis.CodeGeneration
                 // look at the return parameters. If we don't have any we can just make the call.
                 // if we only have one and that's the return value, we can just return it.
                 if (ReturnValuesType.Count == 0 ||
-                    ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue)
+                    (ReturnValuesType.Count == 1 && ReturnValuesType[0].IsReturnValue))
                 {
                     if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
                     {
@@ -496,15 +499,16 @@ namespace Mocklis.CodeGeneration
                 return mockedMethod;
             }
 
-            private MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType, NameSyntax interfaceNameSyntax)
+            private MethodDeclarationSyntax ExplicitInterfaceMemberMethodDeclaration(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnType,
+                NameSyntax interfaceNameSyntax)
             {
-
                 var m = F.MethodDeclaration(returnType, Mock.Symbol.Name)
                     .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
                     .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax))
-                    .WithTypeParameterList(TypeParameterList());;
+                    .WithTypeParameterList(TypeParameterList());
 
-                var constraints = typesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
+                var constraints =
+                    typesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
                 if (constraints.Any())
                 {
                     m = m.AddConstraintClauses(constraints);

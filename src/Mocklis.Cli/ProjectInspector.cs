@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ProjectInspector.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,6 @@ namespace Mocklis.Cli
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
     using Mocklis.CodeGeneration;
-    using Mocklis.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -41,7 +40,8 @@ namespace Mocklis.Cli
                         a =>
                         {
                             var attrSymbol = Model.GetSymbolInfo(a).Symbol;
-                            return attrSymbol != null && attrSymbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
+                            return attrSymbol != null &&
+                                   attrSymbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
                         }));
 
                 if (!hasMocklisAttribute)

@@ -1,11 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="GenericExtensions.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if NETFRAMEWORK
+#if !NETFRAMEWORK
+#pragma warning disable SYSLIB0011
+#endif
 
 namespace Mocklis.Helpers
 {
@@ -34,5 +36,3 @@ namespace Mocklis.Helpers
         }
     }
 }
-
-#endif

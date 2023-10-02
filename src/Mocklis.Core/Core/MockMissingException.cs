@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MockMissingException.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -10,8 +10,8 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Properties;
     using System.Runtime.Serialization;
+    using Mocklis.Properties;
 
     #endregion
 

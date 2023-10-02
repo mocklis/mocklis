@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="VirtualMethodBasedPropertyMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -80,7 +80,6 @@ namespace Mocklis.CodeGeneration
                 if (!Symbol.IsWriteOnly)
                 {
                     ctx.Append($"get => {MemberMockName}(); ");
-
                 }
 
                 if (!Symbol.IsReadOnly)
@@ -144,7 +143,8 @@ namespace Mocklis.CodeGeneration
             {
                 return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName,
+                        _mock.Symbol.Name)));
             }
 
             // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
@@ -156,7 +156,8 @@ namespace Mocklis.CodeGeneration
                         F.Parameter(F.Identifier("value")).WithType(valueTypeSyntax)
                     })))
                     .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, className, interfaceName, _mock.Symbol.Name)));
+                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, className, interfaceName,
+                        _mock.Symbol.Name)));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)

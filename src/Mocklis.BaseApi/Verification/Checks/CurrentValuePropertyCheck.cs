@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrentValuePropertyCheck.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -64,10 +64,9 @@ namespace Mocklis.Verification.Checks
             TValue currentValue = _property.Value;
             string? expectedValueString = Convert.ToString(_expectedValue, provider);
             string? currentValueString = Convert.ToString(currentValue, provider);
-            yield return new VerificationResult($"{prefix}: Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}",
+            yield return new VerificationResult(
+                $"{prefix}: Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}",
                 _comparer.Equals(_expectedValue, currentValue));
         }
-
-
     }
 }

@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SingleTypeOrValueTuple.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -69,13 +69,16 @@ namespace Mocklis.CodeGeneration
             }
 
             return IsMultiDimensional
-                ? F.TupleType(F.SeparatedList(this.Select(a => F.TupleElement(a.CreateType(typesForSymbols, typeParameterNameSubstitutions), F.Identifier(a.TupleSafeName)))))
+                ? F.TupleType(F.SeparatedList(this.Select(a =>
+                    F.TupleElement(a.CreateType(typesForSymbols, typeParameterNameSubstitutions), F.Identifier(a.TupleSafeName)))))
                 : this[0].CreateType(typesForSymbols, typeParameterNameSubstitutions);
         }
 
-        public BracketedParameterListSyntax BuildParameterList(MocklisTypesForSymbols typesForSymbols, Func<string, string>? typeParameterNameSubstitutions)
+        public BracketedParameterListSyntax BuildParameterList(MocklisTypesForSymbols typesForSymbols,
+            Func<string, string>? typeParameterNameSubstitutions)
         {
-            return F.BracketedParameterList(F.SeparatedList(this.Select(a => F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.CreateType(typesForSymbols, typeParameterNameSubstitutions)))));
+            return F.BracketedParameterList(F.SeparatedList(this.Select(a =>
+                F.Parameter(F.Identifier(a.TupleSafeName)).WithType(a.CreateType(typesForSymbols, typeParameterNameSubstitutions)))));
         }
 
         public ExpressionSyntax? BuildArgumentList()
@@ -86,7 +89,7 @@ namespace Mocklis.CodeGeneration
             }
 
             return IsMultiDimensional
-                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.TupleSafeName))).ToArray()))
+                ? F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.TupleSafeName))).ToArray()))
                 : F.IdentifierName(this[0].TupleSafeName);
         }
 
@@ -98,7 +101,7 @@ namespace Mocklis.CodeGeneration
             }
 
             return IsMultiDimensional
-                ? (ExpressionSyntax)F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.OriginalName))).ToArray()))
+                ? F.TupleExpression(F.SeparatedList(this.Select(a => F.Argument(F.IdentifierName(a.OriginalName))).ToArray()))
                 : F.IdentifierName(this[0].OriginalName);
         }
 

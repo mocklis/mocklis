@@ -1,16 +1,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="TestCaseEnumerator.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Mocklis.MockGenerator;
 
+#region Using Directives
+
 using System;
 using System.IO;
 using System.Reflection;
 using Xunit;
+
+#endregion
 
 public static class TestCaseEnumerator
 {

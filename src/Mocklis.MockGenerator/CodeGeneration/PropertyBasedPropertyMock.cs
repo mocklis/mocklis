@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyBasedPropertyMock.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -116,7 +116,8 @@ namespace Mocklis.CodeGeneration
             public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
                 List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
-                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockPropertyType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+                constructorStatements.Add(TypesForSymbols.InitialisationStatement(MockPropertyType, Mock.MemberMockName, className, interfaceName,
+                    Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(NameSyntax interfaceNameSyntax)
@@ -137,7 +138,8 @@ namespace Mocklis.CodeGeneration
 
                 if (Mock.Symbol.IsReadOnly)
                 {
-                    ExpressionSyntax elementAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(Mock.MemberMockName),
+                    ExpressionSyntax elementAccess = F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        F.IdentifierName(Mock.MemberMockName),
                         F.IdentifierName("Value"));
 
                     if (Mock.Symbol.ReturnsByRef || Mock.Symbol.ReturnsByRefReadonly)
@@ -176,7 +178,6 @@ namespace Mocklis.CodeGeneration
 
                 return mockedProperty;
             }
-
         }
     }
 }

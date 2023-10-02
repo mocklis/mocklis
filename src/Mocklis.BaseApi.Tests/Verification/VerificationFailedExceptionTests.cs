@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="VerificationFailedExceptionTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -51,7 +51,6 @@ namespace Mocklis.Verification
             Assert.Same(innerException, sut.InnerException);
         }
 
-#if NETFRAMEWORK
         [Fact]
         public void BeSerialisable()
         {
@@ -62,6 +61,5 @@ namespace Mocklis.Verification
             Assert.Equal("This is a special message!", sut.Message);
             Assert.Null(sut.InnerException);
         }
-#endif
     }
 }

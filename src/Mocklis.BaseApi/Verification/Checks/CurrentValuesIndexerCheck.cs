@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrentValuesIndexerCheck.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2021 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,8 @@ namespace Mocklis.Verification.Checks
                 string? keyString = Convert.ToString(key, provider);
                 string? expectedValueString = Convert.ToString(expectedValue, provider);
                 string? currentValueString = Convert.ToString(currentValue, provider);
-                string description = $"Key {keyString.QuotedOrNull()}; Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}";
+                string description =
+                    $"Key {keyString.QuotedOrNull()}; Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}";
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);
             }
