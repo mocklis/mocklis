@@ -32,6 +32,8 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
         public IReadOnlyCollection<string> ConstructorStatements => _constructorStatements;
 
+        public ITypeParameterSubstitutions BuildSubstitutions(IMethodSymbol methodSymbol) => Substitutions.Build(_classSymbol, methodSymbol);
+
         public SourceGenerationContext(MockSettings settings, INamedTypeSymbol classSymbol, bool nullableAnnotationsEnabled)
         {
             _classSymbol = classSymbol;
@@ -228,11 +230,6 @@ namespace Mocklis.MockGenerator.CodeGeneration
             {
                 switch (p.RefKind)
                 {
-                    case RefKind.In:
-                    {
-                        return $"in {p.Name}";
-                    }
-
                     case RefKind.Out:
                     {
                         return $"out {p.Name}";

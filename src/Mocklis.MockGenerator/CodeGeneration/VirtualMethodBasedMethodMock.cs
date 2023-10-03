@@ -22,23 +22,25 @@ namespace Mocklis.MockGenerator.CodeGeneration
     {
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
-        public ITypeParameterSubstitutions Substitutions { get; }
 
-        public VirtualMethodBasedMethodMock(IMethodSymbol symbol, string mockMemberName, ITypeParameterSubstitutions substitutions)
+        public VirtualMethodBasedMethodMock(IMethodSymbol symbol, string mockMemberName)
         {
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = substitutions;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
+        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+            NameSyntax interfaceNameSyntax, string className, string interfaceName)
         {
-            return new SyntaxAdder(this, typesForSymbols);
+            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+            syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
         }
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
-            (string returnType, string returnTypeWithoutReadonly) = ctx.FindReturnTypes(Symbol, Substitutions);
+            var substitutions = ctx.BuildSubstitutions(Symbol);
+
+            (string returnType, string returnTypeWithoutReadonly) = ctx.FindReturnTypes(Symbol, substitutions);
 
             var arglistParameterName = Symbol.FindArglistParameterName();
 
@@ -47,11 +49,11 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
             if (Symbol.TypeParameters.Any())
             {
-                typeParameterList = $"<{string.Join(", ", Symbol.TypeParameters.Select(t => Substitutions.FindSubstitution(t.Name)))}>";
-                constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, false);
+                typeParameterList = $"<{string.Join(", ", Symbol.TypeParameters.Select(t => substitutions.FindSubstitution(t.Name)))}>";
+                constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, substitutions, false);
             }
 
-            var parameters = ctx.BuildParameterList(Symbol.Parameters, Substitutions);
+            var parameters = ctx.BuildParameterList(Symbol.Parameters, substitutions);
             var arguments = ctx.BuildArgumentList(Symbol.Parameters);
             if (arglistParameterName != null)
             {
@@ -74,7 +76,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
             ctx.AppendSeparator();
 
             var mockedMethod =
-                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
+                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
 
             ctx.Append($"{mockedMethod} => ");
             if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
@@ -83,22 +85,23 @@ namespace Mocklis.MockGenerator.CodeGeneration
             }
 
             ctx.AppendLine($"{MemberMockName}{typeParameterList}({arguments});");
+            ctx.AppendSeparator();
         }
 
-        private class SyntaxAdder : ISyntaxAdder
+        private class SyntaxAdder
         {
             private readonly VirtualMethodBasedMethodMock _mock;
             private readonly MocklisTypesForSymbols _typesForSymbols;
+            private readonly ITypeParameterSubstitutions _substitutions;
 
             public SyntaxAdder(VirtualMethodBasedMethodMock mock, MocklisTypesForSymbols typesForSymbols)
             {
                 _mock = mock;
                 _typesForSymbols = typesForSymbols;
+                _substitutions = typesForSymbols.BuildSubstitutions(mock.Symbol);
             }
 
-            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
-                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
-                string interfaceName)
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
             {
                 TypeSyntax returnTypeWithoutReadonly;
                 TypeSyntax returnType;
@@ -134,17 +137,12 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 declarationList.Add(ExplicitInterfaceMember(returnType, arglistParameterName, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
-                List<StatementSyntax> constructorStatements, string className, string interfaceName)
-            {
-            }
-
             // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing and return default values.
             private MemberDeclarationSyntax MockVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax returnTypeWithoutReadonly,
                 string? arglistParameterName, string className, string interfaceName)
             {
                 var parameters =
-                    F.SeparatedList(_mock.Symbol.Parameters.Select(a => typesForSymbols.AsParameterSyntax(a, _mock.Substitutions.FindSubstitution)));
+                    F.SeparatedList(_mock.Symbol.Parameters.Select(a => typesForSymbols.AsParameterSyntax(a, _substitutions.FindSubstitution)));
                 if (arglistParameterName != null)
                 {
                     parameters = parameters.Add(F.Parameter(F.Identifier(arglistParameterName)).WithType(typesForSymbols.RuntimeArgumentHandle()));
@@ -160,7 +158,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 {
                     method = method.WithTypeParameterList(TypeParameterList());
 
-                    var constraints = typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters, _mock.Substitutions.FindSubstitution);
+                    var constraints = typesForSymbols.AsConstraintClauses(_mock.Symbol.TypeParameters, _substitutions.FindSubstitution);
 
                     if (constraints.Any())
                     {
@@ -175,7 +173,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 NameSyntax interfaceNameSyntax)
             {
                 var parameters =
-                    F.SeparatedList(_mock.Symbol.Parameters.Select(p => _typesForSymbols.AsParameterSyntax(p, _mock.Substitutions.FindSubstitution)));
+                    F.SeparatedList(_mock.Symbol.Parameters.Select(p => _typesForSymbols.AsParameterSyntax(p, _substitutions.FindSubstitution)));
                 if (arglistParameterName != null)
                 {
                     parameters = parameters.Add(F.Parameter(F.Token(SyntaxKind.ArgListKeyword)));
@@ -201,7 +199,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                     ? (ExpressionSyntax)F.GenericName(_mock.MemberMockName)
                         .WithTypeArgumentList(F.TypeArgumentList(
                             F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
-                                _typesForSymbols.ParseTypeName(typeParameter, false, _mock.Substitutions.FindSubstitution)))))
+                                _typesForSymbols.ParseTypeName(typeParameter, false, _substitutions.FindSubstitution)))))
                     : F.IdentifierName(_mock.MemberMockName);
 
                 invocation = F.InvocationExpression(invocation, F.ArgumentList(arguments));
@@ -221,7 +219,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
             private TypeParameterListSyntax TypeParameterList()
             {
                 return F.TypeParameterList(F.SeparatedList(_mock.Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeParameter(_mock.Substitutions.FindSubstitution(typeParameter.Name)))));
+                    F.TypeParameter(_substitutions.FindSubstitution(typeParameter.Name)))));
             }
         }
     }

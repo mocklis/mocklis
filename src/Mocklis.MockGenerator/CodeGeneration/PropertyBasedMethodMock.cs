@@ -29,9 +29,12 @@ namespace Mocklis.MockGenerator.CodeGeneration
             MemberMockName = mockMemberName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
+        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+            NameSyntax interfaceNameSyntax, string className, string interfaceName)
         {
-            return new SyntaxAdder(this, typesForSymbols);
+            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+            syntaxAdder.AddMembersToClass(typesForSymbols, declarationList, interfaceNameSyntax);
+            syntaxAdder.AddInitialisersToConstructor(typesForSymbols, constructorStatements, className, interfaceName);
         }
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
@@ -199,13 +202,13 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 ctx.DecreaseIndent();
                 ctx.AppendLine("}");
             }
-            // string mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName
-            // constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+
+            ctx.AppendSeparator();
 
             ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
-        private class SyntaxAdder : ISyntaxAdder
+        private class SyntaxAdder
         {
             private PropertyBasedMethodMock Mock { get; }
 
@@ -278,19 +281,17 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 }
             }
 
-            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
-                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
-                string interfaceName)
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols,
+                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax)
             {
                 declarationList.Add(MockMemberType.MockProperty(Mock.MemberMockName));
                 declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax));
             }
 
-            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
-                List<StatementSyntax> constructorStatements, string className, string interfaceName)
+            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, List<StatementSyntax> constructorStatements, string className, string interfaceName)
             {
                 constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName,
-                    Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
+                    Mock.Symbol.Name));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)

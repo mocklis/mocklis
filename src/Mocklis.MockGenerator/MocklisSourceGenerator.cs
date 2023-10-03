@@ -32,7 +32,6 @@ public class MocklisSourceGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(x, Execute);
     }
 
-
     private bool Predicate(SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {
         return syntaxNode switch

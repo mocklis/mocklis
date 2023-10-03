@@ -42,7 +42,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
         {
             var classInformation = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel);
 
-            var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, classInformation.NullableEnabled);
+            var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, classInformation.NullableEnabled, classInformation.Settings, classInformation.ClassSymbol);
 
             return classDecl.WithMembers(F.List(classInformation.GenerateMembers(typesForSymbols)))
                 .WithOpenBraceToken(F.Token(SyntaxKind.OpenBraceToken).WithTrailingTrivia(Comments))

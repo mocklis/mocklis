@@ -30,9 +30,11 @@ namespace Mocklis.MockGenerator.CodeGeneration
             MemberMockName = mockMemberName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
+        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+            NameSyntax interfaceNameSyntax, string className, string interfaceName)
         {
-            return new SyntaxAdder(this, typesForSymbols);
+            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+            syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
         }
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
@@ -98,9 +100,11 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
                 ctx.AppendLine("}");
             }
+
+            ctx.AppendSeparator();
         }
 
-        private class SyntaxAdder : ISyntaxAdder
+        private class SyntaxAdder
         {
             private readonly VirtualMethodBasedIndexerMock _mock;
             private readonly MocklisTypesForSymbols _typesForSymbols;
@@ -111,8 +115,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 _typesForSymbols = typesForSymbols;
             }
 
-            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettingns,
-                IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
                 string interfaceName)
             {
                 var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
@@ -140,11 +143,6 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 }
 
                 declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, valueWithReadonlyTypeSyntax, interfaceNameSyntax));
-            }
-
-            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
-                List<StatementSyntax> constructorStatements, string className, string interfaceName)
-            {
             }
 
             // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.

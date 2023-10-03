@@ -44,30 +44,26 @@ public class ExtractedClassInformation
 
         var settings = GetSettingsFromAttribute(classDeclaration, classSymbol, semanticModel.Compilation);
 
-        bool nullableAnnotationsEnabled = false;
-        var classIsInNullableContext = semanticModel.GetNullableContext(classDeclaration.Span.Start);
-        if (classIsInNullableContext.AnnotationsEnabled())
-        {
-            nullableAnnotationsEnabled = true;
-        }
-
-        if (classIsInNullableContext.AnnotationsInherited())
-        {
-            var a = semanticModel.Compilation.Options.NullableContextOptions;
-            nullableAnnotationsEnabled = a.AnnotationsEnabled();
-        }
+        var nullableAnnotationsEnabled = FindNullableAnnotationsEnabled(classDeclaration, semanticModel);
         // TODO: Add test case(s) for when there is compilation enabled nullable enabled and no specific annotation in the source file
 
-        // Identify the interfaces here...
+        var baseTypeSymbol = classSymbol.BaseType;
+
         var namesToReserveAndUse = new List<string>(classSymbol.BaseType?.GetUsableNames() ?? Array.Empty<string>()) { classSymbol.Name };
         var uniquifier = new Uniquifier(namesToReserveAndUse);
-
-        var interfaceList = new List<(INamedTypeSymbol interfaceSymbol, List<ISymbol> memberSymbols)>();
-
-        var baseTypeSymbol = classSymbol.BaseType;
         foreach (var interfaceSymbol in classSymbol.AllInterfaces)
         {
-            var memberSymbols = new List<ISymbol>();
+            foreach (var memberSymbol in interfaceSymbol.GetMembers())
+            {
+                uniquifier.ReserveName(memberSymbol.Name);
+            }
+        }
+
+        var interfaces = new List<ExtractedInterfaceInformation>();
+        
+        foreach (var interfaceSymbol in classSymbol.AllInterfaces)
+        {
+            var memberSymbols = new List<IMemberMock>();
 
             foreach (var memberSymbol in interfaceSymbol.GetMembers())
             {
@@ -86,37 +82,41 @@ public class ExtractedClassInformation
                     continue;
                 }
 
-                memberSymbols.Add(memberSymbol);
-                uniquifier.ReserveName(memberSymbol.Name);
+                var mock = CreateMock(semanticModel.Compilation, classSymbol, memberSymbol, uniquifier, settings);
+                if (mock != null)
+                {
+                    memberSymbols.Add(mock);
+                }
             }
 
             if (memberSymbols.Any())
             {
-                interfaceList.Add((interfaceSymbol, memberSymbols));
+                interfaces.Add(new ExtractedInterfaceInformation(interfaceSymbol, memberSymbols));
             }
         }
 
-        var interfaces = new ExtractedInterfaceInformation[interfaceList.Count];
-
-        for (int i = 0; i < interfaceList.Count; i++)
-        {
-            var (isym, msyms) = interfaceList[i];
-
-            var members = new IMemberMock[msyms.Count];
-
-            for (int j = 0; j < msyms.Count; j++)
-            {
-                // Create the right type of member...?
-                members[j] = CreateMock(semanticModel.Compilation, classSymbol, msyms[j], uniquifier, settings);
-            }
-
-            interfaces[i] = new ExtractedInterfaceInformation(isym, members);
-        }
-
-        return new ExtractedClassInformation(classSymbol, interfaces, settings, nullableAnnotationsEnabled);
+        return new ExtractedClassInformation(classSymbol, interfaces.ToArray(), settings, nullableAnnotationsEnabled);
     }
 
-    private static IMemberMock CreateMock(Compilation compilation, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
+    private static bool FindNullableAnnotationsEnabled(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel)
+    {
+        bool nullableAnnotationsEnabled = false;
+        var classIsInNullableContext = semanticModel.GetNullableContext(classDeclaration.Span.Start);
+        if (classIsInNullableContext.AnnotationsEnabled())
+        {
+            nullableAnnotationsEnabled = true;
+        }
+
+        if (classIsInNullableContext.AnnotationsInherited())
+        {
+            var a = semanticModel.Compilation.Options.NullableContextOptions;
+            nullableAnnotationsEnabled = a.AnnotationsEnabled();
+        }
+
+        return nullableAnnotationsEnabled;
+    }
+
+    private static IMemberMock? CreateMock(Compilation compilation, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
         Uniquifier uniquifier, MockSettings settings)
     {
         string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
@@ -167,18 +167,14 @@ public class ExtractedClassInformation
 
                 if (useVirtualMethod)
                 {
-                    var typeParameterSubstitutions = Substitutions.Build(classSymbol, memberMethodSymbol);
-
-                    return new VirtualMethodBasedMethodMock(memberMethodSymbol, mockMemberName, typeParameterSubstitutions);
+                    return new VirtualMethodBasedMethodMock(memberMethodSymbol, mockMemberName);
                 }
 
                 if (memberMethodSymbol.Arity > 0)
                 {
-                    var typeParameterSubstitutions = Substitutions.Build(classSymbol, memberMethodSymbol);
-
                     var metadataName = memberSymbol.MetadataName;
                     var mockProviderName = uniquifier.GetUniqueName("_" + char.ToLowerInvariant(metadataName[0]) + metadataName.Substring(1));
-                    return new PropertyBasedMethodMockWithTypeParameters(memberMethodSymbol, mockMemberName, typeParameterSubstitutions,
+                    return new PropertyBasedMethodMockWithTypeParameters(memberMethodSymbol, mockMemberName,
                         mockProviderName);
                 }
 
@@ -186,7 +182,7 @@ public class ExtractedClassInformation
             }
 
             default:
-                return NullMemberMock.Instance;
+                return null;
         }
     }
 
@@ -269,8 +265,6 @@ public class ExtractedClassInformation
 
         var hasNamespace = !ClassSymbol.ContainingNamespace.IsGlobalNamespace;
 
-        // TODO: Add test case for when there is no top level namespace.
-
         if (hasNamespace)
         {
             ctx.AppendLine($"namespace {ClassSymbol.ContainingNamespace.ToDisplayString()}");
@@ -327,7 +321,6 @@ public class ExtractedClassInformation
 
         foreach (var constructor in baseTypeConstructors)
         {
-            ctx.AppendSeparator();
             ctx.AppendLine(
                 $"{modifier} {ClassSymbol.Name}({ctx.BuildParameterList(constructor.Parameters, Substitutions.Empty)}) : base({ctx.BuildArgumentList(constructor.Parameters)})");
             ctx.AppendLine("{");
@@ -338,24 +331,9 @@ public class ExtractedClassInformation
                 ctx.AppendLine(c);
             }
 
-            //var constructorDeclaration = F.ConstructorDeclaration(F.Identifier(ClassSymbol.Name))
-            //    .WithModifiers(F.TokenList(F.Token(ClassSymbol.IsAbstract ? SyntaxKind.ProtectedKeyword : SyntaxKind.PublicKeyword)))
-            //    .WithParameterList(
-            //        F.ParameterList(
-            //            F.SeparatedList(constructor.Parameters.Select(tp => typesForSymbols.AsParameterSyntax(tp)))))
-            //    .WithBody(F.Block(constructorStatementsWithThisWhereRequired));
-
-            //if (parameterNames.Any())
-            //{
-            //    constructorDeclaration = constructorDeclaration.WithInitializer(F.ConstructorInitializer(
-            //        SyntaxKind.BaseConstructorInitializer,
-            //        F.ArgumentList(constructor.Parameters.AsArgumentList())));
-            //}
-
-            // declarationList.Add(constructorDeclaration);
-
             ctx.DecreaseIndent();
             ctx.AppendLine("}");
+            ctx.AppendSeparator();
         }
     }
 
@@ -369,7 +347,7 @@ public class ExtractedClassInformation
 
         foreach (var i in _interfaces)
         {
-            i.GenerateMembers(typesForSymbols, Settings, declarationList, constructorStatements, ClassSymbol);
+            i.GenerateMembers(typesForSymbols, declarationList, constructorStatements, ClassSymbol);
         }
 
         GenerateConstructors(constructorDeclarationList, constructorStatements, typesForSymbols);
@@ -452,40 +430,5 @@ public class ExtractedClassInformation
             .ToArray() ?? Array.Empty<IMethodSymbol>();
 
         return baseTypeConstructors;
-    }
-}
-
-public class ExtractedInterfaceInformation
-{
-    public INamedTypeSymbol InterfaceSymbol { get; }
-    private readonly IMemberMock[] _memberMocks;
-
-    public ExtractedInterfaceInformation(INamedTypeSymbol interfaceSymbol, IReadOnlyCollection<IMemberMock> memberMocks)
-    {
-        InterfaceSymbol = interfaceSymbol;
-        _memberMocks = memberMocks.ToArray();
-    }
-
-    public void GenerateMembers(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings, List<MemberDeclarationSyntax> declarationList,
-        List<StatementSyntax> constructorStatements, INamedTypeSymbol classSymbol)
-    {
-        var interfaceNameSyntax = typesForSymbols.ParseName(InterfaceSymbol);
-        foreach (var memberMock in _memberMocks)
-        {
-            var syntaxAdder = memberMock.GetSyntaxAdder(typesForSymbols);
-            syntaxAdder.AddInitialisersToConstructor(typesForSymbols, mockSettings, constructorStatements, classSymbol.Name, InterfaceSymbol.Name);
-            syntaxAdder.AddMembersToClass(typesForSymbols, mockSettings, declarationList, interfaceNameSyntax, classSymbol.Name,
-                InterfaceSymbol.Name);
-        }
-    }
-
-    public void AddSourceForMembers(SourceGenerationContext ctx)
-    {
-        // ctx.AppendLine($"// Add source for members in interface {InterfaceSymbol.Name}");
-        foreach (var memberMock in _memberMocks)
-        {
-            memberMock.AddSource(ctx, InterfaceSymbol);
-            ctx.AppendSeparator();
-        }
     }
 }

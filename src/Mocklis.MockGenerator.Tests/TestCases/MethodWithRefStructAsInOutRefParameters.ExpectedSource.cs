@@ -9,7 +9,7 @@ namespace Test
             throw new global::Mocklis.Core.MockMissingException(global::Mocklis.Core.MockType.VirtualMethod, "TestClass", "ITestClass", "RefStructIn", "RefStructIn");
         }
 
-        void global::Test.ITestClass.RefStructIn(in global::Test.RefStruct parameter) => RefStructIn(in parameter);
+        void global::Test.ITestClass.RefStructIn(in global::Test.RefStruct parameter) => RefStructIn(parameter);
 
         protected virtual void RefStructOut(out global::Test.RefStruct parameter)
         {

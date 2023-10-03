@@ -22,29 +22,29 @@ namespace Mocklis.MockGenerator.CodeGeneration
     {
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
-        public ITypeParameterSubstitutions Substitutions { get; }
         public string MockProviderName { get; }
 
-        public PropertyBasedMethodMockWithTypeParameters(IMethodSymbol symbol, string mockMemberName, ITypeParameterSubstitutions substitutions,
-            string mockProviderName)
+        public PropertyBasedMethodMockWithTypeParameters(IMethodSymbol symbol, string mockMemberName, string mockProviderName)
         {
             Symbol = symbol;
             MemberMockName = mockMemberName;
-            Substitutions = substitutions;
             MockProviderName = mockProviderName;
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols)
+        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+            NameSyntax interfaceNameSyntax, string className, string interfaceName)
         {
-            return new SyntaxAdder(this, typesForSymbols);
+            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+            syntaxAdder.AddMembersToClass(typesForSymbols, declarationList, interfaceNameSyntax, className, interfaceName);
         }
 
         public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
         {
+            var substitutions = ctx.BuildSubstitutions(Symbol);
+
             ctx.AppendLine(
                 $"private readonly global::Mocklis.Core.TypedMockProvider {MockProviderName} = new global::Mocklis.Core.TypedMockProvider();");
             ctx.AppendSeparator();
-
 
             var parametersBuilder = new SingleTypeOrValueTupleBuilder();
             var returnValuesBuilder = new SingleTypeOrValueTupleBuilder();
@@ -88,8 +88,8 @@ namespace Mocklis.MockGenerator.CodeGeneration
             var parametersType = parametersBuilder.Build();
             var returnValuesType = returnValuesBuilder.Build();
 
-            var parametersString = ctx.BuildTupleType(parametersType, Substitutions);
-            var returnValuesString = ctx.BuildTupleType(returnValuesType, Substitutions);
+            var parametersString = ctx.BuildTupleType(parametersType, substitutions);
+            var returnValuesString = ctx.BuildTupleType(returnValuesType, substitutions);
 
             string mockPropertyType;
 
@@ -106,9 +106,9 @@ namespace Mocklis.MockGenerator.CodeGeneration
                     : $"global::Mocklis.Core.FuncMethodMock<{parametersString}, {returnValuesString}>";
             }
 
-            var typeParameterList = string.Join(", ", Symbol.TypeParameters.Select(t => Substitutions.FindSubstitution(t.Name)));
+            var typeParameterList = string.Join(", ", Symbol.TypeParameters.Select(t => substitutions.FindSubstitution(t.Name)));
 
-            var constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, false);
+            var constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, substitutions, false);
 
             ctx.AppendLine($"public {mockPropertyType} {MemberMockName}<{typeParameterList}>(){constraints}");
             ctx.AppendLine("{");
@@ -121,7 +121,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
             //        F.SeparatedList<ExpressionSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
             //            F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindSubstitution(typeParameter.Name)))))));
             //}
-            var typesOfTypeParameters = string.Join(", ", Symbol.TypeParameters.Select(t => $"typeof({Substitutions.FindSubstitution(t.Name)})"));
+            var typesOfTypeParameters = string.Join(", ", Symbol.TypeParameters.Select(t => $"typeof({substitutions.FindSubstitution(t.Name)})"));
 
             //  var keyCreation = F.LocalDeclarationStatement(F.VariableDeclaration(F.IdentifierName("var")).WithVariables(F.SingletonSeparatedList(F
             //      .VariableDeclarator(F.Identifier("key")).WithInitializer(F.EqualsValueClause(TypesOfTypeParameters())))));
@@ -157,7 +157,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
             var baseReturnType = returnValuesString == null
                 ? "void"
-                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), Substitutions);
+                : ctx.ParseTypeName(Symbol.ReturnType, Symbol.ReturnTypeIsNullableOrOblivious(), substitutions);
 
 
             var returnType = baseReturnType;
@@ -175,9 +175,9 @@ namespace Mocklis.MockGenerator.CodeGeneration
             //    .WithParameterList(Mock.Symbol.Parameters.AsParameterList(typesForSymbols))
             //    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
-            var classConstraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, Substitutions, true);
+            var classConstraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, substitutions, true);
             var mockedMethod =
-                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters, Substitutions)}){classConstraints}";
+                $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, CodeGeneration.Substitutions.Empty)}.{Symbol.Name}<{typeParameterList}>({ctx.BuildParameterList(Symbol.Parameters, substitutions)}){classConstraints}";
 
             //var memberMockInstance = MemberMockName; // ExplicitInterfaceMemberMemberMockInstance();
 
@@ -256,13 +256,15 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 ctx.DecreaseIndent();
                 ctx.AppendLine("}");
             }
+
+            ctx.AppendSeparator();
             // string mockPropertyType, string memberMockName, string className, string interfaceName, string symbolName
             // constructorStatements.Add(typesForSymbols.InitialisationStatement(MockMemberType, Mock.MemberMockName, className, interfaceName, Mock.Symbol.Name, mockSettings.Strict, mockSettings.VeryStrict));
 
             // ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
         }
 
-        private class SyntaxAdder : ISyntaxAdder
+        private class SyntaxAdder
         {
             private PropertyBasedMethodMockWithTypeParameters Mock { get; }
 
@@ -271,9 +273,13 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
             private TypeSyntax MockMemberType { get; }
 
+            private ITypeParameterSubstitutions Substitutions { get; }
+
             public SyntaxAdder(PropertyBasedMethodMockWithTypeParameters mock, MocklisTypesForSymbols typesForSymbols)
             {
                 Mock = mock;
+
+                Substitutions = typesForSymbols.BuildSubstitutions(mock.Symbol);
 
                 var parametersBuilder = new SingleTypeOrValueTupleBuilder();
                 var returnValuesBuilder = new SingleTypeOrValueTupleBuilder();
@@ -317,35 +323,30 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 ParametersType = parametersBuilder.Build();
                 ReturnValuesType = returnValuesBuilder.Build();
 
-                var parameterTypeSyntax = ParametersType.BuildTypeSyntax(typesForSymbols, mock.Substitutions.FindSubstitution);
+                var parameterTypeSyntax = ParametersType.BuildTypeSyntax(typesForSymbols, Substitutions.FindSubstitution);
 
-                var returnValueTypeSyntax = ReturnValuesType.BuildTypeSyntax(typesForSymbols, mock.Substitutions.FindSubstitution);
+                var returnValueTypeSyntax = ReturnValuesType.BuildTypeSyntax(typesForSymbols, Substitutions.FindSubstitution);
 
                 if (returnValueTypeSyntax == null)
                 {
                     MockMemberType = parameterTypeSyntax == null
                         ? typesForSymbols.ActionMethodMock()
-                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax, mock.Substitutions.FindSubstitution);
+                        : typesForSymbols.ActionMethodMock(parameterTypeSyntax, Substitutions.FindSubstitution);
                 }
                 else
                 {
                     MockMemberType = parameterTypeSyntax == null
-                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, mock.Substitutions.FindSubstitution)
-                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, mock.Substitutions.FindSubstitution);
+                        ? typesForSymbols.FuncMethodMock(returnValueTypeSyntax, Substitutions.FindSubstitution)
+                        : typesForSymbols.FuncMethodMock(parameterTypeSyntax, returnValueTypeSyntax, Substitutions.FindSubstitution);
                 }
             }
 
-            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
+            public void AddMembersToClass(MocklisTypesForSymbols typesForSymbols,
                 IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
             {
                 declarationList.Add(TypedMockProviderField(typesForSymbols));
-                declarationList.Add(MockProviderMethod(typesForSymbols, className, interfaceName, mockSettings));
+                declarationList.Add(MockProviderMethod(typesForSymbols, className, interfaceName));
                 declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax));
-            }
-
-            public void AddInitialisersToConstructor(MocklisTypesForSymbols typesForSymbols, MockSettings mockSettings,
-                List<StatementSyntax> constructorStatements, string className, string interfaceName)
-            {
             }
 
             private MemberDeclarationSyntax TypedMockProviderField(MocklisTypesForSymbols typesForSymbols)
@@ -357,8 +358,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 ).WithModifiers(F.TokenList(F.Token(SyntaxKind.PrivateKeyword), F.Token(SyntaxKind.ReadOnlyKeyword)));
             }
 
-            private MemberDeclarationSyntax MockProviderMethod(MocklisTypesForSymbols typesForSymbols, string className, string interfaceName,
-                MockSettings mockSettings)
+            private MemberDeclarationSyntax MockProviderMethod(MocklisTypesForSymbols typesForSymbols, string className, string interfaceName)
             {
                 var m = F.MethodDeclaration(MockMemberType, F.Identifier(Mock.MemberMockName)).WithTypeParameterList(TypeParameterList());
 
@@ -382,7 +382,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                             F.LiteralExpression(
                                 SyntaxKind.StringLiteralExpression,
                                 F.Literal("()"))),
-                        typesForSymbols.StrictnessExpression(mockSettings.Strict, mockSettings.VeryStrict)
+                        typesForSymbols.StrictnessExpression()
                     ));
 
                 var returnStatement = F.ReturnStatement(F.CastExpression(MockMemberType, F.InvocationExpression(
@@ -393,7 +393,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
                 m = m.WithBody(F.Block(keyCreation, returnStatement));
 
-                var constraints = typesForSymbols.AsConstraintClauses(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
+                var constraints = typesForSymbols.AsConstraintClauses(Mock.Symbol.TypeParameters, Substitutions.FindSubstitution);
 
                 if (constraints.Any())
                 {
@@ -407,7 +407,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
             {
                 return F.ImplicitArrayCreationExpression(F.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                     F.SeparatedList<ExpressionSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                        F.TypeOfExpression(F.IdentifierName(Mock.Substitutions.FindSubstitution(typeParameter.Name)))))));
+                        F.TypeOfExpression(F.IdentifierName(Substitutions.FindSubstitution(typeParameter.Name)))))));
             }
 
             private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)
@@ -415,7 +415,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 var baseReturnType = Mock.Symbol.ReturnsVoid
                     ? F.PredefinedType(F.Token(SyntaxKind.VoidKeyword))
                     : typesForSymbols.ParseTypeName(Mock.Symbol.ReturnType, Mock.Symbol.ReturnTypeIsNullableOrOblivious(),
-                        Mock.Substitutions.FindSubstitution);
+                        Substitutions.FindSubstitution);
                 var returnType = baseReturnType;
 
                 if (Mock.Symbol.ReturnsByRef)
@@ -505,7 +505,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                     .WithTypeParameterList(TypeParameterList());
 
                 var constraints =
-                    typesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Mock.Substitutions.FindSubstitution);
+                    typesForSymbols.AsClassConstraintClausesForReferenceTypes(Mock.Symbol.TypeParameters, Substitutions.FindSubstitution);
                 if (constraints.Any())
                 {
                     m = m.AddConstraintClauses(constraints);
@@ -523,14 +523,14 @@ namespace Mocklis.MockGenerator.CodeGeneration
             private TypeParameterListSyntax TypeParameterList()
             {
                 return F.TypeParameterList(F.SeparatedList(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                    F.TypeParameter(Mock.Substitutions.FindSubstitution(typeParameter.Name)))));
+                    F.TypeParameter(Substitutions.FindSubstitution(typeParameter.Name)))));
             }
 
             private TypeArgumentListSyntax TypeArgumentList()
             {
                 return F.TypeArgumentList(
                     F.SeparatedList<TypeSyntax>(Mock.Symbol.TypeParameters.Select(typeParameter =>
-                        F.IdentifierName(Mock.Substitutions.FindSubstitution(typeParameter.Name)))));
+                        F.IdentifierName(Substitutions.FindSubstitution(typeParameter.Name)))));
             }
         }
     }

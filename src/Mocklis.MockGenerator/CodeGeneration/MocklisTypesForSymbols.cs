@@ -26,6 +26,10 @@ namespace Mocklis.MockGenerator.CodeGeneration
         private readonly ClassDeclarationSyntax _classDeclaration;
         private readonly MocklisSymbols _mocklisSymbols;
         private readonly bool _nullableContextEnabled;
+        private readonly MockSettings _settings;
+        private readonly INamedTypeSymbol _classSymbol;
+
+        public ITypeParameterSubstitutions BuildSubstitutions(IMethodSymbol methodSymbol) => Substitutions.Build(_classSymbol, methodSymbol);
 
         private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
@@ -34,12 +38,14 @@ namespace Mocklis.MockGenerator.CodeGeneration
             .InformationalVersion;
 
         public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
-            bool nullableContextEnabled)
+            bool nullableContextEnabled, MockSettings settings, INamedTypeSymbol classSymbol)
         {
             _semanticModel = semanticModel;
             _classDeclaration = classDeclaration;
             _mocklisSymbols = mocklisSymbols;
             _nullableContextEnabled = nullableContextEnabled;
+            _settings = settings;
+            _classSymbol = classSymbol;
         }
 
         public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, Func<string, string>? findTypeParameterName = null)
@@ -321,13 +327,13 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 })));
         }
 
-        public MemberAccessExpressionSyntax StrictnessExpression(bool strict, bool veryStrict)
+        public MemberAccessExpressionSyntax StrictnessExpression()
         {
-            return veryStrict ? StrictnessVeryStrict() : strict ? StrictnessStrict() : StrictnessLenient();
+            return _settings.VeryStrict ? StrictnessVeryStrict() : _settings.Strict ? StrictnessStrict() : StrictnessLenient();
         }
 
         public ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, string memberMockName, string className,
-            string interfaceName, string symbolName, bool strict, bool veryStrict)
+            string interfaceName, string symbolName)
         {
             return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 F.IdentifierName(memberMockName),
@@ -338,7 +344,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(symbolName)),
                         F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName)),
-                        StrictnessExpression(strict, veryStrict)
+                        StrictnessExpression()
                     )));
         }
 

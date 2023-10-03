@@ -130,16 +130,6 @@ namespace Mocklis.MockGenerator.CodeGeneration
                     .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
         }
 
-        public static string FullName(this ITypeSymbol typeSymbol)
-        {
-            if (typeSymbol.ContainingNamespace.IsGlobalNamespace)
-            {
-                return typeSymbol.Name;
-            }
-
-            return typeSymbol.ContainingNamespace.Name + "." + typeSymbol.Name;
-        }
-
         public static string? FindArglistParameterName(this IMethodSymbol symbol)
         {
             if (symbol.IsVararg)
