@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -18,8 +19,38 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
     #endregion
 
-    public sealed class VirtualMethodBasedMethodMock : IMemberMock
+    public sealed class VirtualMethodBasedMethodMock : IMemberMock, IEquatable<VirtualMethodBasedMethodMock>
     {
+        public bool Equals(VirtualMethodBasedMethodMock? other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is VirtualMethodBasedMethodMock other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(VirtualMethodBasedMethodMock? left, VirtualMethodBasedMethodMock? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(VirtualMethodBasedMethodMock? left, VirtualMethodBasedMethodMock? right)
+        {
+            return !Equals(left, right);
+        }
+
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
 

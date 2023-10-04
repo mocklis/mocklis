@@ -18,8 +18,38 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
     #endregion
 
-    public sealed class PropertyBasedIndexerMock : IMemberMock
+    public sealed class PropertyBasedIndexerMock : IMemberMock, IEquatable<PropertyBasedIndexerMock>
     {
+        public bool Equals(PropertyBasedIndexerMock? other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is PropertyBasedIndexerMock other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(PropertyBasedIndexerMock? left, PropertyBasedIndexerMock? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyBasedIndexerMock? left, PropertyBasedIndexerMock? right)
+        {
+            return !Equals(left, right);
+        }
+
         public IPropertySymbol Symbol { get; }
         public string MemberMockName { get; }
 

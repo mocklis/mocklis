@@ -10,6 +10,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
     #region Using Directives
 
     using System.Collections.Generic;
+    using System.Threading;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -40,7 +41,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
         public static ClassDeclarationSyntax UpdateMocklisClass(SemanticModel semanticModel, ClassDeclarationSyntax classDecl,
             MocklisSymbols mocklisSymbols)
         {
-            var classInformation = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel);
+            var classInformation = ExtractedClassInformation.BuildFromClassSymbol(classDecl, semanticModel, CancellationToken.None);
 
             var typesForSymbols = new MocklisTypesForSymbols(semanticModel, classDecl, mocklisSymbols, classInformation.NullableEnabled, classInformation.Settings, classInformation.ClassSymbol);
 

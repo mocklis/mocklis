@@ -27,7 +27,6 @@ public class MocklisSourceGenerator : IIncrementalGenerator
             .Where(static a => a != null)
             .Select(static (a, _) => a!)
             .WithTrackingName("Syntax");
-        // .WithComparer(EqualityComparer<MocklisClassInformation>.Default);
 
         context.RegisterSourceOutput(x, Execute);
     }
@@ -49,7 +48,7 @@ public class MocklisSourceGenerator : IIncrementalGenerator
     {
         if (context.TargetNode is ClassDeclarationSyntax cds)
         {
-            return ExtractedClassInformation.BuildFromClassSymbol(cds, context.SemanticModel);
+            return ExtractedClassInformation.BuildFromClassSymbol(cds, context.SemanticModel, cancellationToken);
         }
 
         return null;

@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -17,8 +18,38 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
     #endregion
 
-    public sealed class PropertyBasedEventMock : IMemberMock
+    public sealed class PropertyBasedEventMock : IMemberMock, IEquatable<PropertyBasedEventMock>
     {
+        public bool Equals(PropertyBasedEventMock? other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is PropertyBasedEventMock other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(PropertyBasedEventMock? left, PropertyBasedEventMock? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyBasedEventMock? left, PropertyBasedEventMock? right)
+        {
+            return !Equals(left, right);
+        }
+
         public IEventSymbol Symbol { get; }
         public string MemberMockName { get; }
 

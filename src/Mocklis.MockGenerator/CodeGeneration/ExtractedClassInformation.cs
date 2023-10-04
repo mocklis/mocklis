@@ -12,6 +12,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,8 +20,57 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public class ExtractedClassInformation
+public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInformation>
 {
+    public bool Equals(ExtractedClassInformation? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+
+        var ic = _interfaces.Length;
+        if (ic != other._interfaces.Length) return false;
+        for (int i = 0; i < ic; i++)
+        {
+            if (!_interfaces[i].Equals(other._interfaces[i]))
+            {
+                return false;
+            }
+        }
+        
+        return SymbolEqualityComparer.IncludeNullability.Equals(ClassSymbol, other.ClassSymbol) && NullableEnabled == other.NullableEnabled && Settings.Equals(other.Settings);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is ExtractedClassInformation other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = 0;
+            foreach (var i in _interfaces)
+            {
+                hashCode = (hashCode * 397) ^ i.GetHashCode();
+            }
+            hashCode = (hashCode * 397) ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(ClassSymbol);
+            hashCode = (hashCode * 397) ^ NullableEnabled.GetHashCode();
+            hashCode = (hashCode * 397) ^ Settings.GetHashCode();
+            return hashCode;
+        }
+    }
+
+    public static bool operator ==(ExtractedClassInformation? left, ExtractedClassInformation? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(ExtractedClassInformation? left, ExtractedClassInformation? right)
+    {
+        return !Equals(left, right);
+    }
+
     public INamedTypeSymbol ClassSymbol { get; }
     public bool NullableEnabled { get; }
     public MockSettings Settings { get; }
@@ -35,17 +85,21 @@ public class ExtractedClassInformation
         _interfaces = interfaces.ToArray();
     }
 
-    public static ExtractedClassInformation BuildFromClassSymbol(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel)
+    public static ExtractedClassInformation BuildFromClassSymbol(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
-        //TODO: Reinstate cancellation token...
-
         var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration) ??
                           throw new ArgumentException("symbol for class was not found in semantic model.", nameof(classDeclaration));
 
+        cancellationToken.ThrowIfCancellationRequested();
+
         var settings = GetSettingsFromAttribute(classDeclaration, classSymbol, semanticModel.Compilation);
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         var nullableAnnotationsEnabled = FindNullableAnnotationsEnabled(classDeclaration, semanticModel);
         // TODO: Add test case(s) for when there is compilation enabled nullable enabled and no specific annotation in the source file
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         var baseTypeSymbol = classSymbol.BaseType;
 
@@ -58,6 +112,8 @@ public class ExtractedClassInformation
                 uniquifier.ReserveName(memberSymbol.Name);
             }
         }
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         var interfaces = new List<ExtractedInterfaceInformation>();
         
@@ -87,6 +143,8 @@ public class ExtractedClassInformation
                 {
                     memberSymbols.Add(mock);
                 }
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             if (memberSymbols.Any())

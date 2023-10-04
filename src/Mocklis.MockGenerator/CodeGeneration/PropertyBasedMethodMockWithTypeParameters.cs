@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -18,8 +19,41 @@ namespace Mocklis.MockGenerator.CodeGeneration
 
     #endregion
 
-    public sealed class PropertyBasedMethodMockWithTypeParameters : IMemberMock
+    public sealed class PropertyBasedMethodMockWithTypeParameters : IMemberMock, IEquatable<PropertyBasedMethodMockWithTypeParameters>
     {
+        public bool Equals(PropertyBasedMethodMockWithTypeParameters? other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName && MockProviderName == other.MockProviderName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is PropertyBasedMethodMockWithTypeParameters other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol);
+                hashCode = (hashCode * 397) ^ MemberMockName.GetHashCode();
+                hashCode = (hashCode * 397) ^ MockProviderName.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(PropertyBasedMethodMockWithTypeParameters? left, PropertyBasedMethodMockWithTypeParameters? right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyBasedMethodMockWithTypeParameters? left, PropertyBasedMethodMockWithTypeParameters? right)
+        {
+            return !Equals(left, right);
+        }
+
         public IMethodSymbol Symbol { get; }
         public string MemberMockName { get; }
         public string MockProviderName { get; }
