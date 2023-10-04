@@ -5,227 +5,229 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
-{
-    #region Using Directives
+namespace Mocklis.MockGenerator.CodeGeneration;
 
-    using System;
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+#endregion
+
+public sealed class VirtualMethodBasedPropertyMock : IMemberMock, IEquatable<VirtualMethodBasedPropertyMock>
+{
+    #region Equality Members
+
+    public bool Equals(VirtualMethodBasedPropertyMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is VirtualMethodBasedPropertyMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
+    {
+        return !Equals(left, right);
+    }
 
     #endregion
 
-    public sealed class VirtualMethodBasedPropertyMock : IMemberMock, IEquatable<VirtualMethodBasedPropertyMock>
+    public IPropertySymbol Symbol { get; }
+    public string MemberMockName { get; }
+
+    public VirtualMethodBasedPropertyMock(IPropertySymbol symbol, string mockMemberName)
     {
-        public bool Equals(VirtualMethodBasedPropertyMock? other)
+        Symbol = symbol;
+        MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+        if (!Symbol.IsWriteOnly)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+            ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}()");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualPropertyGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
         }
 
-        public override bool Equals(object? obj)
+        if (!Symbol.IsReadOnly)
         {
-            return ReferenceEquals(this, obj) || obj is VirtualMethodBasedPropertyMock other && Equals(other);
+            ctx.AppendLine($"protected virtual void {MemberMockName}({valueTypeWithoutReadonly} value)");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualPropertySet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
         }
 
-        public override int GetHashCode()
+        ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}");
+
+        if (Symbol.IsReadOnly)
         {
-            unchecked
+            ctx.Append(" => ");
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
             {
-                return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+                ctx.Append("ref ");
             }
+
+            ctx.AppendLine($"{MemberMockName}();");
         }
-
-        public static bool operator ==(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
+        else
         {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
-        {
-            return !Equals(left, right);
-        }
-
-
-        public IPropertySymbol Symbol { get; }
-        public string MemberMockName { get; }
-
-        public VirtualMethodBasedPropertyMock(IPropertySymbol symbol, string mockMemberName)
-        {
-            Symbol = symbol;
-            MemberMockName = mockMemberName;
-        }
-
-        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
-            NameSyntax interfaceNameSyntax, string className, string interfaceName)
-        {
-            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
-            syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
-        }
-
-        public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
-        {
-            var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+            ctx.Append(" { ");
 
             if (!Symbol.IsWriteOnly)
             {
-                ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}()");
-                ctx.AppendLine("{");
-                ctx.IncreaseIndent();
-                ctx.AppendThrow("VirtualPropertyGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
-                ctx.DecreaseIndent();
-                ctx.AppendLine("}");
-                ctx.AppendSeparator();
+                ctx.Append($"get => {MemberMockName}(); ");
             }
 
             if (!Symbol.IsReadOnly)
             {
-                ctx.AppendLine($"protected virtual void {MemberMockName}({valueTypeWithoutReadonly} value)");
-                ctx.AppendLine("{");
-                ctx.IncreaseIndent();
-                ctx.AppendThrow("VirtualPropertySet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
-                ctx.DecreaseIndent();
-                ctx.AppendLine("}");
-                ctx.AppendSeparator();
+                ctx.Append($"set => {MemberMockName}(value); ");
             }
 
-            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}");
+            ctx.AppendLine("}");
+        }
 
-            if (Symbol.IsReadOnly)
+        ctx.AppendSeparator();
+    }
+
+    public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+        NameSyntax interfaceNameSyntax, string className, string interfaceName)
+    {
+        var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+        syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
+    }
+
+    public class SyntaxAdder
+    {
+        private readonly VirtualMethodBasedPropertyMock _mock;
+        private readonly MocklisTypesForSymbols _typesForSymbols;
+
+        public SyntaxAdder(VirtualMethodBasedPropertyMock mock, MocklisTypesForSymbols typesForSymbols)
+        {
+            _mock = mock;
+            _typesForSymbols = typesForSymbols;
+        }
+
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
+        {
+            var valueTypeWithoutReadonly = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
+            var valueType = valueTypeWithoutReadonly;
+
+            if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
             {
-                ctx.Append(" => ");
-                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                RefTypeSyntax tmp = F.RefType(valueTypeWithoutReadonly);
+                valueTypeWithoutReadonly = tmp;
+                valueType = tmp;
+                if (_mock.Symbol.ReturnsByRefReadonly)
                 {
-                    ctx.Append("ref ");
+                    valueType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                }
+            }
+
+            if (!_mock.Symbol.IsWriteOnly)
+            {
+                declarationList.Add(MockGetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
+            }
+
+            if (!_mock.Symbol.IsReadOnly)
+            {
+                declarationList.Add(MockSetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
+            }
+
+            declarationList.Add(ExplicitInterfaceMember(valueType, interfaceNameSyntax));
+        }
+
+        // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
+        private MemberDeclarationSyntax MockGetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
+        {
+            return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
+                .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
+                .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name)));
+        }
+
+        // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
+        private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
+        {
+            return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
+                .WithParameterList(F.ParameterList(F.SeparatedList(new[]
+                {
+                    F.Parameter(F.Identifier("value")).WithType(valueTypeSyntax)
+                })))
+                .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
+                .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name)));
+        }
+
+        private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)
+        {
+            var mockedProperty = F.PropertyDeclaration(valueWithReadonlyTypeSyntax, _mock.Symbol.Name)
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
+
+            if (_mock.Symbol.IsReadOnly)
+            {
+                ExpressionSyntax invocation = F.InvocationExpression(F.IdentifierName(_mock.MemberMockName));
+                if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
+                {
+                    invocation = F.RefExpression(invocation);
                 }
 
-                ctx.AppendLine($"{MemberMockName}();");
+                mockedProperty = mockedProperty
+                    .WithExpressionBody(F.ArrowExpressionClause(invocation))
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {
-                ctx.Append(" { ");
-
-                if (!Symbol.IsWriteOnly)
-                {
-                    ctx.Append($"get => {MemberMockName}(); ");
-                }
-
-                if (!Symbol.IsReadOnly)
-                {
-                    ctx.Append($"set => {MemberMockName}(value); ");
-                }
-
-                ctx.AppendLine("}");
-            }
-
-            ctx.AppendSeparator();
-        }
-
-        public class SyntaxAdder
-        {
-            private readonly VirtualMethodBasedPropertyMock _mock;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
-
-            public SyntaxAdder(VirtualMethodBasedPropertyMock mock, MocklisTypesForSymbols typesForSymbols)
-            {
-                _mock = mock;
-                _typesForSymbols = typesForSymbols;
-            }
-
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className, string interfaceName)
-            {
-                var valueTypeWithoutReadonly = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
-                var valueType = valueTypeWithoutReadonly;
-
-                if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
-                {
-                    RefTypeSyntax tmp = F.RefType(valueTypeWithoutReadonly);
-                    valueTypeWithoutReadonly = tmp;
-                    valueType = tmp;
-                    if (_mock.Symbol.ReturnsByRefReadonly)
-                    {
-                        valueType = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
-                    }
-                }
-
                 if (!_mock.Symbol.IsWriteOnly)
                 {
-                    declarationList.Add(MockGetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
+                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
                 }
 
                 if (!_mock.Symbol.IsReadOnly)
                 {
-                    declarationList.Add(MockSetVirtualMethod(valueTypeWithoutReadonly, className, interfaceName));
+                    mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
+                            F.ArgumentList(F.SeparatedList(new[] { F.Argument(F.IdentifierName("value")) })))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
                 }
-
-                declarationList.Add(ExplicitInterfaceMember(valueType, interfaceNameSyntax));
             }
 
-            // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
-            private MemberDeclarationSyntax MockGetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
-            {
-                return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
-                    .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertyGet", _mock.MemberMockName, className, interfaceName,
-                        _mock.Symbol.Name)));
-            }
-
-            // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
-            private MemberDeclarationSyntax MockSetVirtualMethod(TypeSyntax valueTypeSyntax, string className, string interfaceName)
-            {
-                return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
-                    .WithParameterList(F.ParameterList(F.SeparatedList(new[]
-                    {
-                        F.Parameter(F.Identifier("value")).WithType(valueTypeSyntax)
-                    })))
-                    .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithBody(F.Block(_typesForSymbols.ThrowMockMissingStatement("VirtualPropertySet", _mock.MemberMockName, className, interfaceName,
-                        _mock.Symbol.Name)));
-            }
-
-            private MemberDeclarationSyntax ExplicitInterfaceMember(TypeSyntax valueWithReadonlyTypeSyntax, NameSyntax interfaceNameSyntax)
-            {
-                var mockedProperty = F.PropertyDeclaration(valueWithReadonlyTypeSyntax, _mock.Symbol.Name)
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-
-                if (_mock.Symbol.IsReadOnly)
-                {
-                    ExpressionSyntax invocation = F.InvocationExpression(F.IdentifierName(_mock.MemberMockName));
-                    if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
-                    {
-                        invocation = F.RefExpression(invocation);
-                    }
-
-                    mockedProperty = mockedProperty
-                        .WithExpressionBody(F.ArrowExpressionClause(invocation))
-                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
-                }
-                else
-                {
-                    if (!_mock.Symbol.IsWriteOnly)
-                    {
-                        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName))))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                        );
-                    }
-
-                    if (!_mock.Symbol.IsReadOnly)
-                    {
-                        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
-                                F.ArgumentList(F.SeparatedList(new[] { F.Argument(F.IdentifierName("value")) })))))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                        );
-                    }
-                }
-
-                return mockedProperty;
-            }
+            return mockedProperty;
         }
     }
 }

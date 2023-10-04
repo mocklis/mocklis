@@ -5,129 +5,128 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration;
+
+#region Using Directives
+
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+
+#endregion
+
+public sealed class SingleTypeOrValueTupleBuilder
 {
-    #region Using Directives
-
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using Microsoft.CodeAnalysis;
-
-    #endregion
-
-    public sealed class SingleTypeOrValueTupleBuilder
+    private readonly struct BuilderEntry
     {
-        private readonly struct BuilderEntry
+        public BuilderEntry(string originalName, ITypeSymbol typeSymbol, bool isNullable, bool isReturnValue)
         {
-            public BuilderEntry(string originalName, ITypeSymbol typeSymbol, bool isNullable, bool isReturnValue)
+            OriginalName = originalName;
+            TypeSymbol = typeSymbol;
+            IsNullable = isNullable;
+            IsReturnValue = isReturnValue;
+        }
+
+        public string OriginalName { get; }
+        public ITypeSymbol TypeSymbol { get; }
+        public bool IsNullable { get; }
+        public bool IsReturnValue { get; }
+    }
+
+    private List<BuilderEntry> Items { get; } = new();
+
+    public void AddParameter(IParameterSymbol parameter)
+    {
+        Items.Add(new BuilderEntry(parameter.Name, parameter.Type, parameter.NullableOrOblivious(), false));
+    }
+
+    public void AddReturnValue(ITypeSymbol returnType, bool nullable)
+    {
+        Items.Add(new BuilderEntry("returnValue", returnType, nullable, true));
+    }
+
+    public SingleTypeOrValueTuple Build(string? mockMemberName = null)
+    {
+        mockMemberName ??= string.Empty;
+
+        int count = Items.Count;
+
+        SingleTypeOrValueTuple.Entry[] entries = new SingleTypeOrValueTuple.Entry[Items.Count];
+
+        if (count > 0)
+        {
+            if (count > 1)
             {
-                OriginalName = originalName;
-                TypeSymbol = typeSymbol;
-                IsNullable = isNullable;
-                IsReturnValue = isReturnValue;
-            }
+                var uniquifier = new Uniquifier(new[] { mockMemberName });
 
-            public string OriginalName { get; }
-            public ITypeSymbol TypeSymbol { get; }
-            public bool IsNullable { get; }
-            public bool IsReturnValue { get; }
-        }
-
-        private List<BuilderEntry> Items { get; } = new();
-
-        public void AddParameter(IParameterSymbol parameter)
-        {
-            Items.Add(new BuilderEntry(parameter.Name, parameter.Type, parameter.NullableOrOblivious(), false));
-        }
-
-        public void AddReturnValue(ITypeSymbol returnType, bool nullable)
-        {
-            Items.Add(new BuilderEntry("returnValue", returnType, nullable, true));
-        }
-
-        public SingleTypeOrValueTuple Build(string? mockMemberName = null)
-        {
-            mockMemberName ??= string.Empty;
-
-            int count = Items.Count;
-
-            SingleTypeOrValueTuple.Entry[] entries = new SingleTypeOrValueTuple.Entry[Items.Count];
-
-            if (count > 0)
-            {
-                if (count > 1)
+                for (int i = 0; i < count; i++)
                 {
-                    var uniquifier = new Uniquifier(new[] { mockMemberName });
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        var item = Items[i];
-                        string name = item.OriginalName;
-                        name = name == mockMemberName ? name + "_" : name;
-                        if (IsNameValidForPosition(name, i))
-                        {
-                            entries[i] = new SingleTypeOrValueTuple.Entry(
-                                item.OriginalName,
-                                item.TypeSymbol,
-                                item.IsNullable,
-                                item.IsReturnValue,
-                                uniquifier.GetUniqueName(name));
-                        }
-                    }
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        var item = Items[i];
-                        string name = item.OriginalName;
-                        name = name == mockMemberName ? name + "_" : name;
-                        if (!IsNameValidForPosition(name, i))
-                        {
-                            entries[i] = new SingleTypeOrValueTuple.Entry(
-                                item.OriginalName,
-                                item.TypeSymbol,
-                                item.IsNullable,
-                                item.IsReturnValue,
-                                uniquifier.GetUniqueName(name + "_"));
-                        }
-                    }
-                }
-                else
-                {
-                    var item = Items[0];
+                    var item = Items[i];
                     string name = item.OriginalName;
                     name = name == mockMemberName ? name + "_" : name;
-                    entries[0] = new SingleTypeOrValueTuple.Entry(item.OriginalName, item.TypeSymbol, item.IsNullable, item.IsReturnValue, name);
+                    if (IsNameValidForPosition(name, i))
+                    {
+                        entries[i] = new SingleTypeOrValueTuple.Entry(
+                            item.OriginalName,
+                            item.TypeSymbol,
+                            item.IsNullable,
+                            item.IsReturnValue,
+                            uniquifier.GetUniqueName(name));
+                    }
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    var item = Items[i];
+                    string name = item.OriginalName;
+                    name = name == mockMemberName ? name + "_" : name;
+                    if (!IsNameValidForPosition(name, i))
+                    {
+                        entries[i] = new SingleTypeOrValueTuple.Entry(
+                            item.OriginalName,
+                            item.TypeSymbol,
+                            item.IsNullable,
+                            item.IsReturnValue,
+                            uniquifier.GetUniqueName(name + "_"));
+                    }
                 }
             }
-
-            return new SingleTypeOrValueTuple(entries);
+            else
+            {
+                var item = Items[0];
+                string name = item.OriginalName;
+                name = name == mockMemberName ? name + "_" : name;
+                entries[0] = new SingleTypeOrValueTuple.Entry(item.OriginalName, item.TypeSymbol, item.IsNullable, item.IsReturnValue, name);
+            }
         }
 
-        private static bool IsNameValidForPosition(string name, int position)
+        return new SingleTypeOrValueTuple(entries);
+    }
+
+    private static bool IsNameValidForPosition(string name, int position)
+    {
+        if (!name.StartsWith("Item"))
         {
-            if (!name.StartsWith("Item"))
-            {
-                return true;
-            }
-
-            string rest = name.Substring(4);
-            if (rest == string.Empty)
-            {
-                return true;
-            }
-
-            if (rest[0] == '0')
-            {
-                return true;
-            }
-
-            if (rest == (position + 1).ToString(CultureInfo.InvariantCulture))
-            {
-                return true;
-            }
-
-            return rest.Any(ch => ch < '0' || ch > '9');
+            return true;
         }
+
+        string rest = name.Substring(4);
+        if (rest == string.Empty)
+        {
+            return true;
+        }
+
+        if (rest[0] == '0')
+        {
+            return true;
+        }
+
+        if (rest == (position + 1).ToString(CultureInfo.InvariantCulture))
+        {
+            return true;
+        }
+
+        return rest.Any(ch => ch < '0' || ch > '9');
     }
 }

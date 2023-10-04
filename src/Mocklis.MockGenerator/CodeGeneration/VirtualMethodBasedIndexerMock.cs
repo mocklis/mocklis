@@ -5,255 +5,258 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
-{
-    #region Using Directives
+namespace Mocklis.MockGenerator.CodeGeneration;
 
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+#endregion
+
+// TODO: Check if one of the paramaters can be named 'value'
+public sealed class VirtualMethodBasedIndexerMock : IMemberMock, IEquatable<VirtualMethodBasedIndexerMock>
+{
+    #region Equality Members
+
+    public bool Equals(VirtualMethodBasedIndexerMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is VirtualMethodBasedIndexerMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
+    {
+        return !Equals(left, right);
+    }
 
     #endregion
 
-    // TODO: Check if one of the paramaters can be named 'value'
-    public sealed class VirtualMethodBasedIndexerMock : IMemberMock, IEquatable<VirtualMethodBasedIndexerMock>
+    public IPropertySymbol Symbol { get; }
+    public string MemberMockName { get; }
+
+    public VirtualMethodBasedIndexerMock(IPropertySymbol symbol, string mockMemberName)
     {
-        public bool Equals(VirtualMethodBasedIndexerMock? other)
+        Symbol = symbol;
+        MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+        var builder = new SingleTypeOrValueTupleBuilder();
+        foreach (var p in Symbol.Parameters)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+            builder.AddParameter(p);
         }
 
-        public override bool Equals(object? obj)
+        string paramList = ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty);
+        string arglist = ctx.BuildArgumentList(Symbol.Parameters);
+
+        if (!Symbol.IsWriteOnly)
         {
-            return ReferenceEquals(this, obj) || obj is VirtualMethodBasedIndexerMock other && Equals(other);
+            ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}({paramList})");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualIndexerGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
         }
 
-        public override int GetHashCode()
+        if (!Symbol.IsReadOnly)
         {
-            unchecked
+            ctx.AppendLine($"protected virtual void {MemberMockName}({paramList}, {valueTypeWithoutReadonly} value)");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualIndexerSet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+        }
+
+        ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.this[{paramList}]");
+
+        if (Symbol.IsReadOnly)
+        {
+            ctx.Append(" => ");
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
             {
-                return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
-            }
-        }
-
-        public static bool operator ==(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
-        {
-            return !Equals(left, right);
-        }
-
-        public IPropertySymbol Symbol { get; }
-        public string MemberMockName { get; }
-
-        public VirtualMethodBasedIndexerMock(IPropertySymbol symbol, string mockMemberName)
-        {
-            Symbol = symbol;
-            MemberMockName = mockMemberName;
-        }
-
-        public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
-            NameSyntax interfaceNameSyntax, string className, string interfaceName)
-        {
-            var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
-            syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
-        }
-
-        public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
-        {
-            var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
-
-            var builder = new SingleTypeOrValueTupleBuilder();
-            foreach (var p in Symbol.Parameters)
-            {
-                builder.AddParameter(p);
+                ctx.Append("ref ");
             }
 
-            string paramList = ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty);
-            string arglist = ctx.BuildArgumentList(Symbol.Parameters);
+            ctx.AppendLine($"{MemberMockName}({arglist});");
+        }
+        else
+        {
+            ctx.Append(" { ");
 
             if (!Symbol.IsWriteOnly)
             {
-                ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}({paramList})");
-                ctx.AppendLine("{");
-                ctx.IncreaseIndent();
-                ctx.AppendThrow("VirtualIndexerGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
-                ctx.DecreaseIndent();
-                ctx.AppendLine("}");
-                ctx.AppendSeparator();
+                ctx.Append($"get => {MemberMockName}({arglist}); ");
             }
 
             if (!Symbol.IsReadOnly)
             {
-                ctx.AppendLine($"protected virtual void {MemberMockName}({paramList}, {valueTypeWithoutReadonly} value)");
-                ctx.AppendLine("{");
-                ctx.IncreaseIndent();
-                ctx.AppendThrow("VirtualIndexerSet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
-                ctx.DecreaseIndent();
-                ctx.AppendLine("}");
-                ctx.AppendSeparator();
+                ctx.Append($"set => {MemberMockName}({arglist}, value); ");
             }
 
-            ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.this[{paramList}]");
+            ctx.AppendLine("}");
+        }
 
-            if (Symbol.IsReadOnly)
+        ctx.AppendSeparator();
+    }
+
+    public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList, List<StatementSyntax> constructorStatements,
+        NameSyntax interfaceNameSyntax, string className, string interfaceName)
+    {
+        var syntaxAdder = new SyntaxAdder(this, typesForSymbols);
+        syntaxAdder.AddMembersToClass(declarationList, interfaceNameSyntax, className, interfaceName);
+    }
+
+    private class SyntaxAdder
+    {
+        private readonly VirtualMethodBasedIndexerMock _mock;
+        private readonly MocklisTypesForSymbols _typesForSymbols;
+
+        public SyntaxAdder(VirtualMethodBasedIndexerMock mock, MocklisTypesForSymbols typesForSymbols)
+        {
+            _mock = mock;
+            _typesForSymbols = typesForSymbols;
+        }
+
+        public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
+            string interfaceName)
+        {
+            var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
+            var valueWithReadonlyTypeSyntax = valueTypeSyntax;
+
+            if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
             {
-                ctx.Append(" => ");
-                if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+                RefTypeSyntax tmp = F.RefType(valueTypeSyntax);
+                valueTypeSyntax = tmp;
+                valueWithReadonlyTypeSyntax = tmp;
+                if (_mock.Symbol.ReturnsByRefReadonly)
                 {
-                    ctx.Append("ref ");
+                    valueWithReadonlyTypeSyntax = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
+                }
+            }
+
+            if (!_mock.Symbol.IsWriteOnly)
+            {
+                declarationList.Add(MockGetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
+            }
+
+            if (!_mock.Symbol.IsReadOnly)
+            {
+                declarationList.Add(MockSetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
+            }
+
+            declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, valueWithReadonlyTypeSyntax, interfaceNameSyntax));
+        }
+
+        // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
+        private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
+            string interfaceName)
+        {
+            return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
+                .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
+                .WithParameterList(F.ParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
+                .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name)));
+        }
+
+        // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
+        private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
+            string interfaceName)
+        {
+            var uniquifier = new Uniquifier(_mock.Symbol.Parameters.Select(p => p.Name));
+
+            var parameterList = F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))
+                .Add(F.Parameter(F.Identifier(uniquifier.GetUniqueName("value"))).WithType(valueTypeSyntax));
+
+            return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
+                .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
+                .WithParameterList(F.ParameterList(parameterList))
+                .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, className, interfaceName,
+                    _mock.Symbol.Name)));
+        }
+
+        private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax,
+            NameSyntax interfaceNameSyntax)
+        {
+            var mockedIndexer = F.IndexerDeclaration(valueWithReadonlyTypeSyntax)
+                .WithParameterList(F.BracketedParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
+                    F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
+                .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
+
+            if (_mock.Symbol.IsReadOnly)
+            {
+                ExpressionSyntax invocation = F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
+                    F.ArgumentList(F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))))));
+                if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
+                {
+                    invocation = F.RefExpression(invocation);
                 }
 
-                ctx.AppendLine($"{MemberMockName}({arglist});");
+                mockedIndexer = mockedIndexer
+                    .WithExpressionBody(F.ArrowExpressionClause(invocation))
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
             }
             else
             {
-                ctx.Append(" { ");
-
-                if (!Symbol.IsWriteOnly)
-                {
-                    ctx.Append($"get => {MemberMockName}({arglist}); ");
-                }
-
-                if (!Symbol.IsReadOnly)
-                {
-                    ctx.Append($"set => {MemberMockName}({arglist}, value); ");
-                }
-
-                ctx.AppendLine("}");
-            }
-
-            ctx.AppendSeparator();
-        }
-
-        private class SyntaxAdder
-        {
-            private readonly VirtualMethodBasedIndexerMock _mock;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
-
-            public SyntaxAdder(VirtualMethodBasedIndexerMock mock, MocklisTypesForSymbols typesForSymbols)
-            {
-                _mock = mock;
-                _typesForSymbols = typesForSymbols;
-            }
-
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList, NameSyntax interfaceNameSyntax, string className,
-                string interfaceName)
-            {
-                var valueTypeSyntax = _typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
-                var valueWithReadonlyTypeSyntax = valueTypeSyntax;
-
-                if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
-                {
-                    RefTypeSyntax tmp = F.RefType(valueTypeSyntax);
-                    valueTypeSyntax = tmp;
-                    valueWithReadonlyTypeSyntax = tmp;
-                    if (_mock.Symbol.ReturnsByRefReadonly)
-                    {
-                        valueWithReadonlyTypeSyntax = tmp.WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
-                    }
-                }
-
                 if (!_mock.Symbol.IsWriteOnly)
                 {
-                    declarationList.Add(MockGetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
+                    var argumentList = F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))));
+
+                    mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName))
+                            .WithArgumentList(F.ArgumentList(argumentList))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
                 }
 
                 if (!_mock.Symbol.IsReadOnly)
                 {
-                    declarationList.Add(MockSetVirtualMethod(_typesForSymbols, valueTypeSyntax, className, interfaceName));
+                    var argumentList = F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))))
+                        .Add(F.Argument(F.IdentifierName("value")));
+
+                    mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
+                            F.ArgumentList(argumentList))))
+                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                    );
                 }
-
-                declarationList.Add(ExplicitInterfaceMember(_typesForSymbols, valueWithReadonlyTypeSyntax, interfaceNameSyntax));
             }
 
-            // TODO: Consider whether a 'default' implementation in lenient mode is to return default values.
-            private MemberDeclarationSyntax MockGetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
-                string interfaceName)
-            {
-                return F.MethodDeclaration(valueTypeSyntax, F.Identifier(_mock.MemberMockName))
-                    .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithParameterList(F.ParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
-                        F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerGet", _mock.MemberMockName, className, interfaceName,
-                        _mock.Symbol.Name)));
-            }
-
-            // TODO: Consider whether a 'default' implementation in lenient mode is to do nothing.
-            private MemberDeclarationSyntax MockSetVirtualMethod(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueTypeSyntax, string className,
-                string interfaceName)
-            {
-                var uniquifier = new Uniquifier(_mock.Symbol.Parameters.Select(p => p.Name));
-
-                var parameterList = F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
-                        F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))
-                    .Add(F.Parameter(F.Identifier(uniquifier.GetUniqueName("value"))).WithType(valueTypeSyntax));
-
-                return F.MethodDeclaration(F.PredefinedType(F.Token(SyntaxKind.VoidKeyword)), F.Identifier(_mock.MemberMockName))
-                    .WithModifiers(F.TokenList(F.Token(SyntaxKind.ProtectedKeyword), F.Token(SyntaxKind.VirtualKeyword)))
-                    .WithParameterList(F.ParameterList(parameterList))
-                    .WithBody(F.Block(typesForSymbols.ThrowMockMissingStatement("VirtualIndexerSet", _mock.MemberMockName, className, interfaceName,
-                        _mock.Symbol.Name)));
-            }
-
-            private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, TypeSyntax valueWithReadonlyTypeSyntax,
-                NameSyntax interfaceNameSyntax)
-            {
-                var mockedIndexer = F.IndexerDeclaration(valueWithReadonlyTypeSyntax)
-                    .WithParameterList(F.BracketedParameterList(F.SeparatedList(_mock.Symbol.Parameters.Select(a =>
-                        F.Parameter(F.Identifier(a.Name)).WithType(typesForSymbols.ParseTypeName(a.Type, a.NullableOrOblivious()))))))
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
-
-                if (_mock.Symbol.IsReadOnly)
-                {
-                    ExpressionSyntax invocation = F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
-                        F.ArgumentList(F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))))));
-                    if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
-                    {
-                        invocation = F.RefExpression(invocation);
-                    }
-
-                    mockedIndexer = mockedIndexer
-                        .WithExpressionBody(F.ArrowExpressionClause(invocation))
-                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
-                }
-                else
-                {
-                    if (!_mock.Symbol.IsWriteOnly)
-                    {
-                        var argumentList = F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))));
-
-                        mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName))
-                                .WithArgumentList(F.ArgumentList(argumentList))))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                        );
-                    }
-
-                    if (!_mock.Symbol.IsReadOnly)
-                    {
-                        var argumentList = F.SeparatedList(_mock.Symbol.Parameters.Select(a => F.Argument(F.IdentifierName(a.Name))))
-                            .Add(F.Argument(F.IdentifierName("value")));
-
-                        mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(F.IdentifierName(_mock.MemberMockName),
-                                F.ArgumentList(argumentList))))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                        );
-                    }
-                }
-
-                return mockedIndexer;
-            }
+            return mockedIndexer;
         }
     }
 }

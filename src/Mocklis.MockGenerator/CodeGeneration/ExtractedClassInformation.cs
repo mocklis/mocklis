@@ -138,7 +138,7 @@ public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInforma
                     continue;
                 }
 
-                var mock = CreateMock(semanticModel.Compilation, classSymbol, memberSymbol, uniquifier, settings);
+                var mock = CreateMock(semanticModel.Compilation, memberSymbol, uniquifier, settings);
                 if (mock != null)
                 {
                     memberSymbols.Add(mock);
@@ -174,8 +174,7 @@ public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInforma
         return nullableAnnotationsEnabled;
     }
 
-    private static IMemberMock? CreateMock(Compilation compilation, INamedTypeSymbol classSymbol, ISymbol memberSymbol,
-        Uniquifier uniquifier, MockSettings settings)
+    private static IMemberMock? CreateMock(Compilation compilation, ISymbol memberSymbol, Uniquifier uniquifier, MockSettings settings)
     {
         string mockMemberName = uniquifier.GetUniqueName(memberSymbol.MetadataName);
 

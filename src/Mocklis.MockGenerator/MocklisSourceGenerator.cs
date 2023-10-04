@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator;
 
 #region Using Directives
 
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -26,8 +27,9 @@ public class MocklisSourceGenerator : IIncrementalGenerator
             .ForAttributeWithMetadataName("Mocklis.Core.MocklisClassAttribute", Predicate, Transform)
             .Where(static a => a != null)
             .Select(static (a, _) => a!)
-            .WithTrackingName("Syntax");
-
+            .WithTrackingName("Syntax")
+            .WithComparer(EqualityComparer<ExtractedClassInformation>.Default);
+            
         context.RegisterSourceOutput(x, Execute);
     }
 
