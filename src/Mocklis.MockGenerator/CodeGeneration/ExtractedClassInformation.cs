@@ -464,26 +464,7 @@ public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInforma
 
     private IMethodSymbol[] BaseTypeConstructors()
     {
-        static bool CanAccessConstructor(IMethodSymbol constructor)
-        {
-            // TODO: Should we consider allowing access to internal constructors as well - if they can be seen?
-            switch (constructor.DeclaredAccessibility)
-            {
-                case Accessibility.Protected:
-                case Accessibility.ProtectedOrInternal:
-                case Accessibility.Public:
-                {
-                    return true;
-                }
-
-                default:
-                {
-                    return false;
-                }
-            }
-        }
-
-        var baseTypeConstructors = ClassSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && CanAccessConstructor(c))
+        var baseTypeConstructors = ClassSymbol.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && c.CanBeAccessedBySubClass())
             .ToArray() ?? Array.Empty<IMethodSymbol>();
 
         return baseTypeConstructors;

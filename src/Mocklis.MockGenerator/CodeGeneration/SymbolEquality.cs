@@ -9,7 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 public static class SymbolEquality
@@ -34,11 +34,11 @@ public static class SymbolEquality
         return (x.Name == y.Name && SameNamespace(x.ContainingNamespace, y.ContainingNamespace));
     }
 
-    private static bool SameArray<T>(ImmutableArray<T> x, ImmutableArray<T> y, Func<T, T, bool> comparer)
+    private static bool SameArray<T>(IReadOnlyList<T> x, IReadOnlyList<T> y, Func<T, T, bool> comparer)
     {
-        if (x.Length != y.Length) return false;
+        if (x.Count != y.Count) return false;
 
-        for (var i = 0; i < x.Length; i++)
+        for (var i = 0; i < x.Count; i++)
         {
             if (!comparer(x[i], y[i])) return false;
         }
@@ -87,12 +87,12 @@ public static class SymbolEquality
             if (!SameNamespace(x.ContainingNamespace, y.ContainingNamespace)) return false;
 
             // have the same constructors
-            if (!SameArray(x.Constructors, y.Constructors, SameConstructor)) return false;
+            var xConst = x.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && c.CanBeAccessedBySubClass()).ToArray() ?? Array.Empty<IMethodSymbol>();
+            var yConst = y.BaseType?.Constructors.Where(c => !c.IsStatic && !c.IsVararg && c.CanBeAccessedBySubClass()).ToArray() ?? Array.Empty<IMethodSymbol>();
+            if (!SameArray(xConst, yConst, SameConstructor)) return false;
 
             // have the same type parameters
             if (!SameArray(x.TypeParameters, y.TypeParameters, SameTypeParameter)) return false;
-
-            // Full list of member names?
 
             return true;
         }
@@ -152,6 +152,10 @@ public static class SymbolEquality
     {
         public bool Equals(IPropertySymbol x, IPropertySymbol y)
         {
+            if (x.IsReadOnly != y.IsReadOnly) return false;
+
+            if (x.IsWriteOnly != y.IsWriteOnly) return false;
+
             // same name
             if (x.Name != y.Name) return false;
 

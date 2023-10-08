@@ -160,4 +160,23 @@ public static class RoslynExtensions
     {
         return propertySymbol.NullableAnnotation != NullableAnnotation.NotAnnotated;
     }
+
+    public static bool CanBeAccessedBySubClass(this IMethodSymbol methodSymbol)
+    {
+        // TODO: Should we consider allowing access to internal methods as well - if they can be seen?
+        switch (methodSymbol.DeclaredAccessibility)
+        {
+            case Accessibility.Protected:
+            case Accessibility.ProtectedOrInternal:
+            case Accessibility.Public:
+            {
+                return true;
+            }
+
+            default:
+            {
+                return false;
+            }
+        }
+    }
 }
