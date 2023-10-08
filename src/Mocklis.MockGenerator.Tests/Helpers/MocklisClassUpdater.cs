@@ -31,26 +31,29 @@ namespace Mocklis.MockGenerator.Helpers
     {
         #region Static
 
-        private static Document CreateDocument(string source, LanguageVersion languageVersion)
+        public static AdhocWorkspace CreateWorkspace(string source, LanguageVersion languageVersion, out ProjectId projectId, out DocumentId documentId)
         {
             string projectName = "TestProject";
-            var projectId = ProjectId.CreateNewId(debugName: projectName);
+            projectId = ProjectId.CreateNewId(debugName: projectName);
 
             var documentFileName = "Test.cs";
-            var documentId = DocumentId.CreateNewId(projectId, debugName: documentFileName);
 
             var projectInfo = ProjectInfo.Create(projectId, VersionStamp.Default, projectName, projectName, LanguageNames.CSharp,
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 parseOptions: new CSharpParseOptions(languageVersion),
                 metadataReferences: TestReferences.MetadataReferences);
 
-            var solution = new AdhocWorkspace()
-                .CurrentSolution
-                .AddProject(projectInfo)
-                .AddDocument(documentId, documentFileName, SourceText.From(source));
+            var result = new AdhocWorkspace();
+            result.AddProject(projectInfo);
+            var document = result.AddDocument(projectId, documentFileName, SourceText.From(source));
+            documentId = document.Id;
+            return result;
+        }
 
-            // We know that projects and documents exist since we've just added them.
-            return solution.GetProject(projectId)!.GetDocument(documentId)!;
+        private static Document CreateDocument(string source, LanguageVersion languageVersion)
+        {
+            var workspace = CreateWorkspace(source, languageVersion, out var projectId, out var documentId);
+            return workspace.CurrentSolution.GetProject(projectId)!.GetDocument(documentId)!;
         }
 
         #endregion
@@ -89,10 +92,15 @@ namespace Mocklis.MockGenerator.Helpers
             var code = root.GetText().ToString();
 
             var project = updatedDocument.Project;
-            var newCompilation = await project.GetCompilationAsync();
+            var newCompilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Could not create compilation.");
+            return BuildCompilation(newCompilation, code);
+        }
+
+        public static MocklisClassUpdaterResult BuildCompilation(Compilation newCompilation, string code)
+        {
             using (var ms = new MemoryStream())
             {
-                EmitResult emitResult = newCompilation!.Emit(ms);
+                EmitResult emitResult = newCompilation.Emit(ms);
                 if (!emitResult.Success)
                 {
                     var codeLines = code.Split(Environment.NewLine);

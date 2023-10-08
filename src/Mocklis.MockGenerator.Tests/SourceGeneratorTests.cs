@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Mocklis.SourceGenerator;
+using Mocklis.MockGenerator.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,7 +39,7 @@ public sealed class SourceGeneratorTests
     }
 
     [Theory]
-    // [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
+    [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType=typeof(TestCaseEnumerator))]
     [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases8), MemberType = typeof(TestCaseEnumerator))]
     public async Task TestMocklisClassUpdaterForCSharp8(ClassUpdateTestCase test)
     {
@@ -60,10 +60,11 @@ public sealed class SourceGeneratorTests
 
         source = source.Replace("[PARTIAL] ", "partial ");
 
-        var compilation = CSharpCompilation.Create("TestProject",
-            new[] { CSharpSyntaxTree.ParseText(source) },
-            TestReferences.MetadataReferences,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Disable));
+        var workSpace = MocklisClassUpdater.CreateWorkspace(source, languageVersion, out var projectId, out _);
+
+        var project = workSpace.CurrentSolution.GetProject(projectId)!;
+
+        var compilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Could not create compilation.");
 
         var generator = new MocklisSourceGenerator();
         var sourceGenerator = generator.AsSourceGenerator();
@@ -77,6 +78,17 @@ public sealed class SourceGeneratorTests
         driver = driver.RunGenerators(compilation);
 
         var results = driver.GetRunResult().Results.Single();
+
+        foreach (var generatedSource in results.GeneratedSources)
+        {
+            workSpace.AddDocument(projectId, generatedSource.HintName, generatedSource.SourceText);
+        }
+
+        var newProject = workSpace.CurrentSolution.GetProject(projectId)!;
+
+        var newCompilation = await newProject.GetCompilationAsync() ?? throw new InvalidOperationException("Could not create compilation.");
+
+        var result = MocklisClassUpdater.BuildCompilation(newCompilation, "");
 
         var sb = new StringBuilder();
         TextWriter sw = new StringWriter(sb);
@@ -109,49 +121,49 @@ public sealed class SourceGeneratorTests
 
         int i = 0;
 
-        //try
-        // {
-        var e = expected.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-        var c = resultingCode.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-        var linesToCheck = Math.Max(e.Length, c.Length);
-        for (i = 0; i < linesToCheck; i++)
+        try
         {
-            var eline = i <= e.Length ? e[i] : string.Empty;
-            var cline = i <= c.Length ? c[i] : string.Empty;
-            Assert.Equal(eline, cline);
+            var e = expected.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var c = resultingCode.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            var linesToCheck = Math.Max(e.Length, c.Length);
+            for (i = 0; i < linesToCheck; i++)
+            {
+                var eline = i <= e.Length ? e[i] : string.Empty;
+                var cline = i <= c.Length ? c[i] : string.Empty;
+                Assert.Equal(eline, cline);
+            }
         }
-        //}
-        //catch (Xunit.Sdk.EqualException ex)
-        //{
-        //    if (!result.IsSuccess)
-        //    {
-        //        _testOutputHelper.WriteLine($"Mismatch on line {i+1}:");
-        //        _testOutputHelper.WriteLine(ex.Message);
-        //        _testOutputHelper.WriteLine(string.Empty);
-        //    }
-        //    else
-        //    {
-        //        throw;
-        //    }
-        //}
+        catch (Xunit.Sdk.EqualException ex)
+        {
+            if (!result.IsSuccess)
+            {
+                _testOutputHelper.WriteLine($"Mismatch on line {i+1}:");
+                _testOutputHelper.WriteLine(ex.Message);
+                _testOutputHelper.WriteLine(string.Empty);
+            }
+            else
+            {
+                throw;
+            }
+        }
 
-        //if (!result.IsSuccess)
-        //{
-        //    foreach (var error in result.Errors)
-        //    {
-        //        _testOutputHelper.WriteLine(error.ErrorText);
-        //        _testOutputHelper.WriteLine(string.Empty);
-        //        foreach (var line in error.MarkedCodeLines())
-        //        {
-        //            _testOutputHelper.WriteLine(line);
-        //        }
+        if (!result.IsSuccess)
+        {
+            foreach (var error in result.Errors)
+            {
+                _testOutputHelper.WriteLine(error.ErrorText);
+                _testOutputHelper.WriteLine(string.Empty);
+                foreach (var line in error.MarkedCodeLines())
+                {
+                    _testOutputHelper.WriteLine(line);
+                }
 
-        //        _testOutputHelper.WriteLine(string.Empty);
-        //    }
+                _testOutputHelper.WriteLine(string.Empty);
+            }
 
-        //    throw new Exception("Compilation failed...");
-        //}
+            throw new Exception("Compilation failed...");
+        }
     }
 
     //_testOutputHelper.WriteLine("TrackedSteps --------------------");
