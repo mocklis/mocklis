@@ -27,7 +27,7 @@ public sealed class PropertyBasedMethodMockWithTypeParameters : IMemberMock, IEq
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName &&
+        return SymbolEquality.ForMethod.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName &&
                MockProviderName == other.MockProviderName;
     }
 
@@ -40,7 +40,7 @@ public sealed class PropertyBasedMethodMockWithTypeParameters : IMemberMock, IEq
     {
         unchecked
         {
-            var hashCode = SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol);
+            var hashCode = SymbolEquality.ForMethod.GetHashCode(Symbol);
             hashCode = (hashCode * 397) ^ MemberMockName.GetHashCode();
             hashCode = (hashCode * 397) ^ MockProviderName.GetHashCode();
             return hashCode;

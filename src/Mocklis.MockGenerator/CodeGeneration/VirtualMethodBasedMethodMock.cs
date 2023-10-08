@@ -27,7 +27,7 @@ public sealed class VirtualMethodBasedMethodMock : IMemberMock, IEquatable<Virtu
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+        return SymbolEquality.ForMethod.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
     }
 
     public override bool Equals(object? obj)
@@ -39,7 +39,7 @@ public sealed class VirtualMethodBasedMethodMock : IMemberMock, IEquatable<Virtu
     {
         unchecked
         {
-            return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+            return (SymbolEquality.ForMethod.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
         }
     }
 

@@ -37,7 +37,7 @@ public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInforma
             }
         }
         
-        return SymbolEqualityComparer.IncludeNullability.Equals(ClassSymbol, other.ClassSymbol) && NullableEnabled == other.NullableEnabled && Settings.Equals(other.Settings);
+        return SymbolEquality.ForClass.Equals(ClassSymbol, other.ClassSymbol) && NullableEnabled == other.NullableEnabled && Settings.Equals(other.Settings);
     }
 
     public override bool Equals(object? obj)
@@ -54,7 +54,7 @@ public sealed class ExtractedClassInformation : IEquatable<ExtractedClassInforma
             {
                 hashCode = (hashCode * 397) ^ i.GetHashCode();
             }
-            hashCode = (hashCode * 397) ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(ClassSymbol);
+            hashCode = (hashCode * 397) ^ SymbolEquality.ForClass.GetHashCode(ClassSymbol);
             hashCode = (hashCode * 397) ^ NullableEnabled.GetHashCode();
             hashCode = (hashCode * 397) ^ Settings.GetHashCode();
             return hashCode;

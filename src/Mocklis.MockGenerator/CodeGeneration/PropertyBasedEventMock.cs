@@ -26,7 +26,7 @@ public sealed class PropertyBasedEventMock : IMemberMock, IEquatable<PropertyBas
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return SymbolEqualityComparer.IncludeNullability.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+        return SymbolEquality.ForEvent.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
     }
 
     public override bool Equals(object? obj)
@@ -38,7 +38,7 @@ public sealed class PropertyBasedEventMock : IMemberMock, IEquatable<PropertyBas
     {
         unchecked
         {
-            return (SymbolEqualityComparer.IncludeNullability.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+            return (SymbolEquality.ForEvent.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
         }
     }
 

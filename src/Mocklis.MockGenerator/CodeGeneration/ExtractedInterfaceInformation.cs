@@ -34,7 +34,7 @@ public sealed class ExtractedInterfaceInformation : IEquatable<ExtractedInterfac
             }
         }
 
-        return SymbolEqualityComparer.IncludeNullability.Equals(InterfaceSymbol, other.InterfaceSymbol);
+        return SymbolEquality.ForInterface.Equals(InterfaceSymbol, other.InterfaceSymbol);
     }
 
     public override bool Equals(object? obj)
@@ -52,7 +52,7 @@ public sealed class ExtractedInterfaceInformation : IEquatable<ExtractedInterfac
                 hashCode = (hashCode * 397) ^ m.GetHashCode();
             }
 
-            hashCode = (hashCode * 397) ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(InterfaceSymbol);
+            hashCode = (hashCode * 397) ^ SymbolEquality.ForInterface.GetHashCode(InterfaceSymbol);
             return hashCode;
         }
     }
