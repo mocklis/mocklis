@@ -194,6 +194,11 @@ public class SourceGenerationContext
         };
     }
 
+    public string BuildParameterList(SingleTypeOrValueTuple tuple, ITypeParameterSubstitutions substitutions)
+    {
+        return string.Join(", ", tuple.Select(t => $"{ParseTypeName(t.TypeSymbol, t.IsNullable, substitutions)} {t.TupleSafeName}"));
+    }
+
     public string BuildParameterList(IEnumerable<IParameterSymbol> parameters, ITypeParameterSubstitutions substitutions)
     {
         var args = parameters.Select(p =>

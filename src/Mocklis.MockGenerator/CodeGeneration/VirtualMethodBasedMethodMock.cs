@@ -83,19 +83,22 @@ public sealed class VirtualMethodBasedMethodMock : IMemberMock, IEquatable<Virtu
 
         var parameters = ctx.BuildParameterList(Symbol.Parameters, substitutions);
         var arguments = ctx.BuildArgumentList(Symbol.Parameters);
+        var methodParameters = parameters;
         if (arglistParameterName != null)
         {
             if (parameters != string.Empty)
             {
                 parameters += ", ";
                 arguments += ", ";
+                methodParameters += ", ";
             }
 
-            parameters += $"global::System.RuntimeArgumentHandle {arglistParameterName}";
-            arguments += arglistParameterName;
+            parameters += "__arglist";
+            arguments += "__arglist";
+            methodParameters += $"global::System.RuntimeArgumentHandle {arglistParameterName}";
         }
 
-        ctx.AppendLine($"protected virtual {returnTypeWithoutReadonly} {MemberMockName}{typeParameterList}({parameters}){constraints}");
+        ctx.AppendLine($"protected virtual {returnTypeWithoutReadonly} {MemberMockName}{typeParameterList}({methodParameters}){constraints}");
         ctx.AppendLine("{");
         ctx.IncreaseIndent();
         ctx.AppendThrow("VirtualMethod", MemberMockName, interfaceSymbol.Name, Symbol.Name);

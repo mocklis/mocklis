@@ -105,6 +105,21 @@ public sealed class SingleTypeOrValueTuple : IReadOnlyList<SingleTypeOrValueTupl
             : F.IdentifierName(this[0].OriginalName);
     }
 
+    public string BuildTupleSafeArgumentListAsString()
+    {
+        if (Count == 0)
+        {
+            return string.Empty;
+        }
+
+        if (IsMultiDimensional)
+        {
+            return $"({string.Join(", ", this.Select(a => a.TupleSafeName))})";
+        }
+
+        return this[0].TupleSafeName;
+    }
+
     public string BuildArgumentListAsString()
     {
         if (Count == 0)

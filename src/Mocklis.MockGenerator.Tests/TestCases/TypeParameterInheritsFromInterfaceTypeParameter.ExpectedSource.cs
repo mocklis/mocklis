@@ -9,7 +9,7 @@ namespace Test
         public global::Mocklis.Core.ActionMethodMock<TInner> Test<TInner>() where TInner : T
         {
             var key = new[] { typeof(TInner) };
-            return (global::Mocklis.Core.ActionMethodMock<TInner>)Test.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<TInner>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.ActionMethodMock<TInner>)_test.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<TInner>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         void global::Test.ITestClass<T>.Test<TInner>(TInner parameter) => Test<TInner>().Call(parameter);

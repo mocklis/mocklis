@@ -9,7 +9,7 @@ namespace Test
         public global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2> Test<T1, T2, T3, T4>() where T1 : unmanaged, global::System.ICloneable where T2 : class, global::System.IDisposable, new() where T3 : struct where T4 : new()
         {
             var key = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
-            return (global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)Test.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>)_test.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<(T1 parameter, T3 parameter2, T4 anotherParameter), T2>(this, "TestClass", "ITestClass", "Test" + keyString, "Test" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         T2 global::Test.ITestClass.Test<T1, T2, T3, T4>(T1 parameter, T3 parameter2, T4 anotherParameter) => Test<T1, T2, T3, T4>().Call((parameter, parameter2, anotherParameter));

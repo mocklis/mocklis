@@ -6,7 +6,7 @@ namespace Test
     {
         public global::Mocklis.Core.IndexerMock<int, int> Item { get; }
 
-        int global::Test.ITestClass.this[int Item] { get => Item[Item]; set => Item[Item] = value; }
+        int global::Test.ITestClass.this[int Item_] { get => Item[Item_]; set => Item[Item_] = value; }
 
         public global::Mocklis.Core.IndexerMock<(int Item, int OtherItem), int> Item0 { get; }
 

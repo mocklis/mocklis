@@ -22,7 +22,7 @@ namespace Test
         public global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)> Item4_<T>()
         {
             var key = new[] { typeof(T) };
-            return (global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>)Item4_.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_" + keyString, "Item4_" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>)_item4_.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T, (int returnValue, T Item4_)>(this, "TestClass", "ITestClass", "Item4_" + keyString, "Item4_" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         int global::Test.ITestClass.Item4_<T>(ref T Item4)

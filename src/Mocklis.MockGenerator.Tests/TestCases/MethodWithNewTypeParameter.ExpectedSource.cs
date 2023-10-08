@@ -9,7 +9,7 @@ namespace Test
         public global::Mocklis.Core.FuncMethodMock<T> ReturnsNewType<T>()
         {
             var key = new[] { typeof(T) };
-            return (global::Mocklis.Core.FuncMethodMock<T>)ReturnsNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType" + keyString, "ReturnsNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.FuncMethodMock<T>)_returnsNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T>(this, "TestClass", "ITestClass", "ReturnsNewType" + keyString, "ReturnsNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         T global::Test.ITestClass.ReturnsNewType<T>() => ReturnsNewType<T>().Call();
@@ -19,7 +19,7 @@ namespace Test
         public global::Mocklis.Core.ActionMethodMock<T> UsesNewType<T>()
         {
             var key = new[] { typeof(T) };
-            return (global::Mocklis.Core.ActionMethodMock<T>)UsesNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType" + keyString, "UsesNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.ActionMethodMock<T>)_usesNewType.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<T>(this, "TestClass", "ITestClass", "UsesNewType" + keyString, "UsesNewType" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         void global::Test.ITestClass.UsesNewType<T>(T parameter) => UsesNewType<T>().Call(parameter);

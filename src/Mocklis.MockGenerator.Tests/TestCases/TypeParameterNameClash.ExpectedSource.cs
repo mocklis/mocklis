@@ -23,7 +23,7 @@ namespace Test
         public global::Mocklis.Core.FuncMethodMock<T0> TestWithRef<T0>()
         {
             var key = new[] { typeof(T0) };
-            return (global::Mocklis.Core.FuncMethodMock<T0>)TestWithRef.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef" + keyString, "TestWithRef" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.FuncMethodMock<T0>)_testWithRef.GetOrAdd(key, keyString => new global::Mocklis.Core.FuncMethodMock<T0>(this, "TestClass", "ITestClass", "TestWithRef" + keyString, "TestWithRef" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         ref readonly T0 global::Test.ITestClass<T>.TestWithRef<T0>() => ref global::Mocklis.Core.ByRef<T0>.Wrap(TestWithRef<T0>().Call());

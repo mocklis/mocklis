@@ -11,7 +11,7 @@ namespace Test
         public global::Mocklis.Core.ActionMethodMock<T?> DoStuff<T>() where T : class
         {
             var key = new[] { typeof(T) };
-            return (global::Mocklis.Core.ActionMethodMock<T?>)DoStuff.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<T?>(this, "TestClass", "ITestClass", "DoStuff" + keyString, "DoStuff" + keyString, global::Mocklis.Core.Strictness.Lenient));
+            return (global::Mocklis.Core.ActionMethodMock<T?>)_doStuff.GetOrAdd(key, keyString => new global::Mocklis.Core.ActionMethodMock<T?>(this, "TestClass", "ITestClass", "DoStuff" + keyString, "DoStuff" + keyString, global::Mocklis.Core.Strictness.Lenient));
         }
 
         void global::Test.ITestClass.DoStuff<T>(T? p) where T : class => DoStuff<T>().Call(p);

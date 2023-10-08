@@ -79,7 +79,7 @@ public sealed class PropertyBasedIndexerMock : IMemberMock, IEquatable<PropertyB
         var keyType = ctx.BuildTupleType(keyTypex, Substitutions.Empty) ??
                       throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
 
-        var arglist = keyTypex.BuildArgumentListAsString();
+        var arglist = keyTypex.BuildTupleSafeArgumentListAsString();
 
         var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
 
@@ -98,7 +98,7 @@ public sealed class PropertyBasedIndexerMock : IMemberMock, IEquatable<PropertyB
             ctx.Append("ref readonly ");
         }
 
-        ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty)}]");
+        ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(keyTypex, Substitutions.Empty)}]");
 
         if (Symbol.IsReadOnly)
         {

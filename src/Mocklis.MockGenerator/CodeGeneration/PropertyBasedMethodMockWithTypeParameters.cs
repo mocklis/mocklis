@@ -151,7 +151,7 @@ public sealed class PropertyBasedMethodMockWithTypeParameters : IMemberMock, IEq
         ctx.AppendLine($"var key = new[] {{ {typesOfTypeParameters} }};");
 
         ctx.AppendLine(
-            $"return ({mockPropertyType}){MemberMockName}.GetOrAdd(key, {ctx.TypedMockCreation(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name)});");
+            $"return ({mockPropertyType}){MockProviderName}.GetOrAdd(key, {ctx.TypedMockCreation(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name)});");
 
         ctx.DecreaseIndent();
         ctx.AppendLine("}");

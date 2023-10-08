@@ -6,11 +6,11 @@ namespace Test
     {
         public global::Mocklis.Core.IndexerMock<(int Item0, int Item2, int Item02, int Item_, int ItemTest), int> Item { get; }
 
-        int global::Test.ITestClass.this[int Item0, int Item2, int Item02, int Item, int ItemTest] { get => Item[(Item0, Item2, Item02, Item, ItemTest)]; set => Item[(Item0, Item2, Item02, Item, ItemTest)] = value; }
+        int global::Test.ITestClass.this[int Item0, int Item2, int Item02, int Item_, int ItemTest] { get => Item[(Item0, Item2, Item02, Item_, ItemTest)]; set => Item[(Item0, Item2, Item02, Item_, ItemTest)] = value; }
 
         public global::Mocklis.Core.IndexerMock<int, int> Item0 { get; }
 
-        int global::Test.ITestClass.this[int Item0] { get => Item0[Item0]; set => Item0[Item0] = value; }
+        int global::Test.ITestClass.this[int Item0_] { get => Item0[Item0_]; set => Item0[Item0_] = value; }
 
         public TestClass() : base()
         {
