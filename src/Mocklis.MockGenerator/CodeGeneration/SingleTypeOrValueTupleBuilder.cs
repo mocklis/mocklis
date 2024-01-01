@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
@@ -15,8 +15,7 @@ namespace Mocklis.CodeGeneration
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.CodeGeneration.Compatibility;
-    using Mocklis.CodeGeneration.UniqueNames;
+    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
 
     #endregion
 

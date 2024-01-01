@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.Compatibility
+namespace Mocklis.MockGenerator.CodeGeneration.Compatibility
 {
     #region Using Directives
 

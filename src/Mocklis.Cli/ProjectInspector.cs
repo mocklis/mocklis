@@ -16,8 +16,8 @@ namespace Mocklis.Cli
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
-    using Mocklis.CodeGeneration;
-    using Mocklis.CodeGeneration.Compatibility;
+    using Mocklis.MockGenerator.CodeGeneration;
+    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -41,7 +41,8 @@ namespace Mocklis.Cli
                         a =>
                         {
                             var attrSymbol = Model.GetSymbolInfo(a).Symbol;
-                            return attrSymbol != null && attrSymbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
+                            return attrSymbol != null &&
+                                   attrSymbol.ContainingType.Equals(MocklisSymbols.MocklisClassAttribute, SymbolEqualityComparer.Default);
                         }));
 
                 if (!hasMocklisAttribute)

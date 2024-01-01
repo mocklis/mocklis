@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MethodSymbolExtensions.cs">
+// <copyright file="PropertySymbolExtensions.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.Compatibility
+namespace Mocklis.MockGenerator.CodeGeneration.Compatibility
 {
     #region Using Directives
 
@@ -14,18 +14,18 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     #endregion
 
-    public static class MethodSymbolExtensions
+    public static class PropertySymbolExtensions
     {
-        private static readonly PropertyInfo? ReturnNullableAnnotationPropertyInfo = typeof(IMethodSymbol).GetProperty("ReturnNullableAnnotation");
+        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IPropertySymbol).GetProperty("NullableAnnotation");
 
-        public static bool ReturnTypeIsNullableOrOblivious(this IMethodSymbol methodSymbol)
+        public static bool NullableOrOblivious(this IPropertySymbol propertySymbol)
         {
-            if (ReturnNullableAnnotationPropertyInfo == null)
+            if (NullableAnnotationPropertyInfo == null)
             {
                 return true;
             }
 
-            var result = (byte)ReturnNullableAnnotationPropertyInfo.GetValue(methodSymbol);
+            var result = (byte)NullableAnnotationPropertyInfo.GetValue(propertySymbol);
             return result != 1;
         }
     }

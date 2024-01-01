@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertySymbolExtensions.cs">
+// <copyright file="EventSymbolExtensions.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.Compatibility
+namespace Mocklis.MockGenerator.CodeGeneration.Compatibility
 {
     #region Using Directives
 
@@ -14,18 +14,18 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     #endregion
 
-    public static class PropertySymbolExtensions
+    public static class EventSymbolExtensions
     {
-        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IPropertySymbol).GetProperty("NullableAnnotation");
+        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IEventSymbol).GetProperty("NullableAnnotation");
 
-        public static bool NullableOrOblivious(this IPropertySymbol propertySymbol)
+        public static bool NullableOrOblivious(this IEventSymbol eventSymbol)
         {
             if (NullableAnnotationPropertyInfo == null)
             {
                 return true;
             }
 
-            var result = (byte)NullableAnnotationPropertyInfo.GetValue(propertySymbol);
+            var result = (byte)NullableAnnotationPropertyInfo.GetValue(eventSymbol);
             return result != 1;
         }
     }

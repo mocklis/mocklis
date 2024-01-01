@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ParameterSymbolExtensions.cs">
+// <copyright file="MethodSymbolExtensions.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.Compatibility
+namespace Mocklis.MockGenerator.CodeGeneration.Compatibility
 {
     #region Using Directives
 
@@ -14,18 +14,18 @@ namespace Mocklis.CodeGeneration.Compatibility
 
     #endregion
 
-    public static class ParameterSymbolExtensions
+    public static class MethodSymbolExtensions
     {
-        private static readonly PropertyInfo? NullableAnnotationPropertyInfo = typeof(IParameterSymbol).GetProperty("NullableAnnotation");
+        private static readonly PropertyInfo? ReturnNullableAnnotationPropertyInfo = typeof(IMethodSymbol).GetProperty("ReturnNullableAnnotation");
 
-        public static bool NullableOrOblivious(this IParameterSymbol parameterSymbol)
+        public static bool ReturnTypeIsNullableOrOblivious(this IMethodSymbol methodSymbol)
         {
-            if (NullableAnnotationPropertyInfo == null)
+            if (ReturnNullableAnnotationPropertyInfo == null)
             {
                 return true;
             }
 
-            var result = (byte)NullableAnnotationPropertyInfo.GetValue(parameterSymbol);
+            var result = (byte)ReturnNullableAnnotationPropertyInfo.GetValue(methodSymbol);
             return result != 1;
         }
     }

@@ -5,7 +5,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.CodeGeneration.UniqueNames
+namespace Mocklis.MockGenerator.CodeGeneration
 {
     #region Using Directives
 
