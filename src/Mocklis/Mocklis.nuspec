@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Mocklis</id>
-    <version>1.2.0</version>
+    <version>1.4.0-alpha.1</version>
     <authors>Esbjörn Redmo</authors>
     <owners>Esbjörn Redmo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,8 +16,8 @@
     <tags>mock mocking test testing tdd unittest agile roslyn</tags>
     <dependencies>
       <group>
-        <dependency id="Mocklis.BaseApi" version="1.2.0" exclude="Build,Analyzers" />
-        <dependency id="Mocklis.MockGenerator" version="1.2.0" exclude="Build" />
+        <dependency id="Mocklis.BaseApi" version="1.4.0-alpha.1" exclude="Build,Analyzers" />
+        <dependency id="Mocklis.MockGenerator" version="1.4.0-alpha.1" exclude="Build" />
       </group>
     </dependencies>
   </metadata>
