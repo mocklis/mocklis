@@ -5,137 +5,112 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration;
+
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+#endregion
+
+public sealed class PropertyBasedIndexerMock : IMemberMock
 {
-    #region Using Directives
+    public IPropertySymbol Symbol { get; }
+    public string MemberMockName { get; }
 
-    using System;
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
-    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-
-    #endregion
-
-    public class PropertyBasedIndexerMock : PropertyBasedMock<IPropertySymbol>, IMemberMock
+    public PropertyBasedIndexerMock(IPropertySymbol symbol,
+        string mockMemberName)
     {
-        public PropertyBasedIndexerMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol,
-            IPropertySymbol symbol,
-            string mockMemberName) : base(classSymbol, interfaceSymbol, symbol, mockMemberName)
+        Symbol = symbol;
+        MemberMockName = mockMemberName;
+    }
+
+    public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,
+        List<StatementSyntax> constructorStatements,
+        NameSyntax interfaceNameSyntax, string className, string interfaceName)
+    {
+        var builder = new SingleTypeOrValueTupleBuilder();
+        foreach (var p in Symbol.Parameters)
         {
+            builder.AddParameter(p);
         }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+        var keyType = builder.Build(MemberMockName);
+
+        var keyTypeSyntax = keyType.BuildTypeSyntax(typesForSymbols, null) ??
+                            throw new ArgumentException("Property symbol must have at least one parameter", nameof(Symbol));
+
+        var valueTypeSyntax = typesForSymbols.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious());
+
+        var mockPropertyType = typesForSymbols.IndexerMock(keyTypeSyntax, valueTypeSyntax);
+
+        declarationList.Add(mockPropertyType.MockProperty(MemberMockName));
+        declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax, valueTypeSyntax, keyType));
+
+        constructorStatements.Add(
+            typesForSymbols.InitialisationStatement(mockPropertyType, MemberMockName, className, interfaceName, Symbol.Name));
+    }
+
+    private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax,
+        TypeSyntax valueTypeSyntax, SingleTypeOrValueTuple keyType)
+    {
+        var decoratedValueTypeSyntax = valueTypeSyntax;
+
+        if (Symbol.ReturnsByRef)
         {
-            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
+            decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
+        }
+        else if (Symbol.ReturnsByRefReadonly)
+        {
+            decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
         }
 
-        private class SyntaxAdder : ISyntaxAdder
+        var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
+            .WithParameterList(keyType.BuildParameterList(typesForSymbols, null))
+            .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
+
+        var arguments = keyType.BuildArgumentList();
+
+        if (Symbol.IsReadOnly)
         {
-            private readonly PropertyBasedIndexerMock _mock;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
-            private readonly bool _strict;
-            private readonly bool _veryStrict;
+            ExpressionSyntax elementAccess = F.ElementAccessExpression(F.IdentifierName(MemberMockName))
+                .WithExpressionsAsArgumentList(arguments);
 
-            private SingleTypeOrValueTuple KeyType { get; }
-            private TypeSyntax KeyTypeSyntax { get; }
-            private TypeSyntax ValueTypeSyntax { get; }
-            private TypeSyntax MockPropertyType { get; }
-
-            public SyntaxAdder(PropertyBasedIndexerMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
             {
-                _mock = mock;
-                _typesForSymbols = typesForSymbols;
-                _strict = strict;
-                _veryStrict = veryStrict;
-
-                var builder = new SingleTypeOrValueTupleBuilder(typesForSymbols);
-                foreach (var p in _mock.Symbol.Parameters)
-                {
-                    builder.AddParameter(p);
-                }
-
-                KeyType = builder.Build(_mock.MemberMockName);
-
-                var keyTypeSyntax = KeyType.BuildTypeSyntax();
-
-                KeyTypeSyntax = keyTypeSyntax ?? throw new ArgumentException("Property symbol must have at least one parameter", nameof(mock));
-
-                ValueTypeSyntax = typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
-
-                MockPropertyType = typesForSymbols.IndexerMock(KeyTypeSyntax, ValueTypeSyntax);
-
+                elementAccess = typesForSymbols.WrapByRef(elementAccess, valueTypeSyntax);
             }
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
+            mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
+                .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
+        }
+        else
+        {
+            if (!Symbol.IsWriteOnly)
             {
-                declarationList.Add(_mock.MockProperty(MockPropertyType));
-                declarationList.Add(ExplicitInterfaceMember(_typesForSymbols));
+                mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithExpressionBody(F.ArrowExpressionClause(F.ElementAccessExpression(F.IdentifierName(MemberMockName))
+                        .WithExpressionsAsArgumentList(arguments)))
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+                );
             }
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
+            if (!Symbol.IsReadOnly)
             {
-                constructorStatements.Add(_mock.InitialisationStatement(MockPropertyType, _typesForSymbols, _strict, _veryStrict));
-            }
-
-            private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols)
-            {
-                var decoratedValueTypeSyntax = ValueTypeSyntax;
-
-                if (_mock.Symbol.ReturnsByRef)
-                {
-                    decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax);
-                }
-                else if (_mock.Symbol.ReturnsByRefReadonly)
-                {
-                    decoratedValueTypeSyntax = F.RefType(decoratedValueTypeSyntax).WithReadOnlyKeyword(F.Token(SyntaxKind.ReadOnlyKeyword));
-                }
-
-                var mockedIndexer = F.IndexerDeclaration(decoratedValueTypeSyntax)
-                    .WithParameterList(KeyType.BuildParameterList())
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(typesForSymbols.ParseName(_mock.InterfaceSymbol)));
-
-                var arguments = KeyType.BuildArgumentList();
-
-                if (_mock.Symbol.IsReadOnly)
-                {
-                    ExpressionSyntax elementAccess = F.ElementAccessExpression(F.IdentifierName(_mock.MemberMockName))
-                        .WithExpressionsAsArgumentList(arguments);
-
-                    if (_mock.Symbol.ReturnsByRef || _mock.Symbol.ReturnsByRefReadonly)
-                    {
-                        elementAccess = typesForSymbols.WrapByRef(elementAccess, ValueTypeSyntax);
-                    }
-
-                    mockedIndexer = mockedIndexer.WithExpressionBody(F.ArrowExpressionClause(elementAccess))
-                        .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken));
-                }
-                else
-                {
-                    if (!_mock.Symbol.IsWriteOnly)
-                    {
-                        mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(F.ElementAccessExpression(F.IdentifierName(_mock.MemberMockName))
-                                .WithExpressionsAsArgumentList(arguments)))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                        );
-                    }
-
-                    if (!_mock.Symbol.IsReadOnly)
-                    {
-                        mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithExpressionBody(F.ArrowExpressionClause(
-                                F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                    F.ElementAccessExpression(F.IdentifierName(_mock.MemberMockName)).WithExpressionsAsArgumentList(arguments),
-                                    F.IdentifierName("value"))))
-                            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
-                    }
-                }
-
-                return mockedIndexer;
+                mockedIndexer = mockedIndexer.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithExpressionBody(F.ArrowExpressionClause(
+                        F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                            F.ElementAccessExpression(F.IdentifierName(MemberMockName)).WithExpressionsAsArgumentList(arguments),
+                            F.IdentifierName("value"))))
+                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
             }
         }
+
+        return mockedIndexer;
     }
 }

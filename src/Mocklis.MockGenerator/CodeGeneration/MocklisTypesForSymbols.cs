@@ -5,270 +5,229 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration;
+
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+#endregion
+
+public sealed class MocklisTypesForSymbols
 {
-    #region Using Directives
+    private readonly SemanticModel _semanticModel;
+    private readonly ClassDeclarationSyntax _classDeclaration;
+    private readonly MocklisSymbols _mocklisSymbols;
+    private readonly bool _nullableContextEnabled;
+    private readonly MockSettings _settings;
+    private readonly INamedTypeSymbol _classSymbol;
 
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
-    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+    public ITypeParameterSubstitutions BuildSubstitutions(IMethodSymbol methodSymbol) => Substitutions.Build(_classSymbol, methodSymbol);
 
-    #endregion
+    private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
+        SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
 
-    public sealed class MocklisTypesForSymbols
+    private static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+        .InformationalVersion;
+
+    public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
+        bool nullableContextEnabled, MockSettings settings, INamedTypeSymbol classSymbol)
     {
-        private readonly SemanticModel _semanticModel;
-        private readonly ClassDeclarationSyntax _classDeclaration;
-        private readonly MocklisSymbols _mocklisSymbols;
-        private readonly bool _nullableContextEnabled;
+        _semanticModel = semanticModel;
+        _classDeclaration = classDeclaration;
+        _mocklisSymbols = mocklisSymbols;
+        _nullableContextEnabled = nullableContextEnabled;
+        _settings = settings;
+        _classSymbol = classSymbol;
+    }
 
-        private static readonly SymbolDisplayFormat SymbolDisplayFormat = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
-            SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix);
+    public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, Func<string, string>? findTypeParameterName = null)
+    {
+        var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat);
 
-        private static readonly string Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            .InformationalVersion;
-
-        public MocklisTypesForSymbols(SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration, MocklisSymbols mocklisSymbols,
-            bool nullableContextEnabled)
+        string s = string.Empty;
+        foreach (var part in x)
         {
-            _semanticModel = semanticModel;
-            _classDeclaration = classDeclaration;
-            _mocklisSymbols = mocklisSymbols;
-            _nullableContextEnabled = nullableContextEnabled;
-        }
-
-        public TypeSyntax ParseTypeName(ITypeSymbol typeSymbol, bool makeNullableIfPossible, Func<string, string>? findTypeParameterName = null)
-        {
-            var x = typeSymbol.ToMinimalDisplayParts(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat);
-
-            string s = string.Empty;
-            foreach (var part in x)
+            switch (part.Kind)
             {
-                switch (part.Kind)
+                case SymbolDisplayPartKind.TypeParameterName:
                 {
-                    case SymbolDisplayPartKind.TypeParameterName:
-                    {
-                        var partSymbol = part.Symbol;
+                    var partSymbol = part.Symbol;
 
-                        if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } && methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
+                    if (partSymbol is { ContainingSymbol: IMethodSymbol methodSymbol } &&
+                        methodSymbol.TypeParameters.Contains(partSymbol, SymbolEqualityComparer.Default))
+                    {
+                        if (findTypeParameterName is null)
                         {
-                            if (findTypeParameterName is null)
-                            {
-                                s += partSymbol.Name;
-                            }
-                            else
-                            {
-                                s += findTypeParameterName(partSymbol.Name);
-                            }
+                            s += partSymbol.Name;
                         }
                         else
                         {
-                            s += part.ToString();
+                            s += findTypeParameterName(partSymbol.Name);
                         }
-
-                        break;
                     }
-
-                    default:
+                    else
                     {
                         s += part.ToString();
-                        break;
                     }
-                }
-            }
 
-            // Fix for GitHub issue #17. There are cases when the ToMinimalDisplayParts incorrectly adds a SymbolDisplayPartKind.Punctuation
-            // containing a "?" at the end of the type name for a reference type. If so we just remove it from the type name.
-            // Note that these punctuations are perfectly valid as part of the type name, such as "List<int?>".
-            if (s.EndsWith("?") && typeSymbol.IsReferenceType)
-            {
-                s = s.Substring(0, s.Length - 1);
-            }
-
-            var parsedTypeName = F.ParseTypeName(s);
-            if (makeNullableIfPossible && _nullableContextEnabled && typeSymbol.IsReferenceType)
-            {
-                return F.NullableType(parsedTypeName);
-            }
-
-            return parsedTypeName;
-        }
-
-        public NameSyntax ParseName(ITypeSymbol symbol)
-        {
-            return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat));
-        }
-
-        private TypeSyntax ParseGenericType(ITypeSymbol symbol, Func<string, string>? findTypeParameterName, params TypeSyntax[] typeParameters)
-        {
-            TypeSyntax ApplyTypeParameters(TypeSyntax typeSyntax)
-            {
-                if (typeSyntax is GenericNameSyntax genericNameSyntax)
-                {
-                    return genericNameSyntax.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
-                }
-
-                if (typeSyntax is QualifiedNameSyntax qualifiedNameSyntax)
-                {
-                    return qualifiedNameSyntax.WithRight((SimpleNameSyntax)ApplyTypeParameters(qualifiedNameSyntax.Right));
-                }
-
-                return typeSyntax;
-            }
-
-            return ApplyTypeParameters(ParseTypeName(symbol, false, findTypeParameterName));
-        }
-
-        public TypeSyntax ActionMethodMock()
-        {
-            return ParseTypeName(_mocklisSymbols.ActionMethodMock0, false);
-        }
-
-        public TypeSyntax ActionMethodMock(TypeSyntax tparam, Func<string, string>? findTypeParameterName = null)
-        {
-            return ParseGenericType(_mocklisSymbols.ActionMethodMock1, findTypeParameterName, tparam);
-        }
-
-        public TypeSyntax EventMock(TypeSyntax thandler)
-        {
-            return ParseGenericType(_mocklisSymbols.EventMock1, null, thandler);
-        }
-
-        public TypeSyntax FuncMethodMock(TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
-        {
-            return ParseGenericType(_mocklisSymbols.FuncMethodMock1, findTypeParameterName, tresult);
-        }
-
-        public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
-        {
-            return ParseGenericType(_mocklisSymbols.FuncMethodMock2, findTypeParameterName, tparam, tresult);
-        }
-
-        public TypeSyntax IndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
-        {
-            return ParseGenericType(_mocklisSymbols.IndexerMock2, null, tkey, tvalue);
-        }
-
-        public TypeSyntax PropertyMock(TypeSyntax tvalue)
-        {
-            return ParseGenericType(_mocklisSymbols.PropertyMock1, null, tvalue);
-        }
-
-        public TypeSyntax MockMissingException() => ParseTypeName(_mocklisSymbols.MockMissingException, false);
-
-
-        public TypeSyntax MockType() => ParseTypeName(_mocklisSymbols.MockType, false);
-
-        public TypeSyntax ByRef(TypeSyntax tresult)
-        {
-            return ParseGenericType(_mocklisSymbols.ByRef1, null, tresult);
-        }
-
-        public TypeSyntax TypedMockProvider() => ParseTypeName(_mocklisSymbols.TypedMockProvider, false);
-
-        public TypeSyntax RuntimeArgumentHandle() => ParseTypeName(_mocklisSymbols.RuntimeArgumentHandle, false);
-
-        public MemberAccessExpressionSyntax StrictnessLenient() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-            ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("Lenient"));
-
-        public MemberAccessExpressionSyntax StrictnessStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-            ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("Strict"));
-
-        public MemberAccessExpressionSyntax StrictnessVeryStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-            ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("VeryStrict"));
-
-        public ParameterSyntax AsParameterSyntax(IParameterSymbol p, Func<string, string>? findTypeParameterName = null)
-        {
-            var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, p.NullableOrOblivious(), findTypeParameterName));
-
-            switch (p.RefKind)
-            {
-                case RefKind.In:
-                {
-                    syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.InKeyword)));
                     break;
                 }
 
-                case RefKind.Out:
+                default:
                 {
-                    syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.OutKeyword)));
-                    break;
-                }
-
-                case RefKind.Ref:
-                {
-                    syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.RefKeyword)));
+                    s += part.ToString();
                     break;
                 }
             }
-
-            return syntax;
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
+        // Fix for GitHub issue #17. There are cases when the ToMinimalDisplayParts incorrectly adds a SymbolDisplayPartKind.Punctuation
+        // containing a "?" at the end of the type name for a reference type. If so we just remove it from the type name.
+        // Note that these punctuations are perfectly valid as part of the type name, such as "List<int?>".
+        if (s.EndsWith("?") && typeSymbol.IsReferenceType)
         {
-            if (_nullableContextEnabled)
-            {
-                var constraints = new List<TypeParameterConstraintSyntax>();
-
-                if (typeParameter.IsReferenceType)
-                {
-                    constraints.Add(F.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-                }
-
-                if (constraints.Any())
-                {
-                    var name = findTypeParameterName(typeParameter.Name);
-                    return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
-                }
-            }
-
-            // TODO: Clearly we want to do something here even if we're not in a nullable context?
-
-            return null;
+            s = s.Substring(0, s.Length - 1);
         }
 
-        private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter, Func<string, string> findTypeParameterName)
+        var parsedTypeName = F.ParseTypeName(s);
+        if (makeNullableIfPossible && _nullableContextEnabled && typeSymbol.IsReferenceType)
+        {
+            return F.NullableType(parsedTypeName);
+        }
+
+        return parsedTypeName;
+    }
+
+    public NameSyntax ParseName(ITypeSymbol symbol)
+    {
+        return F.ParseName(symbol.ToMinimalDisplayString(_semanticModel, _classDeclaration.SpanStart, SymbolDisplayFormat));
+    }
+
+    private TypeSyntax ParseGenericType(ITypeSymbol symbol, Func<string, string>? findTypeParameterName, params TypeSyntax[] typeParameters)
+    {
+        TypeSyntax ApplyTypeParameters(TypeSyntax typeSyntax)
+        {
+            if (typeSyntax is GenericNameSyntax genericNameSyntax)
+            {
+                return genericNameSyntax.WithTypeArgumentList(F.TypeArgumentList(F.SeparatedList(typeParameters)));
+            }
+
+            if (typeSyntax is QualifiedNameSyntax qualifiedNameSyntax)
+            {
+                return qualifiedNameSyntax.WithRight((SimpleNameSyntax)ApplyTypeParameters(qualifiedNameSyntax.Right));
+            }
+
+            return typeSyntax;
+        }
+
+        return ApplyTypeParameters(ParseTypeName(symbol, false, findTypeParameterName));
+    }
+
+    public TypeSyntax ActionMethodMock()
+    {
+        return ParseTypeName(_mocklisSymbols.ActionMethodMock0, false);
+    }
+
+    public TypeSyntax ActionMethodMock(TypeSyntax tparam, Func<string, string>? findTypeParameterName = null)
+    {
+        return ParseGenericType(_mocklisSymbols.ActionMethodMock1, findTypeParameterName, tparam);
+    }
+
+    public TypeSyntax EventMock(TypeSyntax thandler)
+    {
+        return ParseGenericType(_mocklisSymbols.EventMock1, null, thandler);
+    }
+
+    public TypeSyntax FuncMethodMock(TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
+    {
+        return ParseGenericType(_mocklisSymbols.FuncMethodMock1, findTypeParameterName, tresult);
+    }
+
+    public TypeSyntax FuncMethodMock(TypeSyntax tparam, TypeSyntax tresult, Func<string, string>? findTypeParameterName = null)
+    {
+        return ParseGenericType(_mocklisSymbols.FuncMethodMock2, findTypeParameterName, tparam, tresult);
+    }
+
+    public TypeSyntax IndexerMock(TypeSyntax tkey, TypeSyntax tvalue)
+    {
+        return ParseGenericType(_mocklisSymbols.IndexerMock2, null, tkey, tvalue);
+    }
+
+    public TypeSyntax PropertyMock(TypeSyntax tvalue)
+    {
+        return ParseGenericType(_mocklisSymbols.PropertyMock1, null, tvalue);
+    }
+
+    public TypeSyntax MockMissingException() => ParseTypeName(_mocklisSymbols.MockMissingException, false);
+
+
+    public TypeSyntax MockType() => ParseTypeName(_mocklisSymbols.MockType, false);
+
+    public TypeSyntax ByRef(TypeSyntax tresult)
+    {
+        return ParseGenericType(_mocklisSymbols.ByRef1, null, tresult);
+    }
+
+    public TypeSyntax TypedMockProvider() => ParseTypeName(_mocklisSymbols.TypedMockProvider, false);
+
+    public TypeSyntax RuntimeArgumentHandle() => ParseTypeName(_mocklisSymbols.RuntimeArgumentHandle, false);
+
+    public MemberAccessExpressionSyntax StrictnessLenient() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+        ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("Lenient"));
+
+    public MemberAccessExpressionSyntax StrictnessStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+        ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("Strict"));
+
+    public MemberAccessExpressionSyntax StrictnessVeryStrict() => F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+        ParseTypeName(_mocklisSymbols.Strictness, false), F.IdentifierName("VeryStrict"));
+
+    // TODO: Check that in, out and ref are used in 'base(...)' part of constructor calling.
+    public ParameterSyntax AsParameterSyntax(IParameterSymbol p, Func<string, string>? findTypeParameterName = null)
+    {
+        var syntax = F.Parameter(F.Identifier(p.Name)).WithType(ParseTypeName(p.Type, p.NullableOrOblivious(), findTypeParameterName));
+
+        switch (p.RefKind)
+        {
+            case RefKind.In:
+            {
+                syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.InKeyword)));
+                break;
+            }
+
+            case RefKind.Out:
+            {
+                syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.OutKeyword)));
+                break;
+            }
+
+            case RefKind.Ref:
+            {
+                syntax = syntax.WithModifiers(F.TokenList(F.Token(SyntaxKind.RefKeyword)));
+                break;
+            }
+        }
+
+        return syntax;
+    }
+
+    private TypeParameterConstraintClauseSyntax? CreateClassConstraintClausesForReferenceTypeParameter(ITypeParameterSymbol typeParameter,
+        Func<string, string> findTypeParameterName)
+    {
+        if (_nullableContextEnabled)
         {
             var constraints = new List<TypeParameterConstraintSyntax>();
 
-            if (typeParameter.HasReferenceTypeConstraint)
+            if (typeParameter.IsReferenceType)
             {
                 constraints.Add(F.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-            }
-
-            // Note that 'unmanaged' is a type of valuetype constraint.
-            if (typeParameter.HasUnmanagedTypeConstraint)
-            {
-                constraints.Add(F.TypeConstraint(F.IdentifierName("unmanaged")));
-            }
-            else if (typeParameter.HasValueTypeConstraint)
-            {
-                constraints.Add(F.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-            }
-
-            foreach (var type in typeParameter.ConstraintTypes)
-            {
-                if (!type.IsValueType)
-                {
-                    constraints.Add(F.TypeConstraint(ParseTypeName(type, false)));
-                }
-            }
-
-            if (typeParameter.HasConstructorConstraint)
-            {
-                constraints.Add(F.ConstructorConstraint());
-            }
-
-            if (typeParameter.HasNotNullConstraint() && _nullableContextEnabled)
-            {
-                constraints.Add(F.TypeConstraint(F.IdentifierName("notnull")));
             }
 
             if (constraints.Any())
@@ -276,52 +235,131 @@ namespace Mocklis.MockGenerator.CodeGeneration
                 var name = findTypeParameterName(typeParameter.Name);
                 return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
             }
-
-            return null;
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
+        return null;
+    }
+
+    private TypeParameterConstraintClauseSyntax? CreateConstraintClauseFromTypeParameter(ITypeParameterSymbol typeParameter,
+        Func<string, string> findTypeParameterName)
+    {
+        var constraints = new List<TypeParameterConstraintSyntax>();
+
+        if (typeParameter.HasReferenceTypeConstraint)
         {
-            return typeParameters
-                .Select(a => CreateClassConstraintClausesForReferenceTypeParameter(a, findTypeParameterName))
-                .Where(a => a != null)
-                .Select(a => a!)
-                .ToArray();
+            constraints.Add(F.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
         }
 
-        public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters, Func<string, string> findTypeParameterName)
+        // Note that 'unmanaged' is a type of valuetype constraint.
+        if (typeParameter.HasUnmanagedTypeConstraint)
         {
-            return typeParameters
-                .Select(a => CreateConstraintClauseFromTypeParameter(a, findTypeParameterName))
-                .Where(a => a != null)
-                .Select(a => a!)
-                .ToArray();
+            constraints.Add(F.TypeConstraint(F.IdentifierName("unmanaged")));
         }
-
-        public ExpressionSyntax WrapByRef(ExpressionSyntax invocation, TypeSyntax returnType)
+        else if (typeParameter.HasValueTypeConstraint)
         {
-            var byref = ByRef(returnType);
-            var wrap = F.InvocationExpression(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, byref, F.IdentifierName("Wrap")))
-                .WithExpressionsAsArgumentList(invocation);
-            return F.RefExpression(wrap);
+            constraints.Add(F.ClassOrStructConstraint(SyntaxKind.StructConstraint));
         }
 
-        public AttributeSyntax GeneratedCodeAttribute()
+        foreach (var type in typeParameter.ConstraintTypes)
         {
-            var p = ParseName(_mocklisSymbols.GeneratedCodeAttribute);
-
-            return F.Attribute(p).WithArgumentList(F.AttributeArgumentList(
-                F.SeparatedList(new[]
-                {
-                    F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal("Mocklis"))),
-                    F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Version)))
-                })));
+            if (!type.IsValueType)
+            {
+                constraints.Add(F.TypeConstraint(ParseTypeName(type, false)));
+            }
         }
 
-        public MemberAccessExpressionSyntax StrictnessExpression(bool strict, bool veryStrict)
+        if (typeParameter.HasConstructorConstraint)
         {
-            return veryStrict ? StrictnessVeryStrict() : strict ? StrictnessStrict() : StrictnessLenient();
+            constraints.Add(F.ConstructorConstraint());
         }
 
+        if (typeParameter.HasNotNullConstraint && _nullableContextEnabled)
+        {
+            constraints.Add(F.TypeConstraint(F.IdentifierName("notnull")));
+        }
+
+        if (constraints.Any())
+        {
+            var name = findTypeParameterName(typeParameter.Name);
+            return F.TypeParameterConstraintClause(F.IdentifierName(name), F.SeparatedList(constraints));
+        }
+
+        return null;
+    }
+
+    public TypeParameterConstraintClauseSyntax[] AsClassConstraintClausesForReferenceTypes(IEnumerable<ITypeParameterSymbol> typeParameters,
+        Func<string, string> findTypeParameterName)
+    {
+        return typeParameters
+            .Select(a => CreateClassConstraintClausesForReferenceTypeParameter(a, findTypeParameterName))
+            .Where(a => a != null)
+            .Select(a => a!)
+            .ToArray();
+    }
+
+    public TypeParameterConstraintClauseSyntax[] AsConstraintClauses(IEnumerable<ITypeParameterSymbol> typeParameters,
+        Func<string, string> findTypeParameterName)
+    {
+        return typeParameters
+            .Select(a => CreateConstraintClauseFromTypeParameter(a, findTypeParameterName))
+            .Where(a => a != null)
+            .Select(a => a!)
+            .ToArray();
+    }
+
+    public ExpressionSyntax WrapByRef(ExpressionSyntax invocation, TypeSyntax returnType)
+    {
+        var byref = ByRef(returnType);
+        var wrap = F.InvocationExpression(F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, byref, F.IdentifierName("Wrap")))
+            .WithExpressionsAsArgumentList(invocation);
+        return F.RefExpression(wrap);
+    }
+
+    public AttributeSyntax GeneratedCodeAttribute()
+    {
+        var p = ParseName(_mocklisSymbols.GeneratedCodeAttribute);
+
+        return F.Attribute(p).WithArgumentList(F.AttributeArgumentList(
+            F.SeparatedList(new[]
+            {
+                F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal("Mocklis"))),
+                F.AttributeArgument(F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(Version)))
+            })));
+    }
+
+    public MemberAccessExpressionSyntax StrictnessExpression()
+    {
+        return _settings.VeryStrict ? StrictnessVeryStrict() : _settings.Strict ? StrictnessStrict() : StrictnessLenient();
+    }
+
+    public ExpressionStatementSyntax InitialisationStatement(TypeSyntax mockPropertyType, string memberMockName, string className,
+        string interfaceName, string symbolName)
+    {
+        return F.ExpressionStatement(F.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            F.IdentifierName(memberMockName),
+            F.ObjectCreationExpression(mockPropertyType)
+                .WithExpressionsAsArgumentList(
+                    F.ThisExpression(),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(symbolName)),
+                    F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName)),
+                    StrictnessExpression()
+                )));
+    }
+
+    public ThrowStatementSyntax ThrowMockMissingStatement(string mockType, string memberMockName, string className, string interfaceName,
+        string symbolName)
+    {
+        return F.ThrowStatement(F.ObjectCreationExpression(MockMissingException())
+            .WithExpressionsAsArgumentList(
+                F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, MockType(),
+                    F.IdentifierName(mockType)),
+                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(className)),
+                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(interfaceName)),
+                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(symbolName)),
+                F.LiteralExpression(SyntaxKind.StringLiteralExpression, F.Literal(memberMockName))
+            )
+        );
     }
 }

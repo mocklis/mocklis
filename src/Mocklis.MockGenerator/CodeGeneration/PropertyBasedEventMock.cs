@@ -5,82 +5,60 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Mocklis.MockGenerator.CodeGeneration
+namespace Mocklis.MockGenerator.CodeGeneration;
+
+#region Using Directives
+
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+#endregion
+
+public sealed class PropertyBasedEventMock : IMemberMock
 {
-    #region Using Directives
+    public IEventSymbol Symbol { get; }
+    public string MemberMockName { get; }
 
-    using System.Collections.Generic;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
-    using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-
-    #endregion
-
-    public class PropertyBasedEventMock : PropertyBasedMock<IEventSymbol>, IMemberMock
+    public PropertyBasedEventMock(IEventSymbol symbol, string memberMockName)
     {
-        public PropertyBasedEventMock(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol, IEventSymbol symbol, string memberMockName) : base(classSymbol, interfaceSymbol, symbol, memberMockName)
-        {
-        }
+        Symbol = symbol;
+        MemberMockName = memberMockName;
+    }
 
-        public ISyntaxAdder GetSyntaxAdder(MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
-        {
-            return new SyntaxAdder(this, typesForSymbols, strict, veryStrict);
-        }
+    public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,
+        List<StatementSyntax> constructorStatements,
+        NameSyntax interfaceNameSyntax, string className, string interfaceName)
+    {
+        var mockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(Symbol.Type, false));
+        declarationList.Add(mockPropertyType.MockProperty(MemberMockName));
+        declarationList.Add(ExplicitInterfaceMember(typesForSymbols, interfaceNameSyntax));
+        constructorStatements.Add(typesForSymbols.InitialisationStatement(mockPropertyType, MemberMockName, className, interfaceName, Symbol.Name));
+    }
 
-        private class SyntaxAdder : ISyntaxAdder
-        {
-            private readonly PropertyBasedEventMock _mock;
-            private readonly MocklisTypesForSymbols _typesForSymbols;
-            private readonly bool _strict;
-            private readonly bool _veryStrict;
-            private TypeSyntax EventHandlerTypeSyntax { get; }
-            private TypeSyntax MockPropertyType { get; }
+    private MemberDeclarationSyntax ExplicitInterfaceMember(MocklisTypesForSymbols typesForSymbols, NameSyntax interfaceNameSyntax)
+    {
+        var eventHandlerTypeSyntax = typesForSymbols.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious());
+        var mockedProperty = F.EventDeclaration(eventHandlerTypeSyntax, Symbol.Name)
+            .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(interfaceNameSyntax));
 
-            public SyntaxAdder(PropertyBasedEventMock mock, MocklisTypesForSymbols typesForSymbols, bool strict, bool veryStrict)
-            {
-                _mock = mock;
-                _typesForSymbols = typesForSymbols;
-                _strict = strict;
-                _veryStrict = veryStrict;
-                EventHandlerTypeSyntax = typesForSymbols.ParseTypeName(_mock.Symbol.Type, _mock.Symbol.NullableOrOblivious());
-                MockPropertyType = typesForSymbols.EventMock(typesForSymbols.ParseTypeName(_mock.Symbol.Type, false));
-            }
+        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
+            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
+                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(MemberMockName),
+                        F.IdentifierName("Add")))
+                .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
+            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
+        );
 
-            public void AddMembersToClass(IList<MemberDeclarationSyntax> declarationList)
-            {
-                declarationList.Add(_mock.MockProperty(MockPropertyType));
-                declarationList.Add(ExplicitInterfaceMember());
-            }
+        mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
+            .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
+                    F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        F.IdentifierName(MemberMockName), F.IdentifierName("Remove")))
+                .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
+            .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
 
-            public void AddInitialisersToConstructor(List<StatementSyntax> constructorStatements)
-            {
-                constructorStatements.Add(_mock.InitialisationStatement(MockPropertyType, _typesForSymbols, _strict, _veryStrict));
-            }
-
-            private MemberDeclarationSyntax ExplicitInterfaceMember()
-            {
-                var mockedProperty = F.EventDeclaration(EventHandlerTypeSyntax, _mock.Symbol.Name)
-                    .WithExplicitInterfaceSpecifier(F.ExplicitInterfaceSpecifier(_typesForSymbols.ParseName(_mock.InterfaceSymbol)));
-
-                mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
-                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                            F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, F.IdentifierName(_mock.MemberMockName),
-                                F.IdentifierName("Add")))
-                        .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
-                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken))
-                );
-
-                mockedProperty = mockedProperty.AddAccessorListAccessors(F.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
-                    .WithExpressionBody(F.ArrowExpressionClause(F.InvocationExpression(
-                            F.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                F.IdentifierName(_mock.MemberMockName), F.IdentifierName("Remove")))
-                        .WithExpressionsAsArgumentList(F.IdentifierName("value"))))
-                    .WithSemicolonToken(F.Token(SyntaxKind.SemicolonToken)));
-
-                return mockedProperty;
-            }
-        }
+        return mockedProperty;
     }
 }

@@ -10,12 +10,10 @@ namespace Mocklis.MockGenerator.Helpers
     #region Using Directives
 
     using System;
-    using System.CodeDom.Compiler;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -25,7 +23,6 @@ namespace Mocklis.MockGenerator.Helpers
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Emit;
     using Microsoft.CodeAnalysis.Text;
-    using Mocklis.Core;
 
     #endregion
 
@@ -33,58 +30,36 @@ namespace Mocklis.MockGenerator.Helpers
     {
         #region Static
 
-        private static readonly MetadataReference CorlibReference;
-        private static readonly MetadataReference SystemLinqReference;
-        private static readonly MetadataReference SystemDiagnosticsReference;
-        private static readonly MetadataReference MocklisCoreReference;
-        private static readonly MetadataReference RuntimeReference;
-        private static readonly MetadataReference NetStandardReference;
-
-        static MocklisClassUpdater()
-        {
-            CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-            SystemLinqReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-            SystemDiagnosticsReference = MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location);
-            MocklisCoreReference = MetadataReference.CreateFromFile(typeof(MocklisClassAttribute).Assembly.Location);
-            RuntimeReference = MetadataReference.CreateFromFile(Assembly.Load("System.Runtime, Version=0.0.0.0").Location);
-            NetStandardReference = MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.1.0.0").Location);
-        }
-
-        private static Document CreateDocument(string source, LanguageVersion languageVersion)
+        public static AdhocWorkspace CreateWorkspace(string source, LanguageVersion languageVersion, out ProjectId projectId,
+            out DocumentId documentId)
         {
             string projectName = "TestProject";
-            var projectId = ProjectId.CreateNewId(debugName: projectName);
+            projectId = ProjectId.CreateNewId(debugName: projectName);
 
             var documentFileName = "Test.cs";
-            var documentId = DocumentId.CreateNewId(projectId, debugName: documentFileName);
 
             var projectInfo = ProjectInfo.Create(projectId, VersionStamp.Default, projectName, projectName, LanguageNames.CSharp,
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 parseOptions: new CSharpParseOptions(languageVersion),
-                metadataReferences: new[]
-                {
-                    CorlibReference, SystemLinqReference, SystemDiagnosticsReference, MocklisCoreReference, RuntimeReference, NetStandardReference
-                });
+                metadataReferences: TestReferences.MetadataReferences);
 
-            var solution = new AdhocWorkspace()
-                .CurrentSolution
-                .AddProject(projectInfo)
-                .AddDocument(documentId, documentFileName, SourceText.From(source));
+            var result = new AdhocWorkspace();
+            result.AddProject(projectInfo);
+            var document = result.AddDocument(projectId, documentFileName, SourceText.From(source));
+            documentId = document.Id;
+            return result;
+        }
 
-            // We know that projects and documents exist since we've just added them.
-            return solution.GetProject(projectId)!.GetDocument(documentId)!;
+        private static Document CreateDocument(string source, LanguageVersion languageVersion)
+        {
+            var workspace = CreateWorkspace(source, languageVersion, out var projectId, out var documentId);
+            return workspace.CurrentSolution.GetProject(projectId)!.GetDocument(documentId)!;
         }
 
         #endregion
 
-        private readonly MocklisAnalyzer _mocklisAnalyzer;
-        private readonly MocklisCodeFixProvider _mocklisCodeFixProvider;
-
-        public MocklisClassUpdater()
-        {
-            _mocklisAnalyzer = new MocklisAnalyzer();
-            _mocklisCodeFixProvider = new MocklisCodeFixProvider();
-        }
+        private readonly MocklisAnalyzer _mocklisAnalyzer = new();
+        private readonly MocklisCodeFixProvider _mocklisCodeFixProvider = new();
 
         public async Task<MocklisClassUpdaterResult> UpdateMocklisClass(string source, LanguageVersion languageVersion)
         {
@@ -100,7 +75,7 @@ namespace Mocklis.MockGenerator.Helpers
             var diagnostics = (await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync()).Single();
 
             CodeAction? action = null;
-            var context = new CodeFixContext(document, diagnostics, (a, d) => action = a, CancellationToken.None);
+            var context = new CodeFixContext(document, diagnostics, (a, _) => action = a, CancellationToken.None);
             await _mocklisCodeFixProvider.RegisterCodeFixesAsync(context);
 
             // Action will have been created by the call to CodeFixContext
@@ -117,10 +92,15 @@ namespace Mocklis.MockGenerator.Helpers
             var code = root.GetText().ToString();
 
             var project = updatedDocument.Project;
-            var newCompilation = await project.GetCompilationAsync();
+            var newCompilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Could not create compilation.");
+            return BuildCompilation(newCompilation, code);
+        }
+
+        public static MocklisClassUpdaterResult BuildCompilation(Compilation newCompilation, string code)
+        {
             using (var ms = new MemoryStream())
             {
-                EmitResult emitResult = newCompilation!.Emit(ms);
+                EmitResult emitResult = newCompilation.Emit(ms);
                 if (!emitResult.Success)
                 {
                     var codeLines = code.Split(Environment.NewLine);

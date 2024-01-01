@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMemberMock.cs">
+// <copyright file="MockSettings.cs">
 //   SPDX-License-Identifier: MIT
 //   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
@@ -7,15 +7,4 @@
 
 namespace Mocklis.MockGenerator.CodeGeneration;
 
-#region Using Directives
-
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-#endregion
-
-public interface IMemberMock
-{
-    void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,
-        List<StatementSyntax> constructorStatements, NameSyntax interfaceNameSyntax, string className, string interfaceName);
-}
+public record struct MockSettings(bool MockReturnsByRef, bool MockReturnsByRefReadonly, bool Strict, bool VeryStrict);

@@ -17,7 +17,6 @@ namespace Mocklis.Cli
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
     using Mocklis.MockGenerator.CodeGeneration;
-    using Mocklis.MockGenerator.CodeGeneration.Compatibility;
 
     #endregion
 
@@ -86,7 +85,7 @@ namespace Mocklis.Cli
             {
                 if (ShouldRewriteClass(node))
                 {
-                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols, Model.ClassIsInNullableContext(node));
+                    return MocklisClass.UpdateMocklisClass(Model, node, MocklisSymbols);
                 }
 
                 return base.VisitClassDeclaration(node);

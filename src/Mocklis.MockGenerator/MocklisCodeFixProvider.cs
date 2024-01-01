@@ -20,7 +20,6 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Mocklis.MockGenerator.CodeGeneration;
-using Mocklis.MockGenerator.CodeGeneration.Compatibility;
 
 #endregion
 
@@ -93,8 +92,6 @@ public class MocklisCodeFixProvider : CodeFixProvider
             return document.Project.Solution;
         }
 
-        var classIsInNullableContext = semanticModel.ClassIsInNullableContext(classDecl);
-
         var oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
         if (oldRoot == null)
         {
@@ -127,7 +124,7 @@ public class MocklisCodeFixProvider : CodeFixProvider
             return document.Project.Solution;
         }
 
-        var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols, classIsInNullableContext);
+        var newClassDecl = MocklisClass.UpdateMocklisClass(semanticModel, emptyClassDecl, mocklisSymbols);
 
         var newRoot = emptyRoot.ReplaceNode(emptyClassDecl, newClassDecl);
         return emptyDoc.WithSyntaxRoot(newRoot).Project.Solution;

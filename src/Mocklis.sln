@@ -16,8 +16,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Experimental", "Moc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.Serilog2", "Mocklis.Serilog2\Mocklis.Serilog2.csproj", "{008C5438-917D-4050-9267-3A3D22E13303}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mocklis.CodeGeneration", "Mocklis.CodeGeneration\Mocklis.CodeGeneration.shproj", "{640710A2-756B-496C-976A-1656690795A7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocklis.MockGenerator.Tests", "Mocklis.MockGenerator.Tests\Mocklis.MockGenerator.Tests.csproj", "{A68EB6DA-12D3-4930-B530-C5A1FB2CD0E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D6A5B215-51E9-4A8A-858E-CBA238EDCFCD}"
@@ -108,10 +106,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52E54121-C474-48AB-B982-62BC165980A7}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{05839517-8929-47e0-a8e5-3c015dcc3fe5}*SharedItemsImports = 5
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{640710a2-756b-496c-976a-1656690795a7}*SharedItemsImports = 13
-		Mocklis.CodeGeneration\Mocklis.CodeGeneration.projitems*{f5d8c9ac-02d4-4164-b965-c528e9cef06d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

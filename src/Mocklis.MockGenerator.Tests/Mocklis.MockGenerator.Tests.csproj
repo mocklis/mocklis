@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>Mocklis.MockGenerator</RootNamespace>
   </PropertyGroup>
@@ -12,9 +12,16 @@
     <Content Include="TestCases\*.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="TestCases\*.Expected.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Expected', '.cs'))</DependentUpon>
+    </Content>
+
     <Compile Remove="TestCases8\*.cs" />
     <Content Include="TestCases8\*.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="TestCases8\*.Expected.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Expected', '.cs'))</DependentUpon>
     </Content>
   </ItemGroup>
 

@@ -17,6 +17,7 @@ namespace Mocklis.MockGenerator
     using Mocklis.MockGenerator.Helpers;
     using Xunit;
     using Xunit.Abstractions;
+    using Xunit.Sdk;
 
     #endregion
 
@@ -35,43 +36,17 @@ namespace Mocklis.MockGenerator
                 ?.InformationalVersion ?? string.Empty;
         }
 
-        public static TheoryData<ClassUpdateTestCase> GetTestCasesFromFolder(string testCaseFolder)
-        {
-            var pathToTestCases = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                                  throw new InvalidOperationException("Could not find executing assembly folder");
-
-            var result = new TheoryData<ClassUpdateTestCase>();
-
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(pathToTestCases, testCaseFolder), "*.cs"))
-            {
-                if (!file.EndsWith(".Expected.cs"))
-                {
-                    result.Add(new ClassUpdateTestCase
-                    {
-                        PathToTestCases = pathToTestCases,
-                        TestCaseFolder = testCaseFolder,
-                        TestCase = Path.GetFileNameWithoutExtension(file)
-                    });
-                }
-            }
-
-            return result;
-        }
-
-        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases() => GetTestCasesFromFolder("TestCases");
-
-        public static TheoryData<ClassUpdateTestCase> EnumerateTestCases8() => GetTestCasesFromFolder("TestCases8");
 
         [Theory]
-        [MemberData(nameof(EnumerateTestCases))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType = typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp7_3(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp7_3);
         }
 
         [Theory]
-        [MemberData(nameof(EnumerateTestCases))]
-        [MemberData(nameof(EnumerateTestCases8))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases), MemberType = typeof(TestCaseEnumerator))]
+        [MemberData(nameof(TestCaseEnumerator.EnumerateTestCases8), MemberType = typeof(TestCaseEnumerator))]
         public async Task TestMocklisClassUpdaterForCSharp8(ClassUpdateTestCase test)
         {
             await TestCodeGenerationCase(test, LanguageVersion.CSharp8);
@@ -98,7 +73,8 @@ namespace Mocklis.MockGenerator
             {
 #if NCRUNCH
                 var folder = Environment.GetEnvironmentVariable("MockGeneratorTestsFolder");
-                string expectedFilePathInSourceCode = folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
+                string expectedFilePathInSourceCode =
+                    folder == null ? string.Empty : Path.Combine(folder, test.TestCaseFolder, test.TestCase + ".Expected.cs");
 #else
                 string expectedFilePathInSourceCode =
                     Path.Combine(test.PathToTestCases, "..", "..", "..", test.TestCaseFolder, test.TestCase + ".Expected.cs");
@@ -126,11 +102,11 @@ namespace Mocklis.MockGenerator
                     Assert.Equal(eline, cline);
                 }
             }
-            catch (Xunit.Sdk.EqualException ex)
+            catch (EqualException ex)
             {
                 if (!result.IsSuccess)
                 {
-                    _testOutputHelper.WriteLine($"Mismatch on line {i+1}:");
+                    _testOutputHelper.WriteLine($"Mismatch on line {i + 1}:");
                     _testOutputHelper.WriteLine(ex.Message);
                     _testOutputHelper.WriteLine(string.Empty);
                 }
