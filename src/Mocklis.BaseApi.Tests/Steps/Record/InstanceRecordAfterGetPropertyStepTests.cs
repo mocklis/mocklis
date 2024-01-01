@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="InstanceRecordAfterGetPropertyStepTests.cs">
 //   SPDX-License-Identifier: MIT
-//   Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.
+//   Copyright © 2019-2024 Esbjörn Redmo and contributors. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 

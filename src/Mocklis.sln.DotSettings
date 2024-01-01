@@ -55,7 +55,7 @@
 	<s:String x:Key="/Default/CodeStyle/FileHeader/FileHeaderText/@EntryValue">--------------------------------------------------------------------------------------------------------------------&#xD;
 &lt;copyright file="${File.FileName}"&gt;&#xD;
   SPDX-License-Identifier: MIT&#xD;
-  Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.&#xD;
+  Copyright © 2019-2024 Esbjörn Redmo and contributors. All rights reserved.&#xD;
 &lt;/copyright&gt;&#xD;
 --------------------------------------------------------------------------------------------------------------------&#xD;
 </s:String>

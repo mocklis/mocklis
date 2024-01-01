@@ -3,7 +3,7 @@
     <Product>Mocklis</Product>
     <Authors>Esbjörn Redmo</Authors>
     <Company />
-    <Copyright>Copyright © 2019-2023 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2019-2024 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
