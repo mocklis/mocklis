@@ -22,7 +22,6 @@
     <None Remove="publish\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Condition="'$(TargetFramework)' != 'netstandard2.1'" />
   </ItemGroup>
   <ItemGroup>
