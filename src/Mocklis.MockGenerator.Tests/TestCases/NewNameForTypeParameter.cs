@@ -10,7 +10,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public class TestClass<T1, T2> : ITestClass<T1, T2>
+    public [PARTIAL] class TestClass<T1, T2> : ITestClass<T1, T2>
     {
     }
 }

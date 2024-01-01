@@ -9,8 +9,13 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+#region Using Directives
+
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+#endregion
 
 #endregion
 
@@ -18,4 +23,6 @@ public interface IMemberMock
 {
     void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,
         List<StatementSyntax> constructorStatements, NameSyntax interfaceNameSyntax, string className, string interfaceName);
+
+    void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol);
 }

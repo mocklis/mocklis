@@ -16,7 +16,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public abstract class TestClass<T> : ITestClass<T> where T : class
+    public abstract [PARTIAL] class TestClass<T> : ITestClass<T> where T : class
     {
     }
 }

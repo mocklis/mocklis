@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -19,8 +20,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 #endregion
 
 // TODO: Check if one of the paramaters can be named 'value'
-public sealed class VirtualMethodBasedIndexerMock : IMemberMock
+public sealed class VirtualMethodBasedIndexerMock : IMemberMock, IEquatable<VirtualMethodBasedIndexerMock>
 {
+    #region Equality Members
+
+    public bool Equals(VirtualMethodBasedIndexerMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForProperty.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is VirtualMethodBasedIndexerMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForProperty.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(VirtualMethodBasedIndexerMock? left, VirtualMethodBasedIndexerMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IPropertySymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -28,6 +63,73 @@ public sealed class VirtualMethodBasedIndexerMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+        var builder = new SingleTypeOrValueTupleBuilder();
+        foreach (var p in Symbol.Parameters)
+        {
+            builder.AddParameter(p);
+        }
+
+        string paramList = ctx.BuildParameterList(Symbol.Parameters, Substitutions.Empty);
+        string arglist = ctx.BuildArgumentList(Symbol.Parameters);
+
+        if (!Symbol.IsWriteOnly)
+        {
+            ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}({paramList})");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualIndexerGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+        }
+
+        if (!Symbol.IsReadOnly)
+        {
+            ctx.AppendLine($"protected virtual void {MemberMockName}({paramList}, {valueTypeWithoutReadonly} value)");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualIndexerSet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+        }
+
+        ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.this[{paramList}]");
+
+        if (Symbol.IsReadOnly)
+        {
+            ctx.Append(" => ");
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            {
+                ctx.Append("ref ");
+            }
+
+            ctx.AppendLine($"{MemberMockName}({arglist});");
+        }
+        else
+        {
+            ctx.Append(" { ");
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.Append($"get => {MemberMockName}({arglist}); ");
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.Append($"set => {MemberMockName}({arglist}, value); ");
+            }
+
+            ctx.AppendLine("}");
+        }
+
+        ctx.AppendSeparator();
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

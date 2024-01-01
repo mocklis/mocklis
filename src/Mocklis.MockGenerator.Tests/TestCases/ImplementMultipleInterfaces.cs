@@ -15,7 +15,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public class TestClass : ITest1, ITest2
+    public [PARTIAL] class TestClass : ITest1, ITest2
     {
     }
 }

@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -18,8 +19,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public sealed class VirtualMethodBasedMethodMock : IMemberMock
+public sealed class VirtualMethodBasedMethodMock : IMemberMock, IEquatable<VirtualMethodBasedMethodMock>
 {
+    #region Equality Members
+
+    public bool Equals(VirtualMethodBasedMethodMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForMethod.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is VirtualMethodBasedMethodMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForMethod.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(VirtualMethodBasedMethodMock? left, VirtualMethodBasedMethodMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(VirtualMethodBasedMethodMock? left, VirtualMethodBasedMethodMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IMethodSymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -27,6 +62,61 @@ public sealed class VirtualMethodBasedMethodMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var substitutions = ctx.BuildSubstitutions(Symbol);
+
+        (string returnType, string returnTypeWithoutReadonly) = ctx.FindReturnTypes(Symbol, substitutions);
+
+        var arglistParameterName = Symbol.FindArglistParameterName();
+
+        string typeParameterList = string.Empty;
+        string constraints = string.Empty;
+
+        if (Symbol.TypeParameters.Any())
+        {
+            typeParameterList = $"<{string.Join(", ", Symbol.TypeParameters.Select(t => substitutions.FindSubstitution(t.Name)))}>";
+            constraints = ctx.BuildConstraintClauses(Symbol.TypeParameters, substitutions, false);
+        }
+
+        var parameters = ctx.BuildParameterList(Symbol.Parameters, substitutions);
+        var arguments = ctx.BuildArgumentList(Symbol.Parameters);
+        var methodParameters = parameters;
+        if (arglistParameterName != null)
+        {
+            if (parameters != string.Empty)
+            {
+                parameters += ", ";
+                arguments += ", ";
+                methodParameters += ", ";
+            }
+
+            parameters += "__arglist";
+            arguments += "__arglist";
+            methodParameters += $"global::System.RuntimeArgumentHandle {arglistParameterName}";
+        }
+
+        ctx.AppendLine($"protected virtual {returnTypeWithoutReadonly} {MemberMockName}{typeParameterList}({methodParameters}){constraints}");
+        ctx.AppendLine("{");
+        ctx.IncreaseIndent();
+        ctx.AppendThrow("VirtualMethod", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+        ctx.DecreaseIndent();
+        ctx.AppendLine("}");
+        ctx.AppendSeparator();
+
+        var mockedMethod =
+            $"{returnType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}{typeParameterList}({parameters})";
+
+        ctx.Append($"{mockedMethod} => ");
+        if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+        {
+            ctx.Append("ref ");
+        }
+
+        ctx.AppendLine($"{MemberMockName}{typeParameterList}({arguments});");
+        ctx.AppendSeparator();
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

@@ -23,7 +23,7 @@ namespace Test
 #nullable disable
 
     [MocklisClass]
-    public abstract class TestClass : ITestClass
+    public abstract [PARTIAL] class TestClass : ITestClass
     {
     }
 }

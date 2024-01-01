@@ -11,7 +11,7 @@ namespace Test
     }
 
     [MocklisClass(MockReturnsByRef = true, MockReturnsByRefReadonly = false)]
-    public class TestClass : ITestClass
+    public [PARTIAL] class TestClass : ITestClass
     {
     }
 }

@@ -13,7 +13,7 @@ namespace Test
     }
 
     [MocklisClass(Strict = true, VeryStrict = true)]
-    public class TestClass : ITestClass
+    public [PARTIAL] class TestClass : ITestClass
     {
     }
 }

@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,8 +18,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public sealed class VirtualMethodBasedPropertyMock : IMemberMock
+public sealed class VirtualMethodBasedPropertyMock : IMemberMock, IEquatable<VirtualMethodBasedPropertyMock>
 {
+    #region Equality Members
+
+    public bool Equals(VirtualMethodBasedPropertyMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForProperty.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is VirtualMethodBasedPropertyMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForProperty.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(VirtualMethodBasedPropertyMock? left, VirtualMethodBasedPropertyMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IPropertySymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -26,6 +61,64 @@ public sealed class VirtualMethodBasedPropertyMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var (valueType, valueTypeWithoutReadonly) = ctx.FindPropertyTypes(Symbol);
+
+        if (!Symbol.IsWriteOnly)
+        {
+            ctx.AppendLine($"protected virtual {valueTypeWithoutReadonly} {MemberMockName}()");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualPropertyGet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+        }
+
+        if (!Symbol.IsReadOnly)
+        {
+            ctx.AppendLine($"protected virtual void {MemberMockName}({valueTypeWithoutReadonly} value)");
+            ctx.AppendLine("{");
+            ctx.IncreaseIndent();
+            ctx.AppendThrow("VirtualPropertySet", MemberMockName, interfaceSymbol.Name, Symbol.Name);
+            ctx.DecreaseIndent();
+            ctx.AppendLine("}");
+            ctx.AppendSeparator();
+        }
+
+        ctx.Append($"{valueType} {ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty)}.{Symbol.Name}");
+
+        if (Symbol.IsReadOnly)
+        {
+            ctx.Append(" => ");
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            {
+                ctx.Append("ref ");
+            }
+
+            ctx.AppendLine($"{MemberMockName}();");
+        }
+        else
+        {
+            ctx.Append(" { ");
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.Append($"get => {MemberMockName}(); ");
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.Append($"set => {MemberMockName}(value); ");
+            }
+
+            ctx.AppendLine("}");
+        }
+
+        ctx.AppendSeparator();
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

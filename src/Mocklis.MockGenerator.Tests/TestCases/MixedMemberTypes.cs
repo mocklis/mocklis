@@ -37,7 +37,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public class TestClass : IDuplexConnection
+    public [PARTIAL] class TestClass : IDuplexConnection
     {
     }
 }

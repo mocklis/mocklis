@@ -18,8 +18,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public sealed class PropertyBasedIndexerMock : IMemberMock
+public sealed class PropertyBasedIndexerMock : IMemberMock, IEquatable<PropertyBasedIndexerMock>
 {
+    #region Equality members
+
+    public bool Equals(PropertyBasedIndexerMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForProperty.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is PropertyBasedIndexerMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForProperty.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(PropertyBasedIndexerMock? left, PropertyBasedIndexerMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(PropertyBasedIndexerMock? left, PropertyBasedIndexerMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IPropertySymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -28,6 +62,76 @@ public sealed class PropertyBasedIndexerMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
+
+        var builder = new SingleTypeOrValueTupleBuilder();
+        foreach (var p in Symbol.Parameters)
+        {
+            builder.AddParameter(p);
+        }
+
+        var keyTypex = builder.Build(MemberMockName);
+
+        var keyType = ctx.BuildTupleType(keyTypex, Substitutions.Empty) ??
+                      throw new ArgumentException("Indexer symbol must have at least one parameter", nameof(Symbol));
+
+        var arglist = keyTypex.BuildTupleSafeArgumentListAsString();
+
+        var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
+
+        var mockPropertyType = $"global::Mocklis.Core.IndexerMock<{keyType}, {valueType}>";
+
+        ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+
+        ctx.AppendSeparator();
+
+        if (Symbol.ReturnsByRef)
+        {
+            ctx.Append("ref ");
+        }
+        else if (Symbol.ReturnsByRefReadonly)
+        {
+            ctx.Append("ref readonly ");
+        }
+
+        ctx.Append($"{valueType} {interfaceName}.this[{ctx.BuildParameterList(keyTypex, Substitutions.Empty)}]");
+
+        if (Symbol.IsReadOnly)
+        {
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            {
+                ctx.AppendLine($" => ref global::Mocklis.Core.ByRef<{valueType}>.Wrap({MemberMockName}[{arglist}]);");
+            }
+            else
+            {
+                ctx.AppendLine($" => {MemberMockName}[{arglist}];");
+            }
+        }
+        else
+        {
+            ctx.Append(" { ");
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.Append($"get => {MemberMockName}[{arglist}]; ");
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.Append($"set => {MemberMockName}[{arglist}] = value; ");
+            }
+
+            ctx.Append("}");
+        }
+
+        ctx.AppendLine();
+        ctx.AppendSeparator();
+
+        ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

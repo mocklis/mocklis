@@ -10,7 +10,7 @@ namespace Test
     }
 
     [MocklisClass]
-    public class TestClass<T> : ITestClass<T> where T : EventArgs
+    public [PARTIAL] class TestClass<T> : ITestClass<T> where T : EventArgs
     {
     }
 }

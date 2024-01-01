@@ -6,7 +6,7 @@ using Mocklis.Core;
 namespace Test
 {
     [MocklisClass]
-    public class TestClass<T> : IEnumerable<T>
+    public [PARTIAL] class TestClass<T> : IEnumerable<T>
     {
     }
 }

@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,8 +18,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public sealed class PropertyBasedPropertyMock : IMemberMock
+public sealed class PropertyBasedPropertyMock : IMemberMock, IEquatable<PropertyBasedPropertyMock>
 {
+    #region Equality Members
+
+    public bool Equals(PropertyBasedPropertyMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForProperty.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is PropertyBasedPropertyMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForProperty.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(PropertyBasedPropertyMock? left, PropertyBasedPropertyMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(PropertyBasedPropertyMock? left, PropertyBasedPropertyMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IPropertySymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -26,6 +61,61 @@ public sealed class PropertyBasedPropertyMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = mockMemberName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
+        var valueType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
+
+        var mockPropertyType = $"global::Mocklis.Core.PropertyMock<{valueType}>";
+
+        ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+        ctx.AppendSeparator();
+
+        if (Symbol.ReturnsByRef)
+        {
+            ctx.Append("ref ");
+        }
+        else if (Symbol.ReturnsByRefReadonly)
+        {
+            ctx.Append("ref readonly ");
+        }
+
+        ctx.Append($"{valueType} {interfaceName}.{Symbol.Name}");
+
+        if (Symbol.IsReadOnly)
+        {
+            if (Symbol.ReturnsByRef || Symbol.ReturnsByRefReadonly)
+            {
+                ctx.AppendLine($" => ref global::Mocklis.Core.ByRef<{valueType}>.Wrap({MemberMockName}.Value);");
+            }
+            else
+            {
+                ctx.AppendLine($" => {MemberMockName}.Value;");
+            }
+        }
+        else
+        {
+            ctx.Append(" { ");
+
+            if (!Symbol.IsWriteOnly)
+            {
+                ctx.Append($"get => {MemberMockName}.Value; ");
+            }
+
+            if (!Symbol.IsReadOnly)
+            {
+                ctx.Append($"set => {MemberMockName}.Value = value; ");
+            }
+
+            ctx.Append("}");
+        }
+
+        ctx.AppendLine();
+        ctx.AppendSeparator();
+
+        ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

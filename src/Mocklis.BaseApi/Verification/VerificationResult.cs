@@ -23,9 +23,9 @@ namespace Mocklis.Verification
     /// <summary>
     ///     Struct that contains the result of a verification check. It is either a leaf node (and its success depends
     ///     only on that check) or a branch node (and it's deemed successful only if all its child nodes are successful.)
-    ///     Implements the <see cref="System.Runtime.Serialization.ISerializable" /> interface.
+    ///     Implements the <see cref="ISerializable" /> interface.
     /// </summary>
-    /// <seealso cref="System.Runtime.Serialization.ISerializable" />
+    /// <seealso cref="ISerializable" />
     [Serializable]
     public readonly struct VerificationResult : ISerializable
     {

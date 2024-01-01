@@ -8,7 +8,7 @@ namespace Test
     }
 
     [Mocklis.Core.MocklisClass]
-    public class TestClass : ITest
+    public [PARTIAL] class TestClass : ITest
     {
     }
 }

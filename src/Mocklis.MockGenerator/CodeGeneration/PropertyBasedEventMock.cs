@@ -9,6 +9,7 @@ namespace Mocklis.MockGenerator.CodeGeneration;
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,8 +18,42 @@ using F = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 #endregion
 
-public sealed class PropertyBasedEventMock : IMemberMock
+public sealed class PropertyBasedEventMock : IMemberMock, IEquatable<PropertyBasedEventMock>
 {
+    #region Equality members
+
+    public bool Equals(PropertyBasedEventMock? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return SymbolEquality.ForEvent.Equals(Symbol, other.Symbol) && MemberMockName == other.MemberMockName;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return ReferenceEquals(this, obj) || obj is PropertyBasedEventMock other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (SymbolEquality.ForEvent.GetHashCode(Symbol) * 397) ^ MemberMockName.GetHashCode();
+        }
+    }
+
+    public static bool operator ==(PropertyBasedEventMock? left, PropertyBasedEventMock? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(PropertyBasedEventMock? left, PropertyBasedEventMock? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
+
     public IEventSymbol Symbol { get; }
     public string MemberMockName { get; }
 
@@ -26,6 +61,24 @@ public sealed class PropertyBasedEventMock : IMemberMock
     {
         Symbol = symbol;
         MemberMockName = memberMockName;
+    }
+
+    public void AddSource(SourceGenerationContext ctx, INamedTypeSymbol interfaceSymbol)
+    {
+        var interfaceName = ctx.ParseTypeName(interfaceSymbol, false, Substitutions.Empty);
+        var eventHandlerType = ctx.ParseTypeName(Symbol.Type, Symbol.NullableOrOblivious(), Substitutions.Empty);
+
+        // TODO: Verify that the generic parameter indeed never is nullable. (Pretty sure this is the case but it doesn't hurt to double-check...)
+        var mockPropertyType = $"global::Mocklis.Core.EventMock<{ctx.ParseTypeName(Symbol.Type, false, Substitutions.Empty)}>";
+
+        ctx.AppendLine($"public {mockPropertyType} {MemberMockName} {{ get; }}");
+        ctx.AppendSeparator();
+
+        ctx.AppendLine(
+            $"event {eventHandlerType} {interfaceName}.{Symbol.Name} {{ add => {MemberMockName}.Add(value); remove => {MemberMockName}.Remove(value); }}");
+        ctx.AppendSeparator();
+
+        ctx.AddConstructorStatement(mockPropertyType, MemberMockName, interfaceSymbol.Name, Symbol.Name);
     }
 
     public void AddSyntax(MocklisTypesForSymbols typesForSymbols, IList<MemberDeclarationSyntax> declarationList,

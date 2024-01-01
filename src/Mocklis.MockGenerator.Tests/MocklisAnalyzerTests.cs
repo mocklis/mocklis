@@ -64,6 +64,8 @@ namespace Mocklis.MockGenerator
 
             string source = await sourceTask.ConfigureAwait(false);
 
+            source = source.Replace("[PARTIAL] ", "");
+
             var result = await _mocklisClassUpdater.UpdateMocklisClass(source, languageVersion).ConfigureAwait(false);
 
             string expected = (await expectedTask.ConfigureAwait(false)).Replace("[VERSION]", _version);

@@ -8,7 +8,7 @@ namespace Test
     using System.Collections.Generic;
 
     [MocklisClass]
-    public abstract class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
+    public abstract [PARTIAL] class TestClass<TKey, TValue> : IDictionary<TKey, TValue>
     {
     }
 }
