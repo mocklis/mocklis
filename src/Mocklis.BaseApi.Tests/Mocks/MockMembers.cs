@@ -26,15 +26,19 @@ namespace Mocklis.Mocks
         public MockMembers()
         {
             MyEvent = new EventMock<EventHandler>(this, "MockMembers", "IEvents", "MyEvent", "MyEvent", Strictness.Lenient);
-            SpecialEvent = new EventMock<EventHandler<SpecialEventArgs>>(this, "MockMembers", "IEvents", "SpecialEvent", "SpecialEvent", Strictness.Lenient);
+            SpecialEvent = new EventMock<EventHandler<SpecialEventArgs>>(this, "MockMembers", "IEvents", "SpecialEvent", "SpecialEvent",
+                Strictness.Lenient);
             SimpleAction = new ActionMethodMock(this, "MockMembers", "IMethods", "SimpleAction", "SimpleAction", Strictness.Lenient);
-            ActionWithParameter = new ActionMethodMock<int>(this, "MockMembers", "IMethods", "ActionWithParameter", "ActionWithParameter", Strictness.Lenient);
+            ActionWithParameter = new ActionMethodMock<int>(this, "MockMembers", "IMethods", "ActionWithParameter", "ActionWithParameter",
+                Strictness.Lenient);
             SimpleFunc = new FuncMethodMock<int>(this, "MockMembers", "IMethods", "SimpleFunc", "SimpleFunc", Strictness.Lenient);
-            FuncWithParameter = new FuncMethodMock<int, int>(this, "MockMembers", "IMethods", "FuncWithParameter", "FuncWithParameter", Strictness.Lenient);
+            FuncWithParameter =
+                new FuncMethodMock<int, int>(this, "MockMembers", "IMethods", "FuncWithParameter", "FuncWithParameter", Strictness.Lenient);
             StringProperty = new PropertyMock<string>(this, "MockMembers", "IProperties", "StringProperty", "StringProperty", Strictness.Lenient);
             IntProperty = new PropertyMock<int>(this, "MockMembers", "IProperties", "IntProperty", "IntProperty", Strictness.Lenient);
             BoolProperty = new PropertyMock<bool>(this, "MockMembers", "IProperties", "BoolProperty", "BoolProperty", Strictness.Lenient);
-            DateTimeProperty = new PropertyMock<DateTime>(this, "MockMembers", "IProperties", "DateTimeProperty", "DateTimeProperty", Strictness.Lenient);
+            DateTimeProperty =
+                new PropertyMock<DateTime>(this, "MockMembers", "IProperties", "DateTimeProperty", "DateTimeProperty", Strictness.Lenient);
             Item = new IndexerMock<int, string>(this, "MockMembers", "IIndexers", "this[]", "Item", Strictness.Lenient);
             Item0 = new IndexerMock<bool, DateTime>(this, "MockMembers", "IIndexers", "this[]", "Item0", Strictness.Lenient);
         }

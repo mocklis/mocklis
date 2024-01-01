@@ -30,7 +30,7 @@ namespace Mocklis.Steps.Lambda
         [Fact]
         public void EvaluateFuncOnGets()
         {
-            int usedIndex = 0;
+            var usedIndex = 0;
 
             MockMembers.Item.GetFunc(i =>
             {

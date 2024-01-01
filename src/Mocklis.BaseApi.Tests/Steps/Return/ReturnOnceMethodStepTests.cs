@@ -24,8 +24,8 @@ namespace Mocklis.Steps.Return
         public void ReturnGivenValueOnceAndForwardThereafter()
         {
             MockMembers.FuncWithParameter.ReturnOnce(45);
-            int result1 = Sut.FuncWithParameter(14);
-            int result2 = Sut.FuncWithParameter(99);
+            var result1 = Sut.FuncWithParameter(14);
+            var result2 = Sut.FuncWithParameter(99);
 
             Assert.Equal(45, result1);
             Assert.Equal(0, result2);

@@ -24,7 +24,8 @@ namespace Mocklis.Mocks
         public MockEventStep()
         {
             Add = new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockEventStep", "IEventStep", "Add", "Add", Strictness.Lenient);
-            Remove = new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove", Strictness.Lenient);
+            Remove = new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockEventStep", "IEventStep", "Remove", "Remove",
+                Strictness.Lenient);
         }
 
         public ActionMethodMock<(IMockInfo mockInfo, THandler? value)> Add { get; }

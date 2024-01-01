@@ -48,7 +48,7 @@ namespace Mocklis.Steps.Lambda
         public void CallFuncWithParameters()
         {
             object? callInstance = null;
-            int callParameter = 0;
+            var callParameter = 0;
             MockMembers.FuncWithParameter.InstanceFunc((obj, i) =>
             {
                 callInstance = obj;

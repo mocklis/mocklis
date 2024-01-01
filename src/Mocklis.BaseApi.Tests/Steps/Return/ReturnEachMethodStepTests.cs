@@ -24,10 +24,10 @@ namespace Mocklis.Steps.Return
         public void ReturnGivenValueOnceAndForwardThereafter()
         {
             MockMembers.FuncWithParameter.ReturnEach(45, 54);
-            int result1 = Sut.FuncWithParameter(14);
-            int result2 = Sut.FuncWithParameter(99);
-            int result3 = Sut.FuncWithParameter(23);
-            int result4 = Sut.FuncWithParameter(73);
+            var result1 = Sut.FuncWithParameter(14);
+            var result2 = Sut.FuncWithParameter(99);
+            var result3 = Sut.FuncWithParameter(23);
+            var result4 = Sut.FuncWithParameter(73);
 
             Assert.Equal(45, result1);
             Assert.Equal(54, result2);

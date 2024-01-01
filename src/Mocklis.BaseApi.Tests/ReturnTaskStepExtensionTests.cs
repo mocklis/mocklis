@@ -44,6 +44,5 @@ namespace Mocklis
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, ValueTask>)null!).ReturnTask());
             Assert.Throws<ArgumentNullException>(() => ((ICanHaveNextMethodStep<int, ValueTask<int>>)null!).ReturnTask());
         }
-
     }
 }

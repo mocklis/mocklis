@@ -13,6 +13,7 @@ namespace Mocklis.Mocks
     using System.CodeDom.Compiler;
     using System.ComponentModel;
     using Mocklis.Core;
+    using Mocklis.Helpers;
     using Mocklis.Interfaces;
 
     #endregion
@@ -26,20 +27,26 @@ namespace Mocklis.Mocks
         public MockEvents()
         {
             MyEvent = new EventMock<EventHandler>(this, "MockEvents", "IEvents", "MyEvent", "MyEvent", Strictness.Lenient);
-            SpecialEvent = new EventMock<EventHandler<Helpers.SpecialEventArgs>>(this, "MockEvents", "IEvents", "SpecialEvent", "SpecialEvent", Strictness.Lenient);
-            PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockEvents", "INotifyPropertyChanged", "PropertyChanged", "PropertyChanged", Strictness.Lenient);
+            SpecialEvent = new EventMock<EventHandler<SpecialEventArgs>>(this, "MockEvents", "IEvents", "SpecialEvent", "SpecialEvent",
+                Strictness.Lenient);
+            PropertyChanged = new EventMock<PropertyChangedEventHandler>(this, "MockEvents", "INotifyPropertyChanged", "PropertyChanged",
+                "PropertyChanged", Strictness.Lenient);
         }
 
         public EventMock<EventHandler> MyEvent { get; }
 
         event EventHandler? IEvents.MyEvent { add => MyEvent.Add(value); remove => MyEvent.Remove(value); }
 
-        public EventMock<EventHandler<Helpers.SpecialEventArgs>> SpecialEvent { get; }
+        public EventMock<EventHandler<SpecialEventArgs>> SpecialEvent { get; }
 
-        event EventHandler<Helpers.SpecialEventArgs>? IEvents.SpecialEvent { add => SpecialEvent.Add(value); remove => SpecialEvent.Remove(value); }
+        event EventHandler<SpecialEventArgs>? IEvents.SpecialEvent { add => SpecialEvent.Add(value); remove => SpecialEvent.Remove(value); }
 
         public EventMock<PropertyChangedEventHandler> PropertyChanged { get; }
 
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged { add => PropertyChanged.Add(value); remove => PropertyChanged.Remove(value); }
+        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
+        {
+            add => PropertyChanged.Add(value);
+            remove => PropertyChanged.Remove(value);
+        }
     }
 }

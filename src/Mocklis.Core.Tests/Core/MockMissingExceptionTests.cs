@@ -5,7 +5,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if NETFRAMEWORK
+#if !NETFRAMEWORK
+#pragma warning disable SYSLIB0011
+#endif
 
 namespace Mocklis.Core
 {
@@ -54,5 +56,3 @@ namespace Mocklis.Core
         }
     }
 }
-
-#endif

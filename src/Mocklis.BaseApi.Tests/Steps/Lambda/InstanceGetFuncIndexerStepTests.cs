@@ -31,7 +31,7 @@ namespace Mocklis.Steps.Lambda
         public void EvaluateFuncOnGets()
         {
             object? callInstance = null;
-            int usedIndex = 0;
+            var usedIndex = 0;
 
             MockMembers.Item.InstanceGetFunc((obj, i) =>
             {

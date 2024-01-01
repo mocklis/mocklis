@@ -41,7 +41,7 @@ namespace Mocklis.Steps.Lambda
         [Fact]
         public void CallFuncWithParameters()
         {
-            int callParameter = 0;
+            var callParameter = 0;
             MockMembers.FuncWithParameter.Func(i =>
             {
                 callParameter = i;

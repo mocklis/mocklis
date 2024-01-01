@@ -73,7 +73,8 @@ namespace Mocklis.Verification.Checks
                 string? keyString = Convert.ToString(key, provider);
                 string? expectedValueString = Convert.ToString(expectedValue, provider);
                 string? currentValueString = Convert.ToString(currentValue, provider);
-                string description = $"Key {keyString.QuotedOrNull()}; Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}";
+                string description =
+                    $"Key {keyString.QuotedOrNull()}; Expected {expectedValueString.QuotedOrNull()}; Current Value is {currentValueString.QuotedOrNull()}";
                 bool success = _comparer.Equals(expectedValue, currentValue);
                 return new VerificationResult(description, success);
             }

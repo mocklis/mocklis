@@ -63,11 +63,11 @@ namespace Mocklis.Steps.Log
             _events.MyEvent += _sampleEventHandler;
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Same(_sampleEventHandler, before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            AssertMockInfoIsCorrect(after[0]);
+            var beforeItem = Assert.Single(before);
+            Assert.Same(_sampleEventHandler, beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            AssertMockInfoIsCorrect(afterItem);
         }
 
         [Fact]
@@ -82,12 +82,12 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _events.MyEvent += _sampleEventHandler);
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Same(_sampleEventHandler, before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Same(_sampleEventHandler, beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -102,11 +102,11 @@ namespace Mocklis.Steps.Log
             _events.MyEvent -= _sampleEventHandler;
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Same(_sampleEventHandler, before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            AssertMockInfoIsCorrect(after[0]);
+            var beforeItem = Assert.Single(before);
+            Assert.Same(_sampleEventHandler, beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            AssertMockInfoIsCorrect(afterItem);
         }
 
         [Fact]
@@ -121,12 +121,12 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _events.MyEvent -= _sampleEventHandler);
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Same(_sampleEventHandler, before[0].value);
-            AssertMockInfoIsCorrect(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrect(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Same(_sampleEventHandler, beforeItem.value);
+            AssertMockInfoIsCorrect(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrect(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace Mocklis.Steps.Log
             _events.MyEvent += _sampleEventHandler;
 
             // Assert
-            Assert.Equal(1, before.Count);
+            Assert.Single(before);
         }
     }
 }

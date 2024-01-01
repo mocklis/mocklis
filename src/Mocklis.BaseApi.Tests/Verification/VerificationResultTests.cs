@@ -10,11 +10,8 @@ namespace Mocklis.Verification
     #region Using Directives
 
     using System;
-    using Xunit;
-
-#if NETFRAMEWORK
     using Mocklis.Helpers;
-#endif
+    using Xunit;
 
     #endregion
 
@@ -135,14 +132,11 @@ FAILED:   Failed Leaf", _sut.ToString(false));
             Assert.Equal(_sut.ToString(true), _sut.ToString());
         }
 
-#if NETFRAMEWORK
         [Fact]
         public void BeSerializable()
         {
             var roundtripped = _sut.RoundTripWithBinaryFormatter();
             roundtripped.AssertEquals(_sut);
         }
-
-#endif
     }
 }

@@ -10,8 +10,8 @@ namespace Mocklis.Core
     #region Using Directives
 
     using System;
-    using Mocklis.Properties;
     using System.Runtime.Serialization;
+    using Mocklis.Properties;
 
     #endregion
 
@@ -71,7 +71,7 @@ namespace Mocklis.Core
                 MockType.VirtualPropertySet => Resources.MockMissingExceptionMessageForVirtualPropertySet,
                 MockType.VirtualIndexerGet => Resources.MockMissingExceptionMessageForVirtualIndexerGet,
                 MockType.VirtualIndexerSet => Resources.MockMissingExceptionMessageForVirtualIndexerSet,
-                _ => throw new ArgumentOutOfRangeException(nameof(memberType)),
+                _ => throw new ArgumentOutOfRangeException(nameof(memberType))
             };
             return string.Format(
                 rawMessage,

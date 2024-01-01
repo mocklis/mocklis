@@ -9,13 +9,14 @@ namespace Mocklis.Mocks
 {
     #region Using Directives
 
+    using System.CodeDom.Compiler;
     using System.Threading.Tasks;
     using Mocklis.Core;
     using Mocklis.Interfaces;
 
     #endregion
 
-    [MocklisClass] [System.CodeDom.Compiler.GeneratedCode("Mocklis", "1.2.0")]
+    [MocklisClass] [GeneratedCode("Mocklis", "1.2.0")]
     public class MockValueTaskMethods : IValueTaskMethods
     {
         // The contents of this class were created by the Mocklis code-generator.

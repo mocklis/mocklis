@@ -27,7 +27,7 @@ namespace Mocklis.Core
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
 
-            int value = propertyMock.Value;
+            var value = propertyMock.Value;
 
             Assert.Equal(1, nextStep.GetCount);
             Assert.Equal(0, nextStep.SetCount);
@@ -39,7 +39,7 @@ namespace Mocklis.Core
         public void ReturnDefaultIfNoStepInLenientModeOnGetting()
         {
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
-            int result = propertyMock.Value;
+            var result = propertyMock.Value;
             Assert.Equal(0, result);
         }
 
@@ -65,7 +65,7 @@ namespace Mocklis.Core
             var propertyMock = new PropertyMock<int>(new object(), "ClassName", "InterfaceName", "MemberName", "MockName", Strictness.Lenient);
             var nextStep = NextStepFor(propertyMock, 5);
             propertyMock.Clear();
-            int result = propertyMock.Value;
+            var result = propertyMock.Value;
             Assert.Equal(0, nextStep.GetCount);
             Assert.Equal(0, nextStep.SetCount);
             Assert.Equal(0, result);

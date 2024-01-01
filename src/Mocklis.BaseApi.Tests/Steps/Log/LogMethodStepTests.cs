@@ -71,13 +71,13 @@ namespace Mocklis.Steps.Log
             var result = _methods.FuncWithParameter(9);
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(9, before[0].param);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(9, beforeItem.param);
             Assert.Equal(5, result);
-            AssertMockInfoIsCorrectForFunc(before[0].mockInfo);
-            Assert.Equal(1, after.Count);
-            Assert.Equal(5, after[0].result);
-            AssertMockInfoIsCorrectForFunc(after[0].mockInfo);
+            AssertMockInfoIsCorrectForFunc(beforeItem.mockInfo);
+            var afterItem = Assert.Single(after);
+            Assert.Equal(5, afterItem.result);
+            AssertMockInfoIsCorrectForFunc(afterItem.mockInfo);
         }
 
         [Fact]
@@ -92,10 +92,10 @@ namespace Mocklis.Steps.Log
             _methods.SimpleAction();
 
             // Assert
-            Assert.Equal(1, before.Count);
-            AssertMockInfoIsCorrectForAction(before[0]);
-            Assert.Equal(1, after.Count);
-            AssertMockInfoIsCorrectForAction(after[0]);
+            var beforeItem = Assert.Single(before);
+            AssertMockInfoIsCorrectForAction(beforeItem);
+            var afterItem = Assert.Single(after);
+            AssertMockInfoIsCorrectForAction(afterItem);
         }
 
         [Fact]
@@ -110,12 +110,12 @@ namespace Mocklis.Steps.Log
             var ex = Assert.Throws<Exception>(() => _methods.FuncWithParameter(9));
 
             // Assert
-            Assert.Equal(1, before.Count);
-            Assert.Equal(9, before[0].param);
-            AssertMockInfoIsCorrectForFunc(before[0].mockInfo);
-            Assert.Equal(1, exceptions.Count);
-            Assert.Same(ex, exceptions[0].exception);
-            AssertMockInfoIsCorrectForFunc(exceptions[0].mockInfo);
+            var beforeItem = Assert.Single(before);
+            Assert.Equal(9, beforeItem.param);
+            AssertMockInfoIsCorrectForFunc(beforeItem.mockInfo);
+            var exceptionItem = Assert.Single(exceptions);
+            Assert.Same(ex, exceptionItem.exception);
+            AssertMockInfoIsCorrectForFunc(exceptionItem.mockInfo);
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace Mocklis.Steps.Log
             _methods.FuncWithParameter(9);
 
             // Assert
-            Assert.Equal(1, before.Count);
+            Assert.Single(before);
         }
     }
 }

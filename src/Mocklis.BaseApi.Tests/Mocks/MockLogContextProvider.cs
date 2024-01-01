@@ -23,7 +23,8 @@ namespace Mocklis.Mocks
 
         public MockLogContextProvider()
         {
-            LogContext = new PropertyMock<ILogContext>(this, "MockLogContextProvider", "ILogContextProvider", "LogContext", "LogContext", Strictness.Lenient);
+            LogContext = new PropertyMock<ILogContext>(this, "MockLogContextProvider", "ILogContextProvider", "LogContext", "LogContext",
+                Strictness.Lenient);
         }
 
         public PropertyMock<ILogContext> LogContext { get; }

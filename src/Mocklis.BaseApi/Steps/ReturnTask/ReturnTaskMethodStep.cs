@@ -15,8 +15,6 @@ namespace Mocklis.Steps.ReturnTask
 
     #endregion
 
-#pragma warning disable CA1031 // Do not catch general exception types
-
     /// <summary>
     ///     Class that represents a 'ReturnTask' method step that wraps the result from a subsequent step in a Task.
     ///     Implements the <see cref="IMethodStep{TParam, TResult}" /> interface.

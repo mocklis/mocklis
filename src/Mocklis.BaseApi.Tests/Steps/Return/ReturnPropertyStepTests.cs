@@ -24,8 +24,8 @@ namespace Mocklis.Steps.Return
         public void ReturnGivenValueOnEveryCall()
         {
             MockMembers.IntProperty.Return(45);
-            int result1 = Sut.IntProperty;
-            int result2 = Sut.IntProperty;
+            var result1 = Sut.IntProperty;
+            var result2 = Sut.IntProperty;
 
             Assert.Equal(45, result1);
             Assert.Equal(45, result2);

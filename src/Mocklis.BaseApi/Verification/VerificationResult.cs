@@ -13,6 +13,8 @@ namespace Mocklis.Verification
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
     using System.Text;
 
     #endregion
@@ -25,7 +27,7 @@ namespace Mocklis.Verification
     /// </summary>
     /// <seealso cref="System.Runtime.Serialization.ISerializable" />
     [Serializable]
-    public readonly struct VerificationResult : System.Runtime.Serialization.ISerializable
+    public readonly struct VerificationResult : ISerializable
     {
         /// <summary>
         ///     Gets the description of the verification node.
@@ -122,7 +124,7 @@ namespace Mocklis.Verification
             }
         }
 
-        private VerificationResult(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        private VerificationResult(SerializationInfo info, StreamingContext context)
         {
             Description = info.GetString(nameof(Description));
             SubResults = (IReadOnlyList<VerificationResult>)info.GetValue(nameof(SubResults), typeof(IReadOnlyList<VerificationResult>));
@@ -141,9 +143,9 @@ namespace Mocklis.Verification
         ///     The <see cref="System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the
         ///     source or destination.
         /// </param>
-        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter = true)]
-        void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        void ISerializable.GetObjectData(SerializationInfo info,
+            StreamingContext context)
         {
             info.AddValue(nameof(Description), Description);
             info.AddValue(nameof(SubResults), SubResults);

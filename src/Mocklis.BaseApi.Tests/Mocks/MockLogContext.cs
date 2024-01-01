@@ -24,20 +24,34 @@ namespace Mocklis.Mocks
 
         public MockLogContext()
         {
-            LogAfterEventAdd = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterEventAdd", "LogAfterEventAdd", Strictness.Lenient);
-            LogEventAddException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogEventAddException", "LogEventAddException", Strictness.Lenient);
-            LogAfterEventRemove = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterEventRemove", "LogAfterEventRemove", Strictness.Lenient);
-            LogEventRemoveException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogEventRemoveException", "LogEventRemoveException", Strictness.Lenient);
-            LogIndexerGetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogIndexerGetException", "LogIndexerGetException", Strictness.Lenient);
-            LogAfterIndexerSet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterIndexerSet", "LogAfterIndexerSet", Strictness.Lenient);
-            LogIndexerSetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogIndexerSetException", "LogIndexerSetException", Strictness.Lenient);
-            LogBeforeMethodCallWithoutParameters = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogBeforeMethodCallWithoutParameters", "LogBeforeMethodCallWithoutParameters", Strictness.Lenient);
-            LogAfterMethodCallWithoutResult = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterMethodCallWithoutResult", "LogAfterMethodCallWithoutResult", Strictness.Lenient);
-            LogMethodCallException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogMethodCallException", "LogMethodCallException", Strictness.Lenient);
-            LogBeforePropertyGet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogBeforePropertyGet", "LogBeforePropertyGet", Strictness.Lenient);
-            LogPropertyGetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogPropertyGetException", "LogPropertyGetException", Strictness.Lenient);
-            LogAfterPropertySet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterPropertySet", "LogAfterPropertySet", Strictness.Lenient);
-            LogPropertySetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext", "LogPropertySetException", "LogPropertySetException", Strictness.Lenient);
+            LogAfterEventAdd = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterEventAdd", "LogAfterEventAdd",
+                Strictness.Lenient);
+            LogEventAddException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogEventAddException", "LogEventAddException", Strictness.Lenient);
+            LogAfterEventRemove = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterEventRemove", "LogAfterEventRemove",
+                Strictness.Lenient);
+            LogEventRemoveException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogEventRemoveException", "LogEventRemoveException", Strictness.Lenient);
+            LogIndexerGetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogIndexerGetException", "LogIndexerGetException", Strictness.Lenient);
+            LogAfterIndexerSet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterIndexerSet", "LogAfterIndexerSet",
+                Strictness.Lenient);
+            LogIndexerSetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogIndexerSetException", "LogIndexerSetException", Strictness.Lenient);
+            LogBeforeMethodCallWithoutParameters = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext",
+                "LogBeforeMethodCallWithoutParameters", "LogBeforeMethodCallWithoutParameters", Strictness.Lenient);
+            LogAfterMethodCallWithoutResult = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext",
+                "LogAfterMethodCallWithoutResult", "LogAfterMethodCallWithoutResult", Strictness.Lenient);
+            LogMethodCallException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogMethodCallException", "LogMethodCallException", Strictness.Lenient);
+            LogBeforePropertyGet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogBeforePropertyGet",
+                "LogBeforePropertyGet", Strictness.Lenient);
+            LogPropertyGetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogPropertyGetException", "LogPropertyGetException", Strictness.Lenient);
+            LogAfterPropertySet = new ActionMethodMock<IMockInfo>(this, "MockLogContext", "ILogContext", "LogAfterPropertySet", "LogAfterPropertySet",
+                Strictness.Lenient);
+            LogPropertySetException = new ActionMethodMock<(IMockInfo mockInfo, Exception exception)>(this, "MockLogContext", "ILogContext",
+                "LogPropertySetException", "LogPropertySetException", Strictness.Lenient);
         }
 
         private readonly TypedMockProvider _logBeforeEventAdd = new TypedMockProvider();
@@ -45,10 +59,13 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, THandler? value)> LogBeforeEventAdd<THandler>() where THandler : Delegate
         {
             var key = new[] { typeof(THandler) };
-            return (ActionMethodMock<(IMockInfo mockInfo, THandler? value)>)_logBeforeEventAdd.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockLogContext", "ILogContext", "LogBeforeEventAdd" + keyString, "LogBeforeEventAdd" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, THandler? value)>)_logBeforeEventAdd.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforeEventAdd" + keyString, "LogBeforeEventAdd" + keyString + "()", Strictness.Lenient));
         }
 
-        void ILogContext.LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler? value) where THandler : class => LogBeforeEventAdd<THandler>().Call((mockInfo, value));
+        void ILogContext.LogBeforeEventAdd<THandler>(IMockInfo mockInfo, THandler? value) where THandler : class =>
+            LogBeforeEventAdd<THandler>().Call((mockInfo, value));
 
         public ActionMethodMock<IMockInfo> LogAfterEventAdd { get; }
 
@@ -63,10 +80,13 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, THandler? value)> LogBeforeEventRemove<THandler>() where THandler : Delegate
         {
             var key = new[] { typeof(THandler) };
-            return (ActionMethodMock<(IMockInfo mockInfo, THandler? value)>)_logBeforeEventRemove.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockLogContext", "ILogContext", "LogBeforeEventRemove" + keyString, "LogBeforeEventRemove" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, THandler? value)>)_logBeforeEventRemove.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, THandler? value)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforeEventRemove" + keyString, "LogBeforeEventRemove" + keyString + "()", Strictness.Lenient));
         }
 
-        void ILogContext.LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler? value) where THandler : class => LogBeforeEventRemove<THandler>().Call((mockInfo, value));
+        void ILogContext.LogBeforeEventRemove<THandler>(IMockInfo mockInfo, THandler? value) where THandler : class =>
+            LogBeforeEventRemove<THandler>().Call((mockInfo, value));
 
         public ActionMethodMock<IMockInfo> LogAfterEventRemove { get; }
 
@@ -81,7 +101,9 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TKey key)> LogBeforeIndexerGet<TKey>()
         {
             var key = new[] { typeof(TKey) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TKey key)>)_logBeforeIndexerGet.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TKey key)>(this, "MockLogContext", "ILogContext", "LogBeforeIndexerGet" + keyString, "LogBeforeIndexerGet" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TKey key)>)_logBeforeIndexerGet.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TKey key)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforeIndexerGet" + keyString, "LogBeforeIndexerGet" + keyString + "()", Strictness.Lenient));
         }
 
         void ILogContext.LogBeforeIndexerGet<TKey>(IMockInfo mockInfo, TKey key) => LogBeforeIndexerGet<TKey>().Call((mockInfo, key));
@@ -91,7 +113,9 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TValue value)> LogAfterIndexerGet<TValue>()
         {
             var key = new[] { typeof(TValue) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logAfterIndexerGet.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext", "LogAfterIndexerGet" + keyString, "LogAfterIndexerGet" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logAfterIndexerGet.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext",
+                    "LogAfterIndexerGet" + keyString, "LogAfterIndexerGet" + keyString + "()", Strictness.Lenient));
         }
 
         void ILogContext.LogAfterIndexerGet<TValue>(IMockInfo mockInfo, TValue value) => LogAfterIndexerGet<TValue>().Call((mockInfo, value));
@@ -105,10 +129,13 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)> LogBeforeIndexerSet<TKey, TValue>()
         {
             var key = new[] { typeof(TKey), typeof(TValue) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>)_logBeforeIndexerSet.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>(this, "MockLogContext", "ILogContext", "LogBeforeIndexerSet" + keyString, "LogBeforeIndexerSet" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>)_logBeforeIndexerSet.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TKey key, TValue value)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforeIndexerSet" + keyString, "LogBeforeIndexerSet" + keyString + "()", Strictness.Lenient));
         }
 
-        void ILogContext.LogBeforeIndexerSet<TKey, TValue>(IMockInfo mockInfo, TKey key, TValue value) => LogBeforeIndexerSet<TKey, TValue>().Call((mockInfo, key, value));
+        void ILogContext.LogBeforeIndexerSet<TKey, TValue>(IMockInfo mockInfo, TKey key, TValue value) =>
+            LogBeforeIndexerSet<TKey, TValue>().Call((mockInfo, key, value));
 
         public ActionMethodMock<IMockInfo> LogAfterIndexerSet { get; }
 
@@ -127,10 +154,13 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TParam param)> LogBeforeMethodCallWithParameters<TParam>()
         {
             var key = new[] { typeof(TParam) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TParam param)>)_logBeforeMethodCallWithParameters.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TParam param)>(this, "MockLogContext", "ILogContext", "LogBeforeMethodCallWithParameters" + keyString, "LogBeforeMethodCallWithParameters" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TParam param)>)_logBeforeMethodCallWithParameters.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TParam param)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforeMethodCallWithParameters" + keyString, "LogBeforeMethodCallWithParameters" + keyString + "()", Strictness.Lenient));
         }
 
-        void ILogContext.LogBeforeMethodCallWithParameters<TParam>(IMockInfo mockInfo, TParam param) => LogBeforeMethodCallWithParameters<TParam>().Call((mockInfo, param));
+        void ILogContext.LogBeforeMethodCallWithParameters<TParam>(IMockInfo mockInfo, TParam param) =>
+            LogBeforeMethodCallWithParameters<TParam>().Call((mockInfo, param));
 
         public ActionMethodMock<IMockInfo> LogAfterMethodCallWithoutResult { get; }
 
@@ -141,10 +171,13 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TResult result)> LogAfterMethodCallWithResult<TResult>()
         {
             var key = new[] { typeof(TResult) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TResult result)>)_logAfterMethodCallWithResult.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TResult result)>(this, "MockLogContext", "ILogContext", "LogAfterMethodCallWithResult" + keyString, "LogAfterMethodCallWithResult" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TResult result)>)_logAfterMethodCallWithResult.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TResult result)>(this, "MockLogContext", "ILogContext",
+                    "LogAfterMethodCallWithResult" + keyString, "LogAfterMethodCallWithResult" + keyString + "()", Strictness.Lenient));
         }
 
-        void ILogContext.LogAfterMethodCallWithResult<TResult>(IMockInfo mockInfo, TResult result) => LogAfterMethodCallWithResult<TResult>().Call((mockInfo, result));
+        void ILogContext.LogAfterMethodCallWithResult<TResult>(IMockInfo mockInfo, TResult result) =>
+            LogAfterMethodCallWithResult<TResult>().Call((mockInfo, result));
 
         public ActionMethodMock<(IMockInfo mockInfo, Exception exception)> LogMethodCallException { get; }
 
@@ -159,7 +192,9 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TValue value)> LogAfterPropertyGet<TValue>()
         {
             var key = new[] { typeof(TValue) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logAfterPropertyGet.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext", "LogAfterPropertyGet" + keyString, "LogAfterPropertyGet" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logAfterPropertyGet.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext",
+                    "LogAfterPropertyGet" + keyString, "LogAfterPropertyGet" + keyString + "()", Strictness.Lenient));
         }
 
         void ILogContext.LogAfterPropertyGet<TValue>(IMockInfo mockInfo, TValue value) => LogAfterPropertyGet<TValue>().Call((mockInfo, value));
@@ -173,7 +208,9 @@ namespace Mocklis.Mocks
         public ActionMethodMock<(IMockInfo mockInfo, TValue value)> LogBeforePropertySet<TValue>()
         {
             var key = new[] { typeof(TValue) };
-            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logBeforePropertySet.GetOrAdd(key, keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext", "LogBeforePropertySet" + keyString, "LogBeforePropertySet" + keyString + "()", Strictness.Lenient));
+            return (ActionMethodMock<(IMockInfo mockInfo, TValue value)>)_logBeforePropertySet.GetOrAdd(key,
+                keyString => new ActionMethodMock<(IMockInfo mockInfo, TValue value)>(this, "MockLogContext", "ILogContext",
+                    "LogBeforePropertySet" + keyString, "LogBeforePropertySet" + keyString + "()", Strictness.Lenient));
         }
 
         void ILogContext.LogBeforePropertySet<TValue>(IMockInfo mockInfo, TValue value) => LogBeforePropertySet<TValue>().Call((mockInfo, value));

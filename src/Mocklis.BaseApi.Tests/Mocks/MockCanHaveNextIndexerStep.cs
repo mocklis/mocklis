@@ -25,7 +25,9 @@ namespace Mocklis.Mocks
         public FuncMethodMock<TStep, TStep> SetNextStep<TStep>() where TStep : IIndexerStep<TKey, TValue>
         {
             var key = new[] { typeof(TStep) };
-            return (FuncMethodMock<TStep, TStep>)_setNextStep.GetOrAdd(key, keyString => new FuncMethodMock<TStep, TStep>(this, "MockCanHaveNextIndexerStep", "ICanHaveNextIndexerStep", "SetNextStep" + keyString, "SetNextStep" + keyString + "()", Strictness.Lenient));
+            return (FuncMethodMock<TStep, TStep>)_setNextStep.GetOrAdd(key,
+                keyString => new FuncMethodMock<TStep, TStep>(this, "MockCanHaveNextIndexerStep", "ICanHaveNextIndexerStep",
+                    "SetNextStep" + keyString, "SetNextStep" + keyString + "()", Strictness.Lenient));
         }
 
         TStep ICanHaveNextIndexerStep<TKey, TValue>.SetNextStep<TStep>(TStep step) => SetNextStep<TStep>().Call(step);

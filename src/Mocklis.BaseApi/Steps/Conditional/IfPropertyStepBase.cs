@@ -8,8 +8,8 @@
 namespace Mocklis.Steps.Conditional
 {
     /*
-    * See comment on IfEventStepBase class.
-    */
+     * See comment on IfEventStepBase class.
+     */
 
     #region Using Directives
 

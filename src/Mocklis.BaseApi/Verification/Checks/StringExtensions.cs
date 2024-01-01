@@ -10,8 +10,8 @@ namespace Mocklis.Verification.Checks
     internal static class StringExtensions
     {
         /// <summary>
-        /// Wraps the string value in single quotes, unless it's null in which case the string &lt;null&gt; is returned.
-        /// The goal is to provide the ability to distinguish between empty string and null values in messages.
+        ///     Wraps the string value in single quotes, unless it's null in which case the string &lt;null&gt; is returned.
+        ///     The goal is to provide the ability to distinguish between empty string and null values in messages.
         /// </summary>
         /// <param name="value">A nullable string.</param>
         /// <returns>A string with the original value wrapped in single quotes, or the string &lt;null&gt;.</returns>
@@ -23,6 +23,5 @@ namespace Mocklis.Verification.Checks
                 _ => $"'{value}'"
             };
         }
-
     }
 }

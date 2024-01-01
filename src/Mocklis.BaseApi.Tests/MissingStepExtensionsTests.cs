@@ -29,8 +29,8 @@ namespace Mocklis
             eventMock.Missing();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(MissingEventStep<EventHandler>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(MissingEventStep<EventHandler>.Instance, item);
         }
 
         [Fact]
@@ -44,8 +44,8 @@ namespace Mocklis
             indexerMock.Missing();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(MissingIndexerStep<int, string>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(MissingIndexerStep<int, string>.Instance, item);
         }
 
         [Fact]
@@ -59,8 +59,8 @@ namespace Mocklis
             eventMock.Missing();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(MissingMethodStep<int, string>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(MissingMethodStep<int, string>.Instance, item);
         }
 
         [Fact]
@@ -74,8 +74,8 @@ namespace Mocklis
             indexerMock.Missing();
 
             // Assert
-            Assert.Equal(1, ledger.Count);
-            Assert.Same(MissingPropertyStep<int>.Instance, ledger[0]);
+            var item = Assert.Single(ledger);
+            Assert.Same(MissingPropertyStep<int>.Instance, item);
         }
     }
 }

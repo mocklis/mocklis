@@ -5,7 +5,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-#if NETFRAMEWORK
+#if !NETFRAMEWORK
+#pragma warning disable SYSLIB0011
+#endif
 
 namespace Mocklis.Helpers
 {
@@ -34,5 +36,3 @@ namespace Mocklis.Helpers
         }
     }
 }
-
-#endif

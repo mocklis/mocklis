@@ -45,14 +45,14 @@ namespace Mocklis.Steps.Conditional
         public void NotForwardGet()
         {
             var _ = Sut.StringProperty;
-            Assert.Equal(0, Gets.Count);
+            Assert.Empty(Gets);
         }
 
         [Fact]
         public void ForwardSet()
         {
             Sut.StringProperty = "one";
-            Assert.Equal(1, Sets.Count);
+            Assert.Single(Sets);
         }
     }
 }
