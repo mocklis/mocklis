@@ -28,8 +28,13 @@ public static class SymbolEquality
 
     public static IEqualityComparer<IMethodSymbol> ForMethod { get; } = new MethodEquality();
 
-    private static bool SameNamespace(INamespaceSymbol x, INamespaceSymbol y)
+    private static bool SameNamespace(INamespaceSymbol? x, INamespaceSymbol? y)
     {
+        if (x is null && y is null) return true;
+
+        if (x is null) return false;
+        if (y is null) return false;
+
         if (x.IsGlobalNamespace && y.IsGlobalNamespace) return true;
 
         if (x.IsGlobalNamespace) return false;
