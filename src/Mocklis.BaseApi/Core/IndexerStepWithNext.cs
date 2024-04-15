@@ -74,5 +74,13 @@ namespace Mocklis.Core
         {
             NextStep.SetWithStrictnessCheckIfNull(mockInfo, key, value);
         }
+
+        /// <summary>
+        ///     Removes the current 'next' step, restoring the mock to its non-programmed behaviour.
+        /// </summary>
+        public void Clear()
+        {
+            NextStep = null;
+        }
     }
 }

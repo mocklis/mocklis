@@ -51,8 +51,7 @@ namespace Mocklis.Core
         /// <summary>
         ///     Called when the mocked method is called.
         ///     Can be overridden to provide a bespoke behaviour in a step. The default behaviour is to forward calls on to the
-        ///     next
-        ///     step.
+        ///     next step.
         /// </summary>
         /// <param name="mockInfo">Information about the mock through which the method is called.</param>
         /// <param name="param">The parameters used.</param>
@@ -60,6 +59,14 @@ namespace Mocklis.Core
         public virtual TResult Call(IMockInfo mockInfo, TParam param)
         {
             return NextStep.CallWithStrictnessCheckIfNull(mockInfo, param);
+        }
+
+        /// <summary>
+        ///     Removes the current 'next' step, restoring the mock to its non-programmed behaviour.
+        /// </summary>
+        public void Clear()
+        {
+            NextStep = null;
         }
     }
 }

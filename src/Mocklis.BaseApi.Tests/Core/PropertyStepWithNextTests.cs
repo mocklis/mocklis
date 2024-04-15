@@ -96,5 +96,18 @@ namespace Mocklis.Core
 
             vg.Assert();
         }
+
+        [Fact]
+        public void ClearRemovesAnyProgramming()
+        {
+            var vg = new VerificationGroup();
+            PropertyStep.ExpectedUsage(vg, null, expectedNumberOfGets: 0, expectedNumberOfSets: 0);
+
+            PropertyStep.Clear();
+
+            PropertyStep.Set(MockInfo.Lenient, PropertyStep.Get(MockInfo.Lenient));
+
+            vg.Assert();
+        }
     }
 }

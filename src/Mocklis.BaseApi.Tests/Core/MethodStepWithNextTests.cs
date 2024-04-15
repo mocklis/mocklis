@@ -64,5 +64,18 @@ namespace Mocklis.Core
 
             vg.Assert();
         }
+
+        [Fact]
+        public void ClearRemovesAnyProgramming()
+        {
+            var vg = new VerificationGroup();
+            MethodStep.ExpectedUsage(vg, null, expectedNumberOfCalls: 0);
+
+            MethodStep.Clear();
+
+            MethodStep.Call(MockInfo.Lenient, 5);
+
+            vg.Assert();
+        }
     }
 }
