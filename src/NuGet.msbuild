@@ -3,17 +3,18 @@
     <Product>Mocklis</Product>
     <Authors>Esbjörn Redmo</Authors>
     <Company />
-    <Copyright>Copyright © 2019-2024 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2019-2026 Esbjörn Redmo and contributors. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.4.0-beta.1</Version>
-    <AssemblyVersion>1.4.0.2</AssemblyVersion>
-    <FileVersion>1.4.0.2</FileVersion>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.4.0.3</AssemblyVersion>
+    <FileVersion>1.4.0.3</FileVersion>
     <PackageTags>mock mocking test testing tdd unittest agile roslyn</PackageTags>
     <PackageIconUrl>https://mocklis.net/mocklis128.png</PackageIconUrl>
     <PackageIcon>mocklis128.png</PackageIcon>
     <PackageProjectUrl>https://mocklis.net/</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <NoWarn>NU5105</NoWarn>
   </PropertyGroup>
   <ItemGroup>

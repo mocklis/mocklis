@@ -51,6 +51,8 @@ namespace Mocklis.Verification
             Assert.Same(innerException, sut.InnerException);
         }
 
+#if NETFRAMEWORK
+        // BinaryFormatter is disabled in .NET 8 and removed in .NET 9 and later, so serialization is only tested on .NET Framework.
         [Fact]
         public void BeSerialisable()
         {
@@ -61,5 +63,6 @@ namespace Mocklis.Verification
             Assert.Equal("This is a special message!", sut.Message);
             Assert.Null(sut.InnerException);
         }
+#endif
     }
 }

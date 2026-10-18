@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>8.0</LangVersion>
-    <NoBuild>true</NoBuild>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NuspecFile>Mocklis.nuspec</NuspecFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

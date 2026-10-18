@@ -132,11 +132,14 @@ FAILED:   Failed Leaf", _sut.ToString(false));
             Assert.Equal(_sut.ToString(true), _sut.ToString());
         }
 
+#if NETFRAMEWORK
+        // BinaryFormatter is disabled in .NET 8 and removed in .NET 9 and later, so serialization is only tested on .NET Framework.
         [Fact]
         public void BeSerializable()
         {
             var roundtripped = _sut.RoundTripWithBinaryFormatter();
             roundtripped.AssertEquals(_sut);
         }
+#endif
     }
 }

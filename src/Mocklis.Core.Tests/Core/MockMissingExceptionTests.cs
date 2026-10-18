@@ -39,6 +39,8 @@ namespace Mocklis.Core
             return (T)formatter.Deserialize(m);
         }
 
+#if NETFRAMEWORK
+        // BinaryFormatter is disabled in .NET 8 and removed in .NET 9 and later, so serialization is only tested on .NET Framework.
         [Fact]
         public void BeSerializable()
         {
@@ -54,5 +56,6 @@ namespace Mocklis.Core
             Assert.Equal(exception.MemberMockName, roundtrippedException.MemberMockName);
             Assert.Equal(exception.Message, roundtrippedException.Message);
         }
+#endif
     }
 }

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Mocklis</id>
-    <version>1.4.0-beta.1</version>
+    <version>1.4.0</version>
     <authors>Esbjörn Redmo</authors>
     <owners>Esbjörn Redmo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,14 +10,15 @@
     <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
     <icon>mocklis128.png</icon>
     <projectUrl>https://mocklis.net/</projectUrl>
+    <repository type="git" url="https://github.com/mocklis/mocklis.git" />
     <iconUrl>https://mocklis.net/mocklis128.png</iconUrl>
     <description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. This is a meta-package referencing both the library and the code generator.</description>
-    <copyright>Copyright © 2019-2020 Esbjörn Redmo and contributors. All rights reserved.</copyright>
+    <copyright>Copyright © 2019-2026 Esbjörn Redmo and contributors. All rights reserved.</copyright>
     <tags>mock mocking test testing tdd unittest agile roslyn</tags>
     <dependencies>
       <group>
-        <dependency id="Mocklis.BaseApi" version="1.4.0-beta.1" exclude="Build,Analyzers" />
-        <dependency id="Mocklis.MockGenerator" version="1.4.0-beta.1" exclude="Build" />
+        <dependency id="Mocklis.BaseApi" version="1.4.0" exclude="Build,Analyzers" />
+        <dependency id="Mocklis.MockGenerator" version="1.4.0" exclude="Build" />
       </group>
     </dependencies>
   </metadata>

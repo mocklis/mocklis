@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Description>Mocklis is a library and source code generator for .net, targeted at generating test doubles from interfaces. Mocklis.Cli is a command line interface for the code generator.</Description>
     <Copyright>Copyright © 2019-2020 Esbjörn Redmo and contributors</Copyright>
